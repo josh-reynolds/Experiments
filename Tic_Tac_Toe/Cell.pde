@@ -11,8 +11,21 @@ class Cell{
     float topLeftX = x * h;
     float topLeftY = y * v;
 
-    fill(125 + 125 * value);
+    fill(125);
     rect(topLeftX, topLeftY, h, v);
+    
+    if (value == 1){
+      stroke(0);
+      strokeWeight(12);
+      line(topLeftX + h/3,     topLeftY + v/3, topLeftX + 2 * h/3, topLeftY + 2 * v/3);
+      line(topLeftX + 2 * h/3, topLeftY + v/3, topLeftX + h/3,     topLeftY + 2 * v/3);
+    }
+    if (value == -1){
+      stroke(0);
+      strokeWeight(12);
+      ellipseMode(CORNER);
+      ellipse(topLeftX + h/3, topLeftY + v/3, h/3, v/3);
+    }
   }
   
   void update(int increment){
