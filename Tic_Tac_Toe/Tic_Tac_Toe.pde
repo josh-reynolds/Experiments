@@ -4,9 +4,9 @@ Cell[][] cells;
 float h,v;
 
 void setup(){
-  size(900,900);
+  size(900,960);
   h = width/3;
-  v = height/3;
+  v = h;
   
   cells = new Cell[3][3];
   for (int i = 0; i < 3; i++){
@@ -17,6 +17,7 @@ void setup(){
 }
 
 void draw(){
+  background(255);
   for (int i = 0; i < 3; i++){
     for (int j = 0; j < 3; j++){
       cells[i][j].show(); 
@@ -24,9 +25,17 @@ void draw(){
   } 
   drawGrid();
   if (gamewon()){
-    println("You won!!!");
+    printMessage("You won!!!");
     noLoop();
   }
+}
+
+void printMessage(String s){
+  float upperBound = v*3 + 10;
+  textAlign(CENTER, TOP);
+  textSize(36);
+  fill(0);
+  text(s, width/2, upperBound);
 }
 
 boolean gamewon(){
@@ -76,8 +85,8 @@ boolean gamewon(){
 void drawGrid(){
   stroke(0);
   strokeWeight(12);
-  line(h,   0,   h,     height );
-  line(h*2, 0,   h*2,   height );
+  line(h,   0,   h,     v*3 );
+  line(h*2, 0,   h*2,   v*3 );
   line(0,   v,   width, v      );
   line(0,   v*2, width, v*2    );
 }
