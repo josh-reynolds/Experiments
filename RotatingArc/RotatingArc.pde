@@ -6,6 +6,7 @@ float spacing = 0.1;
 int arcCount = 5;
 int arcWidth = 20;
 float arcSpeed = 0.05;
+color c = color(50, 50, 255);
 
 ArrayList<Arc> arcs;
 
@@ -15,7 +16,11 @@ void setup(){
   arcs = new ArrayList<Arc>();
   float startAngle = 0;
   for (int i = 0; i < arcCount; i++){
-    arcs.add(new Arc(arcWidth, arcSpeed, startAngle, startAngle + angularWidth));
+    arcs.add(new Arc(arcWidth, 
+                     arcSpeed, 
+                     startAngle, 
+                     startAngle + angularWidth,
+                     c));
     startAngle += angularWidth + spacing;
   }
 }
@@ -31,4 +36,7 @@ void draw(){
   
   fill(255);
   arc(0, 0, radius * 2, radius * 2, radians(45), radians(135), PIE);
+  
+  textSize(48);
+  text("We'll be right back!", -200, 200); 
 }
