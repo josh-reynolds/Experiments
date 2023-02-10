@@ -76,12 +76,62 @@ void setup(){
     direction.setMag(sideLength);
     PVector endPoint = PVector.add(points[i], direction);
     line(points[i].x, points[i].y, endPoint.x, endPoint.y);
-    ellipse(points[i].x, points[i].y, sideLength * 2, sideLength * 2);
+    //ellipse(points[i].x, points[i].y, sideLength * 2, sideLength * 2);
   }
   
+  // BOUNDING ELLIPSE - NEXT POLY ===================
+  PVector firstPoint  = points[0];
+  PVector secondPoint = points[1];
+  
   fill(0, 255, 0);
-  ellipse(points[0].x, points[0].y, 6, 6);
+  ellipse(firstPoint.x, firstPoint.y, 6, 6);
   
   fill(255, 0, 0);
-  ellipse(points[1].x, points[1].y, 6, 6);
+  ellipse(secondPoint.x, secondPoint.y, 6, 6);  
+  
+  // have x,y for two sample points on the ellipse
+  // center point is unknown as is angle to sample points from it 
+  // assume x + y radii are same as central ellipse 
+  
+  // if   x1 = h + (a cos t1) && x2 = h + (a cos t2) 
+  // then  h = x1 - (a cos t1) = x2 - (a cos t2)
+  //  x1 = x2 - (a cos t2) + (a cos t1)
+  //  x1 - x2 = -(a cos t2) + (a cos t1) = (a cos t1) - (a cos t2)
+  // (x1 - x2) / a = cos t1 - cos t2
+    
+  // same for y:
+  // y1 = k + (b sin t1) && y2 = k + (b sin t2)
+  // k = y1 - (b sin t1) = y2 - (b sin t2)
+  // y1 = y2 - (b sin t2) + (b sin t1)
+  // y1 - y2 = (b sin t1) - (b sin t2)
+  // (y1 - y2) / b = sin t1 - sin t2
+  
+  float targetX = (firstPoint.x - secondPoint.x) / xRadius;
+  float targetY = (firstPoint.y - secondPoint.y) / yRadius;
+  
+  for (float angle1 = 0; angle1 <= TWO_PI; angle1 += 0.1){
+    for (float angle2 = 0; angle2 <= TWO_PI; angle2 += 0.1){
+      float xCandidate = (cos(angle1) - cos(angle2));
+      float yCandidate = (sin(angle1) - sin(angle2));
+      boolean foundX = false;
+      boolean foundY = false;
+      if (abs(xCandidate - targetX) < 0.001){ 
+        println("got one x! " + degrees(angle1) + " " + degrees(angle2)); 
+        foundX = true;
+      }
+      if (abs(yCandidate - targetY) < 0.001){ 
+        println("got one y! " + degrees(angle1) + " " + degrees(angle2)); 
+        foundY = true; 
+      }
+      if (foundX && foundY){ 
+        println("Found it!");
+        // this approach is not finding an intersecting ellipse
+        // so assumptions are probably wrong
+        // either new ellipse does not have same radii and/or
+        // it is rotated w.r.t. x & y axes
+      }
+    }
+  }
+  
+  println("DONE");
 }
