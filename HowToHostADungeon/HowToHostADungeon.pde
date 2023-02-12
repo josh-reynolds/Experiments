@@ -22,12 +22,14 @@
 //  but I suspect we're going to have at least a couple classes (locations + entities)
 //  and possibly hierarchies to allow polymorphism... but don't get ahead of things
 
-// other possible classes: age/event generators, map object
+// other possible classes: age/event generators, map object, historic record/log
 
 // thinking about using a simple mask image to govern navigation:
 //   all landscape entities draw to both display image and mask (in b+w)
 //   all mobile entities use the mask data to assess legal moves
 // may eventually need something like A*Star to allow entities to find paths, but keep simple for now
+
+// possibly a third layer for mobile entities so they are always drawn in front
 
 float groundLevel = 200;
 float thumb = 50;
@@ -55,7 +57,7 @@ void setup(){
     fill(80);
     textSize(48);
     textAlign(LEFT, TOP);
-    text(label, 10, top + 10); 
+    text(label, 10, top + 20); 
   }
   
   // PRIMORDIAL AGE ======================================
