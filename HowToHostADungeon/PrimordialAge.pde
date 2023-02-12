@@ -40,6 +40,7 @@ class PrimordialAge {
 
   private void createMithril() {
     println("Mithril");
+    hasOre = true;
     for (int i = 0; i < 2; i++) {
       PVector location = pickLocation();
 
@@ -101,6 +102,7 @@ class PrimordialAge {
 
   private void createGoldVein() {
     println("Gold Vein");
+    hasOre = true;
     int left = floor(random(0, 6));
     int right = floor(random(0, 6));
 
@@ -167,7 +169,7 @@ class PrimordialAge {
         currentY += halfFinger;
         break;
       default:
-        println("Invalid die roll");
+        println("  Invalid die roll");
       }
       river.add(new PVector(currentX, currentY));
       if (currentX > width || currentY < groundLevel || currentY > height) {
@@ -210,10 +212,10 @@ class PrimordialAge {
     case 0:
     case 1:
     case 2:
-      println("Earthquake");
+      println("  Earthquake");
       break;
     case 3:
-      println("Volcanic Eruption");
+      println("  Volcanic Eruption");
       float x = random(0, width);
       float y = height - random(0, 200);
       fill(255, 0, 0);
@@ -226,19 +228,19 @@ class PrimordialAge {
 
       break;
     case 4:
-      println("The Great River");
+      println("  The Great River");
       break;
     case 5:
-      println("The Plague");        
+      println("  The Plague");        
       break;
     case 6:
-      println("The Fallen Star");        
+      println("  The Fallen Star");        
       break;
     case 7:
-      println("Make something up");        
+      println("  Make something up");        
       break;
     default:
-      println("Invalid die roll");
+      println("  Invalid die roll");
     }
   }
 }

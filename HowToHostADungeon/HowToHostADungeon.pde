@@ -39,29 +39,34 @@ float halfFinger = finger/2;
 
 float layerSize;
 
-void setup(){
+boolean hasOre = false;   // very simplistic/hacky - sure we'll need a list of 
+                          // locations to query eventually
+
+void setup() {
   size(1100, 850);
 
   background(61, 174, 197);
-  
+
   layerSize = (height - groundLevel) / 6;
-  
+
   // draw ground strata
-  for (int i = 0; i < 6; i++){
+  for (int i = 0; i < 6; i++) {
     float top = groundLevel + (i * layerSize); 
-    
+
     fill(145, 103, 12);
     rect(0, top, width, layerSize);
-    
+
     String label = str(i + 1);
     fill(80);
     textSize(48);
     textAlign(LEFT, TOP);
-    text(label, 10, top + 20); 
+    text(label, 10, top + 20);
   }
-  
+
   // PRIMORDIAL AGE ======================================
   new PrimordialAge().generate();
+
+  civilization();
 
   // draw the sky
   fill(61, 174, 197);
@@ -69,10 +74,34 @@ void setup(){
   rect(0, 0, width, groundLevel);
 }
 
-float strataToYCoordinate(int _i){
+float strataToYCoordinate(int _i) {
   return _i * layerSize + groundLevel + layerSize/2;
 }
 
-PVector pickLocation(){
+PVector pickLocation() {
   return new PVector(random(width), random(groundLevel, height));
+}
+
+void civilization(){
+  // start with the dwarves (blue, square rooms, straight/orthogonal tunnels)
+  
+  // do we have a gold vein or mithril?
+  //  if not, create a gold vein
+  if (!hasOre){
+    new PrimordialAge().createGoldVein();
+  }
+  
+  // pick spot on surface above gold vein or mithril
+  
+  // dig a vertical shaft down to the deposit
+  
+  // draw a mine where the shaft meets the ore, and put a treasure token in it
+  
+  // draw a barracks on the shaft and place a dwarf population token in it
+  
+  // name the dwarf tribe
+  
+  // start counting years from 0 - seasonal events/activities until no dwarves left 
+  // or event ends civilization
+   
 }
