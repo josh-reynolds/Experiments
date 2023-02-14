@@ -117,12 +117,8 @@ class PrimordialAge {
 
     // need to decide what "location" means for a line like this
     //  for now pick a random point on the line
-    PVector direction = PVector.sub(end, start);
-    direction.mult(random(0.1, 0.9));
-    PVector location = new PVector(direction.x + start.x, direction.y + start.y);
-    fill(255, 0, 0);
-    ellipse(location.x, location.y, 10, 10);
-    locations.add(new Location("Gold Vein", location));
+    Location l = new Location("Gold Vein", start, end);
+    locations.add(l);
   }
 
   private void createCaveComplex(PVector _p) {
