@@ -33,7 +33,15 @@ void draw(){
         minDistance = min(minDistance, PVector.dist(points[i], new PVector(x,y))); 
       }
       
+      // distance field
       color c = color(map(minDistance,0,width,0,255));     
+      
+      // isolines - not getting same result as sample
+      float threshold = 0.7;
+      float value = abs(sin(50.0 * minDistance));
+      float result = map(step(threshold, value) * 0.3, 0, 0.3, 0, 255);
+      c -= result;
+      
       int index = x + (y * width); 
       pixels[index] = c;
     }
@@ -43,4 +51,12 @@ void draw(){
 
 void mouseMoved(){
   points[pointCount - 1] = new PVector(mouseX, mouseY);
+}
+
+float step(float threshold, float value){
+  if (value < threshold){
+    return 0.0;
+  } else {
+    return 1.0;
+  }
 }
