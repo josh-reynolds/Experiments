@@ -5,7 +5,7 @@ class PrimordialAge {
       PVector p = pickLocation();
       int index = floor(random(1, 9));
       event(index, p);
-      //event(2, p);
+      //event(4, p);
     }
   }
 
@@ -43,6 +43,7 @@ class PrimordialAge {
     hasOre = true;
     for (int i = 0; i < 2; i++) {
       PVector location = pickLocation();
+      locations.add(new Location("Mithril", location));
 
       // find nearest corner
       float minDist = width;
@@ -96,6 +97,7 @@ class PrimordialAge {
 
   private int createCavern() {
     PVector location = pickLocation();
+    locations.add(new Location("Natural Cavern", location));
     ellipse(location.x, location.y, bead, bead);
     return floor(random(1, 7));
   }
@@ -106,14 +108,26 @@ class PrimordialAge {
     int left = floor(random(0, 6));
     int right = floor(random(0, 6));
 
+    PVector start = new PVector(0, strataToYCoordinate(left));
+    PVector end = new PVector(width, strataToYCoordinate(right));
+
     stroke(255, 0, 0);
     strokeWeight(2);
-    line(0, strataToYCoordinate(left), 
-      width, strataToYCoordinate(right));
+    line(start.x, start.y, end.x, end.y); 
+
+    // need to decide what "location" means for a line like this
+    //  for now pick a random point on the line
+    PVector direction = PVector.sub(end, start);
+    direction.mult(random(0.1, 0.9));
+    PVector location = new PVector(direction.x + start.x, direction.y + start.y);
+    fill(255, 0, 0);
+    ellipse(location.x, location.y, 10, 10);
+    locations.add(new Location("Gold Vein", location));
   }
 
   private void createCaveComplex(PVector _p) {
     println("Cave Complex");
+    locations.add(new Location("Cave Complex", _p));
     for (int i = 0; i < 3; i++) {
       PVector displacement = PVector.random2D();
       displacement.setMag(bead);
@@ -186,10 +200,14 @@ class PrimordialAge {
       vertex(p.x, p.y);
     }
     endShape();
+
+    // same issue here as with Gold Vein - what point to choose?
+    //      locations.add(new Location("Underground River", location));
   }
 
   private void createAncientWyrm(PVector _p) {
     println("Ancient Wyrm");
+    locations.add(new Location("Ancient Wyrm", _p));
     fill(0);
     noStroke();
     ellipse(_p.x, _p.y, bead, bead);
@@ -225,6 +243,10 @@ class PrimordialAge {
       line(x, y, x, groundLevel);
 
       // draw volcano cone - needs to be in foreground
+
+      // even trickier than with rivers & gold veins because
+      //  this is a vertical line
+      // locations.add(new Location("Volcano", location));
 
       break;
     case 4:

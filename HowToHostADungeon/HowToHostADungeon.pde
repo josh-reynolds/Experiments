@@ -31,6 +31,11 @@
 
 // possibly a third layer for mobile entities so they are always drawn in front
 
+// =============================================
+// TO_DO
+//  don't like locations spawning too close to edge - bring them in a bit
+//
+// =============================================
 float groundLevel = 200;
 float thumb = 50;
 float bead = 30;
@@ -40,7 +45,9 @@ float halfFinger = finger/2;
 float layerSize;
 
 boolean hasOre = false;   // very simplistic/hacky - sure we'll need a list of 
-                          // locations to query eventually
+// locations to query eventually
+
+ArrayList<Location> locations; 
 
 void setup() {
   size(1100, 850);
@@ -63,6 +70,8 @@ void setup() {
     text(label, 10, top + 20);
   }
 
+  locations = new ArrayList<Location>();
+
   // PRIMORDIAL AGE ======================================
   new PrimordialAge().generate();
 
@@ -72,6 +81,10 @@ void setup() {
   fill(61, 174, 197);
   noStroke();
   rect(0, 0, width, groundLevel);
+
+  // BUG: sky sometimes isn't drawing over locations - investigate
+
+  printArray(locations);
 }
 
 float strataToYCoordinate(int _i) {
@@ -82,26 +95,58 @@ PVector pickLocation() {
   return new PVector(random(width), random(groundLevel, height));
 }
 
-void civilization(){
+void civilization() {
   // start with the dwarves (blue, square rooms, straight/orthogonal tunnels)
-  
+  color dwarves = color(0, 0, 255);
+
   // do we have a gold vein or mithril?
   //  if not, create a gold vein
-  if (!hasOre){
+  if (!hasOre) {
     new PrimordialAge().createGoldVein();
   }
-  
+
   // pick spot on surface above gold vein or mithril
-  
+  PVector surfaceLocation = new PVector(0, groundLevel);
+  PVector targetLocation = new PVector();
+  for (Location l : locations) {
+    if (l.label.equals("Gold Vein") || l.label.equals("Mithril")) {
+      // this just finds the last one - should randomize
+      println("found ore!");
+      surfaceLocation.x = l.coord.x;
+      targetLocation = l.coord.copy();
+    }
+  }
+
   // dig a vertical shaft down to the deposit
-  
+  stroke(dwarves);
+  strokeWeight(4);
+  line(surfaceLocation.x, surfaceLocation.y, targetLocation.x, targetLocation.y);
+
   // draw a mine where the shaft meets the ore, and put a treasure token in it
-  
+  rectMode(CENTER);
+  stroke(dwarves);
+  fill(dwarves);
+  rect(targetLocation.x, targetLocation.y, bead, bead);
+
+  stroke(0);
+  strokeWeight(1);
+  fill(255, 255, 0);
+  ellipse(targetLocation.x, targetLocation.y, bead/2, bead/2);    // treasure
+
   // draw a barracks on the shaft and place a dwarf population token in it
-  
+  float barracksDepth = (targetLocation.y - groundLevel)/2 + groundLevel;
+  rectMode(CENTER);
+  stroke(dwarves);
+  fill(dwarves);
+  rect(targetLocation.x, barracksDepth, bead, bead);
+
+  stroke(0);
+  strokeWeight(1);
+  fill(255, 0, 0);
+  ellipse(targetLocation.x, barracksDepth, bead/2, bead/2);    // dwarves
+
   // name the dwarf tribe
-  
+
   // start counting years from 0 - seasonal events/activities until no dwarves left 
   // or event ends civilization
-   
 }
