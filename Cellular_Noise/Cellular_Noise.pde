@@ -30,17 +30,23 @@ void draw(){
       float minDistance = width;
 
       for (int i = 0; i < pointCount; i++){
-        minDistance = min(minDistance, PVector.dist(points[i], new PVector(x,y))); 
+        minDistance = min(minDistance, PVector.dist(points[i], new PVector(x,y)));
       }
-      
+
       // distance field
-      color c = color(map(minDistance,0,width,0,255));     
+      color c = color(map(minDistance, 0, width, 0, 255));     
       
-      // isolines - not getting same result as sample
+      // isolines
+      // sample shader uses normalized color & coordinates values, need to keep that in mind
       float threshold = 0.7;
-      float value = abs(sin(50.0 * minDistance));
-      float result = map(step(threshold, value) * 0.3, 0, 0.3, 0, 255);
-      c -= result;
+      float value = abs(sin(50.0 * minDistance / width));
+      float result = step(threshold, value) * 0.3 * 255;
+
+      // c -= result;    // works, but shifts into blue values
+      float red = red(c) - result;
+      float green = green(c) - result;
+      float blue = blue(c) - result;
+      c = color(red, green, blue);
       
       int index = x + (y * width); 
       pixels[index] = c;
