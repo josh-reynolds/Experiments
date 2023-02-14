@@ -33,7 +33,8 @@
 
 // =============================================
 // TO_DO
-//  don't like locations spawning too close to edge - bring them in a bit
+//  [FIXED] BUG - sky not overdrawing locations that go above ground level
+//  [FIXED] don't like locations spawning too close to edge - bring them in a bit
 //
 // =============================================
 float groundLevel = 200;
@@ -41,6 +42,7 @@ float thumb = 50;
 float bead = 30;
 float finger = 300;
 float halfFinger = finger/2;
+float margin = thumb;
 
 float layerSize;
 
@@ -91,7 +93,7 @@ float strataToYCoordinate(int _i) {
 }
 
 PVector pickLocation() {
-  return new PVector(random(width), random(groundLevel, height));
+  return new PVector(random(margin, width - margin), random(groundLevel + margin, height - margin));
 }
 
 void civilization() {
