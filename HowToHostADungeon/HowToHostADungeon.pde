@@ -80,9 +80,8 @@ void setup() {
   // draw the sky
   fill(61, 174, 197);
   noStroke();
+  rectMode(CORNER);
   rect(0, 0, width, groundLevel);
-
-  // BUG: sky sometimes isn't drawing over locations - investigate
 
   printArray(locations);
 }
