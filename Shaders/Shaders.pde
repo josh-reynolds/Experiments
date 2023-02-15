@@ -8,9 +8,11 @@
 //  two.frag    System clock time       https://thebookofshaders.com/03/
 //  three.frag  Pixel/Mouse coordinates https://thebookofshaders.com/03/
 //  four.frag   Shaping functions       https://thebookofshaders.com/05/
+//  five.frag   Color mixing            https://thebookofshaders.com/06/
+//  six.frag    Color gradients         https://thebookofshaders.com/06/
 // ---------------------------------------------------------------------
 
-String shaderFile = "four.frag";
+String shaderFile = "six.frag";
 PShader shader;
 
 void setup(){
