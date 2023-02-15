@@ -3,10 +3,14 @@
 
 // skeleton for working with shaders in Processing is here:
 //   https://thebookofshaders.com/04/
-// ------------------------------------------------
+// ---------------------------------------------------------------------
+//  one.frag    Hello World             https://thebookofshaders.com/02/
+//  two.frag    System clock time       https://thebookofshaders.com/03/
+//  three.frag  Pixel/Mouse coordinates https://thebookofshaders.com/03/
+//  four.frag   Shaping functions       https://thebookofshaders.com/05/
+// ---------------------------------------------------------------------
 
-// check data folder in this sketch for more shaders
-String shaderFile = "three.frag";
+String shaderFile = "four.frag";
 PShader shader;
 
 void setup(){
