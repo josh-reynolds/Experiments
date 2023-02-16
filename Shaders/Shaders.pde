@@ -11,9 +11,10 @@
 //  five.frag   Color mixing            https://thebookofshaders.com/06/
 //  six.frag    Color gradients         https://thebookofshaders.com/06/
 //  seven.frag  HSB                     https://thebookofshaders.com/06/
+//  eight.frag  HSB polar coordinates   https://thebookofshaders.com/06/
 // ---------------------------------------------------------------------
 
-String shaderFile = "seven.frag";
+String shaderFile = "eight.frag";
 PShader shader;
 
 void setup(){
