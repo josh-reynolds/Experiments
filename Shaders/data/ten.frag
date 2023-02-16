@@ -17,6 +17,13 @@ float rectangle(float _l, float _r, float _t, float _b, vec2 st){
   return left * right * top * bottom;
 }
 
+float outline(float _l, float _r, float _t, float _b, float _w, vec2 st){
+  float rect = rectangle(_l, _r, _t, _b, st);
+  float interior = abs(1.0 - rectangle(_l + _w, _r + _w, _t + _w, _b + _w, st));
+
+  return rect * interior;
+}
+
 void main() {
   vec2 st = gl_FragCoord.xy / u_resolution.xy;
   vec3 color = vec3(0.0);
@@ -25,7 +32,10 @@ void main() {
   //color = vec3(rectangle(0.4, 0.2, 0.3, 0.05, st));
 
   // inverted rectangle
-  color = vec3(abs(1.0 - rectangle(0.4, 0.2, 0.3, 0.05, st)));
+  //color = vec3(abs(1.0 - rectangle(0.4, 0.2, 0.3, 0.01, st)));
+
+  // outlined rectangle
+  color = vec3(outline(0.1, 0.1, 0.1, 0.1, 0.01, st));
 
   // coloring the rectangle
   color *= vec3(0.0, 0.0, 1.0);
