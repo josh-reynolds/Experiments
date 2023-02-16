@@ -22,7 +22,13 @@ void main() {
   vec3 color = vec3(0.0);
 
   //color = vec3(rectangle(0.1, 0.1, 0.1, 0.1, st));
-  color = vec3(rectangle(0.4, 0.2, 0.3, 0.05, st));
+  //color = vec3(rectangle(0.4, 0.2, 0.3, 0.05, st));
+
+  // inverted rectangle
+  color = vec3(abs(1.0 - rectangle(0.4, 0.2, 0.3, 0.05, st)));
+
+  // coloring the rectangle
+  color *= vec3(0.0, 0.0, 1.0);
 
   gl_FragColor = vec4(color, 1.0);
 }
