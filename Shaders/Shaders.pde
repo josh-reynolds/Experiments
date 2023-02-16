@@ -12,10 +12,11 @@
 //  six.frag    Color gradients         https://thebookofshaders.com/06/
 //  seven.frag  HSB                     https://thebookofshaders.com/06/
 //  eight.frag  HSB polar coordinates   https://thebookofshaders.com/06/
-//  nine.frag   Shapes                  https://thebookofshaders.com/07/
+//  nine.frag   Basic shapes            https://thebookofshaders.com/07/
+//  ten.frag    Rectangle function      https://thebookofshaders.com/07/
 // ---------------------------------------------------------------------
 
-String shaderFile = "nine.frag";
+String shaderFile = "ten.frag";
 PShader shader;
 
 void setup(){
