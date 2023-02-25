@@ -10,13 +10,14 @@
 //  four.frag   Shaping functions       https://thebookofshaders.com/05/
 //  five.frag   Color mixing            https://thebookofshaders.com/06/
 //  six.frag    Color gradients         https://thebookofshaders.com/06/
-//  seven.frag  HSB                     https://thebookofshaders.com/06/
+//  seven.frag s HSB                     https://thebookofshaders.com/06/
 //  eight.frag  HSB polar coordinates   https://thebookofshaders.com/06/
 //  nine.frag   Basic shapes            https://thebookofshaders.com/07/
 //  ten.frag    Rectangle function      https://thebookofshaders.com/07/
+//  eleven.frag Circles                 https://thebookofshaders.com/07/
 // ---------------------------------------------------------------------
 
-String shaderFile = "ten.frag";
+String shaderFile = "eleven.frag";
 PShader shader;
 
 void setup(){
