@@ -1,4 +1,4 @@
-// Basic shapes
+// Basic shapes - rectangles
 // https://thebookofshaders.com/07/
 
 #ifdef GL_ES
@@ -35,10 +35,16 @@ void main() {
   //color = vec3(abs(1.0 - rectangle(0.4, 0.2, 0.3, 0.01, st)));
 
   // outlined rectangle
-  color = vec3(outline(0.1, 0.1, 0.1, 0.1, 0.01, st));
+  color = vec3(outline(0.1, 0.1, 0.1, 0.1, 0.01, st)) * vec3(1.0, 0.0, 0.0);
+
+  // adding a second outlined rectangle
+  color += vec3(outline(0.2, 0.2, 0.2, 0.2, 0.01, st)) * vec3(0.0, 0.0, 1.0);
+
+  // and a filled rectangle
+  color += vec3(rectangle(0.3, 0.3, 0.3, 0.3, st)) * vec3(0.0, 1.0, 0.0);
 
   // coloring the rectangle
-  color *= vec3(0.0, 0.0, 1.0);
+  //color *= vec3(0.0, 0.0, 1.0);
 
   gl_FragColor = vec4(color, 1.0);
 }
