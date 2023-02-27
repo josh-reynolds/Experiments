@@ -20,14 +20,6 @@ float circle(vec2 center, float radius, vec2 px){
   return step(radius, pct);
 }
 
-// alternate implementation using dot product
-float circle2(in vec2 _st, in float _radius){
-  vec2 dist = _st - vec2(0.5);
-  return 1.0 - smoothstep(_radius - (_radius * 0.01),
-                          _radius + (_radius * 0.01),
-                          dot(dist, dist) * 4.0);
-}
-
 void main() {
   vec2 st = gl_FragCoord.xy / u_resolution.xy;
   //float pct = 0.0;
@@ -56,10 +48,7 @@ void main() {
   // black circle via function call
   //vec3 color = vec3(circle(center, radius, st));
   // white circle via function call
-  //vec3 color = vec3(abs(1.0 - circle(center, radius, st)));
-
-  // using dot product function
-  vec3 color = vec3(circle2(st, 0.9));
+  vec3 color = vec3(abs(1.0 - circle(center, radius, st)));
 
   // tint all pixels blue
   vec3 blue = vec3(0.0, 0.0, 1.0);
