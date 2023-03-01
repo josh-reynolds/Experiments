@@ -18,9 +18,10 @@
 //  twelve.frag   Distance field          https://thebookofshaders.com/07/
 //  thirteen.frag Polar shapes            https://thebookofshaders.com/07/
 //  fourteen.frag Drawing polygons        https://thebookofshaders.com/07/
+//  fifteen.frag  Translation             https://thebookofshaders.com/08/
 // -----------------------------------------------------------------------
 
-String shaderFile = "fourteen.frag";
+String shaderFile = "fifteen.frag";
 PShader shader;
 
 void setup(){
