@@ -1,4 +1,4 @@
-// 2D matrices - rotation
+// 2D matrices - YUV colors
 // https://thebookofshaders.com/08/
 
 #ifdef GL_ES
