@@ -25,9 +25,10 @@
 //  nineteen.frag   Simple tiles            https://thebookofshaders.com/09/
 //  twenty.frag     Tiles with matrices     https://thebookofshaders.com/09/
 //  twenty_one.frag Offset brick tiles      https://thebookofshaders.com/09/
+//  twenty_two.frag Truchet tiles           https://thebookofshaders.com/09/
 // -----------------------------------------------------------------------
 
-String shaderFile = "twenty_one.frag";
+String shaderFile = "twenty_two.frag";
 PShader shader;
 
 void setup(){
