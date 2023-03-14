@@ -5,4 +5,8 @@ class Coordinate {
     column = _column;
     row = _row;
   }
+  
+  String toString(){
+    return nf(column, 2) + nf(row, 2);
+  }
 }
