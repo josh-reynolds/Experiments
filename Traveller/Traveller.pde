@@ -36,8 +36,8 @@ void setup(){
  
   subsector = new ArrayList<System>();
   
-  for (int i = 1; i <= vertCount; i++){
-    for (int j = 1; j <= horzCount; j++){      
+  for (int j = 1; j <= horzCount; j++){
+    for (int i = 1; i <= vertCount; i++){      
       Coordinate coord = new Coordinate(j, i);
       subsector.add(new System(coord));
     }
