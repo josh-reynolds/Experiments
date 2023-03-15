@@ -4,6 +4,7 @@ class System {
   Boolean occupied = false;
   UWP uwp;
   Boolean navalBase = false;
+  Boolean scoutBase = false;
   Boolean gasGiant = false;
   
   System(Coordinate _coord){
@@ -14,8 +15,19 @@ class System {
       occupied = true;
       uwp = new UWP();
       navalBase = generateNavalBase();
+      scoutBase = generateScoutBase();
       if (twoDice() <= 9){ gasGiant = true; }
     }
+  }
+  
+  Boolean generateScoutBase(){
+    int modifier = 0;
+    if (uwp.starport == 'A'){ modifier = -3; }
+    if (uwp.starport == 'B'){ modifier = -2; }
+    if (uwp.starport == 'C'){ modifier = -1; }
+    if (uwp.starport == 'E' || uwp.starport == 'X'){ return false; }
+    if (twoDice() + modifier >= 7){ return true; }
+    return false;
   }
   
   Boolean generateNavalBase(){
@@ -58,9 +70,12 @@ class System {
     String nb = " ";
     if (navalBase){ nb = "N"; }
     
-    String gg = "";
+    String sb = " ";
+    if (scoutBase){ sb = "S"; }
+    
+    String gg = " ";
     if (gasGiant){ gg = "G"; }
     
-    return coord.toString() + " : " + uwp.toString() + " " + nb + "   " + gg;
+    return coord.toString() + " : " + uwp.toString() + " " + nb + sb + "   " + gg;
   }
 }
