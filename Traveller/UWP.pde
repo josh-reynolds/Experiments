@@ -74,14 +74,6 @@ class UWP {
     }
   }
   
-  int oneDie(){
-    return floor(random(0,6)) + 1;
-  }
-  
-  int twoDice(){
-    return oneDie() + oneDie();
-  }
-  
   // Traveller uses hexadecimal to get single-digit utility,
   // but occasionally allows values to go above 15 (F)
   // so there is an 'extended hex' scheme, excluding 'I' + 'O' to 

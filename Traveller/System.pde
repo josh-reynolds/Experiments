@@ -3,6 +3,7 @@ class System {
   Coordinate coord;
   Boolean occupied = false;
   UWP uwp;
+  Boolean gasGiant = false;
   
   System(Coordinate _coord){
     coord = _coord;
@@ -11,6 +12,7 @@ class System {
     if (random(1) > 0.5){ 
       occupied = true;
       uwp = new UWP();
+      if (twoDice() <= 9){ gasGiant = true; }
     }
   }
   
@@ -18,7 +20,7 @@ class System {
     hex.show();
 
     fill(255);
-    textSize(10);
+    textSize(9);
     textAlign(CENTER, TOP);
     text(coord.toString(), hex.x, hex.y + hexRadius/2);
     
@@ -39,6 +41,9 @@ class System {
   }
   
   String toString(){
-    return coord.toString() + " : " + uwp.toString();
+    String gg = "";
+    if (gasGiant){ gg = "G"; }
+    
+    return coord.toString() + " : " + uwp.toString() + " " + gg;
   }
 }

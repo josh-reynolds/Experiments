@@ -68,3 +68,11 @@ float getY(int _yCoord, int _xCoord){
   
   return startY + (yOffset * (_yCoord - 1) * 2) + columnAdjust;
 }
+
+int oneDie(){
+  return floor(random(0,6)) + 1;
+}
+
+int twoDice(){
+  return oneDie() + oneDie();
+}
