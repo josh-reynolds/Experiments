@@ -59,11 +59,36 @@ class System {
       textAlign(CENTER, CENTER);
       text(uwp.starport, hex.x, hex.y - hexRadius/2);
       
+      if (navalBase){
+        fill(255);
+        drawStar(hex.x - 5 * hexRadius/12, hex.y - 5 * hexRadius/12, hexRadius/7);
+      }
+      
       if (gasGiant){
         fill(255);
         ellipse(hex.x + hexRadius/3, hex.y - hexRadius/3, hexRadius/6, hexRadius/6);
       }
     }
+  }
+  
+  void drawStar(float _x, float _y, float _radius){
+    pushMatrix();
+      translate(_x, _y);
+      rotate(-PI/2);
+    
+      float vX, vY, angle;
+      int sides = 5;
+      
+      beginShape();
+      for (int i = 0; i < sides * 2; i += 2){
+        angle = TWO_PI / sides * i;
+        vX = _radius * cos(angle);
+        vY = _radius * sin(angle);
+        
+        vertex(vX,vY);
+      }
+      endShape(CLOSE);
+    popMatrix();
   }
   
   String toString(){
