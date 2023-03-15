@@ -5,18 +5,24 @@ class UWP {
   
   UWP(){
     starport = generateStarport();
+    
     size     = twoDice() - 2;
 
     atmo     = twoDice() - 7 + size;
-    if (size == 0){ atmo = 0; }
+    if (size == 0 || atmo < 0){ atmo = 0; }
     
     hydro    = twoDice() - 7 + size;
     if (atmo <= 1 || atmo >= 10){ hydro -= 4; }
     if (size == 0 || hydro < 0){ hydro = 0; }
     
     pop      = twoDice() - 2;
+    
     gov      = twoDice() - 7 + pop;
+    if (gov < 0){ gov = 0; }
+    
     law      = twoDice() - 7 + gov;
+    if (law < 0){ law = 0; } 
+    
     tech     = generateTech(); 
   }
   
