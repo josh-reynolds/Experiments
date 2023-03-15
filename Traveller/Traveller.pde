@@ -45,6 +45,9 @@ void setup(){
   
   for (System s : subsector){
     s.show();
+    if (s.occupied){
+      println(s);
+    }
   }
 }
 
