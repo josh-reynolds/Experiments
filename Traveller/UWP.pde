@@ -14,6 +14,7 @@ class UWP {
     hydro    = twoDice() - 7 + size;
     if (atmo <= 1 || atmo >= 10){ hydro -= 4; }
     if (size == 0 || hydro < 0){ hydro = 0; }
+    if (hydro > 10) { hydro = 10; }
     
     pop      = twoDice() - 2;
     
