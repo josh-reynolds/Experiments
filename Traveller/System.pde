@@ -6,6 +6,7 @@ class System {
   Boolean navalBase = false;
   Boolean scoutBase = false;
   Boolean gasGiant = false;
+  TradeClass trade;
   
   System(Coordinate _coord){
     coord = _coord;
@@ -17,6 +18,7 @@ class System {
       navalBase = generateNavalBase();
       scoutBase = generateScoutBase();
       if (twoDice() <= 9){ gasGiant = true; }
+      trade = new TradeClass(uwp);
     }
   }
   
@@ -126,6 +128,6 @@ class System {
     String gg = " ";
     if (gasGiant){ gg = "G"; }
     
-    return coord.toString() + " : " + uwp.toString() + " " + nb + sb + "   " + gg;
+    return coord.toString() + " : " + uwp.toString() + " " + nb + sb + gg + " " + trade.toString();
   }
 }
