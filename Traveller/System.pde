@@ -64,6 +64,11 @@ class System {
         drawStar(hex.x - 5 * hexRadius/12, hex.y - 5 * hexRadius/12, hexRadius/7);
       }
       
+      if (scoutBase){
+        fill(255);
+        drawTriangle(hex.x - 5 * hexRadius/12, hex.y + hexRadius/3, hexRadius/7);
+      }
+      
       if (gasGiant){
         fill(255);
         ellipse(hex.x + hexRadius/3, hex.y - hexRadius/3, hexRadius/6, hexRadius/6);
@@ -81,6 +86,26 @@ class System {
       
       beginShape();
       for (int i = 0; i < sides * 2; i += 2){
+        angle = TWO_PI / sides * i;
+        vX = _radius * cos(angle);
+        vY = _radius * sin(angle);
+        
+        vertex(vX,vY);
+      }
+      endShape(CLOSE);
+    popMatrix();
+  }
+  
+  void drawTriangle(float _x, float _y, float _radius){
+    pushMatrix();
+      translate(_x, _y);
+      rotate(-PI/2);
+    
+      float vX, vY, angle;
+      int sides = 3;
+      
+      beginShape();
+      for (int i = 0; i < sides; i++){
         angle = TWO_PI / sides * i;
         vX = _radius * cos(angle);
         vY = _radius * sin(angle);
