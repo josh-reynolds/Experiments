@@ -13,7 +13,7 @@ class Hex {
   void show(){
     pushMatrix();
       translate(x,y);
-      stroke(255);
+      stroke(125);
       fill(c);
     
       float vX, vY, angle;

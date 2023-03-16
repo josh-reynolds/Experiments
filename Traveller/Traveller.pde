@@ -6,7 +6,7 @@
 //  *      Travel zones (not present in 1e)
 //  *      Jump routes (only present in 1e)
 //  *      Saving subsector for print
-//  *      Single-page view
+//  * DONE Single-page view
 //  *      Print-friendly color scheme / alternate schemes
 //  *      Saving/loading subsectors / data format
 //  *      'Character' location and movement / ships (and UI elements)
@@ -48,7 +48,9 @@ String wordFile = "words.txt";
 String lines[];
 
 void setup(){
-  size(464, 646);  // calculated per metrics above, adjust if hexRadius changes
+  // calculated per metrics above, adjust if hexRadius changes
+  // panel width = 464, panel height = 646
+  size(928, 646);  
   background(255);
  
   subsector = new ArrayList<System>();
@@ -61,10 +63,21 @@ void setup(){
     }
   }
   
+  int textPanelLeft = width/2 + border;
+  int textLine = border;
+  PFont font = loadFont("Consolas-12.vlw");
+  
   for (System s : subsector){
     s.show();
+    
     if (s.occupied){
       println(s);
+
+      textAlign(LEFT, TOP);
+      fill(0);
+      textFont(font, 12);    
+      text(s.toString(), textPanelLeft, textLine);    
+      textLine += 14;
     }
   }
 }
