@@ -1,8 +1,21 @@
 // Traveller subsector generator
 //  to start with, we'll implement the version from Book 3 (Classic Traveller)
-
-
-
+// ------------------------------------------------
+// TO DO:
+//  * DONE World names
+//  *      Travel zones (not present in 1e)
+//  *      Jump routes (only present in 1e)
+//  *      Saving subsector for print
+//  *      Single-page view
+//  *      Print-friendly color scheme / alternate schemes
+//  *      Saving/loading subsectors / data format
+//  *      'Character' location and movement / ships (and UI elements)
+//  *      Trade system
+//  *      Sectors and multi-subsector layouts / 'infinite' space
+//  *      Moving beyond 1e...
+// ------------------------------------------------
+// Hex geometry and layout
+// 
 // hex x,y is center
 // hexRadius is distance from center to each vertex
 //   it is also the length of each side
@@ -18,7 +31,8 @@
 
 //println((2 * border) + (2 * hexRadius) + ((horzCount - 1) * hexRadius * 1.5));
 //println((2 * border) + (((2 * vertCount) + 1) * yOffset));
- 
+// ------------------------------------------------
+
 int hexRadius = 32;
 int border = hexRadius;
 
@@ -30,11 +44,15 @@ ArrayList<System> subsector;
 int vertCount = 10;
 int horzCount = 8;
 
+String wordFile = "words.txt";
+String lines[];
+
 void setup(){
   size(464, 646);  // calculated per metrics above, adjust if hexRadius changes
   background(255);
  
   subsector = new ArrayList<System>();
+  lines = loadStrings(wordFile);
   
   for (int j = 1; j <= horzCount; j++){
     for (int i = 1; i <= vertCount; i++){      

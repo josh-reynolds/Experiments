@@ -7,6 +7,7 @@ class System {
   Boolean scoutBase = false;
   Boolean gasGiant = false;
   TradeClass trade;
+  String name = "";
   
   System(Coordinate _coord){
     coord = _coord;
@@ -19,6 +20,7 @@ class System {
       scoutBase = generateScoutBase();
       if (twoDice() <= 9){ gasGiant = true; }
       trade = new TradeClass(uwp);
+      name = lines[floor(random(lines.length))];
     }
   }
   
@@ -42,7 +44,7 @@ class System {
   void show(){
     hex.show();
 
-    fill(255);
+    fill(125);
     textSize(9);
     textAlign(CENTER, TOP);
     text(coord.toString(), hex.x, hex.y + hexRadius/2);
@@ -74,6 +76,15 @@ class System {
       if (gasGiant){
         fill(255);
         ellipse(hex.x + hexRadius/3, hex.y - hexRadius/3, hexRadius/6, hexRadius/6);
+      }
+      
+      fill(255);
+      textSize(11);
+      textAlign(CENTER, CENTER);
+      if (uwp.pop >= 9){
+        text(name.toUpperCase(), hex.x, hex.y + hexRadius/2);
+      } else {
+        text(name, hex.x, hex.y + hexRadius/2);
       }
     }
   }
@@ -128,6 +139,13 @@ class System {
     String gg = " ";
     if (gasGiant){ gg = "G"; }
     
-    return coord.toString() + " : " + uwp.toString() + " " + nb + sb + gg + " " + trade.toString();
+    String outputName = name;
+    if (name.length() >= 15){ outputName = name.substring(0,15); }
+    int paddingLength = (16 - outputName.length());
+    for (int i = 1; i <= paddingLength; i++){
+      outputName += " ";
+    }
+       
+    return outputName + coord.toString() + " : " + uwp.toString() + " " + nb + sb + gg + " " + trade.toString();
   }
 }
