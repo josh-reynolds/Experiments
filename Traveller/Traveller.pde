@@ -62,6 +62,9 @@ void setup(){
       subsector.add(new System(coord));
     }
   }
+
+  fill(125);
+  rect(0, 0, width/2, height);
   
   int textPanelLeft = width/2 + border;
   int textLine = border;
