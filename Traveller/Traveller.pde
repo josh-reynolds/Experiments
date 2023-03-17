@@ -80,6 +80,10 @@ void setup(){
       textLine += 14;
     }
   }
+  
+  for (System s : subsector){
+    if (s.occupied){ s.showName(); }
+  }
 }
 
 // loop & geometry are 0-based, but coordinates are 1-based

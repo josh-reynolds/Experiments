@@ -77,15 +77,17 @@ class System {
         fill(255);
         ellipse(hex.x + hexRadius/3, hex.y - hexRadius/3, hexRadius/6, hexRadius/6);
       }
-      
-      fill(255);
-      textSize(11);
-      textAlign(CENTER, CENTER);
-      if (uwp.pop >= 9){
-        text(name.toUpperCase(), hex.x, hex.y + hexRadius/2);
-      } else {
-        text(name, hex.x, hex.y + hexRadius/2);
-      }
+    }
+  }
+  
+  void showName(){
+    fill(255, 255, 153);
+    textSize(11);
+    textAlign(CENTER, CENTER);
+    if (uwp.pop >= 9){
+      text(name.toUpperCase(), hex.x, hex.y + hexRadius/2);
+    } else {
+      text(name, hex.x, hex.y + hexRadius/2);
     }
   }
   
