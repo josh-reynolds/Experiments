@@ -5,7 +5,7 @@
 //  * DONE World names
 //  *      Travel zones (not present in 1e)
 //  *      Jump routes (only present in 1e)
-//  *      Saving subsector for print
+//  * DONE Saving subsector for print
 //  * DONE Single-page view
 //  *      Print-friendly color scheme / alternate schemes
 //  *      Saving/loading subsectors / data format
@@ -84,6 +84,11 @@ void setup(){
   for (System s : subsector){
     if (s.occupied){ s.showName(); }
   }
+  
+  // Random name for now to prevent overwriting
+  String subsectorName = "Subsector_" + lines[floor(random(lines.length))];
+  subsectorName += "-###.png";
+  saveFrame(subsectorName);
 }
 
 // loop & geometry are 0-based, but coordinates are 1-based
