@@ -11,7 +11,7 @@ class System {
   
   System(Coordinate _coord){
     coord = _coord;
-    hex = new Hex(getX(coord.column), getY(coord.row, coord.column), hexRadius, color(0));
+    hex = new Hex(getX(coord.column), getY(coord.row, coord.column), hexRadius);
     
     if (random(1) > 0.5){ 
       occupied = true;
@@ -22,7 +22,7 @@ class System {
       trade = new TradeClass(uwp);
       name = lines[floor(random(lines.length))];
     }
-  }
+  } 
   
   Boolean generateScoutBase(){
     int modifier = 0;
@@ -44,7 +44,7 @@ class System {
   void show(){
     hex.show();
 
-    fill(125);
+    fill(scheme.cellOutline);
     textSize(9);
     textAlign(CENTER, TOP);
     text(coord.toString(), hex.x, hex.y + hexRadius/2);
@@ -53,35 +53,35 @@ class System {
       if (uwp.hydro == 0){ 
         noFill();
       } else {
-        fill(0, 125, 255);
+        fill(scheme.waterPresent);
       }
-      stroke(255);
+      stroke(scheme.hexElements);
       ellipse(hex.x, hex.y, 5 * hexRadius/12, 5 * hexRadius/12);
       
-      fill(255);
+      fill(scheme.hexElements);
       textSize(12);
       textAlign(CENTER, CENTER);
       text(uwp.starport, hex.x, hex.y - hexRadius/2);
       
       if (navalBase){
-        fill(255);
+        fill(scheme.hexElements);
         drawStar(hex.x - 5 * hexRadius/12, hex.y - 5 * hexRadius/12, hexRadius/7);
       }
       
       if (scoutBase){
-        fill(255);
+        fill(scheme.hexElements);
         drawTriangle(hex.x - 5 * hexRadius/12, hex.y + hexRadius/3, hexRadius/7);
       }
       
       if (gasGiant){
-        fill(255);
+        fill(scheme.hexElements);
         ellipse(hex.x + hexRadius/3, hex.y - hexRadius/3, hexRadius/6, hexRadius/6);
       }
     }
   }
   
   void showName(){
-    fill(255, 255, 153);
+    fill(scheme.worldName);
     textSize(11);
     textAlign(CENTER, CENTER);
     if (uwp.pop >= 9){

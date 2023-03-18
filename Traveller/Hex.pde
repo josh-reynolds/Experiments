@@ -1,20 +1,18 @@
 class Hex {
   float x, y;
   float radius;
-  color c;
   
-  Hex(float _x, float _y, float _radius, color _c){
+  Hex(float _x, float _y, float _radius){
     x = _x;
     y = _y;
     radius = _radius;
-    c = _c;
   }
 
   void show(){
     pushMatrix();
       translate(x,y);
-      stroke(125);
-      fill(c);
+      stroke(scheme.cellOutline);
+      fill(scheme.cellBackground);
     
       float vX, vY, angle;
       int sides = 6;

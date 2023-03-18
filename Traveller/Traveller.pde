@@ -7,12 +7,18 @@
 //  *      Jump routes (only present in 1e)
 //  * DONE Saving subsector for print
 //  * DONE Single-page view
-//  *      Print-friendly color scheme / alternate schemes
+//  * DONE Print-friendly color scheme / alternate schemes
+//  *      Better (i.e. any) UI/mechanic for changing color schemes
 //  *      Saving/loading subsectors / data format
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space
 //  *      Moving beyond 1e...
+//  *      BUG: panel can't show more than 44 systems, truncating subsector listing
+//  *      REFACTOR: consolidate polygon-drawing routines
+//  *      REFACTOR: move presentation details out of main script
+//  *      Display subsector name on page
+//  *      REFACTOR: move utility functions out of main script
 // ------------------------------------------------
 // Hex geometry and layout
 // 
@@ -47,14 +53,25 @@ int horzCount = 8;
 String wordFile = "words.txt";
 String lines[];
 
+ColorScheme scheme;
+
 void setup(){
   // calculated per metrics above, adjust if hexRadius changes
   // panel width = 464, panel height = 646
   size(928, 646);  
-  background(255);
- 
+
   subsector = new ArrayList<System>();
   lines = loadStrings(wordFile);
+  
+  scheme = new ColorScheme(color(0),             // Hex background
+                           color(125),           // Hex outline
+                           color(255, 255, 153), // World name display
+                           color(0, 125, 255),   // Water presence
+                           color(255),           // Hex elements
+                           color(0),             // System listing
+                           color(255));          // Page background
+
+  background(scheme.pageBackground);
   
   for (int j = 1; j <= horzCount; j++){
     for (int i = 1; i <= vertCount; i++){      
@@ -63,7 +80,7 @@ void setup(){
     }
   }
 
-  fill(125);
+  fill(scheme.cellOutline);
   rect(0, 0, width/2, height);
   
   int textPanelLeft = width/2 + border;
@@ -77,7 +94,7 @@ void setup(){
       println(s);
 
       textAlign(LEFT, TOP);
-      fill(0);
+      fill(scheme.systemList);
       textFont(font, 12);    
       text(s.toString(), textPanelLeft, textLine);    
       textLine += 14;
