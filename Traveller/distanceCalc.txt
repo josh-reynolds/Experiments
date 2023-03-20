@@ -1,0 +1,54 @@
+3/20/23
+
+Suprising difficulty calculating distance between two hexes (in
+hex count). The following discussion offers several solutions,
+but after testing, none of them work correctly in all cases. They're
+~mostly~ right.
+
+https://stackoverflow.com/questions/14491444/calculating-distance-on-a-hexagon-grid
+
+To test with the Traveller project, I:
+
+* commented out all hex content display code (but left hexes themselves)
+* commented out saving of page image
+* added a 'distanceToO' method in the System class
+* called that from setup and displayed the result in each hex
+
+In addition to the solutions from the thread, I tried calculating
+via pixel distances, then dividing to get back to hexes. Again, ~mostly~
+correct but not in all cases.
+
+Three approaches left:
+
+* It's possible my implementation from the thread has rounding errors
+  that account for the off hexes. There's a lot of float/int conversion
+  going on here. Could try debugging.
+* Implement Djikstra's algorithm and let it walk the grid.
+* Add a three-coordinate system, which makes it very easy to calculate
+  distances.
+
+I may want Djikstra at some point, or at least the underpinning cell
+neighbor graph. But I'm going to try out the 3-coord first.
+
+3-coord has some interesting properties:
+
+* the sum of a hex's three coordinates is zero
+* distance to the origin is max(|x|,|y|,|z|)
+* calculating between arbitrary hexes involves a translation to
+  the origin and a simple coordinate test
+
+The trick is converting Traveller row/column coordinates over. The 
+following looks right, at least for the area covered by the subsector
+(lower-right quadrant which is actually upper-right Cartesian - 
+positive x/y values). Would be interesting to generalize this for 
+the entire Cartesian plane, or prove that it works as is, but for 
+now get this tested and working.
+
+* x = column -1
+* z = (row - 1) - floor((column - 1)/2)
+* y + z = -x  :  y = -x - z
+
+Yes, looks right. Some fit and finish, and we can check this in.
+
+Seems like this should be the responsibility of the Coordinate class,
+so we'll put it there.

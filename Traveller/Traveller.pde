@@ -19,6 +19,7 @@
 //  *      REFACTOR: move presentation details out of main script
 //  *      Display subsector name on page
 //  *      REFACTOR: move utility functions out of main script
+//  * DONE Calculate distance between two hexes
 // ------------------------------------------------
 // Hex geometry and layout
 // 
@@ -104,11 +105,22 @@ void setup(){
   for (System s : subsector){
     if (s.occupied){ s.showName(); }
   }
+
+  // displaying distance calculation for test purposes
+  // helps to suppress other cell contents to make this more visible...
+  //System target = subsector.get(floor(random(subsector.size())));
+  //for (System s : subsector){
+  //  textSize(20);
+  //  fill(scheme.worldName);
+  //  textAlign(CENTER, CENTER);
+  //  text(s.distanceToSystem(target), s.hex.x, s.hex.y);
+  //}
   
   // Random name for now to prevent overwriting
   String subsectorName = "Subsector_" + lines[floor(random(lines.length))];
   subsectorName += "-###.png";
   saveFrame(subsectorName);
+  println("Saved " + subsectorName);
 }
 
 // loop & geometry are 0-based, but coordinates are 1-based

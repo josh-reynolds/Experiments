@@ -23,6 +23,10 @@ class System {
       name = lines[floor(random(lines.length))];
     }
   } 
+    
+  int distanceToSystem(System _s){    
+    return coord.distanceTo(_s.coord);
+  }
   
   Boolean generateScoutBase(){
     int modifier = 0;
