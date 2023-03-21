@@ -51,6 +51,8 @@ ArrayList<System> subsector;
 int vertCount = 10;
 int horzCount = 8;
 
+ArrayList<Route> routes;
+
 String wordFile = "words.txt";
 String lines[];
 
@@ -62,6 +64,7 @@ void setup(){
   size(928, 646);  
 
   subsector = new ArrayList<System>();
+  routes = new ArrayList<Route>();
   lines = loadStrings(wordFile);
   
   scheme = new ColorScheme(color(0),             // Hex background
@@ -100,6 +103,13 @@ void setup(){
       text(s.toString(), textPanelLeft, textLine);    
       textLine += 14;
     }
+  }
+  
+  routes.add(new Route(subsector.get(floor(random(subsector.size()))),
+                       subsector.get(floor(random(subsector.size())))));
+  
+  for (Route r : routes){
+    r.show();
   }
   
   for (System s : subsector){
