@@ -45,15 +45,10 @@ class System {
     return false;
   }
   
-  void show(){
-    hex.show();
-
-    fill(scheme.cellOutline);
-    textSize(9);
-    textAlign(CENTER, TOP);
-    text(coord.toString(), hex.x, hex.y + hexRadius/2);
-    
+  void showForeground(){
     if (occupied){
+      strokeWeight(1);
+      
       if (uwp.hydro == 0){ 
         noFill();
       } else {
@@ -82,6 +77,15 @@ class System {
         ellipse(hex.x + hexRadius/3, hex.y - hexRadius/3, hexRadius/6, hexRadius/6);
       }
     }
+  }
+  
+  void showBackground(){
+    hex.show();
+    
+    fill(scheme.cellOutline);
+    textSize(9);
+    textAlign(CENTER, TOP);
+    text(coord.toString(), hex.x, hex.y + hexRadius/2);
   }
   
   void showName(){

@@ -3,23 +3,24 @@
 // ------------------------------------------------
 // TO DO:
 //  * DONE World names
-//  *      Travel zones (not present in 1e)
-//  *      Jump routes (only present in 1e)
 //  * DONE Saving subsector for print
 //  * DONE Single-page view
 //  * DONE Print-friendly color scheme / alternate schemes
+//  * DONE Calculate distance between two hexes
+//  *      Jump routes (only present in 1e)
+//  *      Proper layering of hex display
+//  *      Display subsector name on page
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
 //  *      Saving/loading subsectors / data format
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space
 //  *      Moving beyond 1e...
+//  *      Travel zones (not present in 1e)
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
-//  *      Display subsector name on page
 //  *      REFACTOR: move utility functions out of main script
-//  * DONE Calculate distance between two hexes
 // ------------------------------------------------
 // Hex geometry and layout
 // 
@@ -93,7 +94,18 @@ void setup(){
   PFont font = loadFont("Consolas-12.vlw");
   
   for (System s : subsector){
-    s.show();
+    s.showBackground();
+  }
+
+  routes.add(new Route(subsector.get(floor(random(subsector.size()))),
+                       subsector.get(floor(random(subsector.size())))));
+  
+  for (Route r : routes){
+    r.show();
+  }
+  
+  for (System s : subsector){
+    s.showForeground();
     
     if (s.occupied){
       println(s);
@@ -104,13 +116,6 @@ void setup(){
       text(s.toString(), textPanelLeft, textLine);    
       textLine += 14;
     }
-  }
-  
-  routes.add(new Route(subsector.get(floor(random(subsector.size()))),
-                       subsector.get(floor(random(subsector.size())))));
-  
-  for (Route r : routes){
-    r.show();
   }
   
   for (System s : subsector){
