@@ -6,8 +6,9 @@ class ColorScheme {
   color hexElements;
   color systemList;
   color pageBackground;
+  color routes;
   
-  ColorScheme(color _cellB, color _cellOut, color _worldN, color _water, color _hexE, color _list, color _pageB){
+  ColorScheme(color _cellB, color _cellOut, color _worldN, color _water, color _hexE, color _list, color _pageB, color _routes){
     cellBackground = _cellB;
     cellOutline    = _cellOut;
     worldName      = _worldN;
@@ -15,6 +16,7 @@ class ColorScheme {
     hexElements    = _hexE;
     systemList     = _list;
     pageBackground = _pageB;
+    routes         = _routes;
   }
   
   // Ah! Gotcha! - due to the way Processing works, we

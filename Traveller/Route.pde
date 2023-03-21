@@ -8,7 +8,7 @@ class Route {
   }
   
   void show(){
-    stroke(200,125);
+    stroke(scheme.routes);
     strokeWeight(6);
     line(s1.hex.x, s1.hex.y, s2.hex.x, s2.hex.y);
   }

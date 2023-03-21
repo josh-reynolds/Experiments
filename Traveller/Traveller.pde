@@ -73,7 +73,8 @@ void setup(){
                            color(0, 125, 255),   // Water presence
                            color(255),           // Hex elements
                            color(0),             // System listing
-                           color(255));          // Page background
+                           color(255),           // Page background
+                           color(200, 125));     // Routes 
 
   background(scheme.pageBackground);
   
