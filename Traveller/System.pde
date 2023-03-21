@@ -50,7 +50,7 @@ class System {
       strokeWeight(1);
       
       if (uwp.hydro == 0){ 
-        noFill();
+        fill(scheme.cellBackground);
       } else {
         fill(scheme.waterPresent);
       }

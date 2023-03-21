@@ -7,7 +7,7 @@
 //  * DONE Single-page view
 //  * DONE Print-friendly color scheme / alternate schemes
 //  * DONE Calculate distance between two hexes
-//  *      Jump routes (only present in 1e)
+//  * DONE Jump routes (only present in 1e)
 //  *      Proper layering of hex display
 //  *      Display subsector name on page
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
@@ -17,6 +17,7 @@
 //  *      Sectors and multi-subsector layouts / 'infinite' space
 //  *      Moving beyond 1e...
 //  *      Travel zones (not present in 1e)
+//  *      Subsector summary paragraph
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
@@ -75,7 +76,7 @@ void setup(){
                            color(255),           // Hex elements
                            color(0),             // System listing
                            color(255),           // Page background
-                           color(200, 125));     // Routes 
+                           color(200, 80));     // Routes 
 
   background(scheme.pageBackground);
   
@@ -97,9 +98,7 @@ void setup(){
     s.showBackground();
   }
 
-  routes.add(new Route(subsector.get(floor(random(subsector.size()))),
-                       subsector.get(floor(random(subsector.size())))));
-  
+  calculateRoutes();
   for (Route r : routes){
     r.show();
   }
@@ -163,4 +162,100 @@ int oneDie(){
 
 int twoDice(){
   return oneDie() + oneDie();
+}
+
+void calculateRoutes(){
+  for (int i = 0; i < subsector.size(); i++){
+    System candidate = subsector.get(i);
+    if (!candidate.occupied || candidate.uwp.starport == 'X'){ continue; }
+    
+    for (int j = i + 1; j < subsector.size(); j++){
+      System target = subsector.get(j);
+      if (!target.occupied || target.uwp.starport == 'X'){ continue; }
+      
+      int dist = candidate.distanceToSystem(target);  
+      if (dist > 4){ continue; }
+      
+      char starportA = candidate.uwp.starport;
+      char starportB = target.uwp.starport;
+      String pair;
+      if (starportA <= starportB){ 
+        pair = str(starportA) + str(starportB); 
+      } else {
+        pair = str(starportB) + str(starportA);
+      }
+
+      int roll = oneDie();
+
+      // transcription of the table on p.2 of Book 3 (1st edition)
+      // probably a clever way to make this shorter, refactoring opportunity
+      // later perhaps
+      if (pair.equals("AA")){
+        if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
+        if (dist == 2 && roll >= 2){ routes.add(new Route(candidate, target)); }
+        if (dist == 3 && roll >= 4){ routes.add(new Route(candidate, target)); }
+        if (dist == 4 && roll >= 5){ routes.add(new Route(candidate, target)); }
+      }
+      if (pair.equals("AB")){
+        if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
+        if (dist == 2 && roll >= 3){ routes.add(new Route(candidate, target)); }
+        if (dist == 3 && roll >= 4){ routes.add(new Route(candidate, target)); }
+        if (dist == 4 && roll >= 5){ routes.add(new Route(candidate, target)); }
+      }
+      if (pair.equals("AC")){
+        if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
+        if (dist == 2 && roll >= 4){ routes.add(new Route(candidate, target)); }
+        if (dist == 3 && roll >= 6){ routes.add(new Route(candidate, target)); }
+      }
+      if (pair.equals("AD")){
+        if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
+        if (dist == 2 && roll >= 5){ routes.add(new Route(candidate, target)); }
+      }
+      if (pair.equals("AE")){
+        if (dist == 1 && roll >= 2){ routes.add(new Route(candidate, target)); }
+      }
+
+      if (pair.equals("BB")){
+        if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
+        if (dist == 2 && roll >= 3){ routes.add(new Route(candidate, target)); }
+        if (dist == 3 && roll >= 4){ routes.add(new Route(candidate, target)); }
+        if (dist == 4 && roll >= 6){ routes.add(new Route(candidate, target)); }
+      }
+      if (pair.equals("BC")){
+        if (dist == 1 && roll >= 2){ routes.add(new Route(candidate, target)); }
+        if (dist == 2 && roll >= 4){ routes.add(new Route(candidate, target)); }
+        if (dist == 3 && roll >= 6){ routes.add(new Route(candidate, target)); }
+      }
+      if (pair.equals("BD")){
+        if (dist == 1 && roll >= 3){ routes.add(new Route(candidate, target)); }
+        if (dist == 2 && roll >= 6){ routes.add(new Route(candidate, target)); }  
+      }
+      if (pair.equals("BE")){
+        if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
+      }
+      
+      if (pair.equals("CC")){
+        if (dist == 1 && roll >= 3){ routes.add(new Route(candidate, target)); }
+        if (dist == 2 && roll >= 6){ routes.add(new Route(candidate, target)); }
+      }
+      if (pair.equals("CD")){
+        if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
+      }
+      if (pair.equals("CE")){
+        if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
+      }
+      
+      if (pair.equals("DD")){
+        if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
+      }
+      if (pair.equals("DE")){
+        if (dist == 1 && roll >= 5){ routes.add(new Route(candidate, target)); }
+      }
+      
+      if (pair.equals("EE")){
+        if (dist == 1 && roll >= 6){ routes.add(new Route(candidate, target)); }
+      }
+
+    }
+  }
 }
