@@ -10,8 +10,8 @@
 //  * DONE Jump routes (only present in 1e)
 //  * DONE List out all routes
 //  * DONE Text file output
+//  * DONE Display subsector name on page
 //  *      Proper layering of hex display
-//  *      Display subsector name on page
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
 //  *      Saving/loading subsectors / data format
 //  *      'Character' location and movement / ships (and UI elements)
@@ -111,6 +111,11 @@ void setup(){
   for (Route r : routes){
     r.show();
   }
+  
+  textAlign(LEFT, TOP);
+  fill(scheme.systemList);
+  textFont(font, 24);
+  text(subsectorName, textPanelLeft, textLine - 24);
   
   for (System s : subsector){
     s.showForeground();
