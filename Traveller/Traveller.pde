@@ -8,6 +8,7 @@
 //  * DONE Print-friendly color scheme / alternate schemes
 //  * DONE Calculate distance between two hexes
 //  * DONE Jump routes (only present in 1e)
+//  * DONE List out all routes
 //  *      Proper layering of hex display
 //  *      Display subsector name on page
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
@@ -119,6 +120,10 @@ void setup(){
   
   for (System s : subsector){
     if (s.occupied){ s.showName(); }
+  }
+
+  for (Route r : routes){
+    println(r);
   }
 
   // displaying distance calculation for test purposes
