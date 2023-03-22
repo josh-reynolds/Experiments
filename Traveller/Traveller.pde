@@ -9,6 +9,7 @@
 //  * DONE Calculate distance between two hexes
 //  * DONE Jump routes (only present in 1e)
 //  * DONE List out all routes
+//  * DONE Text file output
 //  *      Proper layering of hex display
 //  *      Display subsector name on page
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
@@ -61,15 +62,22 @@ String lines[];
 
 ColorScheme scheme;
 
+PrintWriter output;
+
 void setup(){
   // calculated per metrics above, adjust if hexRadius changes
   // panel width = 464, panel height = 646
   size(928, 646);  
 
-  subsector = new ArrayList<System>();
-  routes = new ArrayList<Route>();
   lines = loadStrings(wordFile);
-  
+
+  subsector = new ArrayList<System>();
+  String subsectorName = "Subsector_" + lines[floor(random(lines.length))];
+  String filename = subsectorName + ".txt";
+  output = createWriter(filename);
+
+  routes = new ArrayList<Route>();
+
   scheme = new ColorScheme(color(0),             // Hex background
                            color(125),           // Hex outline
                            color(255, 255, 153), // World name display
@@ -109,7 +117,8 @@ void setup(){
     
     if (s.occupied){
       println(s);
-
+      output.println(s);
+      
       textAlign(LEFT, TOP);
       fill(scheme.systemList);
       textFont(font, 12);    
@@ -122,8 +131,10 @@ void setup(){
     if (s.occupied){ s.showName(); }
   }
 
+  output.println("");
   for (Route r : routes){
     println(r);
+    output.println(r);
   }
 
   // displaying distance calculation for test purposes
@@ -136,11 +147,13 @@ void setup(){
   //  text(s.distanceToSystem(target), s.hex.x, s.hex.y);
   //}
   
-  // Random name for now to prevent overwriting
-  String subsectorName = "Subsector_" + lines[floor(random(lines.length))];
   subsectorName += "-###.png";
   saveFrame(subsectorName);
   println("Saved " + subsectorName);
+  output.println("");
+  output.println("Saved " + subsectorName);
+  output.flush();
+  output.close();
 }
 
 // loop & geometry are 0-based, but coordinates are 1-based
