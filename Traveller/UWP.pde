@@ -114,4 +114,17 @@ class UWP {
                       hex(gov, 1) + hex(law, 1) +
                       "-" + modifiedHexChar(tech);
   }
+  
+  JSONObject asJSON(){
+    JSONObject json = new JSONObject();
+    json.setString("Starport", str(starport));
+    json.setInt("Size", size);
+    json.setInt("Atmosphere", atmo);
+    json.setInt("Hydrographics", hydro);
+    json.setInt("Population", pop);
+    json.setInt("Government", gov);
+    json.setInt("Law Level", law);
+    json.setInt("Tech Level", tech);
+    return json;
+  }
 }

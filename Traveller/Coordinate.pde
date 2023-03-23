@@ -18,4 +18,11 @@ class Coordinate {
   int distanceTo(Coordinate _c){
     return max(abs(x - _c.x), abs(y - _c.y), abs(z - _c.z));
   }
+  
+  JSONObject asJSON(){
+    JSONObject json = new JSONObject();
+    json.setInt("Column", column);
+    json.setInt("Row", row);
+    return json;
+  }
 }

@@ -158,4 +158,15 @@ class System {
        
     return outputName + coord.toString() + " : " + uwp.toString() + " " + nb + sb + gg + " " + trade.toString();
   }
+  
+  JSONObject asJSON(){
+    JSONObject json = new JSONObject();
+    json.setJSONObject("Coordinate", coord.asJSON()); 
+    json.setString("Name", name);
+    json.setBoolean("Naval Base", navalBase);
+    json.setBoolean("Scout Base", scoutBase);
+    json.setBoolean("Gas Giant", gasGiant);
+    json.setJSONObject("UWP", uwp.asJSON());
+    return json;
+  }
 }

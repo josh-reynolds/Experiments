@@ -13,7 +13,7 @@
 //  * DONE Display subsector name on page
 //  *      Proper layering of hex display
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
-//  *      Saving/loading subsectors / data format
+//  * .... Saving/loading subsectors / data format
 //  *      Reference to Routes in Systems
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
@@ -163,7 +163,29 @@ void setup(){
   //output.flush();
   //output.close();
 
-  // experimenting with JSON output for save/load
+  JSONArray json = new JSONArray();
+  for (int i = 0; i < subsector.size(); i++){
+    System s = subsector.get(i);    
+    if (s.occupied){
+      json.setJSONObject(i, s.asJSON());
+    }
+  }  
+  saveJSONArray(json, "test.json");  // need to tie this back to the subsector name
+  
+  // only save occupied systems, and only data objects,
+  // not presentation, processing, display classes -
+  // for System, that's hex + occupied
+  // let's start with just one system
+  
+  // also, we only really need to care about ctor inputs or 
+  // non-deterministic/stochastic fields - TradeClass can be 
+  // perfectly recreated from a given UWP
+  
+  // I expect JSON is going to get pretty verbose when we push out
+  // all 40-50 systems, but it has the advantage of being human
+  // readable and editable
+  
+  // Systems look good - need to get Routes next
 }
 
 // loop & geometry are 0-based, but coordinates are 1-based
@@ -283,7 +305,6 @@ void calculateRoutes(){
       if (pair.equals("EE")){
         if (dist == 1 && roll >= 6){ routes.add(new Route(candidate, target)); }
       }
-
     }
   }
 }
