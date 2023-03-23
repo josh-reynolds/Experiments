@@ -75,9 +75,9 @@ void setup(){
   subsector = new ArrayList<System>();
   String subsectorName = "Subsector_" + lines[floor(random(lines.length))];
   String filename = subsectorName + ".txt";
-  output = createWriter(filename);
-  output.println(subsectorName);
-  output.println("=========================");
+  //output = createWriter(filename);
+  //output.println(subsectorName);
+  //output.println("=========================");
   
   routes = new ArrayList<Route>();
 
@@ -125,7 +125,7 @@ void setup(){
     
     if (s.occupied){
       println(s);
-      output.println(s);
+      //output.println(s);
       
       textAlign(LEFT, TOP);
       fill(scheme.systemList);
@@ -139,10 +139,10 @@ void setup(){
     if (s.occupied){ s.showName(); }
   }
 
-  output.println("=========================");
+  //output.println("=========================");
   for (Route r : routes){
     println(r);
-    output.println(r);
+    //output.println(r);
   }
 
   // displaying distance calculation for test purposes
@@ -155,13 +155,15 @@ void setup(){
   //  text(s.distanceToSystem(target), s.hex.x, s.hex.y);
   //}
   
-  subsectorName += "-###.png";
-  saveFrame(subsectorName);
-  println("Saved " + subsectorName);
-  output.println("=========================");
-  output.println("Saved " + subsectorName);
-  output.flush();
-  output.close();
+  //subsectorName += "-###.png";
+  //saveFrame(subsectorName);
+  //println("Saved " + subsectorName);
+  //output.println("=========================");
+  //output.println("Saved " + subsectorName);
+  //output.flush();
+  //output.close();
+
+  // experimenting with JSON output for save/load
 }
 
 // loop & geometry are 0-based, but coordinates are 1-based
