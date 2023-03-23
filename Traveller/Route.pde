@@ -17,6 +17,7 @@ class Route {
   }
   
   String toString(){
-    return "Jump " + distance + " : " + s1.name + " to " + s2.name;
+    return "Jump " + distance + " : " + s1.name + " (" + s1.uwp.starport + ") " + " to " +
+                                        s2.name + " (" + s1.uwp.starport + ")";
   }
 }

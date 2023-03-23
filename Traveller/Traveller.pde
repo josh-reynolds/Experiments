@@ -14,6 +14,7 @@
 //  *      Proper layering of hex display
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
 //  *      Saving/loading subsectors / data format
+//  *      Reference to Routes in Systems
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space
@@ -75,7 +76,9 @@ void setup(){
   String subsectorName = "Subsector_" + lines[floor(random(lines.length))];
   String filename = subsectorName + ".txt";
   output = createWriter(filename);
-
+  output.println(subsectorName);
+  output.println("=========================");
+  
   routes = new ArrayList<Route>();
 
   scheme = new ColorScheme(color(0),             // Hex background
@@ -136,7 +139,7 @@ void setup(){
     if (s.occupied){ s.showName(); }
   }
 
-  output.println("");
+  output.println("=========================");
   for (Route r : routes){
     println(r);
     output.println(r);
@@ -155,7 +158,7 @@ void setup(){
   subsectorName += "-###.png";
   saveFrame(subsectorName);
   println("Saved " + subsectorName);
-  output.println("");
+  output.println("=========================");
   output.println("Saved " + subsectorName);
   output.flush();
   output.close();
