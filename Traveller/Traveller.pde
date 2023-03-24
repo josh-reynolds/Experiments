@@ -11,9 +11,11 @@
 //  * DONE List out all routes
 //  * DONE Text file output
 //  * DONE Display subsector name on page
-//  * .... Saving/loading subsectors / data formats
+//  * DONE Saving subsectors / data formats
+//  *      Writing out coords in JSON for null systems (need for loading)
 //  *      Coordinate equality / identity
 //  *      Lookup of Systems by Coordinate
+//  *      Loading subsectors
 //  *      Create an output folder
 //  *      Proper layering of hex display
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
@@ -167,19 +169,27 @@ void setup(){
   output.flush();
   output.close();
 
-  JSONArray json = new JSONArray();
+  JSONObject json = new JSONObject();
+  JSONArray systemList = new JSONArray();
+  JSONArray routeList = new JSONArray();
+  
   for (int i = 0; i < subsector.size(); i++){
     System s = subsector.get(i);    
     if (s.occupied){
-      json.setJSONObject(i, s.asJSON());
+      systemList.setJSONObject(i, s.asJSON());
     }
   }
-  String jsonFileName = subsectorName + ".json";
-  saveJSONArray(json, jsonFileName);
   
-  // Systems look good - need to get Routes next
-  // stubbed that out in the class, have some support
-  // functionality we need to wire up
+  for (int i = 0; i < routes.size(); i++){
+    Route r = routes.get(i);
+    routeList.setJSONObject(i, r.asJSON());
+  }
+  
+  json.setJSONArray("Systems", systemList);
+  json.setJSONArray("Routes", routeList);
+  
+  String jsonFileName = subsectorName + ".json";
+  saveJSONObject(json, jsonFileName);
 }
 
 // loop & geometry are 0-based, but coordinates are 1-based

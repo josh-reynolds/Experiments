@@ -23,20 +23,10 @@ class Route {
   
   JSONObject asJSON(){
     JSONObject json = new JSONObject();
-    
-    //json.set?
-    
-    // will be an issue here - this class holds references to System objects,
-    // and can't directly stash that in JSON
-    
-    // should have a method to create a new route based on coordinates,
-    // which then look up the reconstituted System objects on load
-    
-    // a couple related issues will need to be solved as part of that:
-    //  - lookup of Systems via Coordinates - current ArrayList approach not helpful
-    //  - comparison and identity of Coordinate objects
-    //      does new Coordinate(3,4) == new Coordinate(3,4) ?
-    
+    json.setJSONObject("First Coordinate", s1.coord.asJSON());
+    json.setString("First World", s1.name);   // for human readability
+    json.setJSONObject("Second Coordinate", s2.coord.asJSON());
+    json.setString("Second World", s2.name);
     return json;
   }
 }
