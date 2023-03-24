@@ -11,9 +11,12 @@
 //  * DONE List out all routes
 //  * DONE Text file output
 //  * DONE Display subsector name on page
+//  * .... Saving/loading subsectors / data formats
+//  *      Coordinate equality / identity
+//  *      Lookup of Systems by Coordinate
+//  *      Create an output folder
 //  *      Proper layering of hex display
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
-//  * .... Saving/loading subsectors / data format
 //  *      Reference to Routes in Systems
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
@@ -25,6 +28,7 @@
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
 //  *      REFACTOR: move utility functions out of main script
+//  *      REFACTOR: introduce subsector class
 // ------------------------------------------------
 // Hex geometry and layout
 // 
@@ -74,10 +78,10 @@ void setup(){
 
   subsector = new ArrayList<System>();
   String subsectorName = "Subsector_" + lines[floor(random(lines.length))];
-  String filename = subsectorName + ".txt";
-  //output = createWriter(filename);
-  //output.println(subsectorName);
-  //output.println("=========================");
+  String textFileName = subsectorName + ".txt";
+  output = createWriter(textFileName);
+  output.println(subsectorName);
+  output.println("=========================");
   
   routes = new ArrayList<Route>();
 
@@ -88,7 +92,7 @@ void setup(){
                            color(255),           // Hex elements
                            color(0),             // System listing
                            color(255),           // Page background
-                           color(200, 80));     // Routes 
+                           color(200, 80));      // Routes 
 
   background(scheme.pageBackground);
   
@@ -125,7 +129,7 @@ void setup(){
     
     if (s.occupied){
       println(s);
-      //output.println(s);
+      output.println(s);
       
       textAlign(LEFT, TOP);
       fill(scheme.systemList);
@@ -139,10 +143,10 @@ void setup(){
     if (s.occupied){ s.showName(); }
   }
 
-  //output.println("=========================");
+  output.println("=========================");
   for (Route r : routes){
     println(r);
-    //output.println(r);
+    output.println(r);
   }
 
   // displaying distance calculation for test purposes
@@ -155,13 +159,13 @@ void setup(){
   //  text(s.distanceToSystem(target), s.hex.x, s.hex.y);
   //}
   
-  //subsectorName += "-###.png";
-  //saveFrame(subsectorName);
-  //println("Saved " + subsectorName);
-  //output.println("=========================");
-  //output.println("Saved " + subsectorName);
-  //output.flush();
-  //output.close();
+  String imageFileName = subsectorName + "-###.png";
+  saveFrame(imageFileName);
+  println("Saved " + imageFileName);
+  output.println("=========================");
+  output.println("Saved " + imageFileName);
+  output.flush();
+  output.close();
 
   JSONArray json = new JSONArray();
   for (int i = 0; i < subsector.size(); i++){
@@ -169,23 +173,13 @@ void setup(){
     if (s.occupied){
       json.setJSONObject(i, s.asJSON());
     }
-  }  
-  saveJSONArray(json, "test.json");  // need to tie this back to the subsector name
-  
-  // only save occupied systems, and only data objects,
-  // not presentation, processing, display classes -
-  // for System, that's hex + occupied
-  // let's start with just one system
-  
-  // also, we only really need to care about ctor inputs or 
-  // non-deterministic/stochastic fields - TradeClass can be 
-  // perfectly recreated from a given UWP
-  
-  // I expect JSON is going to get pretty verbose when we push out
-  // all 40-50 systems, but it has the advantage of being human
-  // readable and editable
+  }
+  String jsonFileName = subsectorName + ".json";
+  saveJSONArray(json, jsonFileName);
   
   // Systems look good - need to get Routes next
+  // stubbed that out in the class, have some support
+  // functionality we need to wire up
 }
 
 // loop & geometry are 0-based, but coordinates are 1-based
