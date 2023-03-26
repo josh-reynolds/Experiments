@@ -161,12 +161,15 @@ class System {
   
   JSONObject asJSON(){
     JSONObject json = new JSONObject();
-    json.setJSONObject("Coordinate", coord.asJSON()); 
-    json.setString("Name", name);
-    json.setBoolean("Naval Base", navalBase);
-    json.setBoolean("Scout Base", scoutBase);
-    json.setBoolean("Gas Giant", gasGiant);
-    json.setJSONObject("UWP", uwp.asJSON());
+    json.setJSONObject("Coordinate", coord.asJSON());
+    json.setBoolean("Occupied", occupied);
+    if (occupied){
+      json.setString("Name", name);
+      json.setBoolean("Naval Base", navalBase);
+      json.setBoolean("Scout Base", scoutBase);
+      json.setBoolean("Gas Giant", gasGiant);
+      json.setJSONObject("UWP", uwp.asJSON());
+    }
     return json;
   }
 }

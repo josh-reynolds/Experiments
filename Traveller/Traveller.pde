@@ -13,7 +13,7 @@
 //  * DONE Display subsector name on page
 //  * DONE Saving subsectors / data formats
 //  * DONE Create an output folder
-//  *      Writing out coords in JSON for null systems (need for loading)
+//  * DONE Writing out coords in JSON for null systems (need for loading)
 //  *      Coordinate equality / identity
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
@@ -175,9 +175,7 @@ void setup(){
   
   for (int i = 0; i < subsector.size(); i++){
     System s = subsector.get(i);    
-    if (s.occupied){
-      systemList.setJSONObject(i, s.asJSON());
-    }
+    systemList.setJSONObject(i, s.asJSON());
   }
   
   for (int i = 0; i < routes.size(); i++){
