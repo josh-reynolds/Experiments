@@ -12,11 +12,11 @@
 //  * DONE Text file output
 //  * DONE Display subsector name on page
 //  * DONE Saving subsectors / data formats
+//  * DONE Create an output folder
 //  *      Writing out coords in JSON for null systems (need for loading)
 //  *      Coordinate equality / identity
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
-//  *      Create an output folder
 //  *      Proper layering of hex display
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
 //  *      Reference to Routes in Systems
@@ -80,7 +80,7 @@ void setup(){
 
   subsector = new ArrayList<System>();
   String subsectorName = "Subsector_" + lines[floor(random(lines.length))];
-  String textFileName = subsectorName + ".txt";
+  String textFileName = ".\\output\\" + subsectorName + ".txt";
   output = createWriter(textFileName);
   output.println(subsectorName);
   output.println("=========================");
@@ -161,7 +161,7 @@ void setup(){
   //  text(s.distanceToSystem(target), s.hex.x, s.hex.y);
   //}
   
-  String imageFileName = subsectorName + "-###.png";
+  String imageFileName = ".\\output\\" + subsectorName + "-###.png";
   saveFrame(imageFileName);
   println("Saved " + imageFileName);
   output.println("=========================");
@@ -188,7 +188,7 @@ void setup(){
   json.setJSONArray("Systems", systemList);
   json.setJSONArray("Routes", routeList);
   
-  String jsonFileName = subsectorName + ".json";
+  String jsonFileName = ".\\output\\" + subsectorName + ".json";
   saveJSONObject(json, jsonFileName);
 }
 
