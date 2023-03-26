@@ -16,7 +16,7 @@
 //  * DONE Writing out coords in JSON for null systems (need for loading)
 //  * DONE Coordinate equality
 //  * DONE REFACTOR: move coordinate conversion methods to System class
-//  *      REFACTOR: introduce subsector class
+//  * DONE REFACTOR: introduce subsector class
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
 //  *      Proper layering of hex display
@@ -58,8 +58,6 @@ int border = hexRadius;
 float yOffset = sqrt((hexRadius * hexRadius) - (hexRadius/2 * hexRadius/2));
 int startX = hexRadius + border;
 int startY = (int)yOffset + border;
-  
-ArrayList<Route> routes;
 
 String wordFile = "words.txt";
 String lines[];
@@ -83,8 +81,6 @@ void setup(){
   output = createWriter(textFileName);
   output.println(subs.name);
   output.println("=========================");
-  
-  routes = new ArrayList<Route>();
 
   scheme = new ColorScheme(color(0),             // Hex background
                            color(125),           // Hex outline
@@ -108,8 +104,7 @@ void setup(){
     s.showBackground();
   }
 
-  calculateRoutes();
-  for (Route r : routes){
+  for (Route r : subs.routes){
     r.show();
   }
   
@@ -138,20 +133,10 @@ void setup(){
   }
 
   output.println("=========================");
-  for (Route r : routes){
+  for (Route r : subs.routes){
     println(r);
     output.println(r);
   }
-
-  // displaying distance calculation for test purposes
-  // helps to suppress other cell contents to make this more visible...
-  //System target = subsector.get(floor(random(subsector.size())));
-  //for (System s : subsector){
-  //  textSize(20);
-  //  fill(scheme.worldName);
-  //  textAlign(CENTER, CENTER);
-  //  text(s.distanceToSystem(target), s.hex.x, s.hex.y);
-  //}
   
   String imageFileName = ".\\output\\" + subs.name + "-###.png";
   saveFrame(imageFileName);
@@ -170,8 +155,8 @@ void setup(){
     systemList.setJSONObject(i, s.asJSON());
   }
   
-  for (int i = 0; i < routes.size(); i++){
-    Route r = routes.get(i);
+  for (int i = 0; i < subs.routes.size(); i++){
+    Route r = subs.routes.get(i);
     routeList.setJSONObject(i, r.asJSON());
   }
   
@@ -188,99 +173,4 @@ int oneDie(){
 
 int twoDice(){
   return oneDie() + oneDie();
-}
-
-void calculateRoutes(){
-  for (int i = 0; i < subs.systems.size(); i++){
-    System candidate = subs.systems.get(i);
-    if (!candidate.occupied || candidate.uwp.starport == 'X'){ continue; }
-    
-    for (int j = i + 1; j < subs.systems.size(); j++){
-      System target = subs.systems.get(j);
-      if (!target.occupied || target.uwp.starport == 'X'){ continue; }
-      
-      int dist = candidate.distanceToSystem(target);  
-      if (dist > 4){ continue; }
-      
-      char starportA = candidate.uwp.starport;
-      char starportB = target.uwp.starport;
-      String pair;
-      if (starportA <= starportB){ 
-        pair = str(starportA) + str(starportB); 
-      } else {
-        pair = str(starportB) + str(starportA);
-      }
-
-      int roll = oneDie();
-
-      // transcription of the table on p.2 of Book 3 (1st edition)
-      // probably a clever way to make this shorter, refactoring opportunity
-      // later perhaps
-      if (pair.equals("AA")){
-        if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
-        if (dist == 2 && roll >= 2){ routes.add(new Route(candidate, target)); }
-        if (dist == 3 && roll >= 4){ routes.add(new Route(candidate, target)); }
-        if (dist == 4 && roll >= 5){ routes.add(new Route(candidate, target)); }
-      }
-      if (pair.equals("AB")){
-        if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
-        if (dist == 2 && roll >= 3){ routes.add(new Route(candidate, target)); }
-        if (dist == 3 && roll >= 4){ routes.add(new Route(candidate, target)); }
-        if (dist == 4 && roll >= 5){ routes.add(new Route(candidate, target)); }
-      }
-      if (pair.equals("AC")){
-        if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
-        if (dist == 2 && roll >= 4){ routes.add(new Route(candidate, target)); }
-        if (dist == 3 && roll >= 6){ routes.add(new Route(candidate, target)); }
-      }
-      if (pair.equals("AD")){
-        if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
-        if (dist == 2 && roll >= 5){ routes.add(new Route(candidate, target)); }
-      }
-      if (pair.equals("AE")){
-        if (dist == 1 && roll >= 2){ routes.add(new Route(candidate, target)); }
-      }
-
-      if (pair.equals("BB")){
-        if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
-        if (dist == 2 && roll >= 3){ routes.add(new Route(candidate, target)); }
-        if (dist == 3 && roll >= 4){ routes.add(new Route(candidate, target)); }
-        if (dist == 4 && roll >= 6){ routes.add(new Route(candidate, target)); }
-      }
-      if (pair.equals("BC")){
-        if (dist == 1 && roll >= 2){ routes.add(new Route(candidate, target)); }
-        if (dist == 2 && roll >= 4){ routes.add(new Route(candidate, target)); }
-        if (dist == 3 && roll >= 6){ routes.add(new Route(candidate, target)); }
-      }
-      if (pair.equals("BD")){
-        if (dist == 1 && roll >= 3){ routes.add(new Route(candidate, target)); }
-        if (dist == 2 && roll >= 6){ routes.add(new Route(candidate, target)); }  
-      }
-      if (pair.equals("BE")){
-        if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
-      }
-      
-      if (pair.equals("CC")){
-        if (dist == 1 && roll >= 3){ routes.add(new Route(candidate, target)); }
-        if (dist == 2 && roll >= 6){ routes.add(new Route(candidate, target)); }
-      }
-      if (pair.equals("CD")){
-        if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
-      }
-      if (pair.equals("CE")){
-        if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
-      }
-      
-      if (pair.equals("DD")){
-        if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
-      }
-      if (pair.equals("DE")){
-        if (dist == 1 && roll >= 5){ routes.add(new Route(candidate, target)); }
-      }
-      
-      if (pair.equals("EE")){
-        if (dist == 1 && roll >= 6){ routes.add(new Route(candidate, target)); }
-      }
-    }
-  }
 }
