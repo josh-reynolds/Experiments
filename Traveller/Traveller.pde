@@ -20,6 +20,7 @@
 //  * DONE REFACTOR: consolidate & clean up output code
 //  * DONE REFACTOR: consolidate screen drawing code
 //  * DONE REFACTOR: asJSON method for Subsector class
+//  * DONE Coordinate ctor that consumes JSON data
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
 //  *      Proper layering of hex display

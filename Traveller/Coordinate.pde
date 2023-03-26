@@ -5,7 +5,16 @@ class Coordinate {
   Coordinate(int _column, int _row){
     column = _column;
     row = _row;
-
+    calculateThreeCoord();
+  }
+  
+  Coordinate(JSONObject _json){
+    column = _json.getInt("Column");
+    row = _json.getInt("Row");
+    calculateThreeCoord();  
+  }
+  
+  void calculateThreeCoord(){
     x = column - 1;
     z = (row - 1) - floor((column - 1)/2);
     y = -x - z;
