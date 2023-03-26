@@ -172,4 +172,22 @@ class System {
     }
     return json;
   }
+  
+  // loop & geometry are 0-based, but coordinates are 1-based
+  // so have adjustments in these functions to reconcile
+  
+  float getX(int _xCoord){
+    return startX + (_xCoord - 1) * (hexRadius * 1.5);
+  }
+  
+  float getY(int _yCoord, int _xCoord){
+    float columnAdjust;
+    if ((_xCoord - 1) % 2 == 0){
+      columnAdjust = 0;
+    } else {
+      columnAdjust = yOffset;
+    }
+    
+    return startY + (yOffset * (_yCoord - 1) * 2) + columnAdjust;
+  }
 }

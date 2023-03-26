@@ -15,6 +15,7 @@
 //  * DONE Create an output folder
 //  * DONE Writing out coords in JSON for null systems (need for loading)
 //  * DONE Coordinate equality
+//  * DONE REFACTOR: move coordinate conversion methods to System class
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
 //  *      Proper layering of hex display
@@ -188,24 +189,6 @@ void setup(){
   
   String jsonFileName = ".\\output\\" + subsectorName + ".json";
   saveJSONObject(json, jsonFileName);
-}
-
-// loop & geometry are 0-based, but coordinates are 1-based
-// so have adjustments in these functions to reconcile
-
-float getX(int _xCoord){
-  return startX + (_xCoord - 1) * (hexRadius * 1.5);
-}
-
-float getY(int _yCoord, int _xCoord){
-  float columnAdjust;
-  if ((_xCoord - 1) % 2 == 0){
-    columnAdjust = 0;
-  } else {
-    columnAdjust = yOffset;
-  }
-  
-  return startY + (yOffset * (_yCoord - 1) * 2) + columnAdjust;
 }
 
 int oneDie(){
