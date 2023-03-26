@@ -17,6 +17,7 @@
 //  * DONE Coordinate equality
 //  * DONE REFACTOR: move coordinate conversion methods to System class
 //  * DONE REFACTOR: introduce subsector class
+//  * .... REFACTOR: consolidate & clean up output code
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
 //  *      Proper layering of hex display
@@ -146,6 +147,10 @@ void setup(){
   output.flush();
   output.close();
 
+  writeJSON();
+}
+
+void writeJSON(){
   JSONObject json = new JSONObject();
   JSONArray systemList = new JSONArray();
   JSONArray routeList = new JSONArray();
