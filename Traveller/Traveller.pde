@@ -16,6 +16,7 @@
 //  * DONE Writing out coords in JSON for null systems (need for loading)
 //  * DONE Coordinate equality
 //  * DONE REFACTOR: move coordinate conversion methods to System class
+//  *      REFACTOR: introduce subsector class
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
 //  *      Proper layering of hex display
@@ -31,7 +32,6 @@
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
 //  *      REFACTOR: move utility functions out of main script
-//  *      REFACTOR: introduce subsector class
 // ------------------------------------------------
 // Hex geometry and layout
 // 
@@ -59,10 +59,6 @@ float yOffset = sqrt((hexRadius * hexRadius) - (hexRadius/2 * hexRadius/2));
 int startX = hexRadius + border;
 int startY = (int)yOffset + border;
   
-ArrayList<System> subsector;
-int vertCount = 10;
-int horzCount = 8;
-
 ArrayList<Route> routes;
 
 String wordFile = "words.txt";
@@ -72,6 +68,8 @@ ColorScheme scheme;
 
 PrintWriter output;
 
+Subsector subs;
+
 void setup(){
   // calculated per metrics above, adjust if hexRadius changes
   // panel width = 464, panel height = 646
@@ -79,11 +77,11 @@ void setup(){
 
   lines = loadStrings(wordFile);
 
-  subsector = new ArrayList<System>();
-  String subsectorName = "Subsector_" + lines[floor(random(lines.length))];
-  String textFileName = ".\\output\\" + subsectorName + ".txt";
+  subs = new Subsector();
+
+  String textFileName = ".\\output\\" + subs.name + ".txt";
   output = createWriter(textFileName);
-  output.println(subsectorName);
+  output.println(subs.name);
   output.println("=========================");
   
   routes = new ArrayList<Route>();
@@ -98,13 +96,6 @@ void setup(){
                            color(200, 80));      // Routes 
 
   background(scheme.pageBackground);
-  
-  for (int j = 1; j <= horzCount; j++){
-    for (int i = 1; i <= vertCount; i++){      
-      Coordinate coord = new Coordinate(j, i);
-      subsector.add(new System(coord));
-    }
-  }
 
   fill(scheme.cellOutline);
   rect(0, 0, width/2, height);
@@ -113,7 +104,7 @@ void setup(){
   int textLine = border;
   PFont font = loadFont("Consolas-12.vlw");
   
-  for (System s : subsector){
+  for (System s : subs.systems){
     s.showBackground();
   }
 
@@ -125,9 +116,9 @@ void setup(){
   textAlign(LEFT, TOP);
   fill(scheme.systemList);
   textFont(font, 24);
-  text(subsectorName, textPanelLeft, textLine - 24);
+  text(subs.name, textPanelLeft, textLine - 24);
   
-  for (System s : subsector){
+  for (System s : subs.systems){
     s.showForeground();
     
     if (s.occupied){
@@ -142,7 +133,7 @@ void setup(){
     }
   }
   
-  for (System s : subsector){
+  for (System s : subs.systems){
     if (s.occupied){ s.showName(); }
   }
 
@@ -162,7 +153,7 @@ void setup(){
   //  text(s.distanceToSystem(target), s.hex.x, s.hex.y);
   //}
   
-  String imageFileName = ".\\output\\" + subsectorName + "-###.png";
+  String imageFileName = ".\\output\\" + subs.name + "-###.png";
   saveFrame(imageFileName);
   println("Saved " + imageFileName);
   output.println("=========================");
@@ -174,8 +165,8 @@ void setup(){
   JSONArray systemList = new JSONArray();
   JSONArray routeList = new JSONArray();
   
-  for (int i = 0; i < subsector.size(); i++){
-    System s = subsector.get(i);    
+  for (int i = 0; i < subs.systems.size(); i++){
+    System s = subs.systems.get(i);    
     systemList.setJSONObject(i, s.asJSON());
   }
   
@@ -187,7 +178,7 @@ void setup(){
   json.setJSONArray("Systems", systemList);
   json.setJSONArray("Routes", routeList);
   
-  String jsonFileName = ".\\output\\" + subsectorName + ".json";
+  String jsonFileName = ".\\output\\" + subs.name + ".json";
   saveJSONObject(json, jsonFileName);
 }
 
@@ -200,12 +191,12 @@ int twoDice(){
 }
 
 void calculateRoutes(){
-  for (int i = 0; i < subsector.size(); i++){
-    System candidate = subsector.get(i);
+  for (int i = 0; i < subs.systems.size(); i++){
+    System candidate = subs.systems.get(i);
     if (!candidate.occupied || candidate.uwp.starport == 'X'){ continue; }
     
-    for (int j = i + 1; j < subsector.size(); j++){
-      System target = subsector.get(j);
+    for (int j = i + 1; j < subs.systems.size(); j++){
+      System target = subs.systems.get(j);
       if (!target.occupied || target.uwp.starport == 'X'){ continue; }
       
       int dist = candidate.distanceToSystem(target);  
