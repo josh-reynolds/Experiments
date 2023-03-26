@@ -17,7 +17,7 @@
 //  * DONE Coordinate equality
 //  * DONE REFACTOR: move coordinate conversion methods to System class
 //  * DONE REFACTOR: introduce subsector class
-//  * .... REFACTOR: consolidate & clean up output code
+//  * DONE REFACTOR: consolidate & clean up output code
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
 //  *      Proper layering of hex display
@@ -65,8 +65,6 @@ String lines[];
 
 ColorScheme scheme;
 
-PrintWriter output;
-
 Subsector subs;
 
 void setup(){
@@ -77,11 +75,6 @@ void setup(){
   lines = loadStrings(wordFile);
 
   subs = new Subsector();
-
-  String textFileName = ".\\output\\" + subs.name + ".txt";
-  output = createWriter(textFileName);
-  output.println(subs.name);
-  output.println("=========================");
 
   scheme = new ColorScheme(color(0),             // Hex background
                            color(125),           // Hex outline
@@ -117,10 +110,7 @@ void setup(){
   for (System s : subs.systems){
     s.showForeground();
     
-    if (s.occupied){
-      println(s);
-      output.println(s);
-      
+    if (s.occupied){      
       textAlign(LEFT, TOP);
       fill(scheme.systemList);
       textFont(font, 12);    
@@ -132,22 +122,41 @@ void setup(){
   for (System s : subs.systems){
     if (s.occupied){ s.showName(); }
   }
+  
+  writeImage();
+  writeText();
+  writeJSON();
+}
 
+void writeImage(){
+  String imageFileName = ".\\output\\" + subs.name + "-###.png";
+  saveFrame(imageFileName);
+}
+
+void writeText(){
+  String textFileName = ".\\output\\" + subs.name + ".txt";
+  PrintWriter output = createWriter(textFileName);
+  output.println(subs.name);
+  output.println("=========================");
+  
+  for (System s : subs.systems){    
+    if (s.occupied){
+      println(s);
+      output.println(s);
+    }
+  }
+  
   output.println("=========================");
   for (Route r : subs.routes){
     println(r);
     output.println(r);
   }
   
-  String imageFileName = ".\\output\\" + subs.name + "-###.png";
-  saveFrame(imageFileName);
-  println("Saved " + imageFileName);
+  println("Saved " + subs.name);
   output.println("=========================");
-  output.println("Saved " + imageFileName);
+  output.println("Saved " + subs.name);
   output.flush();
   output.close();
-
-  writeJSON();
 }
 
 void writeJSON(){
