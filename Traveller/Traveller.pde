@@ -14,7 +14,7 @@
 //  * DONE Saving subsectors / data formats
 //  * DONE Create an output folder
 //  * DONE Writing out coords in JSON for null systems (need for loading)
-//  *      Coordinate equality / identity
+//  * DONE Coordinate equality
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
 //  *      Proper layering of hex display

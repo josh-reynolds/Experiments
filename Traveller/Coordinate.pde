@@ -25,4 +25,8 @@ class Coordinate {
     json.setInt("Row", row);
     return json;
   }
+  
+  Boolean equals(Coordinate _c){
+    return column == _c.column && row == _c.row;
+  }
 }
