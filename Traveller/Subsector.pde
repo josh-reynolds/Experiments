@@ -23,6 +23,26 @@ class Subsector{
     calculateRoutes();
   }
   
+  JSONObject asJSON(){
+    JSONArray systemList = new JSONArray();    
+    for (int i = 0; i < systems.size(); i++){
+      System s = systems.get(i);    
+      systemList.setJSONObject(i, s.asJSON());
+    }
+
+    JSONArray routeList = new JSONArray();
+    for (int i = 0; i < routes.size(); i++){
+      Route r = routes.get(i);
+      routeList.setJSONObject(i, r.asJSON());
+    }
+
+    JSONObject json = new JSONObject();
+    json.setJSONArray("Systems", systemList);
+    json.setJSONArray("Routes", routeList);
+    
+    return json;
+  }
+  
   void calculateRoutes(){
     for (int i = 0; i < systems.size(); i++){
       System candidate = systems.get(i);

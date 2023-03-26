@@ -19,6 +19,7 @@
 //  * DONE REFACTOR: introduce subsector class
 //  * DONE REFACTOR: consolidate & clean up output code
 //  * DONE REFACTOR: consolidate screen drawing code
+//  * DONE REFACTOR: asJSON method for Subsector class
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
 //  *      Proper layering of hex display
@@ -102,7 +103,7 @@ void drawScreen(){
   int textLine = border;
   PFont font = loadFont("Consolas-12.vlw");
   
-    for (System s : subs.systems){
+  for (System s : subs.systems){
     s.showBackground();
   }
 
@@ -164,25 +165,8 @@ void writeText(){
 }
 
 void writeJSON(){
-  JSONObject json = new JSONObject();
-  JSONArray systemList = new JSONArray();
-  JSONArray routeList = new JSONArray();
-  
-  for (int i = 0; i < subs.systems.size(); i++){
-    System s = subs.systems.get(i);    
-    systemList.setJSONObject(i, s.asJSON());
-  }
-  
-  for (int i = 0; i < subs.routes.size(); i++){
-    Route r = subs.routes.get(i);
-    routeList.setJSONObject(i, r.asJSON());
-  }
-  
-  json.setJSONArray("Systems", systemList);
-  json.setJSONArray("Routes", routeList);
-  
   String jsonFileName = ".\\output\\" + subs.name + ".json";
-  saveJSONObject(json, jsonFileName);
+  saveJSONObject(subs.asJSON(), jsonFileName);
 }
 
 int oneDie(){
