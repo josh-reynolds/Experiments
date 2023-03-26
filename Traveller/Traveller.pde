@@ -18,6 +18,7 @@
 //  * DONE REFACTOR: move coordinate conversion methods to System class
 //  * DONE REFACTOR: introduce subsector class
 //  * DONE REFACTOR: consolidate & clean up output code
+//  * DONE REFACTOR: consolidate screen drawing code
 //  *      Lookup of Systems by Coordinate
 //  *      Loading subsectors
 //  *      Proper layering of hex display
@@ -85,6 +86,13 @@ void setup(){
                            color(255),           // Page background
                            color(200, 80));      // Routes 
 
+  drawScreen();
+  writeImage();
+  writeText();
+  writeJSON();
+}
+
+void drawScreen(){
   background(scheme.pageBackground);
 
   fill(scheme.cellOutline);
@@ -94,7 +102,7 @@ void setup(){
   int textLine = border;
   PFont font = loadFont("Consolas-12.vlw");
   
-  for (System s : subs.systems){
+    for (System s : subs.systems){
     s.showBackground();
   }
 
@@ -122,10 +130,6 @@ void setup(){
   for (System s : subs.systems){
     if (s.occupied){ s.showName(); }
   }
-  
-  writeImage();
-  writeText();
-  writeJSON();
 }
 
 void writeImage(){
