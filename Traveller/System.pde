@@ -170,8 +170,12 @@ class System {
     for (int i = 1; i <= paddingLength; i++){
       outputName += " ";
     }
-       
-    return outputName + coord.toString() + " : " + uwp.toString() + " " + nb + sb + gg + " " + trade.toString();
+    
+    if (occupied){
+      return outputName + coord.toString() + " : " + uwp.toString() + " " + nb + sb + gg + " " + trade.toString();
+    } else {
+      return "EMPTY : " + coord.toString();
+    }
   }
   
   JSONObject asJSON(){

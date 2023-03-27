@@ -24,7 +24,7 @@
 //  * DONE More JSON ctors: UWP, System
 //  * DONE Adding subsector name to JSON
 //  * DONE Lookup of Systems by Coordinate (need for Routes)
-//  *      Route ctor that consumes JSON data
+//  * DONE Route ctor that consumes JSON data
 //  *      Subsector ctor that consumes JSON data
 //  *      Loading subsectors
 //  *      Validating JSON data
@@ -102,7 +102,7 @@ void setup(){
   drawScreen();
   writeImage();
   writeText();
-  writeJSON();  
+  writeJSON();   
 }
 
 void drawScreen(){

@@ -47,6 +47,17 @@ class Subsector{
     return json;
   }
   
+  Coordinate lookupCoordinate(JSONObject _json){
+    Coordinate test = new Coordinate(_json);
+    Coordinate[] coords = systems.keySet().toArray(new Coordinate[0]);
+    
+    for (int i = 0; i < coords.length; i++){
+      Coordinate candidate = coords[i]; 
+      if (candidate.equals(test)){ return candidate; } 
+    }
+    return null;
+  }
+  
   void calculateRoutes(){
     Coordinate[] coords = systems.keySet().toArray(new Coordinate[0]);
 

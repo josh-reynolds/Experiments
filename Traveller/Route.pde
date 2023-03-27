@@ -10,6 +10,19 @@ class Route {
     distance = s1.distanceToSystem(s2);
   }
   
+  // to look up in the HashMap, we need the same object as the key
+  // not just equivalent values, as you would get from JSON reconstitution
+  // so this is a bit involved
+  Route(JSONObject _json){
+    Coordinate c1 = subs.lookupCoordinate(_json.getJSONObject("First Coordinate"));
+    s1 = subs.systems.get(c1);
+    
+    Coordinate c2 = subs.lookupCoordinate(_json.getJSONObject("Second Coordinate"));
+    s2 = subs.systems.get(c2);
+        
+    distance = s1.distanceToSystem(s2);
+  }
+  
   void show(){
     stroke(scheme.routes);
     strokeWeight(6);
@@ -18,7 +31,7 @@ class Route {
   
   String toString(){
     return "Jump " + distance + " : " + s1.name + " (" + s1.uwp.starport + ") " + " to " +
-                                        s2.name + " (" + s1.uwp.starport + ")";
+                                        s2.name + " (" + s2.uwp.starport + ")";
   }
   
   JSONObject asJSON(){
