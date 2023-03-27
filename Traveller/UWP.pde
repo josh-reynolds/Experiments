@@ -27,6 +27,17 @@ class UWP {
     tech     = generateTech(); 
   }
   
+  UWP(JSONObject _json){
+    starport = _json.getString("Starport").charAt(0);
+    size     = _json.getInt("Size");
+    atmo     = _json.getInt("Atmosphere");
+    hydro    = _json.getInt("Hydrographics");
+    pop      = _json.getInt("Population");
+    gov      = _json.getInt("Government");
+    law      = _json.getInt("Law Level");
+    tech     = _json.getInt("Tech Level");
+  }  
+  
   int generateTech(){
     int modifier = 0;
     

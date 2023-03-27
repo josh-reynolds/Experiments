@@ -21,9 +21,16 @@
 //  * DONE REFACTOR: consolidate screen drawing code
 //  * DONE REFACTOR: asJSON method for Subsector class
 //  * DONE Coordinate ctor that consumes JSON data
-//  *      Lookup of Systems by Coordinate
+//  * DONE More JSON ctors: UWP, System
+//  *      Lookup of Systems by Coordinate (need for Routes)
+//  *      Route ctor that consumes JSON data
+//  *      Subsector ctor that consumes JSON data
 //  *      Loading subsectors
+//  *      Validating JSON data
+//  *      Shift display to draw()
+//  *      Mode selection - new vs. load (screen?)
 //  *      Proper layering of hex display
+//  *      Construct hex display once and show cached image
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
 //  *      Reference to Routes in Systems
 //  *      'Character' location and movement / ships (and UI elements)
@@ -91,7 +98,7 @@ void setup(){
   drawScreen();
   writeImage();
   writeText();
-  writeJSON();
+  writeJSON();  
 }
 
 void drawScreen(){

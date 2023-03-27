@@ -23,7 +23,22 @@ class System {
       name = lines[floor(random(lines.length))];
     }
   } 
+  
+  System(JSONObject _json){
+    coord    = new Coordinate(_json.getJSONObject("Coordinate"));  // might pass this in instead...
+    hex = new Hex(getX(coord.column), getY(coord.row, coord.column), hexRadius);
+    occupied = _json.getBoolean("Occupied");
     
+    if (occupied){
+      name      = _json.getString("Name");
+      navalBase = _json.getBoolean("Naval Base");
+      scoutBase = _json.getBoolean("Scout Base");
+      gasGiant  = _json.getBoolean("Gas Giant");
+      uwp       = new UWP(_json.getJSONObject("UWP"));
+      trade     = new TradeClass(uwp);
+    }
+  }
+  
   int distanceToSystem(System _s){    
     return coord.distanceTo(_s.coord);
   }
