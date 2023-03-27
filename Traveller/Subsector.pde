@@ -1,7 +1,7 @@
 class Subsector{
   String name;
   
-  ArrayList<System> systems;
+  HashMap<Coordinate, System> systems;
   int vertCount = 10;
   int horzCount = 8;
   
@@ -9,14 +9,14 @@ class Subsector{
   
   Subsector(){
     name = "Subsector_" + lines[floor(random(lines.length))];
-      
-    systems = new ArrayList<System>();
+    
+    systems = new HashMap<Coordinate, System>();
     routes = new ArrayList<Route>();
     
     for (int j = 1; j <= horzCount; j++){
       for (int i = 1; i <= vertCount; i++){      
         Coordinate coord = new Coordinate(j, i);
-        systems.add(new System(coord));
+        systems.put(coord, new System(coord));
       }
     }
     
@@ -25,9 +25,12 @@ class Subsector{
   
   JSONObject asJSON(){
     JSONArray systemList = new JSONArray();    
-    for (int i = 0; i < systems.size(); i++){
-      System s = systems.get(i);    
-      systemList.setJSONObject(i, s.asJSON());
+    
+    int counter = 0;
+    for (Map.Entry me : systems.entrySet()){
+      System s = (System)me.getValue();
+      systemList.setJSONObject(counter, s.asJSON());
+      counter++;
     }
 
     JSONArray routeList = new JSONArray();
@@ -37,6 +40,7 @@ class Subsector{
     }
 
     JSONObject json = new JSONObject();
+    json.setString("Subsector Name", name);
     json.setJSONArray("Systems", systemList);
     json.setJSONArray("Routes", routeList);
     
@@ -44,12 +48,14 @@ class Subsector{
   }
   
   void calculateRoutes(){
-    for (int i = 0; i < systems.size(); i++){
-      System candidate = systems.get(i);
+    Coordinate[] coords = systems.keySet().toArray(new Coordinate[0]);
+
+    for (int i = 0; i < coords.length; i++){
+      System candidate = systems.get(coords[i]);
       if (!candidate.occupied || candidate.uwp.starport == 'X'){ continue; }
       
-      for (int j = i + 1; j < systems.size(); j++){
-        System target = systems.get(j);
+      for (int j = 0; j < coords.length; j++){
+        System target = systems.get(coords[j]);
         if (!target.occupied || target.uwp.starport == 'X'){ continue; }
         
         int dist = candidate.distanceToSystem(target);  

@@ -22,11 +22,13 @@
 //  * DONE REFACTOR: asJSON method for Subsector class
 //  * DONE Coordinate ctor that consumes JSON data
 //  * DONE More JSON ctors: UWP, System
-//  *      Lookup of Systems by Coordinate (need for Routes)
+//  * DONE Adding subsector name to JSON
+//  * DONE Lookup of Systems by Coordinate (need for Routes)
 //  *      Route ctor that consumes JSON data
 //  *      Subsector ctor that consumes JSON data
 //  *      Loading subsectors
 //  *      Validating JSON data
+//  *      Alternate text format to facilitate input (CSV?)
 //  *      Shift display to draw()
 //  *      Mode selection - new vs. load (screen?)
 //  *      Proper layering of hex display
@@ -40,6 +42,7 @@
 //  *      Travel zones (not present in 1e)
 //  *      Subsector summary paragraph
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
+//  *      BUG: text panel, file and JSON system lists are unordered due to HashMap iterator
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
 //  *      REFACTOR: move utility functions out of main script
@@ -62,6 +65,7 @@
 //println((2 * border) + (2 * hexRadius) + ((horzCount - 1) * hexRadius * 1.5));
 //println((2 * border) + (((2 * vertCount) + 1) * yOffset));
 // ------------------------------------------------
+import java.util.Map;
 
 int hexRadius = 32;
 int border = hexRadius;
@@ -111,7 +115,7 @@ void drawScreen(){
   int textLine = border;
   PFont font = loadFont("Consolas-12.vlw");
   
-  for (System s : subs.systems){
+  for (System s : subs.systems.values()){
     s.showBackground();
   }
 
@@ -124,7 +128,7 @@ void drawScreen(){
   textFont(font, 24);
   text(subs.name, textPanelLeft, textLine - 24);
   
-  for (System s : subs.systems){
+  for (System s : subs.systems.values()){
     s.showForeground();
     
     if (s.occupied){      
@@ -136,7 +140,7 @@ void drawScreen(){
     }
   }
   
-  for (System s : subs.systems){
+  for (System s : subs.systems.values()){
     if (s.occupied){ s.showName(); }
   }
 }
@@ -152,7 +156,7 @@ void writeText(){
   output.println(subs.name);
   output.println("=========================");
   
-  for (System s : subs.systems){    
+  for (System s : subs.systems.values()){    
     if (s.occupied){
       println(s);
       output.println(s);
