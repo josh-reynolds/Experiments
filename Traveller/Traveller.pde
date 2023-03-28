@@ -31,7 +31,8 @@
 //  * FIX  BUG: text panel, file and JSON system lists are unordered due to HashMap iterator
 //  * DONE Shift display to draw()
 //  * DONE Mode selection - new vs. load (screen?)
-//  *      File selection dialog for loading
+//  * DONE File selection dialog for loading
+//  *      Intercept non-JSON file selection
 //  *      Beautify menu screen
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
@@ -88,6 +89,7 @@ Boolean loading = true;
 
 Button[] buttons;
 String mode;
+String jsonFile = "";
 
 void setup(){
   // calculated per metrics above, adjust if hexRadius changes
@@ -137,7 +139,7 @@ void drawMenu(){
 
 Subsector createSubsector(){
   if (loading){
-    JSONObject subsectorData = loadJSONObject(".\\output\\Subsector_Demaggio.json");
+    JSONObject subsectorData = loadJSONObject(jsonFile);
     return new Subsector(subsectorData);
   } else {
     return new Subsector();
@@ -157,6 +159,16 @@ void mouseClicked(){
   
   if (buttons[1].highlight){ 
     println(buttons[1].label);
+    selectInput("Select a subsector json file to load.", "fileSelected");
+  }
+}
+
+void fileSelected(File _selection){
+  if (_selection == null){
+    println("Please select a json file, or choose NEW.");
+  } else {
+    println(_selection);
+    jsonFile = _selection.toString();
     loading = true;
     subs = createSubsector();
     mode = "display";
