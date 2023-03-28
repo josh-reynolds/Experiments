@@ -30,10 +30,11 @@
 //  * DONE Suppress saving/overwrite if loading existing data 
 //  * FIX  BUG: text panel, file and JSON system lists are unordered due to HashMap iterator
 //  * DONE Shift display to draw()
-//  * .... Mode selection - new vs. load (screen?)
+//  * DONE Mode selection - new vs. load (screen?)
+//  *      File selection dialog for loading
+//  *      Beautify menu screen
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
-//  *      Beautify menu screen
 //  *      Proper layering of hex display
 //  *      Construct hex display once and show cached image
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
@@ -86,6 +87,7 @@ Subsector subs;
 Boolean loading = true;
 
 Button[] buttons;
+String mode;
 
 void setup(){
   // calculated per metrics above, adjust if hexRadius changes
@@ -93,13 +95,6 @@ void setup(){
   size(928, 646);  
 
   lines = loadStrings(wordFile);
-
-  if (loading){
-    JSONObject subsectorData = loadJSONObject(".\\output\\Subsector_Demaggio.json");
-    subs = new Subsector(subsectorData);
-  } else {
-    subs = new Subsector();
-  }
 
   scheme = new ColorScheme(color(0),             // Hex background
                            color(125),           // Hex outline
@@ -114,17 +109,15 @@ void setup(){
   buttons = new Button[2];
   buttons[0] = new Button("New", 32, border, border * 3);
   buttons[1] = new Button("Load", 32, border, border * 5);
- 
-  if (!loading){
-    writeImage();
-    writeText();
-    writeJSON();  
-  }
+  mode = "menu";
 }
 
 void draw(){
-  //drawScreen();
-  drawMenu();
+  if (mode.equals("menu")){
+    drawMenu();
+  } else if (mode.equals("display")){
+    drawScreen();
+  }
 }
 
 void drawMenu(){
@@ -142,9 +135,32 @@ void drawMenu(){
   buttons[1].show();
 }
 
+Subsector createSubsector(){
+  if (loading){
+    JSONObject subsectorData = loadJSONObject(".\\output\\Subsector_Demaggio.json");
+    return new Subsector(subsectorData);
+  } else {
+    return new Subsector();
+  }
+}
+
 void mouseClicked(){
-  if (buttons[0].highlight){ println(buttons[0].label); }
-  if (buttons[1].highlight){ println(buttons[1].label); }
+  if (buttons[0].highlight){ 
+    println(buttons[0].label);
+    loading = false;
+    subs = createSubsector();
+    writeImage();
+    writeText();
+    writeJSON();
+    mode = "display";
+  }
+  
+  if (buttons[1].highlight){ 
+    println(buttons[1].label);
+    loading = true;
+    subs = createSubsector();
+    mode = "display";
+  }
 }
 
 void drawScreen(){
