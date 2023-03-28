@@ -7,16 +7,19 @@ class ColorScheme {
   color systemList;
   color pageBackground;
   color routes;
+  color buttonHighlight;
   
-  ColorScheme(color _cellB, color _cellOut, color _worldN, color _water, color _hexE, color _list, color _pageB, color _routes){
-    cellBackground = _cellB;
-    cellOutline    = _cellOut;
-    worldName      = _worldN;
-    waterPresent   = _water;
-    hexElements    = _hexE;
-    systemList     = _list;
-    pageBackground = _pageB;
-    routes         = _routes;
+  ColorScheme(color _cellB, color _cellOut, color _worldN, color _water, color _hexE, color _list, color _pageB, color _routes,
+              color _button){
+    cellBackground  = _cellB;
+    cellOutline     = _cellOut;
+    worldName       = _worldN;
+    waterPresent    = _water;
+    hexElements     = _hexE;
+    systemList      = _list;
+    pageBackground  = _pageB;
+    routes          = _routes;
+    buttonHighlight = _button;
   }
   
   // Ah! Gotcha! - due to the way Processing works, we

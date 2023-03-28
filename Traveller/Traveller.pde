@@ -29,10 +29,11 @@
 //  * DONE Loading subsectors
 //  * DONE Suppress saving/overwrite if loading existing data 
 //  * FIX  BUG: text panel, file and JSON system lists are unordered due to HashMap iterator
+//  * DONE Shift display to draw()
+//  * .... Mode selection - new vs. load (screen?)
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
-//  *      Shift display to draw()
-//  *      Mode selection - new vs. load (screen?)
+//  *      Beautify menu screen
 //  *      Proper layering of hex display
 //  *      Construct hex display once and show cached image
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
@@ -84,6 +85,8 @@ ColorScheme scheme;
 Subsector subs;
 Boolean loading = true;
 
+Button[] buttons;
+
 void setup(){
   // calculated per metrics above, adjust if hexRadius changes
   // panel width = 464, panel height = 646
@@ -105,15 +108,43 @@ void setup(){
                            color(255),           // Hex elements
                            color(0),             // System listing
                            color(255),           // Page background
-                           color(200, 80));      // Routes 
+                           color(200, 80),       // Routes
+                           color(255, 0, 0));    // Button highlight 
 
-  drawScreen();
-  
+  buttons = new Button[2];
+  buttons[0] = new Button("New", 32, border, border * 3);
+  buttons[1] = new Button("Load", 32, border, border * 5);
+ 
   if (!loading){
     writeImage();
     writeText();
     writeJSON();  
   }
+}
+
+void draw(){
+  //drawScreen();
+  drawMenu();
+}
+
+void drawMenu(){
+  background(scheme.pageBackground);
+  textSize(48);
+  textAlign(LEFT, TOP);
+
+  fill(scheme.systemList);
+  text("Traveller subsector generator", border, border);
+  
+  buttons[0].mouseHover();
+  buttons[0].show();
+  
+  buttons[1].mouseHover();
+  buttons[1].show();
+}
+
+void mouseClicked(){
+  if (buttons[0].highlight){ println(buttons[0].label); }
+  if (buttons[1].highlight){ println(buttons[1].label); }
 }
 
 void drawScreen(){
