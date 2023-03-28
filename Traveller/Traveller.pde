@@ -33,9 +33,10 @@
 //  * DONE Mode selection - new vs. load (screen?)
 //  * DONE File selection dialog for loading
 //  * DONE Beautify menu screen
-//  *      Intercept non-JSON file selection
+//  * DONE Intercept non-JSON file selection
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
+//  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
 //  *      Proper layering of hex display
 //  *      Construct hex display once and show cached image
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
@@ -47,6 +48,7 @@
 //  *      Travel zones (not present in 1e)
 //  *      Subsector summary paragraph
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
+//  *      BUG: image save is capturing the menu screen when creating a new subsector
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
 //  *      REFACTOR: move utility functions out of main script
@@ -176,16 +178,22 @@ void mouseClicked(){
   
   if (buttons[1].highlight){ 
     println(buttons[1].label);
-    selectInput("Select a subsector json file to load.", "fileSelected");
+    selectInput("Select a subsector json file to load.", "fileSelected", dataFile(".\\output\\*.json"));
+    // this filters, though the dialog "Files of Type" box doesn't reflect that fact
+    // and if you type "*.txt" in the selection box, for instance, it will change the hidden filter in use
+    // see https://discourse.processing.org/t/selectinput-i-like-to-tell-it-the-folder-to-use/13703/10
   }
 }
 
 void fileSelected(File _selection){
-  if (_selection == null){
+  jsonFile = _selection.toString();
+  int fl = jsonFile.length();
+  String extension = jsonFile.substring(fl-4,fl).toLowerCase();
+
+  if (_selection == null || !extension.equals("json")){
     println("Please select a json file, or choose NEW.");
   } else {
     println(_selection);
-    jsonFile = _selection.toString();
     loading = true;
     subs = createSubsector();
     mode = "display";
