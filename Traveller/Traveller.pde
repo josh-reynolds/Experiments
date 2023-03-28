@@ -27,7 +27,7 @@
 //  * DONE Route ctor that consumes JSON data
 //  * DONE Subsector ctor that consumes JSON data
 //  * DONE Loading subsectors
-//  *      Suppress saving/overwrite if loading existing data 
+//  * DONE Suppress saving/overwrite if loading existing data 
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Shift display to draw()
@@ -81,6 +81,7 @@ String lines[];
 ColorScheme scheme;
 
 Subsector subs;
+Boolean loading = true;
 
 void setup(){
   // calculated per metrics above, adjust if hexRadius changes
@@ -89,11 +90,12 @@ void setup(){
 
   lines = loadStrings(wordFile);
 
-  //subs = new Subsector();
-
-  JSONObject subsectorData = loadJSONObject(".\\output\\Subsector_Conoy.json");
-  subs = new Subsector(subsectorData);
-
+  if (loading){
+    JSONObject subsectorData = loadJSONObject(".\\output\\Subsector_Conoy.json");
+    subs = new Subsector(subsectorData);
+  } else {
+    subs = new Subsector();
+  }
 
   scheme = new ColorScheme(color(0),             // Hex background
                            color(125),           // Hex outline
@@ -105,9 +107,12 @@ void setup(){
                            color(200, 80));      // Routes 
 
   drawScreen();
-  writeImage();
-  writeText();
-  writeJSON();   
+  
+  if (!loading){
+    writeImage();
+    writeText();
+    writeJSON();  
+  }
 }
 
 void drawScreen(){
