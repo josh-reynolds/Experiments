@@ -32,8 +32,8 @@
 //  * DONE Shift display to draw()
 //  * DONE Mode selection - new vs. load (screen?)
 //  * DONE File selection dialog for loading
+//  * DONE Beautify menu screen
 //  *      Intercept non-JSON file selection
-//  *      Beautify menu screen
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Proper layering of hex display
@@ -106,11 +106,14 @@ void setup(){
                            color(0),             // System listing
                            color(255),           // Page background
                            color(200, 80),       // Routes
-                           color(255, 0, 0));    // Button highlight 
+                           color(255, 0, 0),     // Button highlight
+                           color(0),             // Menu background
+                           color(255, 0, 0),     // Menu title
+                           color(255));          // Menu text
 
   buttons = new Button[2];
-  buttons[0] = new Button("New", 32, border, border * 3);
-  buttons[1] = new Button("Load", 32, border, border * 5);
+  buttons[0] = new Button("New", 32, border, border * 4);
+  buttons[1] = new Button("Load", 32, border, border * 6);
   mode = "menu";
 }
 
@@ -123,12 +126,26 @@ void draw(){
 }
 
 void drawMenu(){
-  background(scheme.pageBackground);
-  textSize(48);
+  background(scheme.menuBackground);
+  
+  int titleSize = 72;
+  textSize(titleSize);
   textAlign(LEFT, TOP);
-
-  fill(scheme.systemList);
-  text("Traveller subsector generator", border, border);
+  fill(scheme.menuTitle);
+  String title = "TRAVELLER";
+  float titleWidth = textWidth(title);
+  text(title, width - titleWidth - border, border);
+  
+  textSize(titleSize/2);
+  textAlign(LEFT, TOP);
+  fill(scheme.menuText);
+  String subtitle = "Subsector Generator";
+  float subtitleWidth = textWidth(subtitle);
+  text(subtitle, width - subtitleWidth - border, titleSize + border);
+  
+  strokeWeight(10);
+  stroke(scheme.menuTitle);
+  line(0, border, width, border);
   
   buttons[0].mouseHover();
   buttons[0].show();

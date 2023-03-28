@@ -8,9 +8,12 @@ class ColorScheme {
   color pageBackground;
   color routes;
   color buttonHighlight;
+  color menuBackground;
+  color menuTitle;
+  color menuText;
   
   ColorScheme(color _cellB, color _cellOut, color _worldN, color _water, color _hexE, color _list, color _pageB, color _routes,
-              color _button){
+              color _button, color _menuB, color _menuTitle, color _menuText){
     cellBackground  = _cellB;
     cellOutline     = _cellOut;
     worldName       = _worldN;
@@ -20,6 +23,9 @@ class ColorScheme {
     pageBackground  = _pageB;
     routes          = _routes;
     buttonHighlight = _button;
+    menuBackground  = _menuB;
+    menuTitle       = _menuTitle;
+    menuText        = _menuText;
   }
   
   // Ah! Gotcha! - due to the way Processing works, we

@@ -18,13 +18,14 @@ class Button{
     textSize(size);
     textAlign(LEFT, TOP);
     
-    fill(scheme.systemList);
+    fill(scheme.menuBackground);
+    noStroke();
     rect(left, top, buttonWidth, size);
     
     if (highlight){
       fill(scheme.buttonHighlight);
     } else {
-      fill(scheme.pageBackground);
+      fill(scheme.menuText);
     }
     text(label, left, top);
   }
