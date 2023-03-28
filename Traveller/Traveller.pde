@@ -28,6 +28,7 @@
 //  * DONE Subsector ctor that consumes JSON data
 //  * DONE Loading subsectors
 //  * DONE Suppress saving/overwrite if loading existing data 
+//  * FIX  BUG: text panel, file and JSON system lists are unordered due to HashMap iterator
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Shift display to draw()
@@ -43,7 +44,6 @@
 //  *      Travel zones (not present in 1e)
 //  *      Subsector summary paragraph
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
-//  *      BUG: text panel, file and JSON system lists are unordered due to HashMap iterator
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
 //  *      REFACTOR: move utility functions out of main script
@@ -67,6 +67,7 @@
 //println((2 * border) + (((2 * vertCount) + 1) * yOffset));
 // ------------------------------------------------
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 int hexRadius = 32;
 int border = hexRadius;
@@ -91,7 +92,7 @@ void setup(){
   lines = loadStrings(wordFile);
 
   if (loading){
-    JSONObject subsectorData = loadJSONObject(".\\output\\Subsector_Conoy.json");
+    JSONObject subsectorData = loadJSONObject(".\\output\\Subsector_Demaggio.json");
     subs = new Subsector(subsectorData);
   } else {
     subs = new Subsector();

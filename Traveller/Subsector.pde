@@ -1,7 +1,7 @@
 class Subsector{
   String name;
   
-  HashMap<Coordinate, System> systems;
+  LinkedHashMap<Coordinate, System> systems;
   int vertCount = 10;
   int horzCount = 8;
   
@@ -10,7 +10,7 @@ class Subsector{
   Subsector(){
     name = "Subsector_" + lines[floor(random(lines.length))];
     
-    systems = new HashMap<Coordinate, System>();
+    systems = new LinkedHashMap<Coordinate, System>();
     routes = new ArrayList<Route>();
     
     for (int j = 1; j <= horzCount; j++){
@@ -26,7 +26,7 @@ class Subsector{
   Subsector(JSONObject _json){
     name = _json.getString("Subsector Name");
     
-    systems = new HashMap<Coordinate, System>();
+    systems = new LinkedHashMap<Coordinate, System>();
     routes = new ArrayList<Route>();
     
     JSONArray systemList = _json.getJSONArray("Systems");
