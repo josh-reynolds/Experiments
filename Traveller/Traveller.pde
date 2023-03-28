@@ -25,8 +25,9 @@
 //  * DONE Adding subsector name to JSON
 //  * DONE Lookup of Systems by Coordinate (need for Routes)
 //  * DONE Route ctor that consumes JSON data
-//  *      Subsector ctor that consumes JSON data
-//  *      Loading subsectors
+//  * DONE Subsector ctor that consumes JSON data
+//  * DONE Loading subsectors
+//  *      Suppress saving/overwrite if loading existing data 
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Shift display to draw()
@@ -88,7 +89,11 @@ void setup(){
 
   lines = loadStrings(wordFile);
 
-  subs = new Subsector();
+  //subs = new Subsector();
+
+  JSONObject subsectorData = loadJSONObject(".\\output\\Subsector_Conoy.json");
+  subs = new Subsector(subsectorData);
+
 
   scheme = new ColorScheme(color(0),             // Hex background
                            color(125),           // Hex outline

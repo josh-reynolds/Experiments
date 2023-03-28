@@ -13,6 +13,10 @@ class Route {
   // to look up in the HashMap, we need the same object as the key
   // not just equivalent values, as you would get from JSON reconstitution
   // so this is a bit involved
+  // 
+  // Unfortunately there's a timing issue with the global Subsector object
+  //  (which we need for the lookupCoordinate method). So this code moved
+  //  into Subsector. May remove this ctor as it is not used currently.
   Route(JSONObject _json){
     Coordinate c1 = subs.lookupCoordinate(_json.getJSONObject("First Coordinate"));
     s1 = subs.systems.get(c1);

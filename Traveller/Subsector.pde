@@ -23,6 +23,33 @@ class Subsector{
     calculateRoutes();
   }
   
+  Subsector(JSONObject _json){
+    name = _json.getString("Subsector Name");
+    
+    systems = new HashMap<Coordinate, System>();
+    routes = new ArrayList<Route>();
+    
+    JSONArray systemList = _json.getJSONArray("Systems");
+    for (int i = 0; i < systemList.size(); i++){
+      System s = new System(systemList.getJSONObject(i));
+      systems.put(s.coord, s);
+    }    
+    
+    JSONArray routeList = _json.getJSONArray("Routes");
+    for (int i = 0; i < routeList.size(); i++){
+      JSONObject rt = routeList.getJSONObject(i);
+      
+      Coordinate c1 = lookupCoordinate(rt.getJSONObject("First Coordinate"));
+      System s1 = systems.get(c1);
+      
+      Coordinate c2 = lookupCoordinate(rt.getJSONObject("Second Coordinate"));
+      System s2 = systems.get(c2);
+
+      Route r = new Route(s1, s2);
+      routes.add(r);
+    }
+  }
+  
   JSONObject asJSON(){
     JSONArray systemList = new JSONArray();    
     
