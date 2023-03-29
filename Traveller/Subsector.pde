@@ -50,6 +50,34 @@ class Subsector{
     }
   }
   
+  String summary(){
+    String output = name + " contains ";
+    
+    int worldCount = 0;
+    long totalPop = 0;
+    for (System s : systems.values()){
+      if (s.occupied){ 
+        worldCount++;
+        totalPop += pow(10, s.uwp.pop);
+      }
+    }
+    
+    float million = 1000000;
+    float billion = 1000000000;
+    String popString;
+    if (floor(totalPop/billion) > 0){
+      popString = nf(totalPop/billion, 0, 2) + " billion";
+    } else if (floor(totalPop/million) > 0){
+      popString = nf(totalPop/million, 0, 2) + " million";
+    } else {
+      popString = nf(totalPop/1000, 0, 2) + " thousand";
+    }
+    
+    output += worldCount + " worlds with a population of " + popString + "."; 
+    
+    return output;
+  }
+  
   JSONObject asJSON(){
     JSONArray systemList = new JSONArray();    
     

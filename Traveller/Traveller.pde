@@ -38,6 +38,7 @@
 //  * DONE Reference to Routes in Systems
 //  * FIX  BUG: routes are being duplicated - generated from both directions
 //  * FIX  BUG: after button click, any mouse clicks on the canvas repeat the last action
+//  * .... Subsector summary paragraph
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
@@ -50,7 +51,6 @@
 //  *      Moving beyond 1e...
 //  *      Support for multiple rulesets
 //  *      Travel zones (not present in 1e)
-//  *      Subsector summary paragraph
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
@@ -279,6 +279,8 @@ void writeText(){
   output.println("Saved " + subs.name);
   output.flush();
   output.close();
+  
+  println(subs.summary());
 }
 
 void writeJSON(){
