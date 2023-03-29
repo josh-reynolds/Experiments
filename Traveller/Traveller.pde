@@ -34,6 +34,7 @@
 //  * DONE File selection dialog for loading
 //  * DONE Beautify menu screen
 //  * DONE Intercept non-JSON file selection
+//  * FIX  BUG: image save is capturing the menu screen when creating a new subsector
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
@@ -45,10 +46,10 @@
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space
 //  *      Moving beyond 1e...
+//  *      Support for multiple rulesets
 //  *      Travel zones (not present in 1e)
 //  *      Subsector summary paragraph
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
-//  *      BUG: image save is capturing the menu screen when creating a new subsector
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
 //  *      REFACTOR: move utility functions out of main script
@@ -170,10 +171,11 @@ void mouseClicked(){
     println(buttons[0].label);
     loading = false;
     subs = createSubsector();
+    mode = "display";
+    drawScreen();
     writeImage();
     writeText();
     writeJSON();
-    mode = "display";
   }
   
   if (buttons[1].highlight){ 

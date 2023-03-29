@@ -12,6 +12,7 @@ class Hex {
     pushMatrix();
       translate(x,y);
       stroke(scheme.cellOutline);
+      strokeWeight(1);
       fill(scheme.cellBackground);
     
       float vX, vY, angle;
