@@ -37,6 +37,7 @@
 //  * FIX  BUG: image save is capturing the menu screen when creating a new subsector
 //  * DONE Reference to Routes in Systems
 //  * FIX  BUG: routes are being duplicated - generated from both directions
+//  * FIX  BUG: after button click, any mouse clicks on the canvas repeat the last action
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
@@ -51,7 +52,6 @@
 //  *      Travel zones (not present in 1e)
 //  *      Subsector summary paragraph
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
-//  *      BUG: after button click, any mouse clicks on the canvas repeat the last action
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
 //  *      REFACTOR: move utility functions out of main script
@@ -171,6 +171,7 @@ Subsector createSubsector(){
 void mouseClicked(){
   if (buttons[0].highlight){ 
     println(buttons[0].label);
+    buttons[0].highlight = false;
     loading = false;
     subs = createSubsector();
     mode = "display";
@@ -190,16 +191,21 @@ void mouseClicked(){
 }
 
 void fileSelected(File _selection){
+  if (_selection == null){
+    println("Please select a json file, or choose NEW.");
+    return;
+  }
   jsonFile = _selection.toString();
   int fl = jsonFile.length();
   String extension = jsonFile.substring(fl-4,fl).toLowerCase();
 
-  if (_selection == null || !extension.equals("json")){
+  if (!extension.equals("json")){
     println("Please select a json file, or choose NEW.");
   } else {
     println(_selection);
     loading = true;
     subs = createSubsector();
+    buttons[1].highlight = false;
     mode = "display";
   }
 }
