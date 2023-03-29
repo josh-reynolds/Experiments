@@ -92,7 +92,7 @@ class Subsector{
       System candidate = systems.get(coords[i]);
       if (!candidate.occupied || candidate.uwp.starport == 'X'){ continue; }
       
-      for (int j = 0; j < coords.length; j++){
+      for (int j = i+1; j < coords.length; j++){
         System target = systems.get(coords[j]);
         if (!target.occupied || target.uwp.starport == 'X'){ continue; }
         
