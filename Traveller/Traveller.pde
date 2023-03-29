@@ -35,13 +35,13 @@
 //  * DONE Beautify menu screen
 //  * DONE Intercept non-JSON file selection
 //  * FIX  BUG: image save is capturing the menu screen when creating a new subsector
+//  * DONE Reference to Routes in Systems
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
 //  *      Proper layering of hex display
 //  *      Construct hex display once and show cached image
 //  *      Better (i.e. any) UI/mechanic for changing color schemes
-//  *      Reference to Routes in Systems
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space
@@ -50,6 +50,8 @@
 //  *      Travel zones (not present in 1e)
 //  *      Subsector summary paragraph
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
+//  *      BUG: after button click, any mouse clicks on the canvas repeat the last action
+//  *      BUG: routes are being duplicated - generated from both directions
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
 //  *      REFACTOR: move utility functions out of main script
@@ -185,6 +187,16 @@ void mouseClicked(){
     // and if you type "*.txt" in the selection box, for instance, it will change the hidden filter in use
     // see https://discourse.processing.org/t/selectinput-i-like-to-tell-it-the-folder-to-use/13703/10
   }
+  
+  //if (subs != null){
+  //  for (System s : subs.systems.values()){
+  //    if (s.occupied){
+  //      println(s);
+  //      println(s.listRoutes());
+  //      break;
+  //    }
+  //  }
+  //}
 }
 
 void fileSelected(File _selection){

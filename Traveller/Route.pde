@@ -5,7 +5,9 @@ class Route {
   
   Route(System _s1, System _s2){
     s1 = _s1;
+    s1.addRoute(this);
     s2 = _s2;
+    s2.addRoute(this);
     
     distance = s1.distanceToSystem(s2);
   }

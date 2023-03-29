@@ -8,6 +8,7 @@ class System {
   Boolean gasGiant = false;
   TradeClass trade;
   String name = "";
+  ArrayList<Route> routes;
   
   System(Coordinate _coord){
     coord = _coord;
@@ -21,12 +22,13 @@ class System {
       if (twoDice() <= 9){ gasGiant = true; }
       trade = new TradeClass(uwp);
       name = lines[floor(random(lines.length))];
+      routes = new ArrayList<Route>();
     }
   } 
   
   System(JSONObject _json){
     coord    = new Coordinate(_json.getJSONObject("Coordinate"));  // might pass this in instead...
-    hex = new Hex(getX(coord.column), getY(coord.row, coord.column), hexRadius);
+    hex      = new Hex(getX(coord.column), getY(coord.row, coord.column), hexRadius);
     occupied = _json.getBoolean("Occupied");
     
     if (occupied){
@@ -36,7 +38,12 @@ class System {
       gasGiant  = _json.getBoolean("Gas Giant");
       uwp       = new UWP(_json.getJSONObject("UWP"));
       trade     = new TradeClass(uwp);
+      routes    = new ArrayList<Route>();
     }
+  }
+  
+  void addRoute(Route _r){
+    routes.add(_r);
   }
   
   int distanceToSystem(System _s){    
@@ -176,6 +183,15 @@ class System {
     } else {
       return "EMPTY : " + coord.toString();
     }
+  }
+  
+  String listRoutes(){
+    String output = "";
+    for (Route r : routes){
+      output += r.toString();
+      output += "\n";
+    }
+    return output;
   }
   
   JSONObject asJSON(){
