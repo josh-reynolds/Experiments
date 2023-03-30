@@ -55,10 +55,34 @@ class Subsector{
     
     int worldCount = 0;
     long totalPop = 0;
+    ArrayList<String> highestPop = new ArrayList<String>();
+    int maxPop = 0;
+    ArrayList<String> highestTech = new ArrayList<String>();
+    int maxTech = 0;
+    String maxTechString = "";
     for (System s : systems.values()){
       if (s.occupied){ 
         worldCount++;
         totalPop += pow(10, s.uwp.pop);
+
+        if (s.uwp.pop == maxPop){
+          highestPop.add(s.name);
+        }
+        if (s.uwp.pop > maxPop){
+          maxPop = s.uwp.pop;
+          highestPop = new ArrayList<String>();
+          highestPop.add(s.name);
+        }
+        
+        if (s.uwp.tech == maxTech){
+          highestTech.add(s.name);
+        }
+        if (s.uwp.tech > maxTech){
+          maxTech = s.uwp.tech;
+          maxTechString = s.uwp.modifiedHexChar(maxTech);
+          highestTech = new ArrayList<String>();
+          highestTech.add(s.name);
+        }
       }
     }
     
@@ -73,7 +97,30 @@ class Subsector{
       popString = nf(totalPop/1000, 0, 2) + " thousand";
     }
     
-    output += worldCount + " worlds with a population of " + popString + "."; 
+    output += worldCount + " worlds with a population of " + popString + ". "; 
+    output += "The highest population is " + hex(maxPop, 1) + " at ";
+    
+    if (highestPop.size() == 1){
+      output += highestPop.get(0) + ";";
+    } else {
+      for (int i = 0; i < highestPop.size()-2; i++){
+        output += highestPop.get(i) + ", ";
+      }
+      output += highestPop.get(highestPop.size()-2) + " and ";
+      output += highestPop.get(highestPop.size()-1) + ";";
+    }
+    
+    output += " the highest tech level is " + maxTechString + ", at ";
+    
+    if (highestTech.size() == 1){
+      output += highestTech.get(0) + ".";
+    } else {
+      for (int i = 0; i < highestTech.size()-2; i++){
+        output += highestTech.get(i) + ", ";
+      }
+      output += highestTech.get(highestTech.size()-2) + " and ";
+      output += highestTech.get(highestTech.size()-1) + ".";
+    }
     
     return output;
   }

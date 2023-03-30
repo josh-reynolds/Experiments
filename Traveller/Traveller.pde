@@ -38,7 +38,8 @@
 //  * DONE Reference to Routes in Systems
 //  * FIX  BUG: routes are being duplicated - generated from both directions
 //  * FIX  BUG: after button click, any mouse clicks on the canvas repeat the last action
-//  * .... Subsector summary paragraph
+//  * DONE Subsector summary paragraph
+//  *      Summary as class field generated in ctor and persisted via JSON
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
