@@ -39,7 +39,7 @@
 //  * FIX  BUG: routes are being duplicated - generated from both directions
 //  * FIX  BUG: after button click, any mouse clicks on the canvas repeat the last action
 //  * DONE Subsector summary paragraph
-//  *      Summary as class field generated in ctor and persisted via JSON
+//  * DONE Summary as class field generated in ctor and persisted via JSON
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
@@ -206,6 +206,7 @@ void fileSelected(File _selection){
     println(_selection);
     loading = true;
     subs = createSubsector();
+    println(subs.summary);
     buttons[1].highlight = false;
     mode = "display";
   }
@@ -260,8 +261,9 @@ void writeText(){
   String textFileName = ".\\output\\" + subs.name + ".txt";
   PrintWriter output = createWriter(textFileName);
   output.println(subs.name);
+  output.println();
+  output.println(subs.summary);
   output.println("=========================");
-  
   for (System s : subs.systems.values()){    
     if (s.occupied){
       println(s);
@@ -281,7 +283,7 @@ void writeText(){
   output.flush();
   output.close();
   
-  println(subs.summary());
+  println(subs.summary);
 }
 
 void writeJSON(){

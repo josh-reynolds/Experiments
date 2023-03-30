@@ -1,5 +1,6 @@
 class Subsector{
   String name;
+  String summary;
   
   LinkedHashMap<Coordinate, System> systems;
   int vertCount = 10;
@@ -20,11 +21,13 @@ class Subsector{
       }
     }
     
+    summary = createSummary();
     calculateRoutes();
   }
   
   Subsector(JSONObject _json){
     name = _json.getString("Subsector Name");
+    summary = _json.getString("Summary");
     
     systems = new LinkedHashMap<Coordinate, System>();
     routes = new ArrayList<Route>();
@@ -50,7 +53,7 @@ class Subsector{
     }
   }
   
-  String summary(){
+  String createSummary(){
     String output = name + " contains ";
     
     int worldCount = 0;
@@ -143,6 +146,7 @@ class Subsector{
 
     JSONObject json = new JSONObject();
     json.setString("Subsector Name", name);
+    json.setString("Summary", summary);
     json.setJSONArray("Systems", systemList);
     json.setJSONArray("Routes", routeList);
     
