@@ -41,7 +41,7 @@
 //  * DONE Subsector summary paragraph
 //  * DONE Summary as class field generated in ctor and persisted via JSON
 //  * DONE Better (i.e. any) UI/mechanic for changing color schemes
-//  *      Menu item to select color scheme
+//  * DONE Menu item to select color scheme
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
@@ -57,6 +57,7 @@
 //  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move presentation details out of main script
 //  *      REFACTOR: move utility functions out of main script
+//  *      REFACTOR: consolidate duplicate code in file handling
 // ------------------------------------------------
 // Hex geometry and layout
 // 
@@ -107,9 +108,10 @@ void setup(){
 
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
 
-  buttons = new Button[2];
+  buttons = new Button[3];
   buttons[0] = new Button("New", 32, border, border * 4);
   buttons[1] = new Button("Load", 32, border, border * 6);
+  buttons[2] = new Button("Colors", 32, border, border * 8);
   mode = "menu";
 }
 
@@ -148,6 +150,9 @@ void drawMenu(){
   
   buttons[1].mouseHover();
   buttons[1].show();
+  
+  buttons[2].mouseHover();
+  buttons[2].show();
 }
 
 Subsector createSubsector(){
@@ -174,14 +179,38 @@ void mouseClicked(){
   
   if (buttons[1].highlight){ 
     println(buttons[1].label);
-    selectInput("Select a subsector json file to load.", "fileSelected", dataFile(".\\output\\*.json"));
+    selectInput("Select a subsector json file to load.", "subsectorFileSelected", dataFile(".\\output\\*.json"));
     // this filters, though the dialog "Files of Type" box doesn't reflect that fact
     // and if you type "*.txt" in the selection box, for instance, it will change the hidden filter in use
     // see https://discourse.processing.org/t/selectinput-i-like-to-tell-it-the-folder-to-use/13703/10
   }
+  
+  if (buttons[2].highlight){
+    println(buttons[2].label);
+    selectInput("Select a color json file to load.", "colorFileSelected", dataFile(".\\data\\*.json"));
+  }
 }
 
-void fileSelected(File _selection){
+void colorFileSelected(File _selection){
+  if (_selection == null){
+    println("Please select a json file, or choose NEW.");
+    return;
+  }
+  String fileName = _selection.toString();
+  int fl = fileName.length();
+  String extension = fileName.substring(fl-4,fl).toLowerCase();
+
+  if (!extension.equals("json")){
+    println("Please select a json file, or choose NEW.");
+  } else {
+    println(_selection);
+    scheme = new ColorScheme(loadJSONObject(fileName));
+    buttons[2].highlight = false;
+    mode = "menu";
+  }
+}
+
+void subsectorFileSelected(File _selection){
   if (_selection == null){
     println("Please select a json file, or choose NEW.");
     return;
