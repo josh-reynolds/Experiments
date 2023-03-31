@@ -40,12 +40,13 @@
 //  * FIX  BUG: after button click, any mouse clicks on the canvas repeat the last action
 //  * DONE Subsector summary paragraph
 //  * DONE Summary as class field generated in ctor and persisted via JSON
+//  * DONE Better (i.e. any) UI/mechanic for changing color schemes
+//  *      Menu item to select color scheme
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
 //  *      Proper layering of hex display
 //  *      Construct hex display once and show cached image
-//  *      Better (i.e. any) UI/mechanic for changing color schemes
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space
@@ -104,18 +105,7 @@ void setup(){
 
   lines = loadStrings(wordFile);
 
-  scheme = new ColorScheme(color(0),             // Hex background
-                           color(125),           // Hex outline
-                           color(255, 255, 153), // World name display
-                           color(0, 125, 255),   // Water presence
-                           color(255),           // Hex elements
-                           color(0),             // System listing
-                           color(255),           // Page background
-                           color(200, 80),       // Routes
-                           color(255, 0, 0),     // Button highlight
-                           color(0),             // Menu background
-                           color(255, 0, 0),     // Menu title
-                           color(255));          // Menu text
+  scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
 
   buttons = new Button[2];
   buttons[0] = new Button("New", 32, border, border * 4);

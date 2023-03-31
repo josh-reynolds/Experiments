@@ -1,0 +1,74 @@
+{
+  "System List": {
+    "Red": 0,
+    "Blue": 0,
+    "Alpha": 255,
+    "Green": 0
+  },
+  "Menu Background": {
+    "Red": 0,
+    "Blue": 0,
+    "Alpha": 255,
+    "Green": 0
+  },
+  "Hex Outline": {
+    "Red": 125,
+    "Blue": 125,
+    "Alpha": 255,
+    "Green": 125
+  },
+  "Button Highlight": {
+    "Red": 255,
+    "Blue": 0,
+    "Alpha": 255,
+    "Green": 0
+  },
+  "Menu Text": {
+    "Red": 255,
+    "Blue": 255,
+    "Alpha": 255,
+    "Green": 255
+  },
+  "Water Presence": {
+    "Red": 0,
+    "Blue": 255,
+    "Alpha": 255,
+    "Green": 125
+  },
+  "Page Background": {
+    "Red": 255,
+    "Blue": 255,
+    "Alpha": 255,
+    "Green": 255
+  },
+  "Routes": {
+    "Red": 200,
+    "Blue": 200,
+    "Alpha": 80,
+    "Green": 200
+  },
+  "Menu Title": {
+    "Red": 255,
+    "Blue": 0,
+    "Alpha": 255,
+    "Green": 0
+  },
+  "Hex Background": {
+    "Red": 0,
+    "Blue": 0,
+    "Alpha": 255,
+    "Green": 0
+  },
+  "Hex Elements": {
+    "Red": 255,
+    "Blue": 255,
+    "Alpha": 255,
+    "Green": 255
+  },
+  "World Name": {
+    "Red": 255,
+    "Blue": 153,
+    "Alpha": 255,
+    "Green": 255
+  }
+}
