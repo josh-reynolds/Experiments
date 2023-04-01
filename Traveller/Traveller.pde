@@ -145,14 +145,10 @@ void drawMenu(){
   stroke(scheme.menuTitle);
   line(0, border, width, border);
   
-  buttons[0].mouseHover();
-  buttons[0].show();
-  
-  buttons[1].mouseHover();
-  buttons[1].show();
-  
-  buttons[2].mouseHover();
-  buttons[2].show();
+  for (Button b : buttons){
+    b.mouseHover();
+    b.show();
+  }
 }
 
 Subsector createSubsector(){
