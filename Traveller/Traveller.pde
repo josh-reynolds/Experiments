@@ -42,12 +42,12 @@
 //  * DONE Summary as class field generated in ctor and persisted via JSON
 //  * DONE Better (i.e. any) UI/mechanic for changing color schemes
 //  * DONE Menu item to select color scheme
-//  * .... REFACTOR: move presentation details out of main script
+//  * DONE REFACTOR: move presentation details out of main script
+//  * .... Construct hex display once and show cached image
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
 //  *      Proper layering of hex display
-//  *      Construct hex display once and show cached image
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space

@@ -18,14 +18,18 @@
 // ------------------------------------------------
 
 class SubsectorDisplay {
+  PGraphics screen;  // will need to plumb this through all show() methods...
   
-  SubsectorDisplay(){}
+  SubsectorDisplay(){
+    screen = createGraphics(width, height);
+  }
   
   void show(Subsector _sub){
-    background(scheme.pageBackground);
+    screen.beginDraw();
+    screen.background(scheme.pageBackground);
     
-    fill(scheme.cellOutline);
-    rect(0, 0, width/2, height);
+    screen.fill(scheme.cellOutline);
+    screen.rect(0, 0, width/2, height);
     
     // may want a separate Text Panel class later
     int textPanelLeft = width/2 + border;
@@ -33,32 +37,35 @@ class SubsectorDisplay {
     PFont font = loadFont("Consolas-12.vlw");
     
     for (System s : _sub.systems.values()){
-      s.showBackground();
+      s.showBackground(screen);
     }
   
     for (Route r : _sub.routes){
-      r.show();
+      r.show(screen);
     }
     
-    textAlign(LEFT, TOP);
-    fill(scheme.systemList);
-    textFont(font, 24);
-    text(_sub.name, textPanelLeft, textLine - 24);
+    screen.textAlign(LEFT, TOP);
+    screen.fill(scheme.systemList);
+    screen.textFont(font, 24);
+    screen.text(_sub.name, textPanelLeft, textLine - 24);
     
     for (System s : _sub.systems.values()){
-      s.showForeground();
+      s.showForeground(screen);
       
       if (s.occupied){      
-        textAlign(LEFT, TOP);
-        fill(scheme.systemList);
-        textFont(font, 12);    
-        text(s.toString(), textPanelLeft, textLine);    
+        screen.textAlign(LEFT, TOP);
+        screen.fill(scheme.systemList);
+        screen.textFont(font, 12);    
+        screen.text(s.toString(), textPanelLeft, textLine);    
         textLine += 14;
       }
     }
     
     for (System s : _sub.systems.values()){
-      if (s.occupied){ s.showName(); }
+      if (s.occupied){ s.showName(screen); }
     }
+    
+    screen.endDraw();
+    image(screen, 0, 0);
   }
 }

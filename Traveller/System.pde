@@ -104,6 +104,40 @@ class System {
       }
     }
   }
+
+  void showForeground(PGraphics _pg){
+    if (occupied){
+      _pg.strokeWeight(1);
+      
+      if (uwp.hydro == 0){ 
+        _pg.fill(scheme.cellBackground);
+      } else {
+        _pg.fill(scheme.waterPresent);
+      }
+      _pg.stroke(scheme.hexElements);
+      _pg.ellipse(hex.x, hex.y, 5 * hexRadius/12, 5 * hexRadius/12);
+      
+      _pg.fill(scheme.hexElements);
+      _pg.textSize(12);
+      _pg.textAlign(CENTER, CENTER);
+      _pg.text(uwp.starport, hex.x, hex.y - hexRadius/2);
+      
+      if (navalBase){
+        _pg.fill(scheme.hexElements);
+        drawStar(_pg, hex.x - 5 * hexRadius/12, hex.y - 5 * hexRadius/12, hexRadius/7);
+      }
+      
+      if (scoutBase){
+        _pg.fill(scheme.hexElements);
+        drawTriangle(_pg, hex.x - 5 * hexRadius/12, hex.y + hexRadius/3, hexRadius/7);
+      }
+      
+      if (gasGiant){
+        _pg.fill(scheme.hexElements);
+        _pg.ellipse(hex.x + hexRadius/3, hex.y - hexRadius/3, hexRadius/6, hexRadius/6);
+      }
+    }
+  }  
   
   void showBackground(){
     hex.show();
@@ -112,6 +146,15 @@ class System {
     textSize(9);
     textAlign(CENTER, TOP);
     text(coord.toString(), hex.x, hex.y + hexRadius/2);
+  }
+
+  void showBackground(PGraphics _pg){
+    hex.show(_pg);
+    
+    _pg.fill(scheme.cellOutline);
+    _pg.textSize(9);
+    _pg.textAlign(CENTER, TOP);
+    _pg.text(coord.toString(), hex.x, hex.y + hexRadius/2);
   }
   
   void showName(){
@@ -122,6 +165,17 @@ class System {
       text(name.toUpperCase(), hex.x, hex.y + hexRadius/2);
     } else {
       text(name, hex.x, hex.y + hexRadius/2);
+    }
+  }
+
+  void showName(PGraphics _pg){
+    _pg.fill(scheme.worldName);
+    _pg.textSize(11);
+    _pg.textAlign(CENTER, CENTER);
+    if (uwp.pop >= 9){
+      _pg.text(name.toUpperCase(), hex.x, hex.y + hexRadius/2);
+    } else {
+      _pg.text(name, hex.x, hex.y + hexRadius/2);
     }
   }
   
@@ -144,6 +198,26 @@ class System {
       endShape(CLOSE);
     popMatrix();
   }
+
+  void drawStar(PGraphics _pg,float _x, float _y, float _radius){
+    _pg.pushMatrix();
+      _pg.translate(_x, _y);
+      _pg.rotate(-PI/2);
+    
+      float vX, vY, angle;
+      int sides = 5;
+      
+      _pg.beginShape();
+      for (int i = 0; i < sides * 2; i += 2){
+        angle = TWO_PI / sides * i;
+        vX = _radius * cos(angle);
+        vY = _radius * sin(angle);
+        
+        _pg.vertex(vX,vY);
+      }
+      _pg.endShape(CLOSE);
+    _pg.popMatrix();
+  }
   
   void drawTriangle(float _x, float _y, float _radius){
     pushMatrix();
@@ -163,6 +237,26 @@ class System {
       }
       endShape(CLOSE);
     popMatrix();
+  }
+
+  void drawTriangle(PGraphics _pg, float _x, float _y, float _radius){
+    _pg.pushMatrix();
+      _pg.translate(_x, _y);
+      _pg.rotate(-PI/2);
+    
+      float vX, vY, angle;
+      int sides = 3;
+      
+      _pg.beginShape();
+      for (int i = 0; i < sides; i++){
+        angle = TWO_PI / sides * i;
+        vX = _radius * cos(angle);
+        vY = _radius * sin(angle);
+        
+        _pg.vertex(vX,vY);
+      }
+      _pg.endShape(CLOSE);
+    _pg.popMatrix();
   }
   
   String toString(){

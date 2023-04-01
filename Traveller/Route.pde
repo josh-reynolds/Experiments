@@ -34,6 +34,12 @@ class Route {
     strokeWeight(6);
     line(s1.hex.x, s1.hex.y, s2.hex.x, s2.hex.y);
   }
+
+  void show(PGraphics _pg){
+    _pg.stroke(scheme.routes);
+    _pg.strokeWeight(6);
+    _pg.line(s1.hex.x, s1.hex.y, s2.hex.x, s2.hex.y);
+  }
   
   String toString(){
     return "Jump " + distance + " : " + s1.name + " (" + s1.uwp.starport + ") " + " to " +
