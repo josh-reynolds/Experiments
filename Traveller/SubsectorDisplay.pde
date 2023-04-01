@@ -18,7 +18,7 @@
 // ------------------------------------------------
 
 class SubsectorDisplay {
-  PGraphics screen;  // will need to plumb this through all show() methods...
+  PGraphics screen;
   
   SubsectorDisplay(){
     screen = createGraphics(width, height);

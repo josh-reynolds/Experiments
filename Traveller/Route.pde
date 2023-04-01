@@ -28,12 +28,6 @@ class Route {
         
     distance = s1.distanceToSystem(s2);
   }
-  
-  void show(){
-    stroke(scheme.routes);
-    strokeWeight(6);
-    line(s1.hex.x, s1.hex.y, s2.hex.x, s2.hex.y);
-  }
 
   void show(PGraphics _pg){
     _pg.stroke(scheme.routes);
