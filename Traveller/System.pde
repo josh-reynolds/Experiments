@@ -10,6 +10,10 @@ class System {
   String name = "";
   ArrayList<Route> routes;
   
+  float yOffset = sqrt((hexRadius * hexRadius) - (hexRadius/2 * hexRadius/2));
+  int startX = hexRadius + border;
+  int startY = (int)yOffset + border;
+  
   System(Coordinate _coord){
     coord = _coord;
     hex = new Hex(getX(coord.column), getY(coord.row, coord.column), hexRadius);

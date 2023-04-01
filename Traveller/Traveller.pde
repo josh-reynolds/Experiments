@@ -42,6 +42,7 @@
 //  * DONE Summary as class field generated in ctor and persisted via JSON
 //  * DONE Better (i.e. any) UI/mechanic for changing color schemes
 //  * DONE Menu item to select color scheme
+//  * .... REFACTOR: move presentation details out of main script
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
@@ -55,27 +56,8 @@
 //  *      Travel zones (not present in 1e)
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      REFACTOR: consolidate polygon-drawing routines
-//  *      REFACTOR: move presentation details out of main script
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: consolidate duplicate code in file handling
-// ------------------------------------------------
-// Hex geometry and layout
-// 
-// hex x,y is center
-// hexRadius is distance from center to each vertex
-//   it is also the length of each side
-// yOffset is distance from center to edge (via Pythagoras) 
-
-// hex height                        = 2 x yOffset
-// vertical offset (same column)     = hex height
-// vertical offset (adjacent column) = hex height / 2 = yOffset
-// horizontal offset                 = hexRadius * 1.5 (equilateral triangles)
-
-// TOTAL WIDTH  = (2 x border) + (2 x hexRadius) + ((horzCount - 1) x hexRadius x 1.5)
-// TOTAL HEIGHT = (2 x border) + (((2 x vertCount) + 1) x yOffset
-
-//println((2 * border) + (2 * hexRadius) + ((horzCount - 1) * hexRadius * 1.5));
-//println((2 * border) + (((2 * vertCount) + 1) * yOffset));
 // ------------------------------------------------
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -83,16 +65,13 @@ import java.util.LinkedHashMap;
 int hexRadius = 32;
 int border = hexRadius;
 
-float yOffset = sqrt((hexRadius * hexRadius) - (hexRadius/2 * hexRadius/2));
-int startX = hexRadius + border;
-int startY = (int)yOffset + border;
-
 String wordFile = "words.txt";
 String lines[];
 
 ColorScheme scheme;
 
 Subsector subs;
+SubsectorDisplay subD;
 Boolean loading = true;
 
 Button[] buttons;
@@ -100,13 +79,15 @@ String mode;
 String jsonFile = "";
 
 void setup(){
-  // calculated per metrics above, adjust if hexRadius changes
+  // calculated per metrics detailed in SubsectorDisplay, adjust if hexRadius changes
   // panel width = 464, panel height = 646
   size(928, 646);  
 
   lines = loadStrings(wordFile);
 
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
+
+  subD = new SubsectorDisplay();
 
   buttons = new Button[3];
   buttons[0] = new Button("New", 32, border, border * 4);
@@ -228,43 +209,8 @@ void subsectorFileSelected(File _selection){
 }
 
 void drawScreen(){
-  background(scheme.pageBackground);
-
-  fill(scheme.cellOutline);
-  rect(0, 0, width/2, height);
-  
-  int textPanelLeft = width/2 + border;
-  int textLine = border;
-  PFont font = loadFont("Consolas-12.vlw");
-  
-  for (System s : subs.systems.values()){
-    s.showBackground();
-  }
-
-  for (Route r : subs.routes){
-    r.show();
-  }
-  
-  textAlign(LEFT, TOP);
-  fill(scheme.systemList);
-  textFont(font, 24);
-  text(subs.name, textPanelLeft, textLine - 24);
-  
-  for (System s : subs.systems.values()){
-    s.showForeground();
-    
-    if (s.occupied){      
-      textAlign(LEFT, TOP);
-      fill(scheme.systemList);
-      textFont(font, 12);    
-      text(s.toString(), textPanelLeft, textLine);    
-      textLine += 14;
-    }
-  }
-  
-  for (System s : subs.systems.values()){
-    if (s.occupied){ s.showName(); }
-  }
+  // I think this will expand out again, so leaving this func instead of inlining
+  subD.show(subs);
 }
 
 void writeImage(){
