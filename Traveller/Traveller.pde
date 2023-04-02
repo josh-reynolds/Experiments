@@ -43,7 +43,7 @@
 //  * DONE Better (i.e. any) UI/mechanic for changing color schemes
 //  * DONE Menu item to select color scheme
 //  * DONE REFACTOR: move presentation details out of main script
-//  * .... Construct hex display once and show cached image
+//  * DONE Construct hex display once and show cached image
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)

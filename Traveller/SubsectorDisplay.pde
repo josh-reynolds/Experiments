@@ -19,53 +19,58 @@
 
 class SubsectorDisplay {
   PGraphics screen;
+  Boolean redraw;
   
   SubsectorDisplay(){
     screen = createGraphics(width, height);
+    redraw = true;
   }
   
   void show(Subsector _sub){
-    screen.beginDraw();
-    screen.background(scheme.pageBackground);
-    
-    screen.fill(scheme.cellOutline);
-    screen.rect(0, 0, width/2, height);
-    
-    // may want a separate Text Panel class later
-    int textPanelLeft = width/2 + border;
-    int textLine = border;
-    PFont font = loadFont("Consolas-12.vlw");
-    
-    for (System s : _sub.systems.values()){
-      s.showBackground(screen);
-    }
-  
-    for (Route r : _sub.routes){
-      r.show(screen);
-    }
-    
-    screen.textAlign(LEFT, TOP);
-    screen.fill(scheme.systemList);
-    screen.textFont(font, 24);
-    screen.text(_sub.name, textPanelLeft, textLine - 24);
-    
-    for (System s : _sub.systems.values()){
-      s.showForeground(screen);
+    if (redraw){
+      screen.beginDraw();
+      screen.background(scheme.pageBackground);
       
-      if (s.occupied){      
-        screen.textAlign(LEFT, TOP);
-        screen.fill(scheme.systemList);
-        screen.textFont(font, 12);    
-        screen.text(s.toString(), textPanelLeft, textLine);    
-        textLine += 14;
+      screen.fill(scheme.cellOutline);
+      screen.rect(0, 0, width/2, height);
+      
+      // may want a separate Text Panel class later
+      int textPanelLeft = width/2 + border;
+      int textLine = border;
+      PFont font = loadFont("Consolas-12.vlw");
+      
+      for (System s : _sub.systems.values()){
+        s.showBackground(screen);
       }
-    }
     
-    for (System s : _sub.systems.values()){
-      if (s.occupied){ s.showName(screen); }
+      for (Route r : _sub.routes){
+        r.show(screen);
+      }
+      
+      screen.textAlign(LEFT, TOP);
+      screen.fill(scheme.systemList);
+      screen.textFont(font, 24);
+      screen.text(_sub.name, textPanelLeft, textLine - 24);
+      
+      for (System s : _sub.systems.values()){
+        s.showForeground(screen);
+        
+        if (s.occupied){      
+          screen.textAlign(LEFT, TOP);
+          screen.fill(scheme.systemList);
+          screen.textFont(font, 12);    
+          screen.text(s.toString(), textPanelLeft, textLine);    
+          textLine += 14;
+        }
+      }
+      
+      for (System s : _sub.systems.values()){
+        if (s.occupied){ s.showName(screen); }
+      }
+      
+      screen.endDraw();
+      redraw = false;
     }
-    
-    screen.endDraw();
     image(screen, 0, 0);
   }
 }
