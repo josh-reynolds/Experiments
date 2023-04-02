@@ -44,7 +44,7 @@
 //  * DONE Menu item to select color scheme
 //  * DONE REFACTOR: move presentation details out of main script
 //  * DONE Construct hex display once and show cached image
-//  * .... REFACTOR: consolidate polygon-drawing routines
+//  * DONE REFACTOR: consolidate polygon-drawing routines
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)

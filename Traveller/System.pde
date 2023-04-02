@@ -90,12 +90,12 @@ class System {
       
       if (navalBase){
         _pg.fill(scheme.hexElements);
-        hex.drawStar(_pg, hex.x - 5 * hexRadius/12, hex.y - 5 * hexRadius/12, hexRadius/7);
+        hex.drawStar(_pg);
       }
       
       if (scoutBase){
         _pg.fill(scheme.hexElements);
-        hex.drawTriangle(_pg, hex.x - 5 * hexRadius/12, hex.y + hexRadius/3, hexRadius/7);
+        hex.drawTriangle(_pg);
       }
       
       if (gasGiant){

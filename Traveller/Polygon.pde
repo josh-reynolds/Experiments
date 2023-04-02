@@ -8,68 +8,51 @@ class Polygon {
     radius = _radius;
   }
 
-  // hex.drawHex(_pg);
+  void drawPolygon(PGraphics _pg, float _radius, int _sides, int _skip){
+    // _skip == 1 for a normal convex polygon
+    // _skip == 2 for a 'star' concave polygon
+    float vX, vY, angle;
+    
+    _pg.beginShape();
+    for (int i = 0; i < _sides * _skip; i += _skip){
+      angle = TWO_PI / _sides * i;
+      vX = _radius * cos(angle);
+      vY = _radius * sin(angle);
+      
+      _pg.vertex(vX,vY);
+    }
+    _pg.endShape(CLOSE);
+  }
+
   void drawHex(PGraphics _pg){
     _pg.pushMatrix();
       _pg.translate(x,y);
       _pg.stroke(scheme.cellOutline);
       _pg.strokeWeight(1);
       _pg.fill(scheme.cellBackground);
-    
-      float vX, vY, angle;
-      int sides = 6;
-      
-      _pg.beginShape();
-      for (int i = 0; i < sides; i++){
-        angle = TWO_PI / sides * i;
-        vX = radius * cos(angle);
-        vY = radius * sin(angle);
         
-        _pg.vertex(vX,vY);
-      }
-      _pg.endShape(CLOSE);
+      drawPolygon(_pg, radius, 6, 1);
+
     _pg.popMatrix();
   }
 
-  // hex.drawStar(_pg, hex.x - 5 * hexRadius/12, hex.y - 5 * hexRadius/12, hexRadius/7);
-  void drawStar(PGraphics _pg, float _x, float _y, float _radius){
+  void drawStar(PGraphics _pg){
     _pg.pushMatrix();
-      _pg.translate(_x, _y);
+      _pg.translate(x - 5 * radius/12, y - 5 * radius/12);
       _pg.rotate(-PI/2);
     
-      float vX, vY, angle;
-      int sides = 5;
-      
-      _pg.beginShape();
-      for (int i = 0; i < sides * 2; i += 2){
-        angle = TWO_PI / sides * i;
-        vX = _radius * cos(angle);
-        vY = _radius * sin(angle);
-        
-        _pg.vertex(vX,vY);
-      }
-      _pg.endShape(CLOSE);
+      drawPolygon(_pg, radius/7, 5, 2);
+
     _pg.popMatrix();
   }
 
-  // hex.drawTriangle(_pg, hex.x - 5 * hexRadius/12, hex.y + hexRadius/3, hexRadius/7);
-  void drawTriangle(PGraphics _pg, float _x, float _y, float _radius){
+  void drawTriangle(PGraphics _pg){
     _pg.pushMatrix();
-      _pg.translate(_x, _y);
+      _pg.translate(x - 5 * radius/12, y + radius/3);
       _pg.rotate(-PI/2);
     
-      float vX, vY, angle;
-      int sides = 3;
+      drawPolygon(_pg, radius/7, 3, 1);
       
-      _pg.beginShape();
-      for (int i = 0; i < sides; i++){
-        angle = TWO_PI / sides * i;
-        vX = _radius * cos(angle);
-        vY = _radius * sin(angle);
-        
-        _pg.vertex(vX,vY);
-      }
-      _pg.endShape(CLOSE);
     _pg.popMatrix();
   }
 }
