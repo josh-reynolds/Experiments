@@ -44,6 +44,7 @@
 //  * DONE Menu item to select color scheme
 //  * DONE REFACTOR: move presentation details out of main script
 //  * DONE Construct hex display once and show cached image
+//  * .... REFACTOR: consolidate polygon-drawing routines
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
@@ -55,7 +56,6 @@
 //  *      Support for multiple rulesets
 //  *      Travel zones (not present in 1e)
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
-//  *      REFACTOR: consolidate polygon-drawing routines
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: consolidate duplicate code in file handling
 // ------------------------------------------------

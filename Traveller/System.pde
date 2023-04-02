@@ -1,5 +1,5 @@
 class System {
-  Hex hex;
+  Polygon hex;
   Coordinate coord;
   Boolean occupied = false;
   UWP uwp;
@@ -16,7 +16,7 @@ class System {
   
   System(Coordinate _coord){
     coord = _coord;
-    hex = new Hex(getX(coord.column), getY(coord.row, coord.column), hexRadius);
+    hex = new Polygon(getX(coord.column), getY(coord.row, coord.column), hexRadius);
     
     if (random(1) > 0.5){ 
       occupied = true;
@@ -32,7 +32,7 @@ class System {
   
   System(JSONObject _json){
     coord    = new Coordinate(_json.getJSONObject("Coordinate"));  // might pass this in instead...
-    hex      = new Hex(getX(coord.column), getY(coord.row, coord.column), hexRadius);
+    hex      = new Polygon(getX(coord.column), getY(coord.row, coord.column), hexRadius);
     occupied = _json.getBoolean("Occupied");
     
     if (occupied){
@@ -90,12 +90,12 @@ class System {
       
       if (navalBase){
         _pg.fill(scheme.hexElements);
-        drawStar(_pg, hex.x - 5 * hexRadius/12, hex.y - 5 * hexRadius/12, hexRadius/7);
+        hex.drawStar(_pg, hex.x - 5 * hexRadius/12, hex.y - 5 * hexRadius/12, hexRadius/7);
       }
       
       if (scoutBase){
         _pg.fill(scheme.hexElements);
-        drawTriangle(_pg, hex.x - 5 * hexRadius/12, hex.y + hexRadius/3, hexRadius/7);
+        hex.drawTriangle(_pg, hex.x - 5 * hexRadius/12, hex.y + hexRadius/3, hexRadius/7);
       }
       
       if (gasGiant){
@@ -106,7 +106,7 @@ class System {
   }  
 
   void showBackground(PGraphics _pg){
-    hex.show(_pg);
+    hex.drawHex(_pg);
     
     _pg.fill(scheme.cellOutline);
     _pg.textSize(9);
@@ -123,46 +123,6 @@ class System {
     } else {
       _pg.text(name, hex.x, hex.y + hexRadius/2);
     }
-  }
-
-  void drawStar(PGraphics _pg,float _x, float _y, float _radius){
-    _pg.pushMatrix();
-      _pg.translate(_x, _y);
-      _pg.rotate(-PI/2);
-    
-      float vX, vY, angle;
-      int sides = 5;
-      
-      _pg.beginShape();
-      for (int i = 0; i < sides * 2; i += 2){
-        angle = TWO_PI / sides * i;
-        vX = _radius * cos(angle);
-        vY = _radius * sin(angle);
-        
-        _pg.vertex(vX,vY);
-      }
-      _pg.endShape(CLOSE);
-    _pg.popMatrix();
-  }
-
-  void drawTriangle(PGraphics _pg, float _x, float _y, float _radius){
-    _pg.pushMatrix();
-      _pg.translate(_x, _y);
-      _pg.rotate(-PI/2);
-    
-      float vX, vY, angle;
-      int sides = 3;
-      
-      _pg.beginShape();
-      for (int i = 0; i < sides; i++){
-        angle = TWO_PI / sides * i;
-        vX = _radius * cos(angle);
-        vY = _radius * sin(angle);
-        
-        _pg.vertex(vX,vY);
-      }
-      _pg.endShape(CLOSE);
-    _pg.popMatrix();
   }
   
   String toString(){
