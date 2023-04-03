@@ -101,30 +101,27 @@ class Subsector{
     }
     
     output += worldCount + " worlds with a population of " + popString + ". "; 
-    output += "The highest population is " + hex(maxPop, 1) + " at ";
+
+    output += "The highest population is " + hex(maxPop, 1) + " at ";    
+    output += commaFormatList(highestPop, ';');
     
-    if (highestPop.size() == 1){
-      output += highestPop.get(0) + ";";
+    output += " the highest tech level is " + maxTechString + ", at ";    
+    output += commaFormatList(highestTech, '.');
+    
+    return output;
+  }
+  
+  String commaFormatList(ArrayList _list, char _final){
+    String output = "";
+    if (_list.size() == 1){
+      output += _list.get(0) + str(_final);
     } else {
-      for (int i = 0; i < highestPop.size()-2; i++){
-        output += highestPop.get(i) + ", ";
+      for (int i = 0; i < _list.size()-2; i++){
+        output += _list.get(i) + ", ";
       }
-      output += highestPop.get(highestPop.size()-2) + " and ";
-      output += highestPop.get(highestPop.size()-1) + ";";
+      output += _list.get(_list.size()-2) + " and ";
+      output += _list.get(_list.size()-1) + str(_final);
     }
-    
-    output += " the highest tech level is " + maxTechString + ", at ";
-    
-    if (highestTech.size() == 1){
-      output += highestTech.get(0) + ".";
-    } else {
-      for (int i = 0; i < highestTech.size()-2; i++){
-        output += highestTech.get(i) + ", ";
-      }
-      output += highestTech.get(highestTech.size()-2) + " and ";
-      output += highestTech.get(highestTech.size()-1) + ".";
-    }
-    
     return output;
   }
   
