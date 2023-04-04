@@ -45,10 +45,10 @@
 //  * DONE REFACTOR: move presentation details out of main script
 //  * DONE Construct hex display once and show cached image
 //  * DONE REFACTOR: consolidate polygon-drawing routines
+//  * DONE Proper layering of hex display
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
-//  *      Proper layering of hex display
 //  *      Separate hex display from system list display
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
@@ -60,6 +60,7 @@
 //  *      Subsector statistics (pop distribution etc.)
 //  *      SIDE PROJECT: statistical analysis of large numbers of UWPs, per ruleset
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
+//  *      REFACTOR: move display code out of System class
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: consolidate duplicate code in file handling
 // ------------------------------------------------
