@@ -74,34 +74,24 @@ class System {
   void showForeground(PGraphics _pg){
     if (occupied){
       _pg.strokeWeight(1);
+      _pg.stroke(scheme.hexElements);           
+      _pg.fill(scheme.hexElements);
+
+      if (navalBase){ hex.drawStar(_pg); }
+      if (scoutBase){ hex.drawTriangle(_pg); }
+      if (gasGiant ){ _pg.ellipse(hex.x + hexRadius/3, hex.y - hexRadius/3, hexRadius/6, hexRadius/6); }
       
+      _pg.textSize(12);
+      _pg.textAlign(CENTER, CENTER);
+      _pg.text(uwp.starport, hex.x, hex.y - hexRadius/2);
+
       if (uwp.hydro == 0){ 
         _pg.fill(scheme.cellBackground);
       } else {
         _pg.fill(scheme.waterPresent);
       }
-      _pg.stroke(scheme.hexElements);
-      _pg.ellipse(hex.x, hex.y, 5 * hexRadius/12, 5 * hexRadius/12);
-      
-      _pg.fill(scheme.hexElements);
-      _pg.textSize(12);
-      _pg.textAlign(CENTER, CENTER);
-      _pg.text(uwp.starport, hex.x, hex.y - hexRadius/2);
-      
-      if (navalBase){
-        _pg.fill(scheme.hexElements);
-        hex.drawStar(_pg);
-      }
-      
-      if (scoutBase){
-        _pg.fill(scheme.hexElements);
-        hex.drawTriangle(_pg);
-      }
-      
-      if (gasGiant){
-        _pg.fill(scheme.hexElements);
-        _pg.ellipse(hex.x + hexRadius/3, hex.y - hexRadius/3, hexRadius/6, hexRadius/6);
-      }
+
+      _pg.ellipse(hex.x, hex.y, 5 * hexRadius/12, 5 * hexRadius/12);  
     }
   }  
 

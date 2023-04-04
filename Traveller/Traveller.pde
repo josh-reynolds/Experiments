@@ -49,12 +49,16 @@
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
 //  *      Proper layering of hex display
+//  *      Separate hex display from system list display
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space
 //  *      Moving beyond 1e...
 //  *      Support for multiple rulesets
 //  *      Travel zones (not present in 1e)
+//  *      Detailed systems/worlds
+//  *      Subsector statistics (pop distribution etc.)
+//  *      SIDE PROJECT: statistical analysis of large numbers of UWPs, per ruleset
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: consolidate duplicate code in file handling
