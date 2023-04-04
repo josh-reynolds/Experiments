@@ -51,9 +51,9 @@ class SubsectorDisplay {
       foregroundLayer.textFont(font, 24);
       foregroundLayer.text(_sub.name, textPanelLeft, textLine - 24);
       
-      for (System s : _sub.systems.values()){
-        s.showBackground(backgroundLayer);        
-        s.showForeground(foregroundLayer);
+      for (System s : _sub.systems.values()){        
+        showBackground(backgroundLayer, s);
+        showForeground(foregroundLayer, s);
         
         if (s.occupied){      
           foregroundLayer.textAlign(LEFT, TOP);
@@ -62,7 +62,7 @@ class SubsectorDisplay {
           foregroundLayer.text(s.toString(), textPanelLeft, textLine);    
           textLine += 14;
 
-          s.showName(nameLayer);  
+          showName(nameLayer, s);
         }
       }
     
@@ -85,5 +85,49 @@ class SubsectorDisplay {
       redraw = false;
     }
     image(compositeImage, 0, 0);
+  }
+
+  void showBackground(PGraphics _pg, System _s){
+    _s.hex.drawHex(_pg);
+    
+    _pg.fill(scheme.cellOutline);
+    _pg.textSize(9);
+    _pg.textAlign(CENTER, TOP);
+    _pg.text(_s.coord.toString(), _s.hex.x, _s.hex.y + hexRadius/2);
+  }
+  
+  void showForeground(PGraphics _pg, System _s){
+    if (_s.occupied){
+      _pg.strokeWeight(1);
+      _pg.stroke(scheme.hexElements);           
+      _pg.fill(scheme.hexElements);
+
+      if (_s.navalBase){ _s.hex.drawStar(_pg); }
+      if (_s.scoutBase){ _s.hex.drawTriangle(_pg); }
+      if (_s.gasGiant ){ _pg.ellipse(_s.hex.x + hexRadius/3, _s.hex.y - hexRadius/3, hexRadius/6, hexRadius/6); }
+      
+      _pg.textSize(12);
+      _pg.textAlign(CENTER, CENTER);
+      _pg.text(_s.uwp.starport, _s.hex.x, _s.hex.y - hexRadius/2);
+
+      if (_s.uwp.hydro == 0){ 
+        _pg.fill(scheme.cellBackground);
+      } else {
+        _pg.fill(scheme.waterPresent);
+      }
+
+      _pg.ellipse(_s.hex.x, _s.hex.y, 5 * hexRadius/12, 5 * hexRadius/12);  
+    }
+  }
+  
+  void showName(PGraphics _pg, System _s){
+    _pg.fill(scheme.worldName);
+    _pg.textSize(11);
+    _pg.textAlign(CENTER, CENTER);
+    if (_s.uwp.pop >= 9){
+      _pg.text(_s.name.toUpperCase(), _s.hex.x, _s.hex.y + hexRadius/2);
+    } else {
+      _pg.text(_s.name, _s.hex.x, _s.hex.y + hexRadius/2);
+    }
   }
 }
