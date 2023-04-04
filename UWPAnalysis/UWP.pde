@@ -9,6 +9,7 @@
 //   population needed to support tech
 //   starport appropriateness - trade barriers? (see Far Trader)
 //   population needed to support starport
+//   economic extension (a la T5 & Pocket Empires)
 
 
 // Universal World Profile
@@ -21,6 +22,17 @@ class UWP {
   float surfaceArea; // needs debugging, don't think it handles size 0 properly
   float popDensity;
   
+  int importance; 
+  
+  Boolean agricultural = false;
+  Boolean highPopulation = false;
+  Boolean industrial = false;
+  Boolean rich = false;
+  
+  Boolean navalBase = false;
+  Boolean scoutBase = false;
+  Boolean depot = false;
+  Boolean waystation = false;
   
   UWP(){
     starport = generateStarport();
@@ -51,7 +63,32 @@ class UWP {
     law      = twoDice() - 7 + gov;
     if (law < 0){ law = 0; } 
     
-    tech     = generateTech(); 
+    tech     = generateTech();
+    
+    // hacking in temporary trade codes to support importance...
+    if (atmo >= 4 && atmo <= 9 && 
+        hydro >= 4 && hydro <= 8 &&
+        pop >= 5 && pop <= 7){ agricultural = true; }
+    if (pop >= 9){ highPopulation = true; }
+    if ((atmo <= 2 || atmo == 4 || atmo == 7 || atmo == 9) &&
+        pop >= 9){ industrial = true; }
+    if ((atmo == 6 || atmo == 8) &&
+        pop >= 6 && pop <= 8){ rich = true; }
+    
+    // same thing for bases
+    navalBase = generateNavalBase();
+    scoutBase = generateScoutBase();
+
+    // T5 doesn't supply a procedure for establishing depots/waystations
+    // making one up here
+    if (starport == 'A' && navalBase){
+      if (twoDice() < 5){ depot = true; } 
+    }
+    if (starport == 'A' && scoutBase){
+      if (twoDice() < 5){ waystation = true; }
+    }
+
+    importance = calculateImportance();
   }
   
   UWP(JSONObject _json){
@@ -64,6 +101,32 @@ class UWP {
     law      = _json.getInt("Law Level");
     tech     = _json.getInt("Tech Level");
   }  
+  
+  int calculateImportance(){
+    int result = 0;
+    
+    if (starport == 'A' || starport == 'B'){ result++; }
+    if (starport == 'D' || starport == 'E' || starport == 'X'){ result--; }
+    
+    if (tech >= 10){ result++; }
+    if (tech <= 8 ){ result--; }
+    
+    // trade codes - hack in for now, later can import that class...
+    if (agricultural){ result++; }
+    if (highPopulation){ result++; }
+    if (industrial){ result++; }
+    if (rich){ result++; }
+    
+    if (pop <= 6){ result--; }
+    
+    // bases - these live in the System class in the parent project, hack for now...
+    if (scoutBase && navalBase){ result++; }
+    
+    // waystation - T5 just says 'Starport A may have waystation or depot' but no method to generate...
+    if (depot || waystation){ result++; }
+    
+    return result;
+  }
   
   int generateTech(){
     int modifier = 0;
@@ -147,10 +210,25 @@ class UWP {
   }
   
   String toString(){
+    String tradeCodes = "";
+    if (agricultural  ){ tradeCodes += "Ag "; }
+    if (highPopulation){ tradeCodes += "Hi "; }
+    if (industrial    ){ tradeCodes += "In "; }
+    if (rich          ){ tradeCodes += "Ri "; }
+    
+    String bases = "";
+    if (scoutBase) { bases += "S"; }
+    if (navalBase) { bases += "N"; }
+    if (depot)     { bases += "D"; }
+    if (waystation){ bases += "W"; }
+    
     return starport + hex(size, 1) + hex(atmo, 1) + 
                       hex(hydro, 1) + hex(pop, 1) +
                       hex(gov, 1) + hex(law, 1) +
-                      "-" + modifiedHexChar(tech);
+                      "-" + modifiedHexChar(tech) +
+                      " {" + importance + "} " + 
+                      tradeCodes + " " +
+                      bases;
   }
   
   JSONObject asJSON(){
@@ -172,5 +250,23 @@ class UWP {
   
   int twoDice(){
     return oneDie() + oneDie();
+  }
+
+
+  Boolean generateScoutBase(){
+    int modifier = 0;
+    if (starport == 'A'){ modifier = -3; }
+    if (starport == 'B'){ modifier = -2; }
+    if (starport == 'C'){ modifier = -1; }
+    if (starport == 'E' || starport == 'X'){ return false; }
+    if (twoDice() + modifier >= 7){ return true; }
+    return false;
+  }
+  
+  Boolean generateNavalBase(){
+    if (starport == 'A' || starport == 'B'){ 
+      if (twoDice() >= 8){ return true; }
+    }
+    return false;
   }
 }

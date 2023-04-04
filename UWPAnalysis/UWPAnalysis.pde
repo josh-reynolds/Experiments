@@ -1,4 +1,8 @@
+// this started out as a quick sketch - not sure if it will get folded into
+// the primary Traveller project, or stay standalone
 
+// probably should have it consume a subsector JSON instead of randomly
+// creating a list, but this is good enough for now
 
 int listSize = 40;
 UWP[] systems;
@@ -43,17 +47,27 @@ void draw(){
 
   for (int i = 0; i < listSize; i++){
     fill(0, 125, 255);
+    stroke(0);
     rect(0, i * barHeight + 10, (width * popPercent[i]/100), barHeight);
     
-    fill(0);
+    if (systems[i].importance >= 4){
+      fill(255, 0, 0);
+    } else {
+      fill(0);
+    }
     textSize(12);
     text(systems[i].toString(), 10, i * barHeight + 10);
   }
   
   textAlign(RIGHT, TOP);
   textSize(24);
+  fill(0);
   text(magnitudeFormatNumber(totalPop), width, 0);
   
+  stroke(0, 125, 255, 125);
+  line(width/4, 0, width/4, height);
+  line(width/2, 0, width/2, height);
+  line(width/4 * 3, 0, width/4 * 3, height);
 }
 
 
