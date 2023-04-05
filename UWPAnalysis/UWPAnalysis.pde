@@ -8,6 +8,7 @@ int listSize = 40;
 UWP[] systems;
 float[] popPercent;
 long totalPop;
+int totalRUs;
 
 float barHeight;
 
@@ -24,6 +25,7 @@ void setup(){
   for (int i = 0; i < listSize; i++){
     systems[i] = new UWP();
     totalPop += systems[i].popcount;
+    totalRUs += systems[i].resourceUnits;
   }
 
   for (int i = 0; i < listSize; i++){
@@ -52,6 +54,8 @@ void draw(){
     
     if (systems[i].importance >= 4){
       fill(255, 0, 0);
+    } else if (systems[i].importance <=0){
+      fill(125);
     } else {
       fill(0);
     }
@@ -63,6 +67,7 @@ void draw(){
   textSize(24);
   fill(0);
   text(magnitudeFormatNumber(totalPop), width, 0);
+  text(magnitudeFormatNumber(totalRUs) + " RUs", width, 24);
   
   stroke(0, 125, 255, 125);
   line(width/4, 0, width/4, height);

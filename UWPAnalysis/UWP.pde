@@ -4,12 +4,13 @@
 // extending with a population digit, surface area, population density
 
 // some more indices to think about:
-//   importance (a la T5 & Pocket Empires)
-//   habitability & tech support needed to survive
-//   population needed to support tech
-//   starport appropriateness - trade barriers? (see Far Trader)
-//   population needed to support starport
-//   economic extension (a la T5 & Pocket Empires)
+//   DONE importance (a la T5 & Pocket Empires)
+//   DONE economic extension (a la T5 & Pocket Empires)
+//        habitability & tech support needed to survive
+//        population needed to support tech
+//        starport appropriateness - trade barriers? (see Far Trader)
+//        population needed to support starport
+
 
 
 // Universal World Profile
@@ -28,11 +29,24 @@ class UWP {
   Boolean highPopulation = false;
   Boolean industrial = false;
   Boolean rich = false;
+  Boolean nonindustrial = false;
+  Boolean barren = false;
+  Boolean dieback = false;
+  Boolean lowPopulation = false;
   
   Boolean navalBase = false;
   Boolean scoutBase = false;
   Boolean depot = false;
   Boolean waystation = false;
+  
+  int resources;
+  int labor;
+  int infrastructure;
+  int efficiency;
+  int resourceUnits;
+  
+  int gasGiants;
+  int belts;
   
   UWP(){
     starport = generateStarport();
@@ -74,6 +88,15 @@ class UWP {
         pop >= 9){ industrial = true; }
     if ((atmo == 6 || atmo == 8) &&
         pop >= 6 && pop <= 8){ rich = true; }
+    if (pop >= 4 && pop <= 6){ nonindustrial = true; }
+    if (pop >= 1 && pop <= 3){ lowPopulation = true; }
+    if (pop == 0 && gov == 0 && law == 0){   // some ambiguity here...
+      if (tech == 0){                        // T5 table on p. 432 forces gov/law to zero if pop == 0
+        barren = true;                       // but the tables on the next page omit this detail
+      } else {
+        dieback = true;
+      }
+    }
     
     // same thing for bases
     navalBase = generateNavalBase();
@@ -89,6 +112,16 @@ class UWP {
     }
 
     importance = calculateImportance();
+    
+    // adding for use in Economic Extension
+    
+    gasGiants = floor(twoDice()/2) - 2;
+    if (gasGiants < 0){ gasGiants = 0; }
+    
+    belts = oneDie() - 3;
+    if (belts < 0){ belts = 0; }
+    
+    calculateEconomics();  // using T5, p. 435
   }
   
   UWP(JSONObject _json){
@@ -101,6 +134,45 @@ class UWP {
     law      = _json.getInt("Law Level");
     tech     = _json.getInt("Tech Level");
   }  
+  
+  void calculateEconomics(){
+    resources = twoDice();
+    if (tech >= 8){
+      resources += gasGiants;
+      resources += belts;
+    }
+    
+    labor = pop - 1;
+    if (labor < 0){ labor = 0; }
+    
+    int temp;
+    if (nonindustrial){ 
+      temp = oneDie(); 
+    } else {
+      temp = twoDice();
+    }
+    infrastructure = temp + importance;
+    if (barren)            { infrastructure = 0; }
+    if (dieback)           { infrastructure = 0; }
+    if (lowPopulation)     { infrastructure = 0; }
+    if (infrastructure < 0){ infrastructure = 0; }
+    
+    efficiency = oneDie() - oneDie();
+    
+    int tempResources = resources;
+    if (tempResources == 0){ tempResources = 1; }
+    
+    int tempLabor = labor;
+    if (tempLabor == 0){ tempLabor = 1; }
+    
+    int tempInfrastructure = infrastructure;
+    if (tempInfrastructure == 0){ tempInfrastructure = 1; }
+    
+    int tempEfficiency = efficiency;
+    if (tempEfficiency == 0){ tempEfficiency = 1; }
+    
+    resourceUnits = tempResources * tempLabor * tempInfrastructure * tempEfficiency;
+  }
   
   int calculateImportance(){
     int result = 0;
@@ -215,6 +287,10 @@ class UWP {
     if (highPopulation){ tradeCodes += "Hi "; }
     if (industrial    ){ tradeCodes += "In "; }
     if (rich          ){ tradeCodes += "Ri "; }
+    if (nonindustrial ){ tradeCodes += "Ni "; }
+    if (lowPopulation ){ tradeCodes += "Lo "; }
+    if (barren        ){ tradeCodes += "Ba "; }
+    if (dieback       ){ tradeCodes += "Di "; }
     
     String bases = "";
     if (scoutBase) { bases += "S"; }
@@ -222,11 +298,19 @@ class UWP {
     if (depot)     { bases += "D"; }
     if (waystation){ bases += "W"; }
     
+    String resourceString = "";
+    resourceString += "(" + hex(resources, 1) + hex(labor, 1) + hex(infrastructure, 1);
+    String sign = "+";
+    if (efficiency < 0){ sign = "-"; }
+    resourceString += sign + hex(abs(efficiency), 1) + ") ";
+    
     return starport + hex(size, 1) + hex(atmo, 1) + 
                       hex(hydro, 1) + hex(pop, 1) +
                       hex(gov, 1) + hex(law, 1) +
                       "-" + modifiedHexChar(tech) +
-                      " {" + importance + "} " + 
+                      " {" + importance + "} " +
+                      resourceString +
+                      resourceUnits + " RUs " +
                       tradeCodes + " " +
                       bases;
   }
