@@ -20,32 +20,25 @@
 class SubsectorDisplay {
   PGraphics compositeImage;
   Boolean redraw;
-  TextPanel textPanel;
-  PGraphics foregroundLayer; // temporarily moving up during refactor of text panel code
   
   SubsectorDisplay(){
-    compositeImage = createGraphics(width, height);
-    foregroundLayer = createGraphics(width, height);
-    textPanel = new TextPanel(foregroundLayer);
+    compositeImage = createGraphics(width/2, height);
     redraw = true;
   }
   
   void show(Subsector _sub){
     if (redraw){
-      PGraphics backgroundLayer = createGraphics(width, height);
-      //PGraphics foregroundLayer = createGraphics(width, height);
-      PGraphics routeLayer      = createGraphics(width, height);
-      PGraphics nameLayer       = createGraphics(width, height);
+      PGraphics backgroundLayer = createGraphics(width/2, height);
+      PGraphics foregroundLayer = createGraphics(width/2, height);
+      PGraphics routeLayer      = createGraphics(width/2, height);
+      PGraphics nameLayer       = createGraphics(width/2, height);
       
       backgroundLayer.beginDraw();
       foregroundLayer.beginDraw();
       routeLayer.beginDraw();
       nameLayer.beginDraw();
 
-      backgroundLayer.fill(scheme.cellOutline);
-      backgroundLayer.rect(0, 0, width/2, height);
-      
-      textPanel.show(_sub);
+      backgroundLayer.background(scheme.cellOutline);
       
       for (System s : _sub.systems.values()){        
         showBackground(backgroundLayer, s);
@@ -66,7 +59,6 @@ class SubsectorDisplay {
       nameLayer.endDraw();
 
       compositeImage.beginDraw();
-      compositeImage.background(scheme.pageBackground);
       compositeImage.image(backgroundLayer, 0, 0);
       compositeImage.image(routeLayer, 0, 0);
       compositeImage.image(foregroundLayer, 0, 0);

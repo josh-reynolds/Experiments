@@ -47,7 +47,7 @@
 //  * DONE REFACTOR: consolidate polygon-drawing routines
 //  * DONE Proper layering of hex display
 //  * DONE REFACTOR: move display code out of System class
-//  * .... Separate hex display from system list display
+//  * DONE Separate hex display from system list display
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
@@ -77,6 +77,7 @@ ColorScheme scheme;
 
 Subsector subs;
 SubsectorDisplay subD;
+TextPanel textPanel;
 Boolean loading = true;
 
 Button[] buttons;
@@ -93,7 +94,8 @@ void setup(){
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
 
   subD = new SubsectorDisplay();
-
+  textPanel = new TextPanel();
+  
   buttons = new Button[3];
   buttons[0] = new Button("New", 32, border, border * 4);
   buttons[1] = new Button("Load", 32, border, border * 6);
@@ -214,8 +216,8 @@ void subsectorFileSelected(File _selection){
 }
 
 void drawScreen(){
-  // I think this will expand out again, so leaving this func instead of inlining
   subD.show(subs);
+  textPanel.show(subs);
 }
 
 void writeImage(){
