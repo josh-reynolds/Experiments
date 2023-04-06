@@ -47,10 +47,10 @@
 //  * DONE REFACTOR: consolidate polygon-drawing routines
 //  * DONE Proper layering of hex display
 //  * DONE REFACTOR: move display code out of System class
+//  * .... Separate hex display from system list display
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
-//  *      Separate hex display from system list display
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space

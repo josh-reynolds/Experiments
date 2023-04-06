@@ -20,16 +20,20 @@
 class SubsectorDisplay {
   PGraphics compositeImage;
   Boolean redraw;
+  TextPanel textPanel;
+  PGraphics foregroundLayer; // temporarily moving up during refactor of text panel code
   
   SubsectorDisplay(){
     compositeImage = createGraphics(width, height);
+    foregroundLayer = createGraphics(width, height);
+    textPanel = new TextPanel(foregroundLayer);
     redraw = true;
   }
   
   void show(Subsector _sub){
     if (redraw){
       PGraphics backgroundLayer = createGraphics(width, height);
-      PGraphics foregroundLayer = createGraphics(width, height);
+      //PGraphics foregroundLayer = createGraphics(width, height);
       PGraphics routeLayer      = createGraphics(width, height);
       PGraphics nameLayer       = createGraphics(width, height);
       
@@ -41,27 +45,13 @@ class SubsectorDisplay {
       backgroundLayer.fill(scheme.cellOutline);
       backgroundLayer.rect(0, 0, width/2, height);
       
-      // may want a separate Text Panel class later
-      int textPanelLeft = width/2 + border;
-      int textLine = border;
-      PFont font = loadFont("Consolas-12.vlw");
-      
-      foregroundLayer.textAlign(LEFT, TOP);
-      foregroundLayer.fill(scheme.systemList);
-      foregroundLayer.textFont(font, 24);
-      foregroundLayer.text(_sub.name, textPanelLeft, textLine - 24);
+      textPanel.show(_sub);
       
       for (System s : _sub.systems.values()){        
         showBackground(backgroundLayer, s);
         showForeground(foregroundLayer, s);
         
-        if (s.occupied){      
-          foregroundLayer.textAlign(LEFT, TOP);
-          foregroundLayer.fill(scheme.systemList);
-          foregroundLayer.textFont(font, 12);    
-          foregroundLayer.text(s.toString(), textPanelLeft, textLine);    
-          textLine += 14;
-
+        if (s.occupied){
           showName(nameLayer, s);
         }
       }
