@@ -1,4 +1,5 @@
 // Universal World Profile
+// this is derived from CT77 Book 3
 class UWP {
   char starport;
   int size, atmo, hydro, pop, gov, law, tech; 
@@ -88,7 +89,6 @@ class UWP {
       default:
         println("Invalid result in generateStarport()");
         return 'Z';
-      
     }
   }
   
@@ -137,5 +137,34 @@ class UWP {
     json.setInt("Law Level", law);
     json.setInt("Tech Level", tech);
     return json;
+  }
+}
+
+class UWP_CT81 extends UWP {
+  UWP_CT81(){
+    super();
+
+    // starport identical to CT77
+    // size identical to CT77
+    // atmo identical to CT77
+    
+    // hydro slightly different
+    //  - size 1 worlds are no longer forced to 0 hydro
+    //  - discrepancy between text (p. 7) and summary table (p. 12):
+    //     - table is identical to CT77 (other than change above)
+    //     - text adds ATMO instead of SIZE; using that here
+    hydro    = twoDice() - 7 + atmo;
+    if (atmo <= 1 || atmo >= 10){ hydro -= 4; }
+    if (size == 0 || hydro < 0){ hydro = 0; }
+    if (hydro > 10) { hydro = 10; }
+   
+    // pop identical to CT77
+    // gov identical to CT77
+    // law identical to CT77
+    // tech identical to CT77
+  }
+  
+  UWP_CT81(JSONObject _json){
+    super(_json);
   }
 }

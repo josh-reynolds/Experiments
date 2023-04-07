@@ -1,3 +1,4 @@
+// this is derived from CT77 Book 2
 class TradeClass {
   Boolean agricultural = false;
   Boolean nonagricultural = false;
@@ -5,11 +6,6 @@ class TradeClass {
   Boolean nonindustrial = false;
   Boolean rich = false;
   Boolean poor = false;
-  Boolean water = false;
-  Boolean desert = false;
-  Boolean vacuum = false;
-  Boolean asteroid = false;
-  Boolean icecapped = false;
   
   TradeClass(UWP _uwp){
     if (_uwp.atmo  >= 4 && _uwp.atmo  <= 9 &&
@@ -31,13 +27,6 @@ class TradeClass {
         
     if (_uwp.atmo >= 2 && _uwp.atmo <= 5 &&
         _uwp.hydro <= 3){ poor = true; }
-        
-    if (_uwp.hydro == 10){ water = true; }
-    if (_uwp.hydro == 0) { desert = true; }
-    if (_uwp.atmo == 0)  { vacuum = true; }
-    if (_uwp.size == 0)  { asteroid = true; }
-    if (_uwp.atmo <= 1 &&
-        _uwp.hydro >= 1) { icecapped = true; }
   }
   
   String toString(){
@@ -48,6 +37,32 @@ class TradeClass {
     if (nonindustrial)  { output += "Ni "; }
     if (rich)           { output += "Ri "; }
     if (poor)           { output += "Po "; }
+    return output;
+  }
+}
+
+class TradeClass_CT81 extends TradeClass {
+  Boolean water = false;
+  Boolean desert = false;
+  Boolean vacuum = false;
+  Boolean asteroid = false;
+  Boolean icecapped = false;
+  
+  TradeClass_CT81(UWP_CT81 _uwp){
+    super(_uwp);
+    
+    // agricultural/nonagricultural/industrial/nonindustrial/rich/poor identical to CT77
+    
+    if (_uwp.hydro == 10){ water = true; }
+    if (_uwp.hydro == 0) { desert = true; }
+    if (_uwp.atmo == 0)  { vacuum = true; }
+    if (_uwp.size == 0)  { asteroid = true; }
+    if (_uwp.atmo <= 1 &&
+        _uwp.hydro >= 1) { icecapped = true; }
+  }
+  
+  String toString(){
+    String output = super.toString();
     if (water)          { output += "Wa "; }
     if (desert)         { output += "De "; }
     if (vacuum)         { output += "Va "; }

@@ -1,3 +1,4 @@
+// this is derived from CT77 Book 3
 class System {
   Polygon hex;
   Coordinate coord;
@@ -23,7 +24,7 @@ class System {
       uwp = new UWP();
       navalBase = generateNavalBase();
       scoutBase = generateScoutBase();
-      if (twoDice() <= 9){ gasGiant = true; }
+      if (twoDice() <= 9){ gasGiant = true; }  // this is in Book 2, p.35
       trade = new TradeClass(uwp);
       name = lines[floor(random(lines.length))];
       routes = new ArrayList<Route>();
@@ -134,5 +135,64 @@ class System {
     }
     
     return startY + (yOffset * (_yCoord - 1) * 2) + columnAdjust;
+  }
+}
+
+class System_CT81 extends System {
+  String travelZone = "Green";
+  
+  System_CT81(Coordinate _coord){
+    super(_coord);
+    
+    // system occurrence identical to CT77
+    // naval base identical to CT77
+    // scout base identical to CT77
+    // gas giant identical to CT77
+    
+    // routes are referee fiat in CT81 - keeping the system from CT77 
+    
+    if (occupied){ 
+      uwp = new UWP_CT81();
+      trade = new TradeClass_CT81((UWP_CT81)uwp);
+      travelZone = generateTravelZone();
+    }
+    
+  }
+  System_CT81(JSONObject _json){
+    super(_json);
+    
+    if (occupied){
+      uwp        = new UWP_CT81(_json.getJSONObject("UWP"));
+      trade      = new TradeClass_CT81((UWP_CT81)uwp);
+      travelZone = _json.getString("Travel Zone"); 
+    }
+  }
+  
+  // **** need to add travel zone to JSON and string output
+  String generateTravelZone(){
+    // Travel Zones are referee fiat in CT81
+    // it is strongly implied by later sources (Spinward Marches & Solomani Rim)
+    // that Starport X indicates a Red zone (see pp. 36 + 40 of Spinward Marches)
+    
+    // Exceptions to this observation:
+    // Andor (C) & Candory (C) - Five Sisters/Spinward Marches - Red Zone
+    // Zeta 2 (X) - Vilis/Spinward Marches - Green Zone
+    // Djinni (E) - Lanth/Spinward Marches - Red Zone
+    // Rimmon (X) - Suleiman/Solomani Rim - Green Zone
+    // Weipu (X) - Alderamin/Solomani Rim - Green Zone
+    // Khugi (X) - Banasdan/Solomani Rim - Green Zone
+    // Kishakhpap (X) - Albadawi/Solomani Rim - Green Zone
+    // Altair (X) - Dingir/Solomani Rim - Green Zone
+    // Haddad (X) - Capella/Solomani Rim - Green Zone
+    // Pollux (X) - Gemini/Solomani Rim - Green Zone    
+
+    // MegaTraveller introduces a table that imposes zones for extreme gov/law combinations
+
+    // I'll incorporate those here, though they're not strictly CT81 RAW
+    // A couple other thoughts:
+    //  - have a small random chance of Amber zone on any (non-Red) system
+    //  - no fuel available seems like an Amber condition to me, add that
+    
+    return "";
   }
 }

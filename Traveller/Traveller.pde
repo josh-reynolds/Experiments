@@ -48,17 +48,19 @@
 //  * DONE Proper layering of hex display
 //  * DONE REFACTOR: move display code out of System class
 //  * DONE Separate hex display from system list display
+//  * .... Support for multiple rulesets
+//  * .... Moving beyond 1e...
+//  * .... Travel zones (not present in 1e)
+//  *      Menu button for selecting ruleset
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
 //  *      'Character' location and movement / ships (and UI elements)
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space
-//  *      Moving beyond 1e...
-//  *      Support for multiple rulesets
-//  *      Travel zones (not present in 1e)
 //  *      Detailed systems/worlds
 //  *      Subsector statistics (pop distribution etc.)
+//  *      Name generation module with more variety
 //  *      SIDE PROJECT: statistical analysis of large numbers of UWPs, per ruleset
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      REFACTOR: move utility functions out of main script
