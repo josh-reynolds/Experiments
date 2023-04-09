@@ -12,10 +12,7 @@ class UWP {
     atmo     = twoDice() - 7 + size;
     if (size == 0 || atmo < 0){ atmo = 0; }
     
-    hydro    = twoDice() - 7 + size;
-    if (atmo <= 1 || atmo >= 10){ hydro -= 4; }
-    if (size <= 1 || hydro < 0){ hydro = 0; }
-    if (hydro > 10) { hydro = 10; }
+    hydro    = generateHydro();
     
     pop      = twoDice() - 2;
     
@@ -37,7 +34,15 @@ class UWP {
     gov      = _json.getInt("Government");
     law      = _json.getInt("Law Level");
     tech     = _json.getInt("Tech Level");
-  }  
+  }
+  
+  int generateHydro(){
+    int result = twoDice() - 7 + size;
+    if (atmo <= 1 || atmo >= 10){ result -= 4; }
+    if (size <= 1 || result < 0){ result = 0; }
+    if (result > 10) { result = 10; }
+    return result;
+  }
   
   int generateTech(){
     int modifier = 0;
@@ -148,15 +153,7 @@ class UWP_CT81 extends UWP {
     // size identical to CT77
     // atmo identical to CT77
     
-    // hydro slightly different
-    //  - size 1 worlds are no longer forced to 0 hydro
-    //  - discrepancy between text (p. 7) and summary table (p. 12):
-    //     - table is identical to CT77 (other than change above)
-    //     - text adds ATMO instead of SIZE; using that here
-    hydro    = twoDice() - 7 + atmo;
-    if (atmo <= 1 || atmo >= 10){ hydro -= 4; }
-    if (size == 0 || hydro < 0){ hydro = 0; }
-    if (hydro > 10) { hydro = 10; }
+    // hydro slightly different - see override below
    
     // pop identical to CT77
     // gov identical to CT77
@@ -166,5 +163,17 @@ class UWP_CT81 extends UWP {
   
   UWP_CT81(JSONObject _json){
     super(_json);
+  }
+
+  // size 1 worlds are no longer forced to 0 hydro
+  // discrepancy between text (p. 7) and summary table (p. 12):
+  //  - table is identical to CT77 (other than change above)
+  //  - text adds ATMO instead of SIZE; using that here
+  int generateHydro(){
+    int result    = twoDice() - 7 + atmo;
+    if (atmo <= 1 || atmo >= 10){ result -= 4; }
+    if (size == 0 || result < 0){ result = 0; }
+    if (result > 10) { result = 10; }
+    return result;
   }
 }
