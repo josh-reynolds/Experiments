@@ -48,10 +48,13 @@
 //  * DONE Proper layering of hex display
 //  * DONE REFACTOR: move display code out of System class
 //  * DONE Separate hex display from system list display
-//  * .... Support for multiple rulesets
-//  * .... Moving beyond 1e...
+//  * DONE Support for multiple rulesets
+//  * DONE Moving beyond 1e...
 //  * DONE Travel zones (not present in 1e)
+//  *      Get travel zone colors into ColorScheme
+//  *      Remove routes to Red Zones
 //  *      Menu button for selecting ruleset
+//  *      Versioning in JSON w.r.t. ruleset
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
@@ -86,6 +89,8 @@ Button[] buttons;
 String mode;
 String jsonFile = "";
 
+Ruleset ruleset;
+
 void setup(){
   // calculated per metrics detailed in SubsectorDisplay, adjust if hexRadius changes
   // panel width = 464, panel height = 646
@@ -94,6 +99,8 @@ void setup(){
   lines = loadStrings(wordFile);
 
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
+
+  ruleset = new Ruleset("CT81");
 
   subD = new SubsectorDisplay();
   textPanel = new TextPanel();

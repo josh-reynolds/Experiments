@@ -80,6 +80,20 @@ class SubsectorDisplay {
   
   void showForeground(PGraphics _pg, System _s){
     if (_s.occupied){
+      Class<?> systemClass = _s.getClass();   // probably going to need to refactor as we get more variants
+      if (systemClass.getSimpleName().equals("System_CT81")){
+        _pg.strokeWeight(2);
+        _pg.noFill();
+        if (((System_CT81)_s).travelZone.equals("Red")){
+          _pg.stroke(color(255, 0, 0));
+          _pg.ellipse(_s.hex.x, _s.hex.y, hexRadius*3/2, hexRadius*3/2);
+        }
+        if (((System_CT81)_s).travelZone.equals("Amber")){
+          _pg.stroke(color(255, 255, 0));
+          _pg.ellipse(_s.hex.x, _s.hex.y, hexRadius*3/2, hexRadius*3/2);
+        }
+      }
+      
       _pg.strokeWeight(1);
       _pg.stroke(scheme.hexElements);           
       _pg.fill(scheme.hexElements);
