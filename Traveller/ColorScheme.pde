@@ -11,9 +11,11 @@ class ColorScheme {
   color menuBackground;
   color menuTitle;
   color menuText;
+  color amberZone;
+  color redZone;
   
   ColorScheme(color _cellB, color _cellOut, color _worldN, color _water, color _hexE, color _list, color _pageB, color _routes,
-              color _button, color _menuB, color _menuTitle, color _menuText){
+              color _button, color _menuB, color _menuTitle, color _menuText, color _amberZone, color _redZone){
     cellBackground  = _cellB;
     cellOutline     = _cellOut;
     worldName       = _worldN;
@@ -26,6 +28,8 @@ class ColorScheme {
     menuBackground  = _menuB;
     menuTitle       = _menuTitle;
     menuText        = _menuText;
+    amberZone       = _amberZone;
+    redZone         = _redZone;
   }
   
   ColorScheme(JSONObject _json){
@@ -41,6 +45,8 @@ class ColorScheme {
     menuBackground  = colorFromJSON(_json.getJSONObject("Menu Background"));
     menuTitle       = colorFromJSON(_json.getJSONObject("Menu Title"));
     menuText        = colorFromJSON(_json.getJSONObject("Menu Text"));
+    amberZone       = colorFromJSON(_json.getJSONObject("Amber Zone"));
+    redZone         = colorFromJSON(_json.getJSONObject("Red Zone"));
   }
   
   JSONObject asJSON(){
@@ -57,6 +63,8 @@ class ColorScheme {
     json.setJSONObject("Menu Background", colorToJSON(scheme.menuBackground));
     json.setJSONObject("Menu Title", colorToJSON(scheme.menuTitle));
     json.setJSONObject("Menu Text", colorToJSON(scheme.menuText));
+    json.setJSONObject("Amber Zone", colorToJSON(scheme.amberZone));
+    json.setJSONObject("Red Zone", colorToJSON(scheme.redZone));
     return json;
   }
   

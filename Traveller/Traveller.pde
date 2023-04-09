@@ -52,7 +52,7 @@
 //  * DONE Moving beyond 1e...
 //  * DONE Travel zones (not present in 1e)
 //  * DONE Menu button for selecting ruleset
-//  *      Get travel zone colors into ColorScheme
+//  * DONE Get travel zone colors into ColorScheme
 //  *      Remove routes to Red Zones
 //  *      Versioning in JSON w.r.t. ruleset
 //  *      Validating JSON data

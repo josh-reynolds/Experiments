@@ -70,5 +70,17 @@
     "Blue": 153,
     "Alpha": 255,
     "Green": 255
+  },
+  "Amber Zone": {
+    "Red": 255,
+    "Blue": 0,
+    "Alpha": 255,
+    "Green": 255
+  },
+  "Red Zone": {
+    "Red": 255,
+    "Blue": 0,
+    "Alpha": 255,
+    "Green": 0
   }
 }

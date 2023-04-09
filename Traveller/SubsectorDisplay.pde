@@ -85,11 +85,11 @@ class SubsectorDisplay {
         _pg.strokeWeight(2);
         _pg.noFill();
         if (((System_CT81)_s).travelZone.equals("Red")){
-          _pg.stroke(color(255, 0, 0));
+          _pg.stroke(scheme.redZone);
           _pg.ellipse(_s.hex.x, _s.hex.y, hexRadius*3/2, hexRadius*3/2);
         }
         if (((System_CT81)_s).travelZone.equals("Amber")){
-          _pg.stroke(color(255, 255, 0));
+          _pg.stroke(scheme.amberZone);
           _pg.ellipse(_s.hex.x, _s.hex.y, hexRadius*3/2, hexRadius*3/2);
         }
       }
