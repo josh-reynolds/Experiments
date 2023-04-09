@@ -50,7 +50,7 @@
 //  * DONE Separate hex display from system list display
 //  * .... Support for multiple rulesets
 //  * .... Moving beyond 1e...
-//  * .... Travel zones (not present in 1e)
+//  * DONE Travel zones (not present in 1e)
 //  *      Menu button for selecting ruleset
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)

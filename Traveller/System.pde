@@ -193,6 +193,19 @@ class System_CT81 extends System {
     //  - have a small random chance of Amber zone on any (non-Red) system
     //  - no fuel available seems like an Amber condition to me, add that
     
-    return "";
+    if (uwp.starport == 'X'){
+      if (twoDice() < 11){
+        return "Red";
+      }
+    }
+    
+    int dieThrow = twoDice();
+    if (dieThrow <= 3){ return "Amber"; }
+    if (dieThrow == 12 && !(uwp.starport == 'X')){ return "Red"; }
+    if ((uwp.starport == 'X' || uwp.starport == 'E') &&
+         uwp.hydro == 0 &&
+         gasGiant == false){ return "Amber"; }
+    
+    return "Green";
   }
 }
