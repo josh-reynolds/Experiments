@@ -51,11 +51,12 @@
 //  * DONE Support for multiple rulesets
 //  * DONE Moving beyond 1e...
 //  * DONE Travel zones (not present in 1e)
+//  * DONE Menu button for selecting ruleset
 //  *      Get travel zone colors into ColorScheme
 //  *      Remove routes to Red Zones
-//  *      Menu button for selecting ruleset
 //  *      Versioning in JSON w.r.t. ruleset
 //  *      Validating JSON data
+//  *      Display current color scheme name on menu screen
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
 //  *      'Character' location and movement / ships (and UI elements)
@@ -66,6 +67,8 @@
 //  *      Name generation module with more variety
 //  *      SIDE PROJECT: statistical analysis of large numbers of UWPs, per ruleset
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
+//  *      BUG: after layering, routes are too faint under default color scheme
+//  *      BUG: loading JSON for mismatched ruleset throws an exception
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: consolidate duplicate code in file handling
 // ------------------------------------------------
@@ -90,6 +93,8 @@ String mode;
 String jsonFile = "";
 
 Ruleset ruleset;
+String[] rules = {"CT77", "CT81"};
+int currentRules = 0;
 
 void setup(){
   // calculated per metrics detailed in SubsectorDisplay, adjust if hexRadius changes
@@ -100,15 +105,16 @@ void setup(){
 
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
 
-  ruleset = new Ruleset("CT81");
+  ruleset = new Ruleset(rules[currentRules]);
 
   subD = new SubsectorDisplay();
   textPanel = new TextPanel();
   
-  buttons = new Button[3];
+  buttons = new Button[4];
   buttons[0] = new Button("New", 32, border, border * 4);
   buttons[1] = new Button("Load", 32, border, border * 6);
   buttons[2] = new Button("Colors", 32, border, border * 8);
+  buttons[3] = new Button("Rules", 32, border, border * 10);
   mode = "menu";
 }
 
@@ -137,6 +143,10 @@ void drawMenu(){
   String subtitle = "Subsector Generator";
   float subtitleWidth = textWidth(subtitle);
   text(subtitle, width - subtitleWidth - border, titleSize + border);
+  
+  String rulesDescription = "Rules: " + rules[currentRules];
+  float rulesDescriptionWidth = textWidth(rulesDescription);
+  text(rulesDescription, width - rulesDescriptionWidth - border, height - titleSize + border);
   
   strokeWeight(10);
   stroke(scheme.menuTitle);
@@ -181,6 +191,13 @@ void mouseClicked(){
   if (buttons[2].highlight){
     println(buttons[2].label);
     selectInput("Select a color json file to load.", "colorFileSelected", dataFile(".\\data\\*.json"));
+  }
+
+  if (buttons[3].highlight){
+    println(buttons[3].label);
+    currentRules++;
+    currentRules %= rules.length;
+    ruleset = new Ruleset(rules[currentRules]);
   }
 }
 
