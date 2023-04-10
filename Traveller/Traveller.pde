@@ -57,7 +57,7 @@
 //  * FIX  BUG: loading JSON for mismatched ruleset throws an exception
 //  * DONE Versioning in JSON w.r.t. ruleset
 //  * DONE Display current color scheme name on menu screen
-//  *      Remove routes to Red Zones
+//  * DONE Remove routes to Red Zones
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
