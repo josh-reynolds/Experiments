@@ -1,4 +1,5 @@
 {
+  "Name": "Print-friendly",
   "System List": {
     "Red": 0,
     "Blue": 0,
@@ -82,5 +83,11 @@
     "Blue": 75,
     "Alpha": 255,
     "Green": 75
+  },
+  "Menu Descriptions": {
+    "Red": 125,
+    "Blue": 125,
+    "Alpha": 255,
+    "Green": 125
   }
 }

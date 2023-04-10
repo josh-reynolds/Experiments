@@ -56,9 +56,9 @@
 //  * FIX  BUG: after layering, routes are too faint under default color scheme
 //  * FIX  BUG: loading JSON for mismatched ruleset throws an exception
 //  * DONE Versioning in JSON w.r.t. ruleset
+//  * DONE Display current color scheme name on menu screen
 //  *      Remove routes to Red Zones
 //  *      Validating JSON data
-//  *      Display current color scheme name on menu screen
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
 //  *      'Character' location and movement / ships (and UI elements)
@@ -71,6 +71,7 @@
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: consolidate duplicate code in file handling
+//  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 // ------------------------------------------------
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -144,9 +145,14 @@ void drawMenu(){
   float subtitleWidth = textWidth(subtitle);
   text(subtitle, width - subtitleWidth - border, titleSize + border);
   
+  fill(scheme.menuDescriptions);
+  String colorSchemeDescription = "Color scheme: " + scheme.name;
+  float colorSchemeDescriptionWidth = textWidth(colorSchemeDescription);
+  text(colorSchemeDescription, width - colorSchemeDescriptionWidth - border, height - titleSize - border * 3); 
+  
   String rulesDescription = "Rules: " + rules[currentRules];
   float rulesDescriptionWidth = textWidth(rulesDescription);
-  text(rulesDescription, width - rulesDescriptionWidth - border, height - titleSize + border);
+  text(rulesDescription, width - rulesDescriptionWidth - border, height - titleSize - border);
   
   strokeWeight(10);
   stroke(scheme.menuTitle);

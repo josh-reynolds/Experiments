@@ -1,4 +1,5 @@
 class ColorScheme {
+  String name;
   color cellBackground;
   color cellOutline;
   color worldName;
@@ -13,44 +14,51 @@ class ColorScheme {
   color menuText;
   color amberZone;
   color redZone;
+  color menuDescriptions;
   
-  ColorScheme(color _cellB, color _cellOut, color _worldN, color _water, color _hexE, color _list, color _pageB, color _routes,
-              color _button, color _menuB, color _menuTitle, color _menuText, color _amberZone, color _redZone){
-    cellBackground  = _cellB;
-    cellOutline     = _cellOut;
-    worldName       = _worldN;
-    waterPresent    = _water;
-    hexElements     = _hexE;
-    systemList      = _list;
-    pageBackground  = _pageB;
-    routes          = _routes;
-    buttonHighlight = _button;
-    menuBackground  = _menuB;
-    menuTitle       = _menuTitle;
-    menuText        = _menuText;
-    amberZone       = _amberZone;
-    redZone         = _redZone;
+  ColorScheme(String _name, color _cellB, color _cellOut, color _worldN, color _water, color _hexE, color _list, color _pageB, 
+              color _routes, color _button, color _menuB, color _menuTitle, color _menuText, color _amberZone, color _redZone,
+              color _menuDescrip){
+    name             = _name;
+    cellBackground   = _cellB;
+    cellOutline      = _cellOut;
+    worldName        = _worldN;
+    waterPresent     = _water;
+    hexElements      = _hexE;
+    systemList       = _list;
+    pageBackground   = _pageB;
+    routes           = _routes;
+    buttonHighlight  = _button;
+    menuBackground   = _menuB;
+    menuTitle        = _menuTitle;
+    menuText         = _menuText;
+    amberZone        = _amberZone;
+    redZone          = _redZone;
+    menuDescriptions = _menuDescrip;
   }
   
   ColorScheme(JSONObject _json){
-    cellBackground  = colorFromJSON(_json.getJSONObject("Hex Background"));
-    cellOutline     = colorFromJSON(_json.getJSONObject("Hex Outline"));
-    worldName       = colorFromJSON(_json.getJSONObject("World Name"));
-    waterPresent    = colorFromJSON(_json.getJSONObject("Water Presence"));
-    hexElements     = colorFromJSON(_json.getJSONObject("Hex Elements"));
-    systemList      = colorFromJSON(_json.getJSONObject("System List"));
-    pageBackground  = colorFromJSON(_json.getJSONObject("Page Background"));
-    routes          = colorFromJSON(_json.getJSONObject("Routes"));
-    buttonHighlight = colorFromJSON(_json.getJSONObject("Button Highlight"));
-    menuBackground  = colorFromJSON(_json.getJSONObject("Menu Background"));
-    menuTitle       = colorFromJSON(_json.getJSONObject("Menu Title"));
-    menuText        = colorFromJSON(_json.getJSONObject("Menu Text"));
-    amberZone       = colorFromJSON(_json.getJSONObject("Amber Zone"));
-    redZone         = colorFromJSON(_json.getJSONObject("Red Zone"));
+    name             = _json.getString("Name");
+    cellBackground   = colorFromJSON(_json.getJSONObject("Hex Background"));
+    cellOutline      = colorFromJSON(_json.getJSONObject("Hex Outline"));
+    worldName        = colorFromJSON(_json.getJSONObject("World Name"));
+    waterPresent     = colorFromJSON(_json.getJSONObject("Water Presence"));
+    hexElements      = colorFromJSON(_json.getJSONObject("Hex Elements"));
+    systemList       = colorFromJSON(_json.getJSONObject("System List"));
+    pageBackground   = colorFromJSON(_json.getJSONObject("Page Background"));
+    routes           = colorFromJSON(_json.getJSONObject("Routes"));
+    buttonHighlight  = colorFromJSON(_json.getJSONObject("Button Highlight"));
+    menuBackground   = colorFromJSON(_json.getJSONObject("Menu Background"));
+    menuTitle        = colorFromJSON(_json.getJSONObject("Menu Title"));
+    menuText         = colorFromJSON(_json.getJSONObject("Menu Text"));
+    amberZone        = colorFromJSON(_json.getJSONObject("Amber Zone"));
+    redZone          = colorFromJSON(_json.getJSONObject("Red Zone"));
+    menuDescriptions = colorFromJSON(_json.getJSONObject("Menu Descriptions"));
   }
   
   JSONObject asJSON(){
     JSONObject json = new JSONObject();
+    json.setString("Name", name);
     json.setJSONObject("Hex Background", colorToJSON(scheme.cellBackground));
     json.setJSONObject("Hex Outline", colorToJSON(scheme.cellOutline));
     json.setJSONObject("World Name", colorToJSON(scheme.worldName));
@@ -65,6 +73,7 @@ class ColorScheme {
     json.setJSONObject("Menu Text", colorToJSON(scheme.menuText));
     json.setJSONObject("Amber Zone", colorToJSON(scheme.amberZone));
     json.setJSONObject("Red Zone", colorToJSON(scheme.redZone));
+    json.setJSONObject("Menu Descriptions", colorToJSON(scheme.menuDescriptions));
     return json;
   }
   
