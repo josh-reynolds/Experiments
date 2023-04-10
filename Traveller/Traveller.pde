@@ -54,8 +54,9 @@
 //  * DONE Menu button for selecting ruleset
 //  * DONE Get travel zone colors into ColorScheme
 //  * FIX  BUG: after layering, routes are too faint under default color scheme
+//  * FIX  BUG: loading JSON for mismatched ruleset throws an exception
+//  * DONE Versioning in JSON w.r.t. ruleset
 //  *      Remove routes to Red Zones
-//  *      Versioning in JSON w.r.t. ruleset
 //  *      Validating JSON data
 //  *      Display current color scheme name on menu screen
 //  *      Alternate text format to facilitate input (CSV?)
@@ -68,8 +69,6 @@
 //  *      Name generation module with more variety
 //  *      SIDE PROJECT: statistical analysis of large numbers of UWPs, per ruleset
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
-
-//  *      BUG: loading JSON for mismatched ruleset throws an exception
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: consolidate duplicate code in file handling
 // ------------------------------------------------
