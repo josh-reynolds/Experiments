@@ -53,6 +53,7 @@
 //  * DONE Travel zones (not present in 1e)
 //  * DONE Menu button for selecting ruleset
 //  * DONE Get travel zone colors into ColorScheme
+//  * FIX  BUG: after layering, routes are too faint under default color scheme
 //  *      Remove routes to Red Zones
 //  *      Versioning in JSON w.r.t. ruleset
 //  *      Validating JSON data
@@ -67,7 +68,7 @@
 //  *      Name generation module with more variety
 //  *      SIDE PROJECT: statistical analysis of large numbers of UWPs, per ruleset
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
-//  *      BUG: after layering, routes are too faint under default color scheme
+
 //  *      BUG: loading JSON for mismatched ruleset throws an exception
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: consolidate duplicate code in file handling
