@@ -209,33 +209,17 @@ class System_CT81 extends System {
     return "Green";
   }
 
-  // refactor so we can rely on the superclass for most of this - 
-  // only travel zone is different, though it's inserted into the middle of the string unfortunately
-  // the trade codes are variable length, but up until then it all aligns, so we should
-  // be able to split out the substrings and insert...
   String toString(){
-    String nb = " ";
-    if (navalBase){ nb = "N"; }
+    String description = super.toString();
+    String firstHalf = description.substring(0, 36);
+    String secondHalf = description.substring(36, description.length());
     
-    String sb = " ";
-    if (scoutBase){ sb = "S"; }
-    
-    String gg = " ";
-    if (gasGiant){ gg = "G"; }
-    
-    String outputName = name;
-    if (name.length() >= 15){ outputName = name.substring(0,15); }
-    int paddingLength = (16 - outputName.length());
-    for (int i = 1; i <= paddingLength; i++){
-      outputName += " ";
-    }
-    
-    String zone = " ";
-    if (travelZone.equals("Red")){ zone = "R"; }
-    if (travelZone.equals("Amber")){ zone = "A"; }
+    String zone = "   ";
+    if (travelZone.equals("Red")){ zone = " R "; }
+    if (travelZone.equals("Amber")){ zone = " A "; }
     
     if (occupied){
-      return outputName + coord.toString() + " : " + uwp.toString() + " " + nb + sb + gg + " " + zone + " " + trade.toString();
+      return firstHalf + zone + secondHalf;
     } else {
       return "EMPTY : " + coord.toString();
     }

@@ -59,6 +59,7 @@
 //  * DONE Display current color scheme name on menu screen
 //  * DONE Remove routes to Red Zones
 //  * DONE REFACTOR: ruleset capability query for Travel Zones
+//  * DONE REFACTOR: remove duplicate code in System subclass toString()
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
