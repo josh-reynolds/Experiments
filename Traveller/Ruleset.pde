@@ -5,6 +5,17 @@ class Ruleset {
     rules = _rules;
   }
   
+  Boolean supportsTravelZones(){
+    switch(rules) {
+      case "CT77":
+        return false;
+      case "CT81":
+        return true;
+      default:
+        return false;
+    }
+  }
+  
   System newSystem(Coordinate _coord){
     switch(rules) {
       case "CT77":

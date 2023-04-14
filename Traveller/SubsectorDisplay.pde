@@ -80,8 +80,7 @@ class SubsectorDisplay {
   
   void showForeground(PGraphics _pg, System _s){
     if (_s.occupied){
-      Class<?> systemClass = _s.getClass();   // probably going to need to refactor as we get more variants
-      if (systemClass.getSimpleName().equals("System_CT81")){
+      if (ruleset.supportsTravelZones()){
         _pg.strokeWeight(2);
         _pg.noFill();
         if (((System_CT81)_s).travelZone.equals("Red")){

@@ -58,6 +58,7 @@
 //  * DONE Versioning in JSON w.r.t. ruleset
 //  * DONE Display current color scheme name on menu screen
 //  * DONE Remove routes to Red Zones
+//  * DONE REFACTOR: ruleset capability query for Travel Zones
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)

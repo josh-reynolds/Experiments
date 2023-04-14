@@ -176,19 +176,15 @@ class Subsector{
   void calculateRoutes(){
     Coordinate[] coords = systems.keySet().toArray(new Coordinate[0]);
 
-    // consider refactoring into ruleset class, and look at the 
-    // (probably over-complicated) reflection code in SubsectorDisplay, too
-    Boolean travelZoneSupport = rules[currentRules].equals("CT81");
-
     for (int i = 0; i < coords.length; i++){
       System candidate = systems.get(coords[i]);
       if (!candidate.occupied || candidate.uwp.starport == 'X'){ continue; }
-      if (travelZoneSupport && ((System_CT81)candidate).travelZone.equals("Red")){ continue; }
+      if (ruleset.supportsTravelZones() && ((System_CT81)candidate).travelZone.equals("Red")){ continue; }
       
       for (int j = i+1; j < coords.length; j++){
         System target = systems.get(coords[j]);
         if (!target.occupied || target.uwp.starport == 'X'){ continue; }
-        if (travelZoneSupport && ((System_CT81)target).travelZone.equals("Red")){ continue; }
+        if (ruleset.supportsTravelZones() && ((System_CT81)target).travelZone.equals("Red")){ continue; }
               
         int dist = candidate.distanceToSystem(target);  
         if (dist > 4){ continue; }
