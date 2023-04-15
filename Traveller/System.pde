@@ -168,7 +168,6 @@ class System_CT81 extends System {
     }
   }
   
-  // **** need to add travel zone to JSON and string output
   String generateTravelZone(){
     // Travel Zones are referee fiat in CT81
     // it is strongly implied by later sources (Spinward Marches & Solomani Rim)
@@ -235,10 +234,70 @@ class System_CT81 extends System {
 }
 
 class System_ScoutsEx extends System_CT81 {
+  // Extension of CT81 rules - elements mostly the same, plus:
+  //  - Stars & orbits
+  //  - Influence of previous on UWP characteristics
+  //  - Additional worlds (non-mainworld)
+  //  - Satellites
+  //
+  // Scouts also introduces subsector density (handle separately)
+  //  
+  // Some considerations:
+  //  - Data format - JSON as-is will get very verbose
+  //  - How to mark mainworld
+  //  - Extended/derived characteristics (save for later)
+ 
+  Star[] stars;   // stars[0] is Primary
+  
   System_ScoutsEx(Coordinate _coord){
     super(_coord);
+    
+    if (occupied){
+    stars = new Star[getStarCount()];
+      for (int i = 0; i < stars.length; i++){
+        if (i == 0){
+          stars[i] = new Star(true, this);
+        } else {
+          stars[i] = new Star(false, this);
+        }
+      }
+    } else {
+      stars = null;
+    }
   }
+
+  // **** TO DO ****
   System_ScoutsEx(JSONObject _json){
     super(_json);
+  }
+  
+  String toString(){
+    String description = super.toString();
+    if (occupied){
+      for (Star s : stars){
+        description += s.toString() + " ";
+      }
+    }
+    return description;
+  }
+  
+  JSONObject asJSON(){
+    JSONObject json = super.asJSON();
+    if (occupied){
+      JSONArray starList = new JSONArray();
+      for (int i = 0; i < stars.length; i++){
+        starList.setString(i, stars[i].toString());
+      }
+      json.setJSONArray("Stars", starList);
+    }
+    return json;
+  }
+  
+  int getStarCount(){
+    int dieThrow = twoDice();
+    if (dieThrow < 8){ return 1; }
+    if (dieThrow > 7 && dieThrow < 12){ return 2; }
+    if (dieThrow == 12){ return 3; }
+    return 0;
   }
 }

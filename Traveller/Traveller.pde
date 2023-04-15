@@ -61,6 +61,7 @@
 //  * DONE REFACTOR: ruleset capability query for Travel Zones
 //  * DONE REFACTOR: remove duplicate code in System subclass toString()
 //  * .... Add Scouts extended generation ruleset
+//  *      Subsector density (and menu options for same)
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
