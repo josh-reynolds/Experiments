@@ -60,6 +60,7 @@
 //  * DONE Remove routes to Red Zones
 //  * DONE REFACTOR: ruleset capability query for Travel Zones
 //  * DONE REFACTOR: remove duplicate code in System subclass toString()
+//  * .... Add Scouts extended generation ruleset
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
@@ -96,7 +97,7 @@ String mode;
 String jsonFile = "";
 
 Ruleset ruleset;
-String[] rules = {"CT77", "CT81"};
+String[] rules = {"CT77", "CT81", "Scouts (Extended)"};
 int currentRules = 0;
 
 void setup(){

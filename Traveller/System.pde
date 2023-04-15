@@ -233,3 +233,12 @@ class System_CT81 extends System {
     return json;
   }
 }
+
+class System_ScoutsEx extends System_CT81 {
+  System_ScoutsEx(Coordinate _coord){
+    super(_coord);
+  }
+  System_ScoutsEx(JSONObject _json){
+    super(_json);
+  }
+}

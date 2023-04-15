@@ -10,6 +10,7 @@ class Ruleset {
       case "CT77":
         return false;
       case "CT81":
+      case "Scouts (Extended)":
         return true;
       default:
         return false;
@@ -22,6 +23,8 @@ class Ruleset {
         return new System(_coord);
       case "CT81":
         return new System_CT81(_coord);
+      case "Scouts (Extended)":
+        return new System_ScoutsEx(_coord);
       default:
         return new System(_coord);
     }
@@ -35,6 +38,8 @@ class Ruleset {
         return new System(_json);
       case "CT81":
         return new System_CT81(_json);
+      case "Scouts (Extended)":
+        return new System_ScoutsEx(_json);
       default:
         return new System(_json);
     }
