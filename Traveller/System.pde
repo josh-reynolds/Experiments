@@ -153,11 +153,13 @@ class System_CT81 extends System {
     
     if (occupied){ 
       uwp = new UWP_CT81();
+      navalBase = generateNavalBase();
+      scoutBase = generateScoutBase();
       trade = new TradeClass_CT81((UWP_CT81)uwp);
       travelZone = generateTravelZone();
     }
-    
   }
+  
   System_CT81(JSONObject _json){
     super(_json);
     

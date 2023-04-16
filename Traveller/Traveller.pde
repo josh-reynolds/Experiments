@@ -60,6 +60,7 @@
 //  * DONE Remove routes to Red Zones
 //  * DONE REFACTOR: ruleset capability query for Travel Zones
 //  * DONE REFACTOR: remove duplicate code in System subclass toString()
+//  * FIX  BUG: systems with X Starports sometimes get Scout & Naval bases
 //  * .... Add Scouts extended generation ruleset
 //  *      Subsector density (and menu options for same)
 //  *      Validating JSON data
