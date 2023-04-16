@@ -17,6 +17,13 @@ class Star {
     if (size.equals("D")){ decimal = 0; }
   }
   
+  Star(System _parent, String _s){
+    parent = _parent;
+    type = _s.charAt(0);
+    decimal = int(_s.substring(1,2));
+    size = _s.substring(2);
+  }
+  
   char getType(Boolean _primary){
     int dieThrow = twoDice();
     if (_primary){

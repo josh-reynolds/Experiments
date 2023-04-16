@@ -266,9 +266,18 @@ class System_ScoutsEx extends System_CT81 {
     }
   }
 
-  // **** TO DO ****
   System_ScoutsEx(JSONObject _json){
     super(_json);
+    
+    if (occupied){
+      JSONArray starList = _json.getJSONArray("Stars");
+      stars = new Star[starList.size()];
+      for (int i = 0; i < starList.size(); i++){
+        stars[i] = new Star(this, starList.getString(i));
+      }
+    } else {
+      stars = null;
+    }
   }
   
   String toString(){
