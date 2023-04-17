@@ -10,14 +10,10 @@ class System {
   TradeClass trade;
   String name = "";
   ArrayList<Route> routes;
-  
-  float yOffset = sqrt((hexRadius * hexRadius) - (hexRadius/2 * hexRadius/2));
-  int startX = hexRadius + border;
-  int startY = (int)yOffset + border;
-  
+    
   System(Coordinate _coord){
     coord = _coord;
-    hex = new Polygon(getX(coord.column), getY(coord.row, coord.column), hexRadius);
+    hex = new Polygon(coord.getScreenX(), coord.getScreenY(), hexRadius);
     
     if (random(1) > 0.5){ 
       occupied = true;
@@ -33,7 +29,7 @@ class System {
   
   System(JSONObject _json){
     coord    = new Coordinate(_json.getJSONObject("Coordinate"));  // might pass this in instead...
-    hex      = new Polygon(getX(coord.column), getY(coord.row, coord.column), hexRadius);
+    hex = new Polygon(coord.getScreenX(), coord.getScreenY(), hexRadius);
     occupied = _json.getBoolean("Occupied");
     
     if (occupied){
@@ -129,24 +125,6 @@ class System {
       json.setJSONObject("UWP", uwp.asJSON());
     }
     return json;
-  }
-  
-  // loop & geometry are 0-based, but coordinates are 1-based
-  // so have adjustments in these functions to reconcile
-  
-  float getX(int _xCoord){
-    return startX + (_xCoord - 1) * (hexRadius * 1.5);
-  }
-  
-  float getY(int _yCoord, int _xCoord){
-    float columnAdjust;
-    if ((_xCoord - 1) % 2 == 0){
-      columnAdjust = 0;
-    } else {
-      columnAdjust = yOffset;
-    }
-    
-    return startY + (yOffset * (_yCoord - 1) * 2) + columnAdjust;
   }
 }
 
