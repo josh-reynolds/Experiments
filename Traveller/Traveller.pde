@@ -62,6 +62,7 @@
 //  * DONE REFACTOR: remove duplicate code in System subclass toString()
 //  * FIX  BUG: systems with X Starports sometimes get Scout & Naval bases
 //  * DONE Add test suite
+//  * DONE REFACTOR: consolidate duplicate code in file handling
 //  * .... Add Scouts extended generation ruleset
 //  *      Subsector density (and menu options for same)
 //  *      Validating JSON data
@@ -76,7 +77,6 @@
 //  *      SIDE PROJECT: statistical analysis of large numbers of UWPs, per ruleset
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      REFACTOR: move utility functions out of main script
-//  *      REFACTOR: consolidate duplicate code in file handling
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 // ------------------------------------------------
 import java.util.Map;
@@ -219,43 +219,49 @@ void mouseClicked(){
 }
 
 void colorFileSelected(File _selection){
-  if (_selection == null){
-    println("Please select a json file, or choose NEW.");
-    return;
-  }
+  if (nullSelection(_selection)){ return; }
+  if (notJSONFile(_selection)){ return; }
+  println(_selection);
+  
+  scheme = new ColorScheme(loadJSONObject(_selection.toString()));
+
+  buttons[2].highlight = false;
+  mode = "menu";
+}
+
+void subsectorFileSelected(File _selection){
+  if (nullSelection(_selection)){ return; }
+  if (notJSONFile(_selection)){ return; }    
+  println(_selection);
+  
+  jsonFile = _selection.toString();
+  loading = true;
+  subs = createSubsector();
+  println(subs.summary);
+  tests.run();
+
+  buttons[1].highlight = false;
+  mode = "display";
+}
+
+Boolean notJSONFile(File _selection){
   String fileName = _selection.toString();
   int fl = fileName.length();
   String extension = fileName.substring(fl-4,fl).toLowerCase();
 
-  if (!extension.equals("json")){
-    println("Please select a json file, or choose NEW.");
-  } else {
-    println(_selection);
-    scheme = new ColorScheme(loadJSONObject(fileName));
-    buttons[2].highlight = false;
-    mode = "menu";
-  }
+  return badFileSelection(!extension.equals("json"));
 }
 
-void subsectorFileSelected(File _selection){
-  if (_selection == null){
-    println("Please select a json file, or choose NEW.");
-    return;
-  }
-  jsonFile = _selection.toString();
-  int fl = jsonFile.length();
-  String extension = jsonFile.substring(fl-4,fl).toLowerCase();
+Boolean nullSelection(File _selection){
+  return badFileSelection(_selection == null);
+}
 
-  if (!extension.equals("json")){
+Boolean badFileSelection(Boolean _condition){
+  if (_condition){
     println("Please select a json file, or choose NEW.");
+    return true;    
   } else {
-    println(_selection);
-    loading = true;
-    subs = createSubsector();
-    println(subs.summary);
-    buttons[1].highlight = false;
-    mode = "display";
-    tests.run();
+    return false;
   }
 }
 
