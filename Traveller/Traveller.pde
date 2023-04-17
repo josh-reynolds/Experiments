@@ -157,12 +157,12 @@ void drawMenu(){
   
   fill(scheme.menuDescriptions);
   String colorSchemeDescription = "Color scheme: " + scheme.name;
-  float colorSchemeDescriptionWidth = textWidth(colorSchemeDescription);
-  text(colorSchemeDescription, width - colorSchemeDescriptionWidth - border, height - titleSize - border * 3); 
+  float colorSchemeDescriptionWidth = textWidth(colorSchemeDescription); 
+  text(colorSchemeDescription, width - colorSchemeDescriptionWidth - border, height - titleSize - border);
   
   String rulesDescription = "Rules: " + rules[currentRules];
   float rulesDescriptionWidth = textWidth(rulesDescription);
-  text(rulesDescription, width - rulesDescriptionWidth - border, height - titleSize - border);
+  text(rulesDescription, width - rulesDescriptionWidth - border, height - titleSize/2 - border);
   
   strokeWeight(10);
   stroke(scheme.menuTitle);
