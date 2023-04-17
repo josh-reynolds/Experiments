@@ -21,11 +21,11 @@ class System {
     
     if (random(1) > 0.5){ 
       occupied = true;
-      uwp = new UWP();
+      uwp = generateUWP();
       navalBase = generateNavalBase();
       scoutBase = generateScoutBase();
       if (twoDice() <= 9){ gasGiant = true; }  // this is in Book 2, p.35
-      trade = new TradeClass(uwp);
+      trade = generateTradeClass(uwp);
       name = lines[floor(random(lines.length))];
       routes = new ArrayList<Route>();
     }
@@ -41,10 +41,22 @@ class System {
       navalBase = _json.getBoolean("Naval Base");
       scoutBase = _json.getBoolean("Scout Base");
       gasGiant  = _json.getBoolean("Gas Giant");
-      uwp       = new UWP(_json.getJSONObject("UWP"));
-      trade     = new TradeClass(uwp);
+      uwp       = generateUWP(_json.getJSONObject("UWP"));
+      trade     = generateTradeClass(uwp);
       routes    = new ArrayList<Route>();
     }
+  }
+  
+  TradeClass generateTradeClass(UWP _uwp){
+    return new TradeClass(_uwp);
+  }
+  
+  UWP generateUWP(){
+    return new UWP();
+  }
+
+  UWP generateUWP(JSONObject _json){
+    return new UWP(_json);
   }
   
   void addRoute(Route _r){
@@ -152,10 +164,6 @@ class System_CT81 extends System {
     // routes are referee fiat in CT81 - keeping the system from CT77 
     
     if (occupied){ 
-      uwp = new UWP_CT81();
-      navalBase = generateNavalBase();
-      scoutBase = generateScoutBase();
-      trade = new TradeClass_CT81((UWP_CT81)uwp);
       travelZone = generateTravelZone();
     }
   }
@@ -164,10 +172,20 @@ class System_CT81 extends System {
     super(_json);
     
     if (occupied){
-      uwp        = new UWP_CT81(_json.getJSONObject("UWP"));
-      trade      = new TradeClass_CT81((UWP_CT81)uwp);
       travelZone = _json.getString("Travel Zone"); 
     }
+  }
+  
+  TradeClass generateTradeClass(UWP _uwp){
+    return new TradeClass_CT81((UWP_CT81)_uwp);
+  }
+  
+  UWP generateUWP(){
+    return new UWP_CT81();
+  }
+  
+  UWP generateUWP(JSONObject _json){
+    return new UWP_CT81(_json);
   }
   
   String generateTravelZone(){
@@ -255,7 +273,7 @@ class System_ScoutsEx extends System_CT81 {
     super(_coord);
     
     if (occupied){
-    stars = new Star[getStarCount()];
+      stars = new Star[getStarCount()];
       for (int i = 0; i < stars.length; i++){
         if (i == 0){
           stars[i] = new Star(true, this);
