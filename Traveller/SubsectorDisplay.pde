@@ -42,9 +42,9 @@ class SubsectorDisplay {
       
       for (System s : _sub.systems.values()){        
         showBackground(backgroundLayer, s);
-        showForeground(foregroundLayer, s);
         
         if (s.occupied){
+          showForeground(foregroundLayer, s);
           showName(nameLayer, s);
         }
       }
@@ -79,40 +79,38 @@ class SubsectorDisplay {
   }
   
   void showForeground(PGraphics _pg, System _s){
-    if (_s.occupied){
-      if (ruleset.supportsTravelZones()){
-        _pg.strokeWeight(2);
-        _pg.noFill();
-        if (((System_CT81)_s).travelZone.equals("Red")){
-          _pg.stroke(scheme.redZone);
-          _pg.ellipse(_s.hex.x, _s.hex.y, hexRadius*3/2, hexRadius*3/2);
-        }
-        if (((System_CT81)_s).travelZone.equals("Amber")){
-          _pg.stroke(scheme.amberZone);
-          _pg.ellipse(_s.hex.x, _s.hex.y, hexRadius*3/2, hexRadius*3/2);
-        }
+    if (ruleset.supportsTravelZones()){
+      _pg.strokeWeight(2);
+      _pg.noFill();
+      if (((System_CT81)_s).travelZone.equals("Red")){
+        _pg.stroke(scheme.redZone);
+        _pg.ellipse(_s.hex.x, _s.hex.y, hexRadius*3/2, hexRadius*3/2);
       }
-      
-      _pg.strokeWeight(1);
-      _pg.stroke(scheme.hexElements);           
-      _pg.fill(scheme.hexElements);
-
-      if (_s.navalBase){ _s.hex.drawStar(_pg); }
-      if (_s.scoutBase){ _s.hex.drawTriangle(_pg); }
-      if (_s.gasGiant ){ _pg.ellipse(_s.hex.x + hexRadius/3, _s.hex.y - hexRadius/3, hexRadius/6, hexRadius/6); }
-      
-      _pg.textSize(12);
-      _pg.textAlign(CENTER, CENTER);
-      _pg.text(_s.uwp.starport, _s.hex.x, _s.hex.y - hexRadius/2);
-
-      if (_s.uwp.hydro == 0){ 
-        _pg.fill(scheme.cellBackground);
-      } else {
-        _pg.fill(scheme.waterPresent);
+      if (((System_CT81)_s).travelZone.equals("Amber")){
+        _pg.stroke(scheme.amberZone);
+        _pg.ellipse(_s.hex.x, _s.hex.y, hexRadius*3/2, hexRadius*3/2);
       }
-
-      _pg.ellipse(_s.hex.x, _s.hex.y, 5 * hexRadius/12, 5 * hexRadius/12);  
     }
+    
+    _pg.strokeWeight(1);
+    _pg.stroke(scheme.hexElements);           
+    _pg.fill(scheme.hexElements);
+
+    if (_s.navalBase){ _s.hex.drawStar(_pg); }
+    if (_s.scoutBase){ _s.hex.drawTriangle(_pg); }
+    if (_s.gasGiant ){ _pg.ellipse(_s.hex.x + hexRadius/3, _s.hex.y - hexRadius/3, hexRadius/6, hexRadius/6); }
+    
+    _pg.textSize(12);
+    _pg.textAlign(CENTER, CENTER);
+    _pg.text(_s.uwp.starport, _s.hex.x, _s.hex.y - hexRadius/2);
+
+    if (_s.uwp.hydro == 0){ 
+      _pg.fill(scheme.cellBackground);
+    } else {
+      _pg.fill(scheme.waterPresent);
+    }
+
+    _pg.ellipse(_s.hex.x, _s.hex.y, 5 * hexRadius/12, 5 * hexRadius/12);
   }
   
   void showName(PGraphics _pg, System _s){
