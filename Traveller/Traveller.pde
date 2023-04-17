@@ -278,14 +278,12 @@ void writeText(){
   output.println("=========================");
   for (System s : subs.systems.values()){    
     if (s.occupied){
-      println(s);
       output.println(s);
     }
   }
   
   output.println("=========================");
   for (Route r : subs.routes){
-    println(r);
     output.println(r);
   }
   

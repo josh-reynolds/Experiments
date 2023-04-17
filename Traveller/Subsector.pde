@@ -17,7 +17,6 @@ class Subsector{
     for (int j = 1; j <= horzCount; j++){
       for (int i = 1; i <= vertCount; i++){      
         Coordinate coord = new Coordinate(j, i);
-        //systems.put(coord, new System(coord));
         systems.put(coord, ruleset.newSystem(coord));
       }
     }
@@ -41,7 +40,6 @@ class Subsector{
     
     JSONArray systemList = _json.getJSONArray("Systems");
     for (int i = 0; i < systemList.size(); i++){
-      //System s = new System(systemList.getJSONObject(i));
       System s = ruleset.newSystem(systemList.getJSONObject(i));
       systems.put(s.coord, s);
     }    
