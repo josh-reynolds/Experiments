@@ -61,6 +61,7 @@
 //  * DONE REFACTOR: ruleset capability query for Travel Zones
 //  * DONE REFACTOR: remove duplicate code in System subclass toString()
 //  * FIX  BUG: systems with X Starports sometimes get Scout & Naval bases
+//  * DONE Add test suite
 //  * .... Add Scouts extended generation ruleset
 //  *      Subsector density (and menu options for same)
 //  *      Validating JSON data
@@ -102,6 +103,8 @@ Ruleset ruleset;
 String[] rules = {"CT77", "CT81", "Scouts (Extended)"};
 int currentRules = 0;
 
+TestSuite tests;
+
 void setup(){
   // calculated per metrics detailed in SubsectorDisplay, adjust if hexRadius changes
   // panel width = 464, panel height = 646
@@ -115,6 +118,8 @@ void setup(){
 
   subD = new SubsectorDisplay();
   textPanel = new TextPanel();
+  
+  tests = new TestSuite();
   
   buttons = new Button[4];
   buttons[0] = new Button("New", 32, border, border * 4);
@@ -189,6 +194,7 @@ void mouseClicked(){
     writeImage();
     writeText();
     writeJSON();
+    tests.run();
   }
   
   if (buttons[1].highlight){ 
@@ -249,6 +255,7 @@ void subsectorFileSelected(File _selection){
     println(subs.summary);
     buttons[1].highlight = false;
     mode = "display";
+    tests.run();
   }
 }
 
