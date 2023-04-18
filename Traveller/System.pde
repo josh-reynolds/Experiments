@@ -246,6 +246,8 @@ class System_ScoutsEx extends System_CT81 {
   //  - Extended/derived characteristics (save for later)
  
   Star[] stars;   // stars[0] is Primary
+  //Orbit[] orbits;
+  String[] orbits; // still working through the class hierarchy, let's do strings for now
   
   System_ScoutsEx(Coordinate _coord){
     super(_coord);
@@ -258,6 +260,53 @@ class System_ScoutsEx extends System_CT81 {
         } else {
           stars[i] = new Star(false, this);
         }
+      }
+      
+      println("Primary: " + stars[0]);
+
+      int maxCompanion = 0;
+      for (int i = 1; i < stars.length; i++){
+        int modifier = 4 * (i - 1);
+        println("Assessing companion star: " + stars[i] + " modifier: +" + modifier);
+        int dieThrow = twoDice() + modifier;
+        int result = 0;
+        if (dieThrow < 4  ){ result = 0; }  // actually "Close" - not the same as Orbit 0, how to represent?
+        if (dieThrow == 4 ){ result = 1; }
+        if (dieThrow == 5 ){ result = 2; }
+        if (dieThrow == 6 ){ result = 3; }
+        if (dieThrow == 7 ){ result = 4 + oneDie(); }
+        if (dieThrow == 8 ){ result = 5 + oneDie(); }
+        if (dieThrow == 9 ){ result = 6 + oneDie(); }
+        if (dieThrow == 10){ result = 7 + oneDie(); }
+        if (dieThrow == 11){ result = 8 + oneDie(); }
+        if (dieThrow >= 12){               // "Far" - should convert this to an orbit number 
+          int distance = 1000 * oneDie();
+          if (distance == 1000                    ){ result = 14; }
+          if (distance == 2000                    ){ result = 15; }
+          if (distance == 3000 || distance == 4000){ result = 16; }
+          if (distance >= 5000                    ){ result = 17; } // from tables on Scouts p.46 - should derive the formula instead
+                                                                    // or calculate "Far" in terms of orbit number to begin with
+        }
+        if (result > maxCompanion){ maxCompanion = result; }
+        println(result);
+        // need to classify Close & Far
+        // need to screen orbits inside Primary
+        // need to check for companions on Far results
+        // need to handle case where companion orbit is greater than max orbits
+      }
+
+      int orbitCount = calculateMaxOrbits();
+      //orbits = new Orbit[orbitCount];
+      if (orbitCount < maxCompanion){
+        orbits = new String[maxCompanion];
+        // need to ensure orbits inbetween are empty 
+      } else {
+        orbits = new String[orbitCount];
+      }
+      if (stars.length == 1){
+        println("Orbits: " + orbits.length);
+      } else {
+        println("Orbits: " + orbits.length + " EMPTY: " + (maxCompanion - orbitCount));
       }
     } else {
       stars = null;
@@ -306,5 +355,20 @@ class System_ScoutsEx extends System_CT81 {
     if (dieThrow > 7 && dieThrow < 12){ return 2; }
     if (dieThrow == 12){ return 3; }
     return 0;
+  }
+  
+  int calculateMaxOrbits(){
+    int modifier = 0;
+    if (stars[0].size.equals("II") ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
+    if (stars[0].size.equals("III")){ modifier += 4; }
+    if (stars[0].type == 'M'       ){ modifier -= 4; }
+    if (stars[0].type == 'K'       ){ modifier -= 2; }
+
+    int result = twoDice() + modifier; 
+    if (result < 1){ 
+      return 0; 
+    } else {
+      return result;
+    }
   }
 }
