@@ -1,0 +1,78 @@
+// TO DO:
+//  * DONE World names
+//  * DONE Saving subsector for print
+//  * DONE Single-page view
+//  * DONE Print-friendly color scheme / alternate schemes
+//  * DONE Calculate distance between two hexes
+//  * DONE Jump routes (only present in 1e)
+//  * DONE List out all routes
+//  * DONE Text file output
+//  * DONE Display subsector name on page
+//  * DONE Saving subsectors / data formats
+//  * DONE Create an output folder
+//  * DONE Writing out coords in JSON for null systems (need for loading)
+//  * DONE Coordinate equality
+//  * DONE REFACTOR: move coordinate conversion methods to System class
+//  * DONE REFACTOR: introduce subsector class
+//  * DONE REFACTOR: consolidate & clean up output code
+//  * DONE REFACTOR: consolidate screen drawing code
+//  * DONE REFACTOR: asJSON method for Subsector class
+//  * DONE Coordinate ctor that consumes JSON data
+//  * DONE More JSON ctors: UWP, System
+//  * DONE Adding subsector name to JSON
+//  * DONE Lookup of Systems by Coordinate (need for Routes)
+//  * DONE Route ctor that consumes JSON data
+//  * DONE Subsector ctor that consumes JSON data
+//  * DONE Loading subsectors
+//  * DONE Suppress saving/overwrite if loading existing data 
+//  * FIX  BUG: text panel, file and JSON system lists are unordered due to HashMap iterator
+//  * DONE Shift display to draw()
+//  * DONE Mode selection - new vs. load (screen?)
+//  * DONE File selection dialog for loading
+//  * DONE Beautify menu screen
+//  * DONE Intercept non-JSON file selection
+//  * FIX  BUG: image save is capturing the menu screen when creating a new subsector
+//  * DONE Reference to Routes in Systems
+//  * FIX  BUG: routes are being duplicated - generated from both directions
+//  * FIX  BUG: after button click, any mouse clicks on the canvas repeat the last action
+//  * DONE Subsector summary paragraph
+//  * DONE Summary as class field generated in ctor and persisted via JSON
+//  * DONE Better (i.e. any) UI/mechanic for changing color schemes
+//  * DONE Menu item to select color scheme
+//  * DONE REFACTOR: move presentation details out of main script
+//  * DONE Construct hex display once and show cached image
+//  * DONE REFACTOR: consolidate polygon-drawing routines
+//  * DONE Proper layering of hex display
+//  * DONE REFACTOR: move display code out of System class
+//  * DONE Separate hex display from system list display
+//  * DONE Support for multiple rulesets
+//  * DONE Moving beyond 1e...
+//  * DONE Travel zones (not present in 1e)
+//  * DONE Menu button for selecting ruleset
+//  * DONE Get travel zone colors into ColorScheme
+//  * FIX  BUG: after layering, routes are too faint under default color scheme
+//  * FIX  BUG: loading JSON for mismatched ruleset throws an exception
+//  * DONE Versioning in JSON w.r.t. ruleset
+//  * DONE Display current color scheme name on menu screen
+//  * DONE Remove routes to Red Zones
+//  * DONE REFACTOR: ruleset capability query for Travel Zones
+//  * DONE REFACTOR: remove duplicate code in System subclass toString()
+//  * FIX  BUG: systems with X Starports sometimes get Scout & Naval bases
+//  * DONE Add test suite
+//  * DONE REFACTOR: consolidate duplicate code in file handling
+//  * .... Add Scouts extended generation ruleset
+//  *      Subsector density (and menu options for same)
+//  *      Validating JSON data
+//  *      Alternate text format to facilitate input (CSV?)
+//  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
+//  *      'Character' location and movement / ships (and UI elements)
+//  *      Trade system
+//  *      Sectors and multi-subsector layouts / 'infinite' space
+//  *      Detailed systems/worlds
+//  *      Subsector statistics (pop distribution etc.)
+//  *      Name generation module with more variety
+//  *      SIDE PROJECT: statistical analysis of large numbers of UWPs, per ruleset
+//  *      BUG: panel can't show more than 44 systems, truncating subsector listing
+//  *      REFACTOR: move utility functions out of main script
+//  *      REFACTOR: reorganize and coordinate color listings in code & JSON
+// ------------------------------------------------
