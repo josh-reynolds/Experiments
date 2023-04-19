@@ -1,4 +1,4 @@
-class Star {
+class Star extends Orbit {
   System parent;
   
   char type;
@@ -9,7 +9,7 @@ class Star {
   String size;  // Roman numerals - should we store as ints instead?
   int sizeRoll;
 
-  int orbit = 0; // haven't settled how to represent the primary and close companions yet...
+  //int orbitNumber; // haven't settled how to represent the primary and close companions yet...
   
   Star(Boolean _primary, System _parent){
     parent = _parent;
@@ -38,7 +38,7 @@ class Star {
       return 'X';
     } else {
       typeRoll = 0;
-      dieThrow += ((System_ScoutsEx)parent).stars[0].typeRoll;
+      dieThrow += ((System_ScoutsEx)parent).primary.typeRoll;
       if (dieThrow == 2                 ){ return 'A'; }
       if (dieThrow == 3 || dieThrow == 4){ return 'F'; }
       if (dieThrow == 5 || dieThrow == 6){ return 'G'; }
@@ -73,7 +73,7 @@ class Star {
       return "X";
     } else {
       sizeRoll = 0;
-      dieThrow += ((System_ScoutsEx)parent).stars[0].sizeRoll;
+      dieThrow += ((System_ScoutsEx)parent).primary.sizeRoll;
       if (dieThrow == 2                 ){ return "II";  }
       if (dieThrow == 3                 ){ return "III"; }
       if (dieThrow == 4                 ){ 

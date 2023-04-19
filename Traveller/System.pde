@@ -244,30 +244,30 @@ class System_ScoutsEx extends System_CT81 {
   //  - Data format - JSON as-is will get very verbose
   //  - How to mark mainworld
   //  - Extended/derived characteristics (save for later)
+
+  Star primary;
+  Star[] companions;
  
-  Star[] stars;   // stars[0] is Primary
-  //Orbit[] orbits;
-  String[] orbits; // still working through the class hierarchy, let's do strings for now
+  Orbit[] orbits;
   
   System_ScoutsEx(Coordinate _coord){
     super(_coord);
     
     if (occupied){
-      stars = new Star[getStarCount()];
-      for (int i = 0; i < stars.length; i++){
-        if (i == 0){
-          stars[i] = new Star(true, this);
-        } else {
-          stars[i] = new Star(false, this);
-        }
+      primary = new Star(true, this);
+
+      companions = new Star[getStarCount()-1];   // will need to modify & rename this method
+      for (int i = 0; i < companions.length; i++){
+        companions[i] = new Star(false, this);
       }
       
-      println("\n--------------\nPrimary: " + stars[0]);
+      println("\n--------------\nSystem: " + name + " (" + coord + ")");
+      println("Primary: " + primary);
 
       int maxCompanion = 0;
-      for (int i = 1; i < stars.length; i++){
-        int modifier = 4 * (i - 1);
-        println("Assessing companion star: " + stars[i] + " modifier: +" + modifier);
+      for (int i = 0; i < companions.length; i++){
+        int modifier = 4 * (i);
+        println("Assessing companion star: " + companions[i] + " modifier: +" + modifier);
         int dieThrow = twoDice() + modifier;
         int result = 0;
         if (dieThrow < 4  ){ result = 0; }  // actually "Close" - not the same as Orbit 0, how to represent?
@@ -289,46 +289,45 @@ class System_ScoutsEx extends System_CT81 {
         }
         if (result > maxCompanion){ maxCompanion = result; }
         println("Companion in orbit: " + result);
-        stars[i].orbit = result;
+        companions[i].orbitNumber = result;
         // need to classify Close & Far
         // need to screen orbits inside Primary
         // need to check for companions on Far results
-        // need to handle case where companion orbit is greater than max orbits
       }
 
       int orbitCount = calculateMaxOrbits();
-      //orbits = new Orbit[orbitCount];
       if (orbitCount <= maxCompanion){
-        orbits = new String[maxCompanion+1];
-        // need to ensure orbits inbetween are empty 
+        orbits = new Orbit[maxCompanion+1]; 
       } else {
-        orbits = new String[orbitCount];
+        orbits = new Orbit[orbitCount];
       }
       
-      if (stars.length == 1){
+      if (companions.length == 0){   // change to use primary vs. companion array
         println("Orbits: " + orbits.length);
       } else {
         println("Orbits: " + orbits.length + " EMPTY: " + (maxCompanion - orbitCount));
       }
       
-      if (stars.length > 1){
-        for (int i = 1; i < stars.length; i++){
-          println("Star number " + i + " of " + stars.length + " : Orbit = " + stars[i].orbit + " : Orbit Count = " + orbitCount);
-          orbits[stars[i].orbit] = "Companion: " + stars[i];
+      if (companions.length > 0){
+        for (int i = 0; i < companions.length; i++){
+          println("Companion star number " + (i+1) + " of " + companions.length + " : Orbit = " + companions[i].orbitNumber + " : Usable Orbit Count = " + orbitCount);
+          orbits[companions[i].orbitNumber] = companions[i];
         }
       }
       
       if (maxCompanion - orbitCount > 0){
         int startCount = max(0, orbitCount);
         for (int i = startCount; i < orbits.length; i++){
-          if (orbits[i] == null){ orbits[i] = "Empty"; }
+          if (orbits[i] == null){  
+            orbits[i] = new Empty();
+          }
         }
       }
       
       printArray(orbits);
       
     } else {
-      stars = null;
+      companions = null;
     }
   }
 
@@ -337,19 +336,21 @@ class System_ScoutsEx extends System_CT81 {
     
     if (occupied){
       JSONArray starList = _json.getJSONArray("Stars");
-      stars = new Star[starList.size()];
+      companions = new Star[starList.size()-1];    // break out primary & companions in JSON?
+      primary = new Star(this, starList.getString(0));
       for (int i = 0; i < starList.size(); i++){
-        stars[i] = new Star(this, starList.getString(i));
+        companions[i-1] = new Star(this, starList.getString(i));
       }
     } else {
-      stars = null;
+      companions = null;
     }
   }
   
   String toString(){
     String description = super.toString();
     if (occupied){
-      for (Star s : stars){
+      description += primary.toString() + " ";
+      for (Star s : companions){
         description += s.toString() + " ";
       }
     }
@@ -360,15 +361,16 @@ class System_ScoutsEx extends System_CT81 {
     JSONObject json = super.asJSON();
     if (occupied){
       JSONArray starList = new JSONArray();
-      for (int i = 0; i < stars.length; i++){
-        starList.setString(i, stars[i].toString());
+      starList.setString(0, primary.toString());
+      for (int i = 0; i < companions.length; i++){
+        starList.setString(i+1, companions[i].toString());
       }
       json.setJSONArray("Stars", starList);
     }
     return json;
   }
   
-  int getStarCount(){
+  int getStarCount(){    // change this to "getCompanionCount"
     int dieThrow = twoDice();
     if (dieThrow < 8){ return 1; }
     if (dieThrow > 7 && dieThrow < 12){ return 2; }
@@ -378,10 +380,10 @@ class System_ScoutsEx extends System_CT81 {
   
   int calculateMaxOrbits(){
     int modifier = 0;
-    if (stars[0].size.equals("II") ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
-    if (stars[0].size.equals("III")){ modifier += 4; }
-    if (stars[0].type == 'M'       ){ modifier -= 4; }
-    if (stars[0].type == 'K'       ){ modifier -= 2; }
+    if (primary.size.equals("II") ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
+    if (primary.size.equals("III")){ modifier += 4; }
+    if (primary.type == 'M'       ){ modifier -= 4; }
+    if (primary.type == 'K'       ){ modifier -= 2; }
 
     int result = twoDice() + modifier; 
     if (result < 1){ 

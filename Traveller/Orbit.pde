@@ -1,8 +1,8 @@
 abstract class Orbit {
-  Star barycenter;  // what happens with satellites orbiting planets? go with this for now, will need adjustment
-  Object contents;  // and here - do we want a superclass that encompasses all entities?
-  int number;
-  String zone;
+  //Star barycenter;  // what happens with satellites orbiting planets? go with this for now, will need adjustment
+  //Object contents;  // and here - do we want a superclass that encompasses all entities?
+  int orbitNumber;
+  //String zone;
   
   // radius in AU & km?
 }
@@ -17,12 +17,6 @@ abstract class Orbit {
 //   Satellite (including Rings) - have a UWP
 //   Empty
 //   Forbidden (does this need to be distinct from 'Empty'?)
-
-class Planet extends Orbit {}
-//class Star extends Orbit {}
-class GasGiant extends Orbit {}
-class Empty extends Orbit {}
-class Forbidden extends Orbit {}
 
 // Does this make sense? Move array out of System into Star...
 
@@ -43,3 +37,17 @@ class Forbidden extends Orbit {}
 
 //   primary.orbits[n] = new Empty()
 //   primary.orbits[n] = new Forbidden()
+
+//class Star extends Orbit {} // separate file/tab for this one
+
+class Empty extends Orbit {
+  
+  String toString(){ return "Empty"; }
+}
+
+
+class Planet extends Orbit {}
+
+class GasGiant extends Orbit {}
+
+class Forbidden extends Orbit {}
