@@ -26,7 +26,58 @@ class Star extends Orbit {
     for (int i = 0; i < companions.length; i++){
       companions[i] = new Star(false, parent);
     }
+
+    int maxCompanion = setCompanionOrbits();    
+    int orbitCount = calculateMaxOrbits();
+
+    orbits = createOrbits(orbitCount, maxCompanion);
     
+    placeCompanions(orbitCount, maxCompanion);
+    placeEmptyOrbits(orbitCount, maxCompanion);
+  }
+  
+  Star(System _parent, String _s){
+    parent = _parent;
+    type = _s.charAt(0);
+    decimal = int(_s.substring(1,2));
+    size = _s.substring(2);
+    
+    // need to populate companions & orbits... may need to switch to JSON, string isn't enough...
+  }
+  
+  void placeEmptyOrbits(int _orbitCount, int _maxCompanion){
+    if (_maxCompanion - _orbitCount > 0){
+      int startCount = max(0, _orbitCount);
+      for (int i = startCount; i < orbits.length; i++){  
+        if (orbits[i] == null){
+          orbits[i] = new Empty();
+        }
+      }
+    }
+  }
+  
+  void placeCompanions(int _orbitCount, int _maxCompanion){   // args only used in debug output, can be removed once this stabilizes
+    if (companions.length == 0){
+      println("Orbits: " + orbits.length);
+    } else {
+      println("Orbits: " + orbits.length + " EMPTY: " + (_maxCompanion - _orbitCount));
+
+      for (int i = 0; i < companions.length; i++){
+        println("Companion star number " + (i+1) + " of " + companions.length + " : Orbit = " + companions[i].orbitNumber + " : Usable Orbit Count = " + _orbitCount);
+        orbits[companions[i].orbitNumber] = companions[i];
+      }  
+    }
+  }
+  
+  Orbit[] createOrbits(int _orbitCount, int _maxCompanion){
+    if (_orbitCount <= _maxCompanion){
+      return new Orbit[_maxCompanion+1];
+    } else {
+      return new Orbit[_orbitCount];
+    }    
+  }
+  
+  int setCompanionOrbits(){
     int maxCompanion = 0;
     for (int i = 0; i < companions.length; i++){
       int modifier = 4 * (i);
@@ -58,45 +109,7 @@ class Star extends Orbit {
       // need to check for companions on Far results
       // need to handle two companions landing in same orbit
     }
-    
-    
-    int orbitCount = calculateMaxOrbits();
-    if (orbitCount <= maxCompanion){
-      orbits = new Orbit[maxCompanion+1];
-    } else {
-      orbits = new Orbit[orbitCount];
-    }
-    
-    if (companions.length == 0){
-      println("Orbits: " + orbits.length);
-    } else {
-      println("Orbits: " + orbits.length + " EMPTY: " + (maxCompanion - orbitCount));
-    }
-    
-    if (companions.length > 0){
-      for (int i = 0; i < companions.length; i++){
-        println("Companion star number " + (i+1) + " of " + companions.length + " : Orbit = " + companions[i].orbitNumber + " : Usable Orbit Count = " + orbitCount);
-        orbits[companions[i].orbitNumber] = companions[i];
-      }
-    }
-    
-    if (maxCompanion - orbitCount > 0){
-      int startCount = max(0, orbitCount);
-      for (int i = startCount; i < orbits.length; i++){  
-        if (orbits[i] == null){
-          orbits[i] = new Empty();
-        }
-      }
-    }    
-  }
-  
-  Star(System _parent, String _s){
-    parent = _parent;
-    type = _s.charAt(0);
-    decimal = int(_s.substring(1,2));
-    size = _s.substring(2);
-    
-    // need to populate companions & orbits...
+    return maxCompanion;
   }
   
   char getType(Boolean _primary){
