@@ -252,79 +252,10 @@ class System_ScoutsEx extends System_CT81 {
     
     if (occupied){
       primary = new Star(true, this);
-
-      primary.companions = new Star[getCompanionCount()];
-      for (int i = 0; i < primary.companions.length; i++){
-        primary.companions[i] = new Star(false, this);
-      }
-      
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       println("Primary: " + primary);
-
-      int maxCompanion = 0;
-      for (int i = 0; i < primary.companions.length; i++){
-        int modifier = 4 * (i);
-        println("Assessing companion star: " + primary.companions[i] + " modifier: +" + modifier);
-        int dieThrow = twoDice() + modifier;
-        int result = 0;
-        if (dieThrow < 4  ){ result = 0; }  // actually "Close" - not the same as Orbit 0, how to represent?
-        if (dieThrow == 4 ){ result = 1; }
-        if (dieThrow == 5 ){ result = 2; }
-        if (dieThrow == 6 ){ result = 3; }
-        if (dieThrow == 7 ){ result = 4 + oneDie(); }
-        if (dieThrow == 8 ){ result = 5 + oneDie(); }
-        if (dieThrow == 9 ){ result = 6 + oneDie(); }
-        if (dieThrow == 10){ result = 7 + oneDie(); }
-        if (dieThrow == 11){ result = 8 + oneDie(); }
-        if (dieThrow >= 12){               // "Far" - should convert this to an orbit number 
-          int distance = 1000 * oneDie();
-          if (distance == 1000                    ){ result = 14; }
-          if (distance == 2000                    ){ result = 15; }
-          if (distance == 3000 || distance == 4000){ result = 16; }
-          if (distance >= 5000                    ){ result = 17; } // from tables on Scouts p.46 - should derive the formula instead
-                                                                    // or calculate "Far" in terms of orbit number to begin with
-        }
-        if (result > maxCompanion){ maxCompanion = result; }
-        println("Companion in orbit: " + result);
-        primary.companions[i].orbitNumber = result;
-        // need to classify Close & Far
-        // need to screen orbits inside Primary
-        // need to check for companions on Far results
-      }
-
-      int orbitCount = calculateMaxOrbits();
-      if (orbitCount <= maxCompanion){
-        primary.orbits = new Orbit[maxCompanion+1];
-      } else {
-        primary.orbits = new Orbit[orbitCount];
-      }
-      
-      if (primary.companions.length == 0){
-        println("Orbits: " + primary.orbits.length);
-      } else {
-        println("Orbits: " + primary.orbits.length + " EMPTY: " + (maxCompanion - orbitCount));
-      }
-      
-      if (primary.companions.length > 0){
-        for (int i = 0; i < primary.companions.length; i++){
-          println("Companion star number " + (i+1) + " of " + primary.companions.length + " : Orbit = " + primary.companions[i].orbitNumber + " : Usable Orbit Count = " + orbitCount);
-          primary.orbits[primary.companions[i].orbitNumber] = primary.companions[i];
-        }
-      }
-      
-      if (maxCompanion - orbitCount > 0){
-        int startCount = max(0, orbitCount);
-        for (int i = startCount; i < primary.orbits.length; i++){  
-          if (primary.orbits[i] == null){
-            primary.orbits[i] = new Empty();
-          }
-        }
-      }
-      
-      printArray(primary.orbits);
-      
-    } else {
-
+      primary.createCompanions();
+      printArray(primary.orbits);      
     }
   }
 
@@ -338,8 +269,6 @@ class System_ScoutsEx extends System_CT81 {
       for (int i = 0; i < starList.size(); i++){
         primary.companions[i-1] = new Star(this, starList.getString(i));
       }
-    } else {
-
     }
   }
   
@@ -365,14 +294,6 @@ class System_ScoutsEx extends System_CT81 {
       json.setJSONArray("Stars", starList);
     }
     return json;
-  }
-  
-  int getCompanionCount(){
-    int dieThrow = twoDice();
-    if (dieThrow < 8){ return 0; }
-    if (dieThrow > 7 && dieThrow < 12){ return 1; }
-    if (dieThrow == 12){ return 2; }
-    return 0;
   }
   
   int calculateMaxOrbits(){

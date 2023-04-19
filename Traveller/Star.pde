@@ -1,5 +1,5 @@
 class Star extends Orbit {
-  System parent;
+  System parent;   // may want to rethink parent pointer for companions...
   
   char type;
   int typeRoll;
@@ -19,6 +19,75 @@ class Star extends Orbit {
     decimal = floor(random(10));
     size = getSize(_primary);
     if (size.equals("D")){ decimal = 0; }
+  } 
+  
+  void createCompanions(){
+    companions = new Star[getCompanionCount()];
+    for (int i = 0; i < companions.length; i++){
+      companions[i] = new Star(false, parent);
+    }
+    
+    int maxCompanion = 0;
+    for (int i = 0; i < companions.length; i++){
+      int modifier = 4 * (i);
+      println("Assessing companion star: " + companions[i] + " modifier: +" + modifier);
+      int dieThrow = twoDice() + modifier;
+      int result = 0;
+      if (dieThrow < 4  ){ result = 0; }  // actually "Close" - not the same as Orbit 0, how to represent?
+      if (dieThrow == 4 ){ result = 1; }
+      if (dieThrow == 5 ){ result = 2; }
+      if (dieThrow == 6 ){ result = 3; }
+      if (dieThrow == 7 ){ result = 4 + oneDie(); }
+      if (dieThrow == 8 ){ result = 5 + oneDie(); }
+      if (dieThrow == 9 ){ result = 6 + oneDie(); }
+      if (dieThrow == 10){ result = 7 + oneDie(); }
+      if (dieThrow == 11){ result = 8 + oneDie(); }
+      if (dieThrow >= 12){               // "Far" - should convert this to an orbit number 
+        int distance = 1000 * oneDie();
+        if (distance == 1000                    ){ result = 14; }
+        if (distance == 2000                    ){ result = 15; }
+        if (distance == 3000 || distance == 4000){ result = 16; }
+        if (distance >= 5000                    ){ result = 17; } // from tables on Scouts p.46 - should derive the formula instead
+                                                                  // or calculate "Far" in terms of orbit number to begin with
+      }
+      if (result > maxCompanion){ maxCompanion = result; }
+      println("Companion in orbit: " + result);
+      companions[i].orbitNumber = result;
+      // need to classify Close & Far
+      // need to screen orbits inside Primary
+      // need to check for companions on Far results
+      // need to handle two companions landing in same orbit
+    }
+    
+    
+    int orbitCount = ((System_ScoutsEx)parent).calculateMaxOrbits();
+    if (orbitCount <= maxCompanion){
+      orbits = new Orbit[maxCompanion+1];
+    } else {
+      orbits = new Orbit[orbitCount];
+    }
+    
+    if (companions.length == 0){
+      println("Orbits: " + orbits.length);
+    } else {
+      println("Orbits: " + orbits.length + " EMPTY: " + (maxCompanion - orbitCount));
+    }
+    
+    if (companions.length > 0){
+      for (int i = 0; i < companions.length; i++){
+        println("Companion star number " + (i+1) + " of " + companions.length + " : Orbit = " + companions[i].orbitNumber + " : Usable Orbit Count = " + orbitCount);
+        orbits[companions[i].orbitNumber] = companions[i];
+      }
+    }
+    
+    if (maxCompanion - orbitCount > 0){
+      int startCount = max(0, orbitCount);
+      for (int i = startCount; i < orbits.length; i++){  
+        if (orbits[i] == null){
+          orbits[i] = new Empty();
+        }
+      }
+    }    
   }
   
   Star(System _parent, String _s){
@@ -26,6 +95,8 @@ class Star extends Orbit {
     type = _s.charAt(0);
     decimal = int(_s.substring(1,2));
     size = _s.substring(2);
+    
+    // need to populate companions & orbits...
   }
   
   char getType(Boolean _primary){
@@ -97,6 +168,14 @@ class Star extends Orbit {
       if (dieThrow > 9                  ){ return "D";   }
       return "X";
     }
+  }
+  
+  int getCompanionCount(){
+    int dieThrow = twoDice();
+    if (dieThrow < 8){ return 0; }
+    if (dieThrow > 7 && dieThrow < 12){ return 1; }
+    if (dieThrow == 12){ return 2; }
+    return 0;
   }
   
   String toString(){
