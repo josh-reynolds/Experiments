@@ -11,6 +11,8 @@ class Star extends Orbit {
   
   Star[] companions;
   
+  Orbit[] orbits;
+  
   Star(Boolean _primary, System _parent){
     parent = _parent;
     type = getType(_primary);  

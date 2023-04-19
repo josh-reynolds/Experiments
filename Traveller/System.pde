@@ -246,8 +246,6 @@ class System_ScoutsEx extends System_CT81 {
   //  - Extended/derived characteristics (save for later)
 
   Star primary;
- 
-  Orbit[] orbits;
   
   System_ScoutsEx(Coordinate _coord){
     super(_coord);
@@ -296,34 +294,34 @@ class System_ScoutsEx extends System_CT81 {
 
       int orbitCount = calculateMaxOrbits();
       if (orbitCount <= maxCompanion){
-        orbits = new Orbit[maxCompanion+1]; 
+        primary.orbits = new Orbit[maxCompanion+1];
       } else {
-        orbits = new Orbit[orbitCount];
+        primary.orbits = new Orbit[orbitCount];
       }
       
       if (primary.companions.length == 0){
-        println("Orbits: " + orbits.length);
+        println("Orbits: " + primary.orbits.length);
       } else {
-        println("Orbits: " + orbits.length + " EMPTY: " + (maxCompanion - orbitCount));
+        println("Orbits: " + primary.orbits.length + " EMPTY: " + (maxCompanion - orbitCount));
       }
       
       if (primary.companions.length > 0){
         for (int i = 0; i < primary.companions.length; i++){
           println("Companion star number " + (i+1) + " of " + primary.companions.length + " : Orbit = " + primary.companions[i].orbitNumber + " : Usable Orbit Count = " + orbitCount);
-          orbits[primary.companions[i].orbitNumber] = primary.companions[i];
+          primary.orbits[primary.companions[i].orbitNumber] = primary.companions[i];
         }
       }
       
       if (maxCompanion - orbitCount > 0){
         int startCount = max(0, orbitCount);
-        for (int i = startCount; i < orbits.length; i++){
-          if (orbits[i] == null){  
-            orbits[i] = new Empty();
+        for (int i = startCount; i < primary.orbits.length; i++){  
+          if (primary.orbits[i] == null){
+            primary.orbits[i] = new Empty();
           }
         }
       }
       
-      printArray(orbits);
+      printArray(primary.orbits);
       
     } else {
 
