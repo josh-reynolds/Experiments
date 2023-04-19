@@ -246,7 +246,6 @@ class System_ScoutsEx extends System_CT81 {
   //  - Extended/derived characteristics (save for later)
 
   Star primary;
-  Star[] companions;
  
   Orbit[] orbits;
   
@@ -256,18 +255,18 @@ class System_ScoutsEx extends System_CT81 {
     if (occupied){
       primary = new Star(true, this);
 
-      companions = new Star[getStarCount()-1];   // will need to modify & rename this method
-      for (int i = 0; i < companions.length; i++){
-        companions[i] = new Star(false, this);
+      primary.companions = new Star[getCompanionCount()];
+      for (int i = 0; i < primary.companions.length; i++){
+        primary.companions[i] = new Star(false, this);
       }
       
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       println("Primary: " + primary);
 
       int maxCompanion = 0;
-      for (int i = 0; i < companions.length; i++){
+      for (int i = 0; i < primary.companions.length; i++){
         int modifier = 4 * (i);
-        println("Assessing companion star: " + companions[i] + " modifier: +" + modifier);
+        println("Assessing companion star: " + primary.companions[i] + " modifier: +" + modifier);
         int dieThrow = twoDice() + modifier;
         int result = 0;
         if (dieThrow < 4  ){ result = 0; }  // actually "Close" - not the same as Orbit 0, how to represent?
@@ -289,7 +288,7 @@ class System_ScoutsEx extends System_CT81 {
         }
         if (result > maxCompanion){ maxCompanion = result; }
         println("Companion in orbit: " + result);
-        companions[i].orbitNumber = result;
+        primary.companions[i].orbitNumber = result;
         // need to classify Close & Far
         // need to screen orbits inside Primary
         // need to check for companions on Far results
@@ -302,16 +301,16 @@ class System_ScoutsEx extends System_CT81 {
         orbits = new Orbit[orbitCount];
       }
       
-      if (companions.length == 0){   // change to use primary vs. companion array
+      if (primary.companions.length == 0){
         println("Orbits: " + orbits.length);
       } else {
         println("Orbits: " + orbits.length + " EMPTY: " + (maxCompanion - orbitCount));
       }
       
-      if (companions.length > 0){
-        for (int i = 0; i < companions.length; i++){
-          println("Companion star number " + (i+1) + " of " + companions.length + " : Orbit = " + companions[i].orbitNumber + " : Usable Orbit Count = " + orbitCount);
-          orbits[companions[i].orbitNumber] = companions[i];
+      if (primary.companions.length > 0){
+        for (int i = 0; i < primary.companions.length; i++){
+          println("Companion star number " + (i+1) + " of " + primary.companions.length + " : Orbit = " + primary.companions[i].orbitNumber + " : Usable Orbit Count = " + orbitCount);
+          orbits[primary.companions[i].orbitNumber] = primary.companions[i];
         }
       }
       
@@ -327,7 +326,7 @@ class System_ScoutsEx extends System_CT81 {
       printArray(orbits);
       
     } else {
-      companions = null;
+
     }
   }
 
@@ -336,13 +335,13 @@ class System_ScoutsEx extends System_CT81 {
     
     if (occupied){
       JSONArray starList = _json.getJSONArray("Stars");
-      companions = new Star[starList.size()-1];    // break out primary & companions in JSON?
+      primary.companions = new Star[starList.size()-1];    // break out primary & companions in JSON?
       primary = new Star(this, starList.getString(0));
       for (int i = 0; i < starList.size(); i++){
-        companions[i-1] = new Star(this, starList.getString(i));
+        primary.companions[i-1] = new Star(this, starList.getString(i));
       }
     } else {
-      companions = null;
+
     }
   }
   
@@ -350,7 +349,7 @@ class System_ScoutsEx extends System_CT81 {
     String description = super.toString();
     if (occupied){
       description += primary.toString() + " ";
-      for (Star s : companions){
+      for (Star s : primary.companions){
         description += s.toString() + " ";
       }
     }
@@ -362,19 +361,19 @@ class System_ScoutsEx extends System_CT81 {
     if (occupied){
       JSONArray starList = new JSONArray();
       starList.setString(0, primary.toString());
-      for (int i = 0; i < companions.length; i++){
-        starList.setString(i+1, companions[i].toString());
+      for (int i = 0; i < primary.companions.length; i++){
+        starList.setString(i+1, primary.companions[i].toString());
       }
       json.setJSONArray("Stars", starList);
     }
     return json;
   }
   
-  int getStarCount(){    // change this to "getCompanionCount"
+  int getCompanionCount(){
     int dieThrow = twoDice();
-    if (dieThrow < 8){ return 1; }
-    if (dieThrow > 7 && dieThrow < 12){ return 2; }
-    if (dieThrow == 12){ return 3; }
+    if (dieThrow < 8){ return 0; }
+    if (dieThrow > 7 && dieThrow < 12){ return 1; }
+    if (dieThrow == 12){ return 2; }
     return 0;
   }
   

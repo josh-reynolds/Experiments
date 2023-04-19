@@ -8,8 +8,8 @@ class Star extends Orbit {
 
   String size;  // Roman numerals - should we store as ints instead?
   int sizeRoll;
-
-  //int orbitNumber; // haven't settled how to represent the primary and close companions yet...
+  
+  Star[] companions;
   
   Star(Boolean _primary, System _parent){
     parent = _parent;
