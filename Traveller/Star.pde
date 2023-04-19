@@ -10,6 +10,7 @@ class Star extends Orbit {
   int sizeRoll;
   
   Star[] companions;
+  Star closeCompanion;
   
   Orbit[] orbits;
   
@@ -21,7 +22,7 @@ class Star extends Orbit {
     if (size.equals("D")){ decimal = 0; }
   } 
   
-  void createCompanions(){
+  void createSatellites(){
     companions = new Star[getCompanionCount()];
     for (int i = 0; i < companions.length; i++){
       companions[i] = new Star(false, parent);
@@ -63,8 +64,12 @@ class Star extends Orbit {
       println("Orbits: " + orbits.length + " EMPTY: " + (_maxCompanion - _orbitCount));
 
       for (int i = 0; i < companions.length; i++){
-        println("Companion star number " + (i+1) + " of " + companions.length + " : Orbit = " + companions[i].orbitNumber + " : Usable Orbit Count = " + _orbitCount);
-        orbits[companions[i].orbitNumber] = companions[i];
+        if (companions[i] != null){   // length calculations in following debug output will be off by one (per close companion...)
+          println("Companion star number " + (i+1) + " of " + companions.length + " : Orbit = " + companions[i].orbitNumber + " : Usable Orbit Count = " + _orbitCount);
+          orbits[companions[i].orbitNumber] = companions[i];
+        } else {
+          println("Close companion : Usable Orbit Count = " + _orbitCount);
+        }
       }  
     }
   }
@@ -102,8 +107,16 @@ class Star extends Orbit {
                                                                   // or calculate "Far" in terms of orbit number to begin with
       }
       if (result > maxCompanion){ maxCompanion = result; }
-      println("Companion in orbit: " + result);
-      companions[i].orbitNumber = result;
+      
+      if (result == 0){
+        println("Companion in CLOSE orbit");
+        companions[i].orbitNumber = result; 
+        closeCompanion = companions[i];
+        companions[i] = null;     // should shift to an ArrayList so we can remove properly... try the kludge first
+      } else {
+        println("Companion in orbit: " + result);
+        companions[i].orbitNumber = result;
+      }
       // need to classify Close & Far
       // need to screen orbits inside Primary
       // need to check for companions on Far results
@@ -207,6 +220,6 @@ class Star extends Orbit {
   }  
   
   String toString(){
-    return str(type) + decimal + size; 
+    return str(type) + decimal + size; // white dwarfs follow a different convention, should adjust here and in parser ctor above
   }
 }

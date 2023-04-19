@@ -254,7 +254,7 @@ class System_ScoutsEx extends System_CT81 {
       primary = new Star(true, this);
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       println("Primary: " + primary);
-      primary.createCompanions();
+      primary.createSatellites();
       printArray(primary.orbits);      
     }
   }
@@ -272,12 +272,18 @@ class System_ScoutsEx extends System_CT81 {
     }
   }
   
+  // TO_DO: need to account for Close Companion entry
+  
   String toString(){
     String description = super.toString();
     if (occupied){
       description += primary.toString() + " ";
       for (Star s : primary.companions){
-        description += s.toString() + " ";
+        if (s != null){
+          description += s.toString() + " ";
+        } else {
+          description += primary.closeCompanion.toString() + " ";
+        }
       }
     }
     return description;
@@ -289,7 +295,11 @@ class System_ScoutsEx extends System_CT81 {
       JSONArray starList = new JSONArray();
       starList.setString(0, primary.toString());
       for (int i = 0; i < primary.companions.length; i++){
-        starList.setString(i+1, primary.companions[i].toString());
+        if (primary.companions[i] != null){
+          starList.setString(i+1, primary.companions[i].toString());
+        } else {
+          starList.setString(i+1, primary.closeCompanion.toString());
+        }
       }
       json.setJSONArray("Stars", starList);
     }
