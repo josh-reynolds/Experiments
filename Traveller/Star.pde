@@ -60,7 +60,7 @@ class Star extends Orbit {
     }
     
     
-    int orbitCount = ((System_ScoutsEx)parent).calculateMaxOrbits();
+    int orbitCount = calculateMaxOrbits();
     if (orbitCount <= maxCompanion){
       orbits = new Orbit[maxCompanion+1];
     } else {
@@ -177,6 +177,21 @@ class Star extends Orbit {
     if (dieThrow == 12){ return 2; }
     return 0;
   }
+
+  int calculateMaxOrbits(){
+    int modifier = 0;
+    if (size.equals("II") ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
+    if (size.equals("III")){ modifier += 4; }
+    if (type == 'M'       ){ modifier -= 4; }
+    if (type == 'K'       ){ modifier -= 2; }
+
+    int result = twoDice() + modifier; 
+    if (result < 1){ 
+      return 0; 
+    } else {
+      return result;
+    }
+  }  
   
   String toString(){
     return str(type) + decimal + size; 

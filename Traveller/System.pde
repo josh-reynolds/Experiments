@@ -295,19 +295,4 @@ class System_ScoutsEx extends System_CT81 {
     }
     return json;
   }
-  
-  int calculateMaxOrbits(){
-    int modifier = 0;
-    if (primary.size.equals("II") ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
-    if (primary.size.equals("III")){ modifier += 4; }
-    if (primary.type == 'M'       ){ modifier -= 4; }
-    if (primary.type == 'K'       ){ modifier -= 2; }
-
-    int result = twoDice() + modifier; 
-    if (result < 1){ 
-      return 0; 
-    } else {
-      return result;
-    }
-  }
 }
