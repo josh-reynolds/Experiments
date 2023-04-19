@@ -262,7 +262,7 @@ class System_ScoutsEx extends System_CT81 {
         }
       }
       
-      println("Primary: " + stars[0]);
+      println("\n--------------\nPrimary: " + stars[0]);
 
       int maxCompanion = 0;
       for (int i = 1; i < stars.length; i++){
@@ -288,7 +288,8 @@ class System_ScoutsEx extends System_CT81 {
                                                                     // or calculate "Far" in terms of orbit number to begin with
         }
         if (result > maxCompanion){ maxCompanion = result; }
-        println(result);
+        println("Companion in orbit: " + result);
+        stars[i].orbit = result;
         // need to classify Close & Far
         // need to screen orbits inside Primary
         // need to check for companions on Far results
@@ -297,17 +298,35 @@ class System_ScoutsEx extends System_CT81 {
 
       int orbitCount = calculateMaxOrbits();
       //orbits = new Orbit[orbitCount];
-      if (orbitCount < maxCompanion){
-        orbits = new String[maxCompanion];
+      if (orbitCount <= maxCompanion){
+        orbits = new String[maxCompanion+1];
         // need to ensure orbits inbetween are empty 
       } else {
         orbits = new String[orbitCount];
       }
+      
       if (stars.length == 1){
         println("Orbits: " + orbits.length);
       } else {
         println("Orbits: " + orbits.length + " EMPTY: " + (maxCompanion - orbitCount));
       }
+      
+      if (stars.length > 1){
+        for (int i = 1; i < stars.length; i++){
+          println("Star number " + i + " of " + stars.length + " : Orbit = " + stars[i].orbit + " : Orbit Count = " + orbitCount);
+          orbits[stars[i].orbit] = "Companion: " + stars[i];
+        }
+      }
+      
+      if (maxCompanion - orbitCount > 0){
+        int startCount = max(0, orbitCount);
+        for (int i = startCount; i < orbits.length; i++){
+          if (orbits[i] == null){ orbits[i] = "Empty"; }
+        }
+      }
+      
+      printArray(orbits);
+      
     } else {
       stars = null;
     }
