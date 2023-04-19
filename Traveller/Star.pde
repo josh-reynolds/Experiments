@@ -9,7 +9,7 @@ class Star extends Orbit {
   String size;  // Roman numerals - should we store as ints instead?
   int sizeRoll;
   
-  Star[] companions;
+  ArrayList<Star> companions;
   Star closeCompanion;
   
   Orbit[] orbits;
@@ -23,9 +23,10 @@ class Star extends Orbit {
   } 
   
   void createSatellites(){
-    companions = new Star[getCompanionCount()];
-    for (int i = 0; i < companions.length; i++){
-      companions[i] = new Star(false, parent);
+    companions = new ArrayList<Star>();
+    int compCount = getCompanionCount();
+    for (int i = 0; i < compCount; i++){
+      companions.add(new Star(false, parent));
     }
 
     int maxCompanion = setCompanionOrbits();    
@@ -58,25 +59,23 @@ class Star extends Orbit {
   }
   
   void placeCompanions(int _orbitCount, int _maxCompanion){   // args only used in debug output, can be removed once this stabilizes
-    if (companions.length == 0){
+    if (companions.size() == 0){
       println("Orbits: " + orbits.length);
     } else {
       println("Orbits: " + orbits.length + " EMPTY: " + (_maxCompanion - _orbitCount));
-
-      for (int i = 0; i < companions.length; i++){
-        if (companions[i] != null){   // length calculations in following debug output will be off by one (per close companion...)
-          println("Companion star number " + (i+1) + " of " + companions.length + " : Orbit = " + companions[i].orbitNumber + " : Usable Orbit Count = " + _orbitCount);
-          orbits[companions[i].orbitNumber] = companions[i];
-        } else {
-          println("Close companion : Usable Orbit Count = " + _orbitCount);
-        }
-      }  
+      for (int i = 0; i < companions.size(); i++){
+        println("Companion star number " + (i+1) + " of " + companions.size() + " : Orbit = " + companions.get(i).orbitNumber + " : Usable Orbit Count = " + _orbitCount);
+        orbits[companions.get(i).orbitNumber] = companions.get(i);
+      }
+      if (closeCompanion != null){
+        println("Close companion : Usable Orbit Count = " + _orbitCount);
+      }
     }
   }
   
   Orbit[] createOrbits(int _orbitCount, int _maxCompanion){
     if (_orbitCount <= _maxCompanion){
-      return new Orbit[_maxCompanion+1];
+      return new Orbit[_maxCompanion+1];   // off by one if there is a CLOSE companion
     } else {
       return new Orbit[_orbitCount];
     }    
@@ -84,9 +83,9 @@ class Star extends Orbit {
   
   int setCompanionOrbits(){
     int maxCompanion = 0;
-    for (int i = 0; i < companions.length; i++){
+    for (int i = 0; i < companions.size(); i++){
       int modifier = 4 * (i);
-      println("Assessing companion star: " + companions[i] + " modifier: +" + modifier);
+      println("Assessing companion star: " + companions.get(i) + " modifier: +" + modifier);
       int dieThrow = twoDice() + modifier;
       int result = 0;
       if (dieThrow < 4  ){ result = 0; }  // actually "Close" - not the same as Orbit 0, how to represent?
@@ -109,20 +108,20 @@ class Star extends Orbit {
       if (result > maxCompanion){ maxCompanion = result; }
       
       if (result == 0){
-        println("Companion in CLOSE orbit");
-        companions[i].orbitNumber = result; 
-        closeCompanion = companions[i];
-        companions[i] = null;     // should shift to an ArrayList so we can remove properly... try the kludge first
+        println("Companion in CLOSE orbit");        
+        closeCompanion = companions.get(i);
+        companions.remove(i);
+        closeCompanion.orbitNumber = result;
       } else {
         println("Companion in orbit: " + result);
-        companions[i].orbitNumber = result;
+        companions.get(i).orbitNumber = result;
       }
       // need to classify Close & Far
       // need to screen orbits inside Primary
       // need to check for companions on Far results
       // need to handle two companions landing in same orbit
     }
-    return maxCompanion;
+    return maxCompanion;   // off by one in the CLOSE Companion case
   }
   
   char getType(Boolean _primary){

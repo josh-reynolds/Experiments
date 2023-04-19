@@ -263,43 +263,44 @@ class System_ScoutsEx extends System_CT81 {
     super(_json);
     
     if (occupied){
-      JSONArray starList = _json.getJSONArray("Stars");
-      primary.companions = new Star[starList.size()-1];    // break out primary & companions in JSON?
-      primary = new Star(this, starList.getString(0));
+      JSONArray starList = _json.getJSONArray("Stars");    
+      primary.companions = new ArrayList<Star>();
+      primary = new Star(this, starList.getString(0)); // break out primary, close & companions in JSON?
       for (int i = 0; i < starList.size(); i++){
-        primary.companions[i-1] = new Star(this, starList.getString(i));
+        primary.companions.add(new Star(this, starList.getString(i)));
       }
     }
   }
-  
-  // TO_DO: need to account for Close Companion entry
   
   String toString(){
     String description = super.toString();
     if (occupied){
       description += primary.toString() + " ";
+      if (primary.closeCompanion != null){ description += primary.closeCompanion.toString(); }
+      
       for (Star s : primary.companions){
-        if (s != null){
-          description += s.toString() + " ";
-        } else {
-          description += primary.closeCompanion.toString() + " ";
-        }
+        description += s.toString() + " ";
       }
     }
     return description;
   }
   
-  JSONObject asJSON(){
+  // need review of JSON mapping for System / Star and all Orbit subclasses, we're missing some fields
+  
+  JSONObject asJSON(){   // break out primary, close & companions in JSON?
     JSONObject json = super.asJSON();
     if (occupied){
       JSONArray starList = new JSONArray();
       starList.setString(0, primary.toString());
-      for (int i = 0; i < primary.companions.length; i++){
-        if (primary.companions[i] != null){
-          starList.setString(i+1, primary.companions[i].toString());
-        } else {
-          starList.setString(i+1, primary.closeCompanion.toString());
-        }
+      
+      int listOffset = 1;
+      if (primary.closeCompanion != null){
+        starList.setString(1, primary.closeCompanion.toString());
+        listOffset++;
+      }
+
+      for (int i = 0; i < primary.companions.size(); i++){
+        starList.setString(i+listOffset, primary.companions.get(i).toString());
       }
       json.setJSONArray("Stars", starList);
     }
