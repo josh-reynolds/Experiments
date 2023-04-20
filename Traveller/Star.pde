@@ -1,5 +1,5 @@
 class Star extends Orbit {
-  System parent;   // may want to rethink parent pointer for companions...
+  System parent;   // TO_DO: may want to rethink parent pointer for companions...
   Boolean primary;
   
   char type;
@@ -7,7 +7,7 @@ class Star extends Orbit {
 
   int decimal;
 
-  String size;  // Roman numerals - should we store as ints instead?
+  String size;  // TO_DO: Roman numerals - should we store as ints instead?
   int sizeRoll;
   
   ArrayList<Star> companions;
@@ -54,7 +54,7 @@ class Star extends Orbit {
         orbits = new Orbit[ob.size()];
         for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
           if (ob.getString(i).equals("null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
-            orbits[i] = null;                                        // will go away once we populate all orbit variants 
+            orbits[i] = null;                                        // TO_DO: will go away once we populate all orbit variants 
           } else if (ob.getString(i).equals("Empty")){ 
             orbits[i] = new Empty();                                 // TO_DO: need a ctor that takes orbit number to comply with inherited interface 
           } else {
@@ -63,7 +63,7 @@ class Star extends Orbit {
         }
       }
     } else {
-      orbitNumber = _json.getInt("Orbit");  // currently null for primary - all companions have a value
+      orbitNumber = _json.getInt("Orbit");  // TO_DO: currently null for primary - all companions have a value
     }
 
   }
@@ -101,7 +101,7 @@ class Star extends Orbit {
     }
   }
   
-  void placeCompanions(int _orbitCount, int _maxCompanion){   // args only used in debug output, can be removed once this stabilizes
+  void placeCompanions(int _orbitCount, int _maxCompanion){   // TO_DO: args only used in debug output, can be removed once this stabilizes
     if (companions.size() == 0){
       println("Orbits: " + orbits.length);
     } else {
@@ -118,7 +118,7 @@ class Star extends Orbit {
   
   Orbit[] createOrbits(int _orbitCount, int _maxCompanion){
     if (_orbitCount <= _maxCompanion){
-      return new Orbit[_maxCompanion+1];   // off by one if there is a CLOSE companion or if both orbitCount + maxCompanion are zero
+      return new Orbit[_maxCompanion+1];   // TO_DO: off by one if there is a CLOSE companion or if both orbitCount + maxCompanion are zero
     } else {
       return new Orbit[_orbitCount];
     }    
@@ -131,7 +131,7 @@ class Star extends Orbit {
       println("Assessing companion star: " + companions.get(i) + " modifier: +" + modifier);
       int dieThrow = twoDice() + modifier;
       int result = 0;
-      if (dieThrow < 4  ){ result = 0; }  // actually "Close" - not the same as Orbit 0, how to represent?
+      if (dieThrow < 4  ){ result = 0; }  // actually "Close" - not truly Orbit 0 - system will not place companions there
       if (dieThrow == 4 ){ result = 1; }
       if (dieThrow == 5 ){ result = 2; }
       if (dieThrow == 6 ){ result = 3; }
@@ -140,7 +140,7 @@ class Star extends Orbit {
       if (dieThrow == 9 ){ result = 6 + oneDie(); }
       if (dieThrow == 10){ result = 7 + oneDie(); }
       if (dieThrow == 11){ result = 8 + oneDie(); }
-      if (dieThrow >= 12){               // "Far" - should convert this to an orbit number 
+      if (dieThrow >= 12){               // TO_DO: "Far" - should convert this to an orbit number 
         int distance = 1000 * oneDie();
         if (distance == 1000                    ){ result = 14; }
         if (distance == 2000                    ){ result = 15; }
@@ -159,12 +159,12 @@ class Star extends Orbit {
         println("Companion in orbit: " + result);
         companions.get(i).orbitNumber = result;
       }
-      // need to classify Close & Far
-      // need to screen orbits inside Primary
-      // need to check for companions on Far results
-      // need to handle two companions landing in same orbit
+      // TO_DO: need to classify Close & Far
+      // TO_DO: need to screen orbits inside Primary
+      // TO_DO: need to check for companions on Far results
+      // TO_DO: need to handle two companions landing in same orbit
     }
-    return maxCompanion;   // off by one in the CLOSE Companion case
+    return maxCompanion;   // TO_DO: off by one in the CLOSE Companion case
   }
   
   char getType(Boolean _primary){
@@ -262,7 +262,7 @@ class Star extends Orbit {
   }  
   
   String toString(){
-    return str(type) + decimal + size; // white dwarfs follow a different convention, should adjust here and in parser ctor above
+    return str(type) + decimal + size; // TO_DO: white dwarfs follow a different convention, should adjust here and in parser ctor above
   }
   
   JSONObject asJSON(){
@@ -286,8 +286,8 @@ class Star extends Orbit {
       if (orbits.length > 0){
         JSONArray orbitsList = new JSONArray();
         for (int i = 0; i < orbits.length; i++){
-          if (orbits[i] != null){               // eventually all orbits should be populated (only null during creation) and we can remove this clause
-            orbitsList.setString(i, orbits[i].toString());   // for now only use Star JSON in companion lists above, redundant here
+          if (orbits[i] != null){               // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause
+            orbitsList.setString(i, orbits[i].toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
           } else {
             orbitsList.setString(i, "null");
           }

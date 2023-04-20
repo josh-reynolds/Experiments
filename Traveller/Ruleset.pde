@@ -31,8 +31,7 @@ class Ruleset {
   }
   
   System newSystem(JSONObject _json){
-    // maybe we should detect ruleset from
-    // a JSON field...
+    // TO_DO: maybe we should detect ruleset from a JSON field... or think about polymorphism here
     switch(rules) {
       case "CT77":
         return new System(_json);

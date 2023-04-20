@@ -63,6 +63,21 @@
 //  * DONE Add JSON support to Star & Orbit hierarchy (save & load)
 //  * .... Add Scouts extended generation ruleset
 //  *      Flesh out tests
+//  *      Deprecate Star String ctor
+//  *      Rework Coordinate / Hex classes - Reference objects?
+//  *      Override getHash() in Coordinate and adjust lookup procedure
+//  *      Refactor case statements in Ruleset
+//  *      Reassess parent pointer for non-primary stars
+//  *      Star.size as integer, with "Roman numeralization" accessor
+//  *      Adding satellites to companions & planets
+//  *      Move away from string parsing approach in Star JSON ctor
+//  *      Enforce inherited orbitNumber across all Orbit subclasses
+//  *      Eliminate duplication between companions / orbits in Star
+//  *      Parameter object for orbitCount/maxCompanion cluster in Star
+//  *      Rework approach to Far companions and orbit determination
+//  *      Flagging close/far companions - query methods?
+//  *      Screen orbits inside primary radius
+//  *      Fix white dwarf toString and Class parsing
 //  *      UML-ish modeling and analysis
 //  *      Subsector density (and menu options for same)
 //  *      Validating JSON data
@@ -77,6 +92,9 @@
 //  *      SIDE PROJECT: statistical analysis of large numbers of UWPs, per ruleset
 //  *      SIDE PROJECT: "linter" for output files to verify correctness
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
+//  *      BUG: off-by-one issue in Star.createOrbits in some cases
+//  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
+//  *      REFACTOR: duplicate code in test methods
 // ------------------------------------------------

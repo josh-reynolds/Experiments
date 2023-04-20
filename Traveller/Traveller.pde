@@ -1,5 +1,4 @@
 // Traveller subsector generator
-//  to start with, we'll implement the version from Book 3 (Classic Traveller)
 // ------------------------------------------------
 
 import java.util.Map;

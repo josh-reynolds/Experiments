@@ -1,5 +1,5 @@
 // see comments in Route regarding Coordinate identity for hash lookup
-// probably should make this a reference object and clean up the confusing current implementation
+// TO_DO: probably should make this a reference object and clean up the confusing current implementation
 
 class Coordinate {
   int column, row;

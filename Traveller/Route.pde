@@ -15,6 +15,8 @@ class Route {
   // to look up in the HashMap, we need the same object as the key
   // not just equivalent values, as you would get from JSON reconstitution
   // so this is a bit involved
+  //
+  // TO_DO: investigate overriding getHash() as a solution
   // 
   // Unfortunately there's a timing issue with the global Subsector object
   //  (which we need for the lookupCoordinate method). So this code moved
