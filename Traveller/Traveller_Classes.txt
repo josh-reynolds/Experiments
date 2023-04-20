@@ -4,7 +4,7 @@ Focusing on System for now as that's where most of the effort
 is going (and outside this cluster classes are mostly app scaffolding).
 
                                           VERIFY JSON
-=====================================
+=====================================     =================================
 System
 -------------------------------------
 Polygon hex                                n/a - regenerate on load
@@ -86,24 +86,28 @@ int orbitNumber                            OK (primitive on subclasses)
 // the orbitNumber needs to be added as well (special cases
 // for primary and close companion - null & -1? - don't 
 // like these 'magic numbers' though)
+
+// we also have overlap/conflict between orbits & companion
+// lists when loaded from JSON - fix!
 =====================================
 Star extends Orbit                         
 -------------------------------------
 System parent                              n/a - regenerate on load
-Boolean primary                            ? regenerate on load?
-
-char type                                  OK (String unpacking)
+Boolean primary                            n/a - regenerate on load
 int typeRoll                               n/a - only needed at creation time
-int decimal                                OK (String unpacking)
-String size                                OK (String unpacking)
 int sizeRoll                               n/a - only needed at creation time
 
-ArrayList<Star> companions                 OK (JSONArray - Strings)
-Star closeCompanion                        OK (String)
+char type                                  OK (String unpacking)
+int decimal                                OK (String unpacking)
+String size                                OK (String unpacking)
+
+ArrayList<Star> companions                 OK (JSONArray - JSONObjects)
+Star closeCompanion                        OK (JSONObject)
 Orbit[] orbits                             OK (JSONArray - Strings)
 -------------------------------------
 Star(Boolean, System)
-Star(System, String)
+Star(System, String)                       DEPRECATE
+Star(Boolean, System, JSONObject)
 
 void createSatellites()
 void placeEmptyOrbits(int, int)

@@ -60,8 +60,8 @@
 //  * FIX  BUG: systems with X Starports sometimes get Scout & Naval bases
 //  * DONE Add test suite
 //  * DONE REFACTOR: consolidate duplicate code in file handling
+//  * DONE Add JSON support to Star & Orbit hierarchy (save & load)
 //  * .... Add Scouts extended generation ruleset
-//  * .... Add JSON support to Star & Orbit hierarchy
 //  *      Flesh out tests
 //  *      UML-ish modeling and analysis
 //  *      Subsector density (and menu options for same)

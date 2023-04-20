@@ -24,15 +24,55 @@ class Star extends Orbit {
     if (size.equals("D")){ decimal = 0; }
   } 
 
-  Star(Boolean _primary, System _parent, String _s){
+  Star(Boolean _primary, System _parent, String _s){               // TO_DO: deprecate this ctor
     primary = _primary;
     parent = _parent;
+    generateClass(_s);
+  }
+  
+  Star(Boolean _primary, System _parent, JSONObject _json){
+    primary = _primary;
+    parent = _parent;
+    companions = new ArrayList<Star>();
+    
+    generateClass(_json.getString("Class"));
+    
+    if (primary){                                                   // TO_DO: at some point we'll add children to companions, then remove this test
+      if (!_json.isNull("Close Companion")){
+        closeCompanion = new Star(false, parent, _json.getJSONObject("Close Companion")); 
+      }
+      
+      if (!_json.isNull("Companions")){    
+        JSONArray comps = _json.getJSONArray("Companions");
+        for (int i = 0; i < comps.size(); i++){
+          companions.add(new Star(false, parent, comps.getJSONObject(i)));
+        }
+      }
+      
+      if (!_json.isNull("Orbits")){
+        JSONArray ob = _json.getJSONArray("Orbits");
+        orbits = new Orbit[ob.size()];
+        for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
+          if (ob.getString(i).equals("null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
+            orbits[i] = null;                                        // will go away once we populate all orbit variants 
+          } else if (ob.getString(i).equals("Empty")){ 
+            orbits[i] = new Empty();                                 // TO_DO: need a ctor that takes orbit number to comply with inherited interface 
+          } else {
+            orbits[i] = new Star(false, parent, ob.getString(i));    // TO_DO: conflict/duplication with companion list - deprecate and rework this
+          }
+        }
+      }
+    } else {
+      orbitNumber = _json.getInt("Orbit");  // currently null for primary - all companions have a value
+    }
+
+  }
+  
+  void generateClass(String _s){
     type = _s.charAt(0);
     decimal = int(_s.substring(1,2));
     size = _s.substring(2);
   }
-  
-  // TO_DO: need to add JSON-consuming ctor, probably deprecate String version above
   
   void createSatellites(){
     companions = new ArrayList<Star>();
@@ -232,14 +272,12 @@ class Star extends Orbit {
     
     if (primary){  
       if (closeCompanion != null){
-        //json.setString("Close Companion", closeCompanion.toString());
         json.setJSONObject("Close Companion", closeCompanion.asJSON());
       }
       
       if (companions.size() > 0){
         JSONArray companionList = new JSONArray();
         for (int i = 0; i < companions.size(); i++){
-          //companionList.setString(i, companions.get(i).toString());
           companionList.setJSONObject(i, companions.get(i).asJSON());
         }
         json.setJSONArray("Companions", companionList);
