@@ -133,6 +133,16 @@ Empty extends Orbit
 String toString()
 =====================================
 
+// long term this one and Empty may merge together
+// but for now it helps to visualize the algorithm steps
+// (what if they had a 'memo' field instead?)
+=====================================
+Forbidden extends Orbit
+-------------------------------------
+-------------------------------------
+String toString()
+=====================================
+
 =====================================
 Planet extends Orbit
 -------------------------------------
@@ -145,8 +155,3 @@ GasGiant extends Orbit
 -------------------------------------
 =====================================
 
-=====================================
-Forbidden extends Orbit
--------------------------------------
--------------------------------------
-=====================================

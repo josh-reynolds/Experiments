@@ -61,6 +61,7 @@
 //  * DONE Add test suite
 //  * DONE REFACTOR: consolidate duplicate code in file handling
 //  * DONE Add JSON support to Star & Orbit hierarchy (save & load)
+//  * DONE Screen orbits inside primary radius
 //  * .... Add Scouts extended generation ruleset
 //  *      Flesh out tests
 //  *      Deprecate Star String ctor
@@ -76,8 +77,8 @@
 //  *      Parameter object for orbitCount/maxCompanion cluster in Star
 //  *      Rework approach to Far companions and orbit determination
 //  *      Flagging close/far companions - query methods?
-//  *      Screen orbits inside primary radius
 //  *      Fix white dwarf toString and Class parsing
+//  *      Assess case where system has no planets - overlooked in rules?
 //  *      UML-ish modeling and analysis
 //  *      Subsector density (and menu options for same)
 //  *      Validating JSON data

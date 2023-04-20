@@ -65,7 +65,6 @@ class Star extends Orbit {
     } else {
       orbitNumber = _json.getInt("Orbit");  // TO_DO: currently null for primary - all companions have a value
     }
-
   }
   
   void generateClass(String _s){
@@ -86,16 +85,35 @@ class Star extends Orbit {
 
     orbits = createOrbits(orbitCount, maxCompanion);
     
-    placeCompanions(orbitCount, maxCompanion);
+    placeCompanions(orbitCount, maxCompanion);    // may need to adjust the ordering of these method calls
     placeEmptyOrbits(orbitCount, maxCompanion);
+    placeForbiddenOrbits();
   }
   
+  // TO_DO: currently only handles the companion case
+  //  later rules can impose additional empty orbits, will extend this method
   void placeEmptyOrbits(int _orbitCount, int _maxCompanion){
     if (_maxCompanion - _orbitCount > 0){
       int startCount = max(0, _orbitCount);
       for (int i = startCount; i < orbits.length; i++){  
         if (orbits[i] == null){
           orbits[i] = new Empty();
+        }
+      }
+    }
+  }
+  
+  // three cases:
+  //  - DONE  orbit is inside star (have query method)
+  //  - TO_DO orbit is suppressed by nearby companion star
+  //  - TO_DO orbit is too hot to allow planets
+  void placeForbiddenOrbits(){
+    if (orbits.length > 0){
+      for (int i = 0; i < orbits.length; i++){
+        if (orbitInsideStar(i) && 
+            (orbits[i] == null ||             // TO_DO: this will need adjustment as we add classes to the Orbit hierarchy
+             orbits[i].getClass().getSimpleName().equals("Empty"))){
+          orbits[i] = new Forbidden();
         }
       }
     }
@@ -114,6 +132,30 @@ class Star extends Orbit {
         println("Close companion : Usable Orbit Count = " + _orbitCount);
       }
     }
+  }
+
+  // Scouts includes data for Supergiants (Ia/Ib) but no means to generate randomly - leaving out
+  // Tables are on pp. 29-31, implementing RAW
+  // TO_DO: tables handle orbit 0 inconsistently, so this func is incomplete - need to derive additional data
+  Boolean orbitInsideStar(int _num){
+    if (size.equals("II")){
+      if (type == 'K'){
+        if (decimal < 5 ){ return false;     }
+        if (decimal >= 5){ return _num <= 1; }
+      }
+      if (type == 'M'){
+        if (decimal < 5 ){ return _num <= 3; }
+        if (decimal >= 5){ return _num <= 5; }
+      }
+      return false;
+    }
+    if (size.equals("III")){
+      if (type != 'M'                 ){ return false; }
+      if (decimal < 5                 ){ return false; }
+      if (decimal >= 5 && decimal <= 7){ return _num <= 3; }
+      if (decimal > 7                 ){ return _num <= 4; }
+    }
+    return false;
   }
   
   Orbit[] createOrbits(int _orbitCount, int _maxCompanion){
@@ -150,7 +192,7 @@ class Star extends Orbit {
       }
       if (result > maxCompanion){ maxCompanion = result; }
       
-      if (result == 0){
+      if (result == 0 || orbitInsideStar(result)){
         println("Companion in CLOSE orbit");        
         closeCompanion = companions.get(i);
         companions.remove(i);
@@ -160,7 +202,7 @@ class Star extends Orbit {
         companions.get(i).orbitNumber = result;
       }
       // TO_DO: need to classify Close & Far
-      // TO_DO: need to screen orbits inside Primary
+      // TO_DO: need to screen orbits inside Primary (done for Companions - should also set to FORBIDDEN)
       // TO_DO: need to check for companions on Far results
       // TO_DO: need to handle two companions landing in same orbit
     }

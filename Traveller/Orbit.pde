@@ -41,7 +41,6 @@ abstract class Orbit {
 //class Star extends Orbit {} // separate file/tab for this one
 
 class Empty extends Orbit {
-  
   String toString(){ return "Empty"; }
 }
 
@@ -50,4 +49,6 @@ class Planet extends Orbit {}
 
 class GasGiant extends Orbit {}
 
-class Forbidden extends Orbit {}
+class Forbidden extends Orbit {
+  String toString(){ return "Forbidden"; }
+}
