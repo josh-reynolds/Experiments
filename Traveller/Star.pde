@@ -1,5 +1,6 @@
 class Star extends Orbit {
   System parent;   // may want to rethink parent pointer for companions...
+  Boolean primary;
   
   char type;
   int typeRoll;
@@ -15,6 +16,7 @@ class Star extends Orbit {
   Orbit[] orbits;
   
   Star(Boolean _primary, System _parent){
+    primary = _primary;
     parent = _parent;
     type = getType(_primary);  
     decimal = floor(random(10));
@@ -22,12 +24,15 @@ class Star extends Orbit {
     if (size.equals("D")){ decimal = 0; }
   } 
 
-  Star(System _parent, String _s){
+  Star(Boolean _primary, System _parent, String _s){
+    primary = _primary;
     parent = _parent;
     type = _s.charAt(0);
     decimal = int(_s.substring(1,2));
     size = _s.substring(2);
   }
+  
+  // TO_DO: need to add JSON-consuming ctor, probably deprecate String version above
   
   void createSatellites(){
     companions = new ArrayList<Star>();
@@ -73,7 +78,7 @@ class Star extends Orbit {
   
   Orbit[] createOrbits(int _orbitCount, int _maxCompanion){
     if (_orbitCount <= _maxCompanion){
-      return new Orbit[_maxCompanion+1];   // off by one if there is a CLOSE companion
+      return new Orbit[_maxCompanion+1];   // off by one if there is a CLOSE companion or if both orbitCount + maxCompanion are zero
     } else {
       return new Orbit[_orbitCount];
     }    
@@ -222,31 +227,37 @@ class Star extends Orbit {
   
   JSONObject asJSON(){
     JSONObject json = new JSONObject();
-
+    
     json.setString("Class", this.toString());
-
-    if (closeCompanion != null){
-      json.setString("Close Companion", closeCompanion.toString());
-    }
     
-    if (companions.size() > 0){
-      JSONArray companionList = new JSONArray();
-      for (int i = 0; i < companions.size(); i++){
-        companionList.setString(i, companions.get(i).toString());
+    if (primary){  
+      if (closeCompanion != null){
+        //json.setString("Close Companion", closeCompanion.toString());
+        json.setJSONObject("Close Companion", closeCompanion.asJSON());
       }
-      json.setJSONArray("Companions", companionList);
-    }
-    
-    if (orbits.length > 0){
-      JSONArray orbitsList = new JSONArray();
-      for (int i = 0; i < orbits.length; i++){
-        if (orbits[i] != null){               // eventually all orbits should be populated (only null during creation) and we can remove this clause
-          orbitsList.setString(i, orbits[i].toString());
-        } else {
-          orbitsList.setString(i, "null");
+      
+      if (companions.size() > 0){
+        JSONArray companionList = new JSONArray();
+        for (int i = 0; i < companions.size(); i++){
+          //companionList.setString(i, companions.get(i).toString());
+          companionList.setJSONObject(i, companions.get(i).asJSON());
         }
+        json.setJSONArray("Companions", companionList);
       }
-      json.setJSONArray("Orbits", orbitsList);
+      
+      if (orbits.length > 0){
+        JSONArray orbitsList = new JSONArray();
+        for (int i = 0; i < orbits.length; i++){
+          if (orbits[i] != null){               // eventually all orbits should be populated (only null during creation) and we can remove this clause
+            orbitsList.setString(i, orbits[i].toString());   // for now only use Star JSON in companion lists above, redundant here
+          } else {
+            orbitsList.setString(i, "null");
+          }
+        }
+        json.setJSONArray("Orbits", orbitsList);
+      }
+    } else {
+      json.setInt("Orbit", orbitNumber);
     }
     
     return json;

@@ -64,10 +64,13 @@ String toString()
 JSONObject asJSON()
 =====================================
 
+
+// should get the common interface pulled
+// up here...
 =====================================
 abstract Orbit
 -------------------------------------
-int orbitNumber                            NOT OK
+int orbitNumber                            OK (primitive on subclasses)
 -------------------------------------
 =====================================
 
@@ -81,16 +84,20 @@ int orbitNumber                            NOT OK
 
 // String unpacking alone may not be enough data -
 // the orbitNumber needs to be added as well (special cases
-// for primary and close companion)
+// for primary and close companion - null & -1? - don't 
+// like these 'magic numbers' though)
 =====================================
 Star extends Orbit                         
 -------------------------------------
 System parent                              n/a - regenerate on load
+Boolean primary                            ? regenerate on load?
+
 char type                                  OK (String unpacking)
 int typeRoll                               n/a - only needed at creation time
 int decimal                                OK (String unpacking)
 String size                                OK (String unpacking)
 int sizeRoll                               n/a - only needed at creation time
+
 ArrayList<Star> companions                 OK (JSONArray - Strings)
 Star closeCompanion                        OK (String)
 Orbit[] orbits                             OK (JSONArray - Strings)

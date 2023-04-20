@@ -265,9 +265,9 @@ class System_ScoutsEx extends System_CT81 {
     if (occupied){
       JSONArray starList = _json.getJSONArray("Stars");     // TO_DO: temporarily broken while we wire up JSON     
       primary.companions = new ArrayList<Star>();
-      primary = new Star(this, starList.getString(0));
+      primary = new Star(true, this, starList.getString(0));
       for (int i = 0; i < starList.size(); i++){
-        primary.companions.add(new Star(this, starList.getString(i)));
+        primary.companions.add(new Star(false, this, starList.getString(i)));
       }
     }
   }
