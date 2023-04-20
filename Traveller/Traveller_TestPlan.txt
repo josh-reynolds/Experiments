@@ -1,0 +1,43 @@
+4/20/23
+Testing Traveller app
+
+Need more automated tests, and probably a more robust framework. Currently
+have a very simple hand-rolled test class with just three tests in it.
+
+Uncertain what will play nice with Processing. Needs exploration; but also
+consider migrating the whole thing to plain Java (in which case we'd need 
+to re-implement all the graphics stuff and other library support). But we 
+then take advantage of JUnit, Cucumber, etc. as well as get away from the
+limitations of the hidden inner classes.
+
+We can do manual spot-checking for now (sketch below), but given the volume
+of output this will probably only catch egregious errors.
+
+Most basic - runs without exceptions.
+Second level - screen/console output passes visual inspection
+Third level - data files (3) written to disk pass inspection
+
+In addition to automated tests, could write some parser/scanners that 
+do the equivalent separate from the app itself.
+
+Scenarios:
+Two modes times two schemes times three rulesets = 12 scenarios
+
+Rules	Scheme		Mode
+------------------------------
+CT77	Default		New
+CT77	Default		Load
+CT77	Print-friendly	New
+CT77	Print-friendly	Load
+
+CT81	Default		New
+CT81	Default		Load
+CT81	Print-friendly	New
+CT81	Print-friendly	Load
+
+Scouts	Default		New
+Scouts	Default		Load
+Scouts	Print-friendly	New
+Scouts	Print-friendly	Load
+
+

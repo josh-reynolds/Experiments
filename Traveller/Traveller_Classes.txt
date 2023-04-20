@@ -1,0 +1,118 @@
+4/20/23
+Reviewing classes, esp. w.r.t. JSON representation.
+Focusing on System for now as that's where most of the effort
+is going (and outside this cluster classes are mostly app scaffolding).
+
+                                          VERIFY JSON
+=====================================
+System
+-------------------------------------
+Polygon hex                                n/a - regenerate
+Coordinate coord                           OK (JSONObject)
+Boolean occupied                           OK (primitive)
+UWP uwp                                    OK (JSONObject)
+Boolean navalBase                          OK (primitive)
+Boolean scoutBase                          OK (primitive)
+Boolean gasGiant                           OK (primitive)
+TradeClass trade                           n/a - regenerate
+String name                                OK (primitive)
+ArrayList<Route> routes                    n/a - regenerate from separate list
+-------------------------------------
+System(Coordinate)
+System(JSONObject)
+TradeClass generateTradeClass(UWP)
+UWP generateUWP()
+UWP generateUWP(JSONObject)
+void addRoute(Route)
+int distanceToSystem(System)
+Boolean generateScoutBase()
+Boolean generateNavalBase()
+String toString()
+String listRoutes()
+JSONObject asJSON()
+=====================================
+
+=====================================
+System_CT81 extends System
+-------------------------------------
+String travelZone                          OK (primitive)
+-------------------------------------
+System_CT81(Coordinate)
+System_CT81(JSONObject)
+TradeClass generateTradeClass(UWP)
+UWP generateUWP()
+UWP generateUWP(JSONObject)
+String generateTravelZone()
+String toString()
+JSONObject asJSON()
+=====================================
+
+=====================================
+System_ScoutsEx extends System_CT81
+-------------------------------------
+Star primary                               NOT OK (Primitive Array)
+-------------------------------------
+System_ScoutsEx(Coordinate)
+System_ScoutsEx(JSONObject)
+String toString()
+JSONObject asJSON()
+=====================================
+
+=====================================
+abstract Orbit
+-------------------------------------
+int orbitNumber
+-------------------------------------
+=====================================
+
+=====================================
+Star extends Orbit                         NOT OK - has no JSON representation
+-------------------------------------
+System parent
+char type
+int typeRoll
+int decimal
+String size
+int sizeRoll
+ArrayList<Star> companions
+Star closeCompanion
+Orbit[] orbits
+-------------------------------------
+Star(Boolean, System)
+Star(System, String)
+void createSatellites()
+void placeEmptyOrbits(int, int)
+void placeCompanions(int, int)
+Orbit[] createOrbits(int, int)
+int setCompanionOrbits()
+char getType(Boolean)
+String getSize(Boolean)
+int getCompanionCount()
+int calculateMaxOrbits()
+String toString()
+=====================================
+
+=====================================
+Empty extends Orbit
+-------------------------------------
+-------------------------------------
+String toString()
+=====================================
+
+=====================================
+Planet extends Orbit
+-------------------------------------
+-------------------------------------
+=====================================
+
+=====================================
+GasGiant extends Orbit
+-------------------------------------
+-------------------------------------
+=====================================
+
+=====================================
+Forbidden extends Orbit
+-------------------------------------
+-------------------------------------
+=====================================
