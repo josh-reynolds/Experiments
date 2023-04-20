@@ -7,28 +7,31 @@ is going (and outside this cluster classes are mostly app scaffolding).
 =====================================
 System
 -------------------------------------
-Polygon hex                                n/a - regenerate
+Polygon hex                                n/a - regenerate on load
 Coordinate coord                           OK (JSONObject)
 Boolean occupied                           OK (primitive)
 UWP uwp                                    OK (JSONObject)
 Boolean navalBase                          OK (primitive)
 Boolean scoutBase                          OK (primitive)
 Boolean gasGiant                           OK (primitive)
-TradeClass trade                           n/a - regenerate
+TradeClass trade                           n/a - regenerate on load
 String name                                OK (primitive)
 ArrayList<Route> routes                    n/a - regenerate from separate list
 -------------------------------------
 System(Coordinate)
 System(JSONObject)
+
 TradeClass generateTradeClass(UWP)
 UWP generateUWP()
 UWP generateUWP(JSONObject)
-void addRoute(Route)
-int distanceToSystem(System)
 Boolean generateScoutBase()
 Boolean generateNavalBase()
-String toString()
+
+void addRoute(Route)
+int distanceToSystem(System)
 String listRoutes()
+
+String toString()
 JSONObject asJSON()
 =====================================
 
@@ -39,10 +42,12 @@ String travelZone                          OK (primitive)
 -------------------------------------
 System_CT81(Coordinate)
 System_CT81(JSONObject)
+
 TradeClass generateTradeClass(UWP)
 UWP generateUWP()
 UWP generateUWP(JSONObject)
 String generateTravelZone()
+
 String toString()
 JSONObject asJSON()
 =====================================
@@ -50,10 +55,11 @@ JSONObject asJSON()
 =====================================
 System_ScoutsEx extends System_CT81
 -------------------------------------
-Star primary                               NOT OK (Primitive Array)
+Star primary                               OK (JSONObject)
 -------------------------------------
 System_ScoutsEx(Coordinate)
 System_ScoutsEx(JSONObject)
+
 String toString()
 JSONObject asJSON()
 =====================================
@@ -61,25 +67,37 @@ JSONObject asJSON()
 =====================================
 abstract Orbit
 -------------------------------------
-int orbitNumber
+int orbitNumber                            NOT OK
 -------------------------------------
 =====================================
 
+
+// we are using 'star class' to pack three
+// values into a string - should the fields change to match?
+// just supply methods for when a client need to know type etc.
+
+// also rename the 'get' methods - they look like accessors
+// but are actually creational
+
+// String unpacking alone may not be enough data -
+// the orbitNumber needs to be added as well (special cases
+// for primary and close companion)
 =====================================
-Star extends Orbit                         NOT OK - has no JSON representation
+Star extends Orbit                         
 -------------------------------------
-System parent
-char type
-int typeRoll
-int decimal
-String size
-int sizeRoll
-ArrayList<Star> companions
-Star closeCompanion
-Orbit[] orbits
+System parent                              n/a - regenerate on load
+char type                                  OK (String unpacking)
+int typeRoll                               n/a - only needed at creation time
+int decimal                                OK (String unpacking)
+String size                                OK (String unpacking)
+int sizeRoll                               n/a - only needed at creation time
+ArrayList<Star> companions                 OK (JSONArray - Strings)
+Star closeCompanion                        OK (String)
+Orbit[] orbits                             OK (JSONArray - Strings)
 -------------------------------------
 Star(Boolean, System)
 Star(System, String)
+
 void createSatellites()
 void placeEmptyOrbits(int, int)
 void placeCompanions(int, int)
@@ -89,8 +107,13 @@ char getType(Boolean)
 String getSize(Boolean)
 int getCompanionCount()
 int calculateMaxOrbits()
+
 String toString()
+JSONObject asJSON()
 =====================================
+
+// for the time being, representing these subclasses
+// as simple strings, created in Star ctor from JSON strings on load
 
 =====================================
 Empty extends Orbit

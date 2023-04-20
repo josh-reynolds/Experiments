@@ -263,9 +263,9 @@ class System_ScoutsEx extends System_CT81 {
     super(_json);
     
     if (occupied){
-      JSONArray starList = _json.getJSONArray("Stars");    
+      JSONArray starList = _json.getJSONArray("Stars");     // TO_DO: temporarily broken while we wire up JSON     
       primary.companions = new ArrayList<Star>();
-      primary = new Star(this, starList.getString(0)); // break out primary, close & companions in JSON?
+      primary = new Star(this, starList.getString(0));
       for (int i = 0; i < starList.size(); i++){
         primary.companions.add(new Star(this, starList.getString(i)));
       }
@@ -285,24 +285,11 @@ class System_ScoutsEx extends System_CT81 {
     return description;
   }
   
-  // need review of JSON mapping for System / Star and all Orbit subclasses, we're missing some fields
-  
-  JSONObject asJSON(){   // break out primary, close & companions in JSON?
+  JSONObject asJSON(){
     JSONObject json = super.asJSON();
     if (occupied){
-      JSONArray starList = new JSONArray();
-      starList.setString(0, primary.toString());
-      
-      int listOffset = 1;
-      if (primary.closeCompanion != null){
-        starList.setString(1, primary.closeCompanion.toString());
-        listOffset++;
-      }
-
-      for (int i = 0; i < primary.companions.size(); i++){
-        starList.setString(i+listOffset, primary.companions.get(i).toString());
-      }
-      json.setJSONArray("Stars", starList);
+      JSONObject star = primary.asJSON();
+      json.setJSONObject("Primary", star);
     }
     return json;
   }

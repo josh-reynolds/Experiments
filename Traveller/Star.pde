@@ -21,6 +21,13 @@ class Star extends Orbit {
     size = getSize(_primary);
     if (size.equals("D")){ decimal = 0; }
   } 
+
+  Star(System _parent, String _s){
+    parent = _parent;
+    type = _s.charAt(0);
+    decimal = int(_s.substring(1,2));
+    size = _s.substring(2);
+  }
   
   void createSatellites(){
     companions = new ArrayList<Star>();
@@ -36,15 +43,6 @@ class Star extends Orbit {
     
     placeCompanions(orbitCount, maxCompanion);
     placeEmptyOrbits(orbitCount, maxCompanion);
-  }
-  
-  Star(System _parent, String _s){
-    parent = _parent;
-    type = _s.charAt(0);
-    decimal = int(_s.substring(1,2));
-    size = _s.substring(2);
-    
-    // need to populate companions & orbits... may need to switch to JSON, string isn't enough...
   }
   
   void placeEmptyOrbits(int _orbitCount, int _maxCompanion){
@@ -220,5 +218,37 @@ class Star extends Orbit {
   
   String toString(){
     return str(type) + decimal + size; // white dwarfs follow a different convention, should adjust here and in parser ctor above
+  }
+  
+  JSONObject asJSON(){
+    JSONObject json = new JSONObject();
+
+    json.setString("Class", this.toString());
+
+    if (closeCompanion != null){
+      json.setString("Close Companion", closeCompanion.toString());
+    }
+    
+    if (companions.size() > 0){
+      JSONArray companionList = new JSONArray();
+      for (int i = 0; i < companions.size(); i++){
+        companionList.setString(i, companions.get(i).toString());
+      }
+      json.setJSONArray("Companions", companionList);
+    }
+    
+    if (orbits.length > 0){
+      JSONArray orbitsList = new JSONArray();
+      for (int i = 0; i < orbits.length; i++){
+        if (orbits[i] != null){               // eventually all orbits should be populated (only null during creation) and we can remove this clause
+          orbitsList.setString(i, orbits[i].toString());
+        } else {
+          orbitsList.setString(i, "null");
+        }
+      }
+      json.setJSONArray("Orbits", orbitsList);
+    }
+    
+    return json;
   }
 }
