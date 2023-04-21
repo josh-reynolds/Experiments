@@ -105,17 +105,45 @@ class Star extends Orbit {
   
   // three cases:
   //  - DONE  orbit is inside star (have query method)
-  //  - TO_DO orbit is suppressed by nearby companion star
+  //  - DONE  orbit is suppressed by nearby companion star
+  //  - TO_DO   (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
   //  - TO_DO orbit is too hot to allow planets
   void placeForbiddenOrbits(){
     if (orbits.length > 0){
       for (int i = 0; i < orbits.length; i++){
-        if (orbitInsideStar(i) && 
-            (orbits[i] == null ||             // TO_DO: this will need adjustment as we add classes to the Orbit hierarchy
-             orbits[i].getClass().getSimpleName().equals("Empty"))){
+        if ((orbitInsideStar(i) || maskedByCompanion(i))&&
+            isNullOrEmpty(i)){
           orbits[i] = new Forbidden();
         }
       }
+    }
+  }
+  
+  Boolean isNullOrEmpty(int _num){
+    return (orbits[_num] == null ||
+            orbits[_num].getClass().getSimpleName().equals("Empty"));
+  }
+  
+  Boolean maskedByCompanion(int _orbitNum){
+    if (companions.size() == 0){
+      return false;
+    } else {
+      for (int i = 0; i < companions.size(); i++){
+        int compOrbit = companions.get(i).orbitNumber;
+        print(" Evaluating companion mask for " + companions.get(i) + " in orbit " + compOrbit +" against " + _orbitNum);
+        
+        // some ambiguity here from RAW (Scouts p.23)
+        // rule states: Orbits closer to the primary than the companion's orbit must be numbered no more than half of the companion's orbit number (round fractions down)
+        //              Orbits farther away than the companion must be numbered at least two greater than the companion's orbit number
+        // examples state: in a system with a companion in orbit 2, orbit 0 is available and orbits 4 and higher are available             (why not orbit 1? half of 2)
+        //                 in a system with a companion at orbit 5, orbits 0, 1 and 2 are available, and orbits 7 and higher are available (contrariwise, how is 2 OK? half of 5 rounded down is 2)
+        // simplest is to assume first example is a typo, and orbit 1 should be available - then this is consistent - implementing this approach
+        
+        if (_orbitNum < compOrbit && _orbitNum > compOrbit/2 ){ println(" TRUE!"); return true; }
+        if (_orbitNum == compOrbit                           ){ println(" TRUE!"); return true; } 
+        if (_orbitNum > compOrbit && _orbitNum <= compOrbit+1){ println(" TRUE!"); return true; }
+      }
+      println(" FALSE"); return false;
     }
   }
   

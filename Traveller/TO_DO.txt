@@ -79,6 +79,7 @@
 //  *      Flagging close/far companions - query methods?
 //  *      Fix white dwarf toString and Class parsing
 //  *      Assess case where system has no planets - overlooked in rules?
+//  *      Lots of debugging spew added during Scouts implementation - remove! (test?)
 //  *      UML-ish modeling and analysis
 //  *      Subsector density (and menu options for same)
 //  *      Validating JSON data
