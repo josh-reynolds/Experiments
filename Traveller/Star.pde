@@ -68,9 +68,16 @@ class Star extends Orbit {
   }
   
   void generateClass(String _s){
-    type = _s.charAt(0);
-    decimal = int(_s.substring(1,2));
-    size = _s.substring(2);
+    char first = _s.charAt(0);
+    if (first == 'D'){  // convention is different for White Dwarfs
+      type = _s.charAt(1);
+      decimal = 0;
+      size = str(first);
+    } else {
+      type = first;
+      decimal = int(_s.substring(1,2));
+      size = _s.substring(2);
+    }
   }
   
   void createSatellites(){
@@ -332,7 +339,11 @@ class Star extends Orbit {
   }  
   
   String toString(){
-    return str(type) + decimal + size; // TO_DO: white dwarfs follow a different convention, should adjust here and in parser ctor above
+    if (size.equals("D")){
+      return size + str(type);
+    } else {
+      return str(type) + decimal + size;
+    }
   }
   
   JSONObject asJSON(){
