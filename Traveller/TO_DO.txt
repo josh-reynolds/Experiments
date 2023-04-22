@@ -63,14 +63,15 @@
 //  * DONE Add JSON support to Star & Orbit hierarchy (save & load)
 //  * DONE Screen orbits inside primary radius
 //  * DONE Fix white dwarf toString and Class parsing
+//  * DONE Star.size as integer, with "Roman numeralization" accessor
 //  * .... Add Scouts extended generation ruleset
+//  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Flesh out tests
 //  *      Deprecate Star String ctor
 //  *      Rework Coordinate / Hex classes - Reference objects?
 //  *      Override getHash() in Coordinate and adjust lookup procedure
 //  *      Refactor case statements in Ruleset
 //  *      Reassess parent pointer for non-primary stars
-//  *      Star.size as integer, with "Roman numeralization" accessor
 //  *      Adding satellites to companions & planets
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Enforce inherited orbitNumber across all Orbit subclasses

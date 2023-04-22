@@ -7,7 +7,7 @@ class Star extends Orbit {
 
   int decimal;
 
-  String size;  // TO_DO: Roman numerals - should we store as ints instead?
+  int size;
   int sizeRoll;
   
   ArrayList<Star> companions;
@@ -21,7 +21,7 @@ class Star extends Orbit {
     type = getType(_primary);  
     decimal = floor(random(10));
     size = getSize(_primary);
-    if (size.equals("D")){ decimal = 0; }
+    if (size == 7){ decimal = 0; }
   } 
 
   Star(Boolean _primary, System _parent, String _s){               // TO_DO: deprecate this ctor
@@ -72,11 +72,11 @@ class Star extends Orbit {
     if (first == 'D'){  // convention is different for White Dwarfs
       type = _s.charAt(1);
       decimal = 0;
-      size = str(first);
+      size = sizeFromString(str(first));
     } else {
       type = first;
       decimal = int(_s.substring(1,2));
-      size = _s.substring(2);
+      size = sizeFromString(_s.substring(2));
     }
   }
   
@@ -173,7 +173,7 @@ class Star extends Orbit {
   // Tables are on pp. 29-31, implementing RAW
   // TO_DO: tables handle orbit 0 inconsistently, so this func is incomplete - need to derive additional data
   Boolean orbitInsideStar(int _num){
-    if (size.equals("II")){
+    if (size == 2){
       if (type == 'K'){
         if (decimal < 5 ){ return false;     }
         if (decimal >= 5){ return _num <= 1; }
@@ -184,7 +184,7 @@ class Star extends Orbit {
       }
       return false;
     }
-    if (size.equals("III")){
+    if (size == 3){
       if (type != 'M'                 ){ return false; }
       if (decimal < 5                 ){ return false; }
       if (decimal >= 5 && decimal <= 7){ return _num <= 3; }
@@ -266,52 +266,95 @@ class Star extends Orbit {
     }
   }
   
-  String getSize(Boolean _primary){
+  int getSize(Boolean _primary){
     int dieThrow = twoDice();
     if (_primary){
       sizeRoll = dieThrow;
-      if (dieThrow == 2                ){ return "II";  }
-      if (dieThrow == 3                ){ return "III"; }
+      if (dieThrow == 2                ){ return 2;  }
+      if (dieThrow == 3                ){ return 3; }
       if (dieThrow == 4                ){ 
         if ((type == 'K' && decimal > 4) || type == 'M'){
-          return "V";
+          return 5;
         } else {
-          return "IV";
+          return 4;
         }
       }
-      if (dieThrow > 4 && dieThrow < 11){ return "V";   }
+      if (dieThrow > 4 && dieThrow < 11){ return 5;   }
       if (dieThrow == 11               ){
         if (type == 'B' || type == 'A' || (type == 'F' && decimal < 5)){
-          return "V";
+          return 5;
         } else {
-          return "VI";
+          return 6;
         }
       }
-      if (dieThrow == 12               ){ return "D";   }
-      return "X";
+      if (dieThrow == 12               ){ return 7;   }
+      return 9;
     } else {
       sizeRoll = 0;
       dieThrow += ((System_ScoutsEx)parent).primary.sizeRoll;
-      if (dieThrow == 2                 ){ return "II";  }
-      if (dieThrow == 3                 ){ return "III"; }
+      if (dieThrow == 2                 ){ return 2;  }
+      if (dieThrow == 3                 ){ return 3; }
       if (dieThrow == 4                 ){ 
         if ((type == 'K' && decimal > 4) || type == 'M'){
-          return "V";
+          return 5;
         } else {
-          return "IV";
+          return 4;
         }  
       }
-      if (dieThrow == 5 || dieThrow == 6){ return "D";   }
-      if (dieThrow == 7 || dieThrow == 8){ return "V";   }
+      if (dieThrow == 5 || dieThrow == 6){ return 7;   }
+      if (dieThrow == 7 || dieThrow == 8){ return 5;   }
       if (dieThrow == 9                 ){ 
         if (type == 'B' || type == 'A' || (type == 'F' && decimal < 5)){
-          return "V";
+          return 5;
         } else {
-          return "VI";
+          return 6;
         }          
       }
-      if (dieThrow > 9                  ){ return "D";   }
-      return "X";
+      if (dieThrow > 9                  ){ return 7;   }
+      return 9;
+    }
+  }
+  
+  // parallel switch statements in these two methods
+  // subclassing (even just for 'size') starts to seem appealing
+  // go with rule of three for now
+  String sizeToString(){
+    switch(size) {
+      // does not handle supergiants (Ia & Ib) but this system
+      // can't generate them in any case - deal with later if we need to
+      case 2:
+        return "II";  // bright giants
+      case 3:
+        return "III"; // normal giants
+      case 4:
+        return "IV";  // subgiants
+      case 5:
+        return "V";   // main sequence / dwarfs
+      case 6:
+        return "VI";  // subdwarfs
+      case 7:
+        return "D";   // white dwarfs
+      default:
+        return "X";
+    }
+  }
+  
+  int sizeFromString(String _s){
+    switch(_s) {
+      case "II":
+        return 2;
+      case "III":
+        return 3;
+      case "IV":
+        return 4;
+      case "V":
+        return 5;
+      case "VI":
+        return 6;
+      case "D":
+        return 7;
+      default:
+        return 9;
     }
   }
   
@@ -325,10 +368,10 @@ class Star extends Orbit {
 
   int calculateMaxOrbits(){
     int modifier = 0;
-    if (size.equals("II") ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
-    if (size.equals("III")){ modifier += 4; }
-    if (type == 'M'       ){ modifier -= 4; }
-    if (type == 'K'       ){ modifier -= 2; }
+    if (size == 2   ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
+    if (size == 3   ){ modifier += 4; }
+    if (type == 'M' ){ modifier -= 4; }
+    if (type == 'K' ){ modifier -= 2; }
 
     int result = twoDice() + modifier; 
     if (result < 1){ 
@@ -339,10 +382,10 @@ class Star extends Orbit {
   }  
   
   String toString(){
-    if (size.equals("D")){
-      return size + str(type);
+    if (size == 7){
+      return sizeToString() + str(type);
     } else {
-      return str(type) + decimal + size;
+      return str(type) + decimal + sizeToString();
     }
   }
   
