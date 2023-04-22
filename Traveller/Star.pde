@@ -18,6 +18,7 @@ class Star extends Orbit {
   Star(Boolean _primary, System _parent){
     primary = _primary;
     parent = _parent;
+    companions = new ArrayList<Star>();
     type = getType(_primary);  
     decimal = floor(random(10));
     size = getSize(_primary);
@@ -27,6 +28,7 @@ class Star extends Orbit {
   Star(Boolean _primary, System _parent, String _s){               // TO_DO: deprecate this ctor
     primary = _primary;
     parent = _parent;
+    companions = new ArrayList<Star>();
     generateClass(_s);
   }
   
@@ -80,21 +82,34 @@ class Star extends Orbit {
     }
   }
   
+  // currently only called on primary
+  // adjust so it can be called on companions
+  // and sort out when/where to call (finish all primary orbits first?)
   void createSatellites(){
-    companions = new ArrayList<Star>();
-    int compCount = getCompanionCount();
-    for (int i = 0; i < compCount; i++){
-      companions.add(new Star(false, parent));
+    if (primary){
+      //companions = new ArrayList<Star>();
+      int compCount = getCompanionCount();
+      for (int i = 0; i < compCount; i++){
+        companions.add(new Star(false, parent));
+      }
+  
+      int maxCompanion = setCompanionOrbits();    
+      int orbitCount = calculateMaxOrbits();
+  
+      orbits = createOrbits(orbitCount, maxCompanion);
+      
+      placeCompanions(orbitCount, maxCompanion);    // may need to adjust the ordering of these method calls
+      placeEmptyOrbits(orbitCount, maxCompanion);
+      placeForbiddenOrbits();
+      return;     // hack approach for now to start wiring up companions
     }
-
-    int maxCompanion = setCompanionOrbits();    
-    int orbitCount = calculateMaxOrbits();
-
-    orbits = createOrbits(orbitCount, maxCompanion);
-    
-    placeCompanions(orbitCount, maxCompanion);    // may need to adjust the ordering of these method calls
-    placeEmptyOrbits(orbitCount, maxCompanion);
-    placeForbiddenOrbits();
+    if (orbitIsFar(orbitNumber)){     // TO_DO: these methods take modifiers for companions, need to wire that in
+      //companions = new ArrayList<Star>();
+      int compCount = getCompanionCount();
+      for (int i = 0; i < compCount; i++){
+        companions.add(new Star(false, parent));
+      }
+    }
   }
   
   // TO_DO: currently only handles the companion case
@@ -201,6 +216,11 @@ class Star extends Orbit {
     }    
   }
   
+  Boolean orbitIsFar(int _orbitNum){
+    return _orbitNum >= 14;  // Scouts p.46 - does not assign orbit numbers to "Far" (just AU values), but this is equivalent and easier to handle in rest of methods
+  }
+  
+  // from tables on Scouts p.46
   int setCompanionOrbits(){
     int maxCompanion = 0;
     for (int i = 0; i < companions.size(); i++){
@@ -208,7 +228,7 @@ class Star extends Orbit {
       println("Assessing companion star: " + companions.get(i) + " modifier: +" + modifier);
       int dieThrow = twoDice() + modifier;
       int result = 0;
-      if (dieThrow < 4  ){ result = 0; }  // actually "Close" - not truly Orbit 0 - system will not place companions there
+      if (dieThrow < 4  ){ result = 0; }
       if (dieThrow == 4 ){ result = 1; }
       if (dieThrow == 5 ){ result = 2; }
       if (dieThrow == 6 ){ result = 3; }
@@ -217,13 +237,12 @@ class Star extends Orbit {
       if (dieThrow == 9 ){ result = 6 + oneDie(); }
       if (dieThrow == 10){ result = 7 + oneDie(); }
       if (dieThrow == 11){ result = 8 + oneDie(); }
-      if (dieThrow >= 12){               // TO_DO: "Far" - should convert this to an orbit number 
-        int distance = 1000 * oneDie();
+      if (dieThrow >= 12){ 
+        int distance = 1000 * oneDie();                           // distance in AU, converted to orbit number below
         if (distance == 1000                    ){ result = 14; }
         if (distance == 2000                    ){ result = 15; }
         if (distance == 3000 || distance == 4000){ result = 16; }
-        if (distance >= 5000                    ){ result = 17; } // from tables on Scouts p.46 - should derive the formula instead
-                                                                  // or calculate "Far" in terms of orbit number to begin with
+        if (distance >= 5000                    ){ result = 17; } 
       }
       if (result > maxCompanion){ maxCompanion = result; }
       
@@ -236,8 +255,6 @@ class Star extends Orbit {
         println("Companion in orbit: " + result);
         companions.get(i).orbitNumber = result;
       }
-      // TO_DO: need to classify Close & Far
-      // TO_DO: need to screen orbits inside Primary (done for Companions - should also set to FORBIDDEN)
       // TO_DO: need to check for companions on Far results
       // TO_DO: need to handle two companions landing in same orbit
     }
@@ -393,19 +410,31 @@ class Star extends Orbit {
     JSONObject json = new JSONObject();
     
     json.setString("Class", this.toString());
+
+    if (closeCompanion != null){
+      json.setJSONObject("Close Companion", closeCompanion.asJSON());
+    }
+
+    if (companions.size() > 0){
+      JSONArray companionList = new JSONArray();
+      for (int i = 0; i < companions.size(); i++){
+        companionList.setJSONObject(i, companions.get(i).asJSON());
+      }
+      json.setJSONArray("Companions", companionList);
+    }
     
     if (primary){  
-      if (closeCompanion != null){
-        json.setJSONObject("Close Companion", closeCompanion.asJSON());
-      }
+      //if (closeCompanion != null){
+      //  json.setJSONObject("Close Companion", closeCompanion.asJSON());
+      //}
       
-      if (companions.size() > 0){
-        JSONArray companionList = new JSONArray();
-        for (int i = 0; i < companions.size(); i++){
-          companionList.setJSONObject(i, companions.get(i).asJSON());
-        }
-        json.setJSONArray("Companions", companionList);
-      }
+      //if (companions.size() > 0){
+      //  JSONArray companionList = new JSONArray();
+      //  for (int i = 0; i < companions.size(); i++){
+      //    companionList.setJSONObject(i, companions.get(i).asJSON());
+      //  }
+      //  json.setJSONArray("Companions", companionList);
+      //}
       
       if (orbits.length > 0){
         JSONArray orbitsList = new JSONArray();
