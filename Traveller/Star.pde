@@ -19,9 +19,10 @@ class Star extends Orbit {
     primary = _primary;
     parent = _parent;
     companions = new ArrayList<Star>();
-    type = getType(_primary);  
+    
+    type = generateType();  
     decimal = floor(random(10));
-    size = getSize(_primary);
+    size = generateSize();
     if (size == 7){ decimal = 0; }
   } 
 
@@ -29,7 +30,8 @@ class Star extends Orbit {
     primary = _primary;
     parent = _parent;
     companions = new ArrayList<Star>();
-    generateClass(_s);
+    
+    classFromString(_s);
   }
   
   Star(Boolean _primary, System _parent, JSONObject _json){
@@ -37,7 +39,7 @@ class Star extends Orbit {
     parent = _parent;
     companions = new ArrayList<Star>();
     
-    generateClass(_json.getString("Class"));
+    classFromString(_json.getString("Class"));
     
     if (primary){                                                   // TO_DO: at some point we'll add children to companions, then remove this test
       if (!_json.isNull("Close Companion")){
@@ -69,7 +71,7 @@ class Star extends Orbit {
     }
   }
   
-  void generateClass(String _s){
+  void classFromString(String _s){
     char first = _s.charAt(0);
     if (first == 'D'){  // convention is different for White Dwarfs
       type = _s.charAt(1);
@@ -87,7 +89,6 @@ class Star extends Orbit {
   // and sort out when/where to call (finish all primary orbits first?)
   void createSatellites(){
     if (primary){
-      //companions = new ArrayList<Star>();
       int compCount = getCompanionCount();
       for (int i = 0; i < compCount; i++){
         companions.add(new Star(false, parent));
@@ -101,14 +102,29 @@ class Star extends Orbit {
       placeCompanions(orbitCount, maxCompanion);    // may need to adjust the ordering of these method calls
       placeEmptyOrbits(orbitCount, maxCompanion);
       placeForbiddenOrbits();
+      
+      for (Star c : companions){
+        c.createSatellites();
+      }
+      
       return;     // hack approach for now to start wiring up companions
     }
+    
     if (orbitIsFar(orbitNumber)){     // TO_DO: these methods take modifiers for companions, need to wire that in
-      //companions = new ArrayList<Star>();
       int compCount = getCompanionCount();
+      println(compCount + " companions");
       for (int i = 0; i < compCount; i++){
         companions.add(new Star(false, parent));
       }
+      
+      int maxCompanion = setCompanionOrbits();
+      int orbitCount = calculateMaxOrbits();
+      
+      orbits = createOrbits(orbitCount, maxCompanion);
+      
+      placeCompanions(orbitCount, maxCompanion);
+      placeEmptyOrbits(orbitCount, maxCompanion);
+      placeForbiddenOrbits();
     }
   }
   
@@ -225,6 +241,7 @@ class Star extends Orbit {
     int maxCompanion = 0;
     for (int i = 0; i < companions.size(); i++){
       int modifier = 4 * (i);
+      if (!primary){ modifier -= 4; }
       println("Assessing companion star: " + companions.get(i) + " modifier: +" + modifier);
       int dieThrow = twoDice() + modifier;
       int result = 0;
@@ -261,9 +278,9 @@ class Star extends Orbit {
     return maxCompanion;   // TO_DO: off by one in the CLOSE Companion case
   }
   
-  char getType(Boolean _primary){
+  char generateType(){
     int dieThrow = twoDice();
-    if (_primary){
+    if (primary){
       typeRoll = dieThrow;
       if (dieThrow == 2               ){ return 'A'; }
       if (dieThrow > 2 && dieThrow < 8){ return 'M'; }
@@ -283,9 +300,9 @@ class Star extends Orbit {
     }
   }
   
-  int getSize(Boolean _primary){
+  int generateSize(){
     int dieThrow = twoDice();
-    if (_primary){
+    if (primary){
       sizeRoll = dieThrow;
       if (dieThrow == 2                ){ return 2;  }
       if (dieThrow == 3                ){ return 3; }
@@ -376,10 +393,17 @@ class Star extends Orbit {
   }
   
   int getCompanionCount(){
+    println("Determining companion count for " + this);
     int dieThrow = twoDice();
     if (dieThrow < 8){ return 0; }
     if (dieThrow > 7 && dieThrow < 12){ return 1; }
-    if (dieThrow == 12){ return 2; }
+    if (dieThrow == 12){ 
+      if (primary){ 
+        return 2; 
+      } else {
+        return 1;
+      }
+    }
     return 0;
   }
 
@@ -422,32 +446,20 @@ class Star extends Orbit {
       }
       json.setJSONArray("Companions", companionList);
     }
-    
-    if (primary){  
-      //if (closeCompanion != null){
-      //  json.setJSONObject("Close Companion", closeCompanion.asJSON());
-      //}
       
-      //if (companions.size() > 0){
-      //  JSONArray companionList = new JSONArray();
-      //  for (int i = 0; i < companions.size(); i++){
-      //    companionList.setJSONObject(i, companions.get(i).asJSON());
-      //  }
-      //  json.setJSONArray("Companions", companionList);
-      //}
-      
-      if (orbits.length > 0){
-        JSONArray orbitsList = new JSONArray();
-        for (int i = 0; i < orbits.length; i++){
-          if (orbits[i] != null){               // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause
-            orbitsList.setString(i, orbits[i].toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
-          } else {
-            orbitsList.setString(i, "null");
-          }
+    if (orbits != null && orbits.length > 0){   // TO_DO: temporary while we are wiring up companion orbits - currently array only created for primary & far companions
+      JSONArray orbitsList = new JSONArray();
+      for (int i = 0; i < orbits.length; i++){
+        if (orbits[i] != null){               // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause
+          orbitsList.setString(i, orbits[i].toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
+        } else {
+          orbitsList.setString(i, "null");
         }
-        json.setJSONArray("Orbits", orbitsList);
       }
-    } else {
+      json.setJSONArray("Orbits", orbitsList);
+    }
+
+    if (!primary){
       json.setInt("Orbit", orbitNumber);
     }
     
