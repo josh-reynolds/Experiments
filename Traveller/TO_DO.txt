@@ -64,8 +64,8 @@
 //  * DONE Screen orbits inside primary radius
 //  * DONE Fix white dwarf toString and Class parsing
 //  * DONE Star.size as integer, with "Roman numeralization" accessor
+//  * DONE Adding orbital zones
 //  * .... Adding satellites to companions & planets
-//  * .... Adding orbital zones
 //  * .... Add Scouts extended generation ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Gather Star query methods together, and unify nomenclature

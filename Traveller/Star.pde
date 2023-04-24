@@ -139,19 +139,29 @@ class Star extends Orbit {
       }
     }
   }
-   
+  
+  // may want to redo this as a query, and combine with the Forbidden orbit logic (same data source for both)
+  // also 
+  // - table has inconsistencies w.r.t. rows, having to guess at some values for orbit 0 esp.
+  // - the system by RAW cannot generate supergiants (Ia/Ib) or O/B stars, so could omit that data
+  // - special case for M9 not handled yet - all other decimal values round to 0/5 for all spectral classes except M
   void placeZones(){
-    if (orbits.length > 0 && size == 5){  // TO_DO: temporary, only have main sequence table in data file so far
+    if (orbits.length > 0){
       println("Setting orbital zones for " + this);
       
-      // lot of data from Scouts pp. 29-31 here - should think how best to capture
+      // data from Scouts pp. 29-31
       Table table = loadTable("OrbitalZones.csv", "header");  // probably want to load this as a global resource
-      int roundedDecimal  = floor(decimal/5) * 5;
-      String roundedClass = str(type) + roundedDecimal + sizeToString();  // duplication from to_string()
+      String classForLookup = "";
+      if (size < 7){  // white dwarfs have a different naming convention, don't need to worry about decimal value
+        int roundedDecimal  = floor(decimal/5) * 5;
+        classForLookup = str(type) + roundedDecimal + sizeToString();  // duplication from to_string()
+      } else {
+        classForLookup = this.toString();
+      }
             
       for (TableRow row : table.rows()){
-        if (row.getString("Class").equals(roundedClass)){
-          println("Found row " + roundedClass);
+        if (row.getString("Class").equals(classForLookup)){
+          println("Found row " + classForLookup);
           for (Orbit o : orbits){
             o.orbitalZone = row.getString(str(o.orbitNumber));
           }
