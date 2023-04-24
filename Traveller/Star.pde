@@ -40,33 +40,33 @@ class Star extends Orbit {
     companions = new ArrayList<Star>();
     
     classFromString(_json.getString("Class"));
+
+    if (!_json.isNull("Close Companion")){
+      closeCompanion = new Star(false, parent, _json.getJSONObject("Close Companion")); 
+    }
     
-    if (primary){                                                   // TO_DO: at some point we'll add children to companions, then remove this test
-      if (!_json.isNull("Close Companion")){
-        closeCompanion = new Star(false, parent, _json.getJSONObject("Close Companion")); 
+    if (!_json.isNull("Companions")){    
+      JSONArray comps = _json.getJSONArray("Companions");
+      for (int i = 0; i < comps.size(); i++){
+        companions.add(new Star(false, parent, comps.getJSONObject(i)));
       }
-      
-      if (!_json.isNull("Companions")){    
-        JSONArray comps = _json.getJSONArray("Companions");
-        for (int i = 0; i < comps.size(); i++){
-          companions.add(new Star(false, parent, comps.getJSONObject(i)));
+    }
+
+    if (!_json.isNull("Orbits")){
+      JSONArray ob = _json.getJSONArray("Orbits");
+      orbits = new Orbit[ob.size()];
+      for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
+        if (ob.getString(i).equals("null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
+          orbits[i] = null;                                        // TO_DO: will go away once we populate all orbit variants 
+        } else if (ob.getString(i).equals("Empty")){ 
+          orbits[i] = new Empty();                                 // TO_DO: need a ctor that takes orbit number to comply with inherited interface 
+        } else {
+          orbits[i] = new Star(false, parent, ob.getString(i));    // TO_DO: conflict/duplication with companion list - deprecate and rework this
         }
       }
-      
-      if (!_json.isNull("Orbits")){
-        JSONArray ob = _json.getJSONArray("Orbits");
-        orbits = new Orbit[ob.size()];
-        for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
-          if (ob.getString(i).equals("null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
-            orbits[i] = null;                                        // TO_DO: will go away once we populate all orbit variants 
-          } else if (ob.getString(i).equals("Empty")){ 
-            orbits[i] = new Empty();                                 // TO_DO: need a ctor that takes orbit number to comply with inherited interface 
-          } else {
-            orbits[i] = new Star(false, parent, ob.getString(i));    // TO_DO: conflict/duplication with companion list - deprecate and rework this
-          }
-        }
-      }
-    } else {
+    }
+    
+    if (!primary){
       orbitNumber = _json.getInt("Orbit");  // TO_DO: currently null for primary - all companions have a value
     }
   }
@@ -88,8 +88,9 @@ class Star extends Orbit {
   // adjust so it can be called on companions
   // and sort out when/where to call (finish all primary orbits first?)
   void createSatellites(){
-    if (primary){
+    if (primary || orbitIsFar(orbitNumber)){       // TO_DO: these methods take modifiers for companions, need to wire that in
       int compCount = getCompanionCount();
+      println(compCount + " companions");
       for (int i = 0; i < compCount; i++){
         companions.add(new Star(false, parent));
       }
@@ -106,25 +107,7 @@ class Star extends Orbit {
       for (Star c : companions){
         c.createSatellites();
       }
-      
-      return;     // hack approach for now to start wiring up companions
-    }
-    
-    if (orbitIsFar(orbitNumber)){     // TO_DO: these methods take modifiers for companions, need to wire that in
-      int compCount = getCompanionCount();
-      println(compCount + " companions");
-      for (int i = 0; i < compCount; i++){
-        companions.add(new Star(false, parent));
-      }
-      
-      int maxCompanion = setCompanionOrbits();
-      int orbitCount = calculateMaxOrbits();
-      
-      orbits = createOrbits(orbitCount, maxCompanion);
-      
-      placeCompanions(orbitCount, maxCompanion);
-      placeEmptyOrbits(orbitCount, maxCompanion);
-      placeForbiddenOrbits();
+     // return;     // hack approach for now to start wiring up companions
     }
   }
   
@@ -149,7 +132,7 @@ class Star extends Orbit {
   void placeForbiddenOrbits(){
     if (orbits.length > 0){
       for (int i = 0; i < orbits.length; i++){
-        if ((orbitInsideStar(i) || maskedByCompanion(i))&&
+        if ((orbitInsideStar(i) || maskedByCompanion(i)) &&
             isNullOrEmpty(i)){
           orbits[i] = new Forbidden();
         }
@@ -272,7 +255,6 @@ class Star extends Orbit {
         println("Companion in orbit: " + result);
         companions.get(i).orbitNumber = result;
       }
-      // TO_DO: need to check for companions on Far results
       // TO_DO: need to handle two companions landing in same orbit
     }
     return maxCompanion;   // TO_DO: off by one in the CLOSE Companion case
