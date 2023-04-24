@@ -59,7 +59,7 @@ class Star extends Orbit {
         if (ob.getString(i).equals("null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
           orbits[i] = null;                                        // TO_DO: will go away once we populate all orbit variants 
         } else if (ob.getString(i).equals("Empty")){ 
-          orbits[i] = new Empty();                                 // TO_DO: need a ctor that takes orbit number to comply with inherited interface 
+          orbits[i] = new Empty(i); 
         } else {
           orbits[i] = new Star(false, parent, ob.getString(i));    // TO_DO: conflict/duplication with companion list - deprecate and rework this
         }
@@ -88,26 +88,42 @@ class Star extends Orbit {
   // adjust so it can be called on companions
   // and sort out when/where to call (finish all primary orbits first?)
   void createSatellites(){
+    int maxCompanion = 0;
     if (primary || orbitIsFar(orbitNumber)){       // TO_DO: these methods take modifiers for companions, need to wire that in
       int compCount = getCompanionCount();
       println(compCount + " companions");
       for (int i = 0; i < compCount; i++){
         companions.add(new Star(false, parent));
       }
-  
-      int maxCompanion = setCompanionOrbits();    
-      int orbitCount = calculateMaxOrbits();
-  
-      orbits = createOrbits(orbitCount, maxCompanion);
+      maxCompanion = setCompanionOrbits();    
+    }  
       
-      placeCompanions(orbitCount, maxCompanion);    // may need to adjust the ordering of these method calls
-      placeEmptyOrbits(orbitCount, maxCompanion);
-      placeForbiddenOrbits();
-      
-      for (Star c : companions){
-        c.createSatellites();
+    int orbitCount = calculateMaxOrbits();
+    if (!primary){ orbitCount = constrain(orbitCount, 0, floor(orbitNumber/2)); }
+    orbits = createOrbits(orbitCount, maxCompanion);
+    
+    placeCompanions(orbitCount, maxCompanion);    // may need to adjust the ordering of these method calls
+    placeEmptyOrbits(orbitCount, maxCompanion);
+    placeForbiddenOrbits();
+    
+    placeNullOrbits();    // TO_DO: probably temporary scaffolding to smooth addition of later elements
+    
+    for (Star c : companions){
+      c.createSatellites();
+    }
+    
+    placeZones();   // TO_DO: some orbits are still null at this point
+                    // should this be a query instead of a field on Orbit?
+                    // see above - introduced a null object as (temp?) workaround
+  }
+  
+  void placeNullOrbits(){
+    if (orbits.length > 0){
+      for (int i = 0; i < orbits.length; i++){
+        if (orbits[i] == null){
+          orbits[i] = new Null(i);
+        }
       }
-     // return;     // hack approach for now to start wiring up companions
     }
   }
   
@@ -118,7 +134,27 @@ class Star extends Orbit {
       int startCount = max(0, _orbitCount);
       for (int i = startCount; i < orbits.length; i++){  
         if (orbits[i] == null){
-          orbits[i] = new Empty();
+          orbits[i] = new Empty(i);
+        }
+      }
+    }
+  }
+   
+  void placeZones(){
+    if (orbits.length > 0 && size == 5){  // TO_DO: temporary, only have main sequence table in data file so far
+      println("Setting orbital zones for " + this);
+      
+      // lot of data from Scouts pp. 29-31 here - should think how best to capture
+      Table table = loadTable("OrbitalZones.csv", "header");  // probably want to load this as a global resource
+      int roundedDecimal  = floor(decimal/5) * 5;
+      String roundedClass = str(type) + roundedDecimal + sizeToString();  // duplication from to_string()
+            
+      for (TableRow row : table.rows()){
+        if (row.getString("Class").equals(roundedClass)){
+          println("Found row " + roundedClass);
+          for (Orbit o : orbits){
+            o.orbitalZone = row.getString(str(o.orbitNumber));
+          }
         }
       }
     }
@@ -134,7 +170,7 @@ class Star extends Orbit {
       for (int i = 0; i < orbits.length; i++){
         if ((orbitInsideStar(i) || maskedByCompanion(i)) &&
             isNullOrEmpty(i)){
-          orbits[i] = new Forbidden();
+          orbits[i] = new Forbidden(i);
         }
       }
     }

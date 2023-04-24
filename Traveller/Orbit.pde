@@ -2,7 +2,7 @@ abstract class Orbit {
   //Star barycenter;  // what happens with satellites orbiting planets? go with this for now, will need adjustment
   //Object contents;  // and here - do we want a superclass that encompasses all entities?
   int orbitNumber;
-  //String zone;
+  String orbitalZone;
   
   // radius in AU & km?
 }
@@ -41,7 +41,8 @@ abstract class Orbit {
 //class Star extends Orbit {} // separate file/tab for this one
 
 class Empty extends Orbit {
-  String toString(){ return "Empty"; }
+  Empty(int _orbit){ orbitNumber = _orbit; }
+  String toString(){ return "Empty "  + orbitalZone; }
 }
 
 
@@ -50,5 +51,11 @@ class Planet extends Orbit {}
 class GasGiant extends Orbit {}
 
 class Forbidden extends Orbit {
-  String toString(){ return "Forbidden"; }
+  Forbidden(int _orbit){ orbitNumber = _orbit; }  
+  String toString(){ return "Forbidden " + orbitalZone; }
+}
+
+class Null extends Orbit {
+  Null(int _orbit){ orbitNumber = _orbit; }  
+  String toString(){ return "Null " + orbitalZone; }
 }
