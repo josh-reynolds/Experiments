@@ -14,7 +14,7 @@ class Star extends Orbit {
   Star closeCompanion;
   
   Orbit[] orbits;
-  String[] orbitalZones;
+  String[] orbitalZones;    // will hold data from data\OrbitalZones.csv
   
   Star(Boolean _primary, System _parent){
     primary = _primary;
@@ -26,7 +26,7 @@ class Star extends Orbit {
     size = generateSize();
     if (size == 7){ decimal = 0; }
     
-    orbitalZones = new String[18];  // will hold data from data\OrbitalZones.csv
+    orbitalZones = retrieveOrbitalZones();
   } 
 
   Star(Boolean _primary, System _parent, String _s){               // TO_DO: deprecate this ctor
@@ -36,7 +36,7 @@ class Star extends Orbit {
     
     classFromString(_s);
     
-    orbitalZones = new String[18];
+    orbitalZones = retrieveOrbitalZones();
   }
   
   Star(Boolean _primary, System _parent, JSONObject _json){
@@ -46,7 +46,7 @@ class Star extends Orbit {
     
     classFromString(_json.getString("Class"));
 
-    orbitalZones = new String[18];
+    orbitalZones = retrieveOrbitalZones();
 
     if (!_json.isNull("Close Companion")){
       closeCompanion = new Star(false, parent, _json.getJSONObject("Close Companion")); 
@@ -162,15 +162,45 @@ class Star extends Orbit {
     }
   }
 
+  // this data can back other queries, like the Forbidden orbit logic (same data source for both)
+  // TO_DO: look for refactoring opportunities... also:
+  // - table has inconsistencies w.r.t. rows, having to guess at some values for orbit 0 esp.
+  // - the system by RAW cannot generate supergiants (Ia/Ib) or O/B stars, so could omit that data
+  // - special case for M9 not handled yet - all other decimal values round to 0/5 for all spectral classes except M
+  String[] retrieveOrbitalZones(){
+    String[] output = new String[18];
+    println("Retrieving orbital zones data for " + this);
+    
+    // data from Scouts pp. 29-31
+    Table table = loadTable("OrbitalZones.csv", "header");  // probably want to load this as a global resource
+    String classForLookup = "";
+    if (size < 7){  // white dwarfs (size 7) have a different naming convention, don't need to worry about decimal value
+      int roundedDecimal  = floor(decimal/5) * 5;
+      classForLookup = str(type) + roundedDecimal + sizeToString();  // duplication from to_string()
+    } else {
+      classForLookup = this.toString();
+    }
+          
+    for (TableRow row : table.rows()){
+      if (row.getString("Class").equals(classForLookup)){
+        println("Found row " + classForLookup);
+        for (int i = 0; i < output.length; i++){
+          output[i] = row.getString(str(i));
+        }
+      }
+    }
+    return output;
+  }
+
   void createSatellites(){
     int maxCompanion = 0;
     if (primary || orbitIsFar(orbitNumber)){
-      int compCount = getCompanionCount();
+      int compCount = generateCompanionCount();
       println(compCount + " companions");
       for (int i = 0; i < compCount; i++){
         companions.add(new Star(false, parent));
       }
-      maxCompanion = setCompanionOrbits();    
+      maxCompanion = generateCompanionOrbits();    
     }  
       
     int orbitCount = calculateMaxOrbits();
@@ -192,7 +222,7 @@ class Star extends Orbit {
                     // see above - introduced a null object as (temp?) workaround
   }    
     
-  int getCompanionCount(){
+  int generateCompanionCount(){
     println("Determining companion count for " + this);
     int dieThrow = twoDice();
     if (dieThrow < 8){ return 0; }
@@ -208,7 +238,7 @@ class Star extends Orbit {
   }
 
   // from tables on Scouts p.46
-  int setCompanionOrbits(){
+  int generateCompanionOrbits(){
     int maxCompanion = 0;
     for (int i = 0; i < companions.size(); i++){
       int modifier = 4 * (i);
@@ -325,35 +355,11 @@ class Star extends Orbit {
     }
   }
 
-  // may want to redo this as a query, and combine with the Forbidden orbit logic (same data source for both)
-  // also 
-  // - table has inconsistencies w.r.t. rows, having to guess at some values for orbit 0 esp.
-  // - the system by RAW cannot generate supergiants (Ia/Ib) or O/B stars, so could omit that data
-  // - special case for M9 not handled yet - all other decimal values round to 0/5 for all spectral classes except M
-  //
-  // what if instead of a field on Orbit, we add an array to every star and populate with this data in the ctor?
-  // then it is a simple query whenever an Orbit wants to know what zone it is in
+  // this probably goes away entirely - just move the query as param to the ctor calls
   void placeOrbitalZones(){
     if (orbits.length > 0){
-      println("Setting orbital zones for " + this);
-      
-      // data from Scouts pp. 29-31
-      Table table = loadTable("OrbitalZones.csv", "header");  // probably want to load this as a global resource
-      String classForLookup = "";
-      if (size < 7){  // white dwarfs have a different naming convention, don't need to worry about decimal value
-        int roundedDecimal  = floor(decimal/5) * 5;
-        classForLookup = str(type) + roundedDecimal + sizeToString();  // duplication from to_string()
-      } else {
-        classForLookup = this.toString();
-      }
-            
-      for (TableRow row : table.rows()){
-        if (row.getString("Class").equals(classForLookup)){
-          println("Found row " + classForLookup);
-          for (Orbit o : orbits){
-            o.orbitalZone = row.getString(str(o.orbitNumber));
-          }
-        }
+      for (int i = 0; i < orbits.length; i++){
+        orbits[i].orbitalZone = orbitalZones[i];
       }
     }
   }
