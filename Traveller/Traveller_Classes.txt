@@ -125,6 +125,7 @@ void placeCompanions(int, int)
 void placeNullOrbits()
 void placeEmptyOrbits(int, int)
 void placeForbiddenOrbits()
+int getRandomNullOrbit()
 
 Boolean orbitIsTooHot(int)
 Boolean orbitIsNull(int)

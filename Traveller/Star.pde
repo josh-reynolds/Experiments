@@ -169,7 +169,6 @@ class Star extends Orbit {
   // - special case for M9 not handled yet - all other decimal values round to 0/5 for all spectral classes except M
   String[] retrieveOrbitalZones(){
     String[] output = new String[18];
-    println("Retrieving orbital zones data for " + this);
     
     // data from Scouts pp. 29-31
     Table table = loadTable("OrbitalZones.csv", "header");  // probably want to load this as a global resource
@@ -183,7 +182,6 @@ class Star extends Orbit {
           
     for (TableRow row : table.rows()){
       if (row.getString("Class").equals(classForLookup)){
-        println("Found row " + classForLookup);
         for (int i = 0; i < output.length; i++){
           output[i] = row.getString(str(i));
         }
@@ -321,16 +319,67 @@ class Star extends Orbit {
       }
     }
   }
+
+  void placeNullOrbits(){
+    if (orbits.length > 0){
+      for (int i = 0; i < orbits.length; i++){
+        if (orbitIsNull(i)){
+          orbits[i] = new Null(i, orbitalZones[i]);
+        }
+      }
+    }
+  }
   
-  // TO_DO: currently only handles the companion case
-  //  later rules can impose additional empty orbits, will extend this method
+  // this might read better as two separate methods...
   void placeEmptyOrbits(int _orbitCount, int _maxCompanion){
+    println("Determining empty orbits");
+
+    // Extra/empty orbits due to companions beyond generated orbit count
     if (_maxCompanion - _orbitCount > 0){
       int startCount = max(0, _orbitCount);
       for (int i = startCount; i < orbits.length; i++){  
         if (orbitIsNull(i)){
           orbits[i] = new Empty(i, orbitalZones[i]);
         }
+      }
+    }
+    
+    // Empty orbits per Scouts p.34 (table on p. 29)
+    int modifier = 0;
+    if (type == 'B' || type == 'A'){ modifier += 1; }
+    if (oneDie() + modifier >= 5){
+      int emptyCount = 0;
+      switch(oneDie() + modifier){ 
+        case 1:
+        case 2:
+          emptyCount = 1;
+          break;
+        case 3:
+          emptyCount = 2;
+          break;
+        case 4:   // almost seems like a typo
+        case 5:   // if a '4' roll returned 2, this would be a simple calculation
+        case 6:   // notably, the captured planets column in same table is a simple oneDie()/2
+        case 7:
+          emptyCount = 3;
+          break;
+        default:
+          emptyCount = 1;
+          break;
+      }
+      
+      for (int i = 0; i < emptyCount; i++){
+        // By RAW, should roll twoDice() to find the empty orbit, but there are problems with that approach:
+        //  - Will never choose orbits 0 or 1 (by design?)
+        //  - Can generate more empty orbits than are available in the system
+        //  - Bell curve bias towards orbits 6,7,8
+        //  - Generates results outside existing orbits, needs lots of rerolls
+        // I am going to implement a random picker that fixes the last two issues (flat curve, only existing orbits to choose from)
+        //   and keep the protections for orbits 0 & 1 (maybe they wanted to ensure all systems have viable orbits?)
+        int choice = getRandomNullOrbit();
+        if (choice == -1){ println("No null available"); break; } // don't much care for this 'magic value' - indicates no null orbits left
+        println("Assigning " + choice + " to Empty");
+        orbits[choice] = new Empty(choice, orbitalZones[choice]);
       }
     }
   }
@@ -351,15 +400,21 @@ class Star extends Orbit {
     }
   }
 
-  void placeNullOrbits(){
-    if (orbits.length > 0){
-      for (int i = 0; i < orbits.length; i++){
-        if (orbitIsNull(i)){
-          orbits[i] = new Null(i, orbitalZones[i]);
-        }
+  // TO_DO: this needs to be more robust
+  int getRandomNullOrbit(){
+    int counter = 0;  // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
+    while(counter < 100){
+      int choice = floor(random(2, orbits.length));  // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'
+      if (orbits.length <= 2){ break; }              // but this fails in the case of very small systems, so need to bail out
+      if (orbitIsNull(choice)){
+        return choice;
       }
+      counter++;
     }
+    return -1;  // and how would we handle this? will throw an exception when we use the value as an array index
   }
+
+
 
   Boolean orbitIsTooHot(int _num){
     return orbitalZones[_num].equals("X");
