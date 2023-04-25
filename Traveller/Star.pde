@@ -207,12 +207,21 @@ class Star extends Orbit {
     if (!primary){ orbitCount = constrain(orbitCount, 0, floor(orbitNumber/2)); }
     orbits = createOrbits(orbitCount, maxCompanion);
     
-    placeCompanions(orbitCount, maxCompanion);    // may need to adjust the ordering of these method calls
-    placeEmptyOrbits(orbitCount, maxCompanion);
-    placeForbiddenOrbits();
-    
+    placeCompanions(orbitCount, maxCompanion);
+
     placeNullOrbits();    // TO_DO: probably temporary scaffolding to smooth addition of later elements
                           // unclear if still needed, was used for initial orbital zones approach, but that's changed
+    
+    // if we are going to use Null Orbits, makes sense to place just after Companions
+    // then, instead of testing '== null', later methods look for Null Orbits instead
+    // 
+    // the ordering of these method calls could come from which supplant or influence others:
+    // Companions force Empty & Forbidden orbits, so must come first
+    // All others unassigned are Nulls
+    // Remaining elements are placed in Null slots: additional Empties, Planets, Gas Giants, Asteroids
+    
+    placeEmptyOrbits(orbitCount, maxCompanion);
+    placeForbiddenOrbits();
     
     for (Star c : companions){
       c.createSatellites();
@@ -319,7 +328,7 @@ class Star extends Orbit {
     if (_maxCompanion - _orbitCount > 0){
       int startCount = max(0, _orbitCount);
       for (int i = startCount; i < orbits.length; i++){  
-        if (orbits[i] == null){
+        if (orbitIsNull(i)){
           orbits[i] = new Empty(i, orbitalZones[i]);
         }
       }
@@ -329,12 +338,12 @@ class Star extends Orbit {
   // three cases:
   //  - DONE  orbit is inside star (have query method)
   //  - DONE  orbit is suppressed by nearby companion star
-  //  - TO_DO   (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
-  //  - TO_DO orbit is too hot to allow planets
+  //  -         TO_DO (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
+  //  - DONE  orbit is too hot to allow planets
   void placeForbiddenOrbits(){
     if (orbits.length > 0){
       for (int i = 0; i < orbits.length; i++){
-        if ((orbitInsideStar(i) || orbitMaskedByCompanion(i)) &&
+        if ((orbitInsideStar(i) || orbitMaskedByCompanion(i) || orbitIsTooHot(i)) &&
             orbitIsNullOrEmpty(i)){
           orbits[i] = new Forbidden(i, orbitalZones[i]);
         }
@@ -345,11 +354,20 @@ class Star extends Orbit {
   void placeNullOrbits(){
     if (orbits.length > 0){
       for (int i = 0; i < orbits.length; i++){
-        if (orbits[i] == null){
+        if (orbitIsNull(i)){
           orbits[i] = new Null(i, orbitalZones[i]);
         }
       }
     }
+  }
+
+  Boolean orbitIsTooHot(int _num){
+    return orbitalZones[_num].equals("X");
+  }
+
+  Boolean orbitIsNull(int _num){
+    return (orbits[_num] == null ||
+            orbits[_num].getClass().getSimpleName().equals("Null"));
   }
 
   Boolean orbitIsNullOrEmpty(int _num){
@@ -361,6 +379,7 @@ class Star extends Orbit {
   // Scouts includes data for Supergiants (Ia/Ib) but no means to generate randomly - leaving out
   // Tables are on pp. 29-31, implementing RAW
   // TO_DO: tables handle orbit 0 inconsistently, so this func is incomplete - need to derive additional data
+  // TO_DO: redundant with the data in orbitalZones[] - refactor
   Boolean orbitInsideStar(int _num){
     if (size == 2){
       if (type == 'K'){
