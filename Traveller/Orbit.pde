@@ -45,11 +45,6 @@ class Empty extends Orbit {
   String toString(){ return "Empty "  + orbitalZone; }
 }
 
-
-class Planet extends Orbit {}
-
-class GasGiant extends Orbit {}
-
 class Forbidden extends Orbit {
   Forbidden(int _orbit){ orbitNumber = _orbit; }  
   String toString(){ return "Forbidden " + orbitalZone; }
@@ -59,3 +54,7 @@ class Null extends Orbit {
   Null(int _orbit){ orbitNumber = _orbit; }  
   String toString(){ return "Null " + orbitalZone; }
 }
+
+class Planet extends Orbit {}
+
+class GasGiant extends Orbit {}
