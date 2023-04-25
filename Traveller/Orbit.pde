@@ -41,17 +41,26 @@ abstract class Orbit {
 //class Star extends Orbit {} // separate file/tab for this one
 
 class Empty extends Orbit {
-  Empty(int _orbit){ orbitNumber = _orbit; }
+  Empty(int _orbit, String _zone){ 
+    orbitNumber = _orbit;
+    orbitalZone = _zone;
+  }
   String toString(){ return "Empty "  + orbitalZone; }
 }
 
 class Forbidden extends Orbit {
-  Forbidden(int _orbit){ orbitNumber = _orbit; }  
+  Forbidden(int _orbit, String _zone){ 
+    orbitNumber = _orbit;
+    orbitalZone = _zone;
+  }  
   String toString(){ return "Forbidden " + orbitalZone; }
 }
 
 class Null extends Orbit {
-  Null(int _orbit){ orbitNumber = _orbit; }  
+  Null(int _orbit, String _zone){ 
+    orbitNumber = _orbit;
+    orbitalZone = _zone;
+  }  
   String toString(){ return "Null " + orbitalZone; }
 }
 

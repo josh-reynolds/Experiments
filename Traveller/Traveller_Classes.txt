@@ -125,7 +125,6 @@ void placeCompanions(int, int)
 void placeEmptyOrbits(int, int)
 void placeForbiddenOrbits()
 void placeNullOrbits()
-void placeOrbitalZones()
 
 Boolean orbitIsNullOrEmpty(int)
 Boolean orbitInsideStar(int)

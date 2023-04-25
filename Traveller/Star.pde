@@ -64,9 +64,9 @@ class Star extends Orbit {
       orbits = new Orbit[ob.size()];
       for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
         if (ob.getString(i).equals("Null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
-          orbits[i] = new Null(i);                                 // TO_DO: will go away once we populate all orbit variants 
+          orbits[i] = new Null(i, orbitalZones[i]);                                 // TO_DO: will go away once we populate all orbit variants 
         } else if (ob.getString(i).equals("Empty")){ 
-          orbits[i] = new Empty(i); 
+          orbits[i] = new Empty(i, orbitalZones[i]); 
         } else {
           orbits[i] = new Star(false, parent, ob.getString(i));    // TO_DO: conflict/duplication with companion list - deprecate and rework this
         }
@@ -212,14 +212,11 @@ class Star extends Orbit {
     placeForbiddenOrbits();
     
     placeNullOrbits();    // TO_DO: probably temporary scaffolding to smooth addition of later elements
+                          // unclear if still needed, was used for initial orbital zones approach, but that's changed
     
     for (Star c : companions){
       c.createSatellites();
     }
-    
-    placeOrbitalZones();   // TO_DO: some orbits are still null at this point
-                    // should this be a query instead of a field on Orbit?
-                    // see above - introduced a null object as (temp?) workaround
   }    
     
   int generateCompanionCount(){
@@ -323,7 +320,7 @@ class Star extends Orbit {
       int startCount = max(0, _orbitCount);
       for (int i = startCount; i < orbits.length; i++){  
         if (orbits[i] == null){
-          orbits[i] = new Empty(i);
+          orbits[i] = new Empty(i, orbitalZones[i]);
         }
       }
     }
@@ -339,7 +336,7 @@ class Star extends Orbit {
       for (int i = 0; i < orbits.length; i++){
         if ((orbitInsideStar(i) || orbitMaskedByCompanion(i)) &&
             orbitIsNullOrEmpty(i)){
-          orbits[i] = new Forbidden(i);
+          orbits[i] = new Forbidden(i, orbitalZones[i]);
         }
       }
     }
@@ -349,17 +346,8 @@ class Star extends Orbit {
     if (orbits.length > 0){
       for (int i = 0; i < orbits.length; i++){
         if (orbits[i] == null){
-          orbits[i] = new Null(i);
+          orbits[i] = new Null(i, orbitalZones[i]);
         }
-      }
-    }
-  }
-
-  // this probably goes away entirely - just move the query as param to the ctor calls
-  void placeOrbitalZones(){
-    if (orbits.length > 0){
-      for (int i = 0; i < orbits.length; i++){
-        orbits[i].orbitalZone = orbitalZones[i];
       }
     }
   }
