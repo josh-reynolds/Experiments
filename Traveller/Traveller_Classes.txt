@@ -125,7 +125,11 @@ void placeCompanions(int, int)
 void placeNullOrbits()
 void placeEmptyOrbits(int, int)
 void placeForbiddenOrbits()
+void placeCapturedPlanets()
+void placeGasGiants()
+void placePlanetoidBelts()
 int getRandomNullOrbit()
+IntList availableOrbitsForGiants()
 
 Boolean orbitIsTooHot(int)
 Boolean orbitIsNull(int)
@@ -145,7 +149,7 @@ JSONObject asJSON()
 Empty extends Orbit
 -------------------------------------
 -------------------------------------
-Empty(int)
+Empty(int, String)
 
 String toString()
 =====================================
@@ -157,7 +161,7 @@ String toString()
 Forbidden extends Orbit
 -------------------------------------
 -------------------------------------
-Forbidden(int)
+Forbidden(int, String)
 
 String toString()
 =====================================
@@ -170,7 +174,17 @@ String toString()
 Null extends Orbit
 -------------------------------------
 -------------------------------------
-Null(int)
+Null(int, String)
+
+String toString()
+=====================================
+
+=====================================
+GasGiant extends Orbit
+-------------------------------------
+String size
+-------------------------------------
+GasGiant(int, String)
 
 String toString()
 =====================================
@@ -180,10 +194,3 @@ Planet extends Orbit
 -------------------------------------
 -------------------------------------
 =====================================
-
-=====================================
-GasGiant extends Orbit
--------------------------------------
--------------------------------------
-=====================================
-

@@ -65,10 +65,13 @@
 //  * DONE Fix white dwarf toString and Class parsing
 //  * DONE Star.size as integer, with "Roman numeralization" accessor
 //  * DONE Adding orbital zones
+//  * DONE Gather Star query methods together, and unify nomenclature
+//  * DONE Adding Gas Giants to Star
 //  * .... Adding satellites to companions & planets
+//  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
+//  *      System to use values from Star under Scouts ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
-//  *      Gather Star query methods together, and unify nomenclature
 //  *      Flesh out tests
 //  *      Deprecate Star String ctor
 //  *      Rework Coordinate / Hex classes - Reference objects?

@@ -64,6 +64,19 @@ class Null extends Orbit {
   String toString(){ return "Null " + orbitalZone; }
 }
 
-class Planet extends Orbit {}
+class GasGiant extends Orbit {
+  String size;
+  
+  GasGiant(int _orbit, String _zone){ 
+    orbitNumber = _orbit;
+    orbitalZone = _zone;
+    if (oneDie() >= 4){ 
+      size = "S";
+    } else {
+      size = "L";
+    }
+  }  
+  String toString(){ return size + "GG " + orbitalZone; }
+}
 
-class GasGiant extends Orbit {}
+class Planet extends Orbit {}

@@ -220,6 +220,9 @@ class Star extends Orbit {
     
     placeEmptyOrbits(orbitCount, maxCompanion);
     placeForbiddenOrbits();
+    placeCapturedPlanets();   // TO_DO: stub method, the decimal orbit values are tricky, need to think about it
+    placeGasGiants();
+    placePlanetoidBelts();    // TO_DO: stub method
     
     for (Star c : companions){
       c.createSatellites();
@@ -332,7 +335,7 @@ class Star extends Orbit {
   
   // this might read better as two separate methods...
   void placeEmptyOrbits(int _orbitCount, int _maxCompanion){
-    println("Determining empty orbits");
+    println("Determining empty orbits for " + this);
 
     // Extra/empty orbits due to companions beyond generated orbit count
     if (_maxCompanion - _orbitCount > 0){
@@ -400,6 +403,71 @@ class Star extends Orbit {
     }
   }
 
+  void placeCapturedPlanets(){
+    println("Placing Captured Planets for " + this);
+    // ambiguity here - some of the notes from Empty Orbits (above) also applies - but:
+    //  - by RAW, these are placed in orbit 2-12 +/- deviation
+    //  - same biases as noted under Empty: 0 & 1 protected, bell curve around 7, nothing beyond 12
+    //  - no notes for what to do if orbit is occupied
+    
+    // offset value could get tricky
+    //  only applies to captured planets, so want to keep integer orbit numbers
+    //  instead add an 'offset' field to the Planet class only
+    //  but how to represent and list in the orbit[] array?
+    //  if, for example, we have a captured planet at orbit 8.5 and a 'regular' planet at 8 (as with Sol, Scouts p. 56)
+    //  how is this listed?
+  }
+
+  void placeGasGiants(){
+    println("Placing Gas Giants for " + this);
+    if (twoDice() <= 9){
+      int giantCount = 0;
+      switch(twoDice()){ 
+        case 2:
+        case 3:
+          giantCount = 1;
+          break;        
+        case 4:
+        case 5:
+          giantCount = 2;
+          break;        
+        case 6:
+        case 7:
+          giantCount = 3;
+          break;        
+        case 8:
+        case 9:
+        case 10:
+          giantCount = 4;        
+          break;        
+        case 11:
+        case 12:
+          giantCount = 5;        
+          break;
+        default:
+          giantCount = 1;        
+          break;
+      }
+
+      IntList availableOrbits = availableOrbitsForGiants();
+      giantCount = min(giantCount, availableOrbits.size());
+      println(giantCount + " Gas Giants in-system");   // TO_DO: might want to stash this value in a field for later use...
+                                                       //    at the System level, consider Gas Giants on companion stars too
+      
+      for (int i = 0; i < giantCount; i++){
+        availableOrbits.shuffle();
+        int index = availableOrbits.remove(0);
+        orbits[index] = new GasGiant(index, orbitalZones[index]);
+      }
+    } else {
+      println("No Gas Giants in-system");
+    }
+  }
+  
+  void placePlanetoidBelts(){
+    println("Placing Planetoid Belts for " + this);
+  }
+
   // TO_DO: this needs to be more robust
   int getRandomNullOrbit(){
     int counter = 0;  // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
@@ -414,7 +482,22 @@ class Star extends Orbit {
     return -1;  // and how would we handle this? will throw an exception when we use the value as an array index
   }
 
-
+  IntList availableOrbitsForGiants(){
+    // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
+    IntList result = new IntList();
+    for (int i = 0; i < orbits.length; i++){
+      if (orbitalZones[i].equals("Z") || orbitalZones[i].equals("X") || orbitalZones[i].equals("I")){ continue; }
+      if (orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, no
+        println("Orbit " + i + " qualifies");
+        result.append(i);
+      }
+    }
+    println("Found " + result.size() + " available orbits for Gas Giants");
+    return result;
+    
+    // TO_DO: one (awkward) special case:
+    //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
+  }
 
   Boolean orbitIsTooHot(int _num){
     return orbitalZones[_num].equals("X");
