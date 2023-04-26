@@ -227,7 +227,8 @@ class Star extends Orbit {
     placeForbiddenOrbits();
     placeCapturedPlanets();   // TO_DO: stub method, the decimal orbit values are tricky, need to think about it
     placeGasGiants();
-    placePlanetoidBelts();    // TO_DO: stub method
+    placePlanetoidBelts();
+    placePlanets();
     
     for (Star c : companions){
       c.createSatellites();
@@ -524,6 +525,14 @@ class Star extends Orbit {
       }
     } else {
       println("No Planetoid Belts in-system");      
+    }
+  }
+
+  void placePlanets(){
+    for (int i = 0; i < orbits.length; i++){
+      if (orbitIsNull(i)){
+        orbits[i] = new Planet(i, orbitalZones[i], 1);    // TO_DO: see notes above re Planetoid & size
+      }
     }
   }
 

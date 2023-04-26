@@ -134,6 +134,7 @@ void placeForbiddenOrbits()
 void placeCapturedPlanets()                STUB, needs some thought
 void placeGasGiants()
 void placePlanetoidBelts()
+void placePlanets()
 int getRandomNullOrbit()
 IntList availableOrbitsForGiants()
 IntList availableOrbitsForPlanetoids()
