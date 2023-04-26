@@ -1,10 +1,17 @@
 abstract class Orbit {
   //Star barycenter;  // what happens with satellites orbiting planets? go with this for now, will need adjustment
   //Object contents;  // and here - do we want a superclass that encompasses all entities?
+  // radius in AU & km?
+  String name;
   int orbitNumber;
   String orbitalZone;
   
-  // radius in AU & km?
+  Orbit(int _orbit, String _zone){
+    orbitNumber = _orbit;
+    orbitalZone = _zone;
+  }
+  
+  String toString(){ return name; }
 }
 
 // some thoughts about the structure and potential inheritance hierarchy
@@ -42,41 +49,42 @@ abstract class Orbit {
 
 class Empty extends Orbit {
   Empty(int _orbit, String _zone){ 
-    orbitNumber = _orbit;
-    orbitalZone = _zone;
+    super(_orbit, _zone);
+    name = "Empty " + orbitalZone;
   }
-  String toString(){ return "Empty "  + orbitalZone; }
 }
 
 class Forbidden extends Orbit {
   Forbidden(int _orbit, String _zone){ 
-    orbitNumber = _orbit;
-    orbitalZone = _zone;
+    super(_orbit, _zone);
+    name = "Forbidden " + orbitalZone;
   }  
-  String toString(){ return "Forbidden " + orbitalZone; }
 }
 
 class Null extends Orbit {
   Null(int _orbit, String _zone){ 
-    orbitNumber = _orbit;
-    orbitalZone = _zone;
+    super(_orbit, _zone);
+    name = "Null " + orbitalZone;
   }  
-  String toString(){ return "Null " + orbitalZone; }
 }
 
 class GasGiant extends Orbit {
   String size;
   
   GasGiant(int _orbit, String _zone){ 
-    orbitNumber = _orbit;
-    orbitalZone = _zone;
+    super(_orbit, _zone);
     if (oneDie() >= 4){ 
       size = "S";
     } else {
       size = "L";
     }
+    name = size + "GG " + orbitalZone;
   }  
-  String toString(){ return size + "GG " + orbitalZone; }
 }
 
-class Planet extends Orbit {}
+class Planet extends Orbit {
+  Planet(int _orbit, String _zone){ 
+    super(_orbit, _zone);
+    name = "Planet " + orbitalZone;
+  }  
+}

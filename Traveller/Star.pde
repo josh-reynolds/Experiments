@@ -17,6 +17,7 @@ class Star extends Orbit {
   String[] orbitalZones;    // will hold data from data\OrbitalZones.csv
   
   Star(Boolean _primary, System _parent){
+    super(-1, (String)null);   // TO_DO: making the compiler happy, may need to rethink this - don't like the magic value for the primary
     primary = _primary;
     parent = _parent;
     companions = new ArrayList<Star>();
@@ -30,6 +31,7 @@ class Star extends Orbit {
   } 
 
   Star(Boolean _primary, System _parent, String _s){               // TO_DO: deprecate this ctor
+    super(-1, (String)null);   // TO_DO: see note above in ctor
     primary = _primary;
     parent = _parent;
     companions = new ArrayList<Star>();
@@ -40,6 +42,7 @@ class Star extends Orbit {
   }
   
   Star(Boolean _primary, System _parent, JSONObject _json){
+    super(-1, (String)null);   // TO_DO: see note above in ctor
     primary = _primary;
     parent = _parent;
     companions = new ArrayList<Star>();
@@ -196,9 +199,9 @@ class Star extends Orbit {
       int compCount = generateCompanionCount();
       println(compCount + " companions");
       for (int i = 0; i < compCount; i++){
-        companions.add(new Star(false, parent));
-      }
-      maxCompanion = generateCompanionOrbits();    
+        companions.add(new Star(false, parent));   // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
+      }                                            //   would need to re-order some of the steps - right now, we haven't assigned an orbit to any companion
+      maxCompanion = generateCompanionOrbits();    //   this also speaks to the duplication between orbits[] and companions[]
     }  
       
     int orbitCount = calculateMaxOrbits();
@@ -609,6 +612,7 @@ class Star extends Orbit {
     }
   }  
   
+  // TO_DO: consider refactoring that pulled toString up to Orbit parent class
   String toString(){
     if (size == 7){
       return sizeToString() + str(type);

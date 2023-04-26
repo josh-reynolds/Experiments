@@ -65,14 +65,16 @@ JSONObject asJSON()
 =====================================
 
 
-// should get the common interface pulled
-// up here...
 =====================================
 abstract Orbit
 -------------------------------------
+String name;                               ??
 int orbitNumber                            OK (primitive on subclasses)
 String orbitalZone                         ??
 -------------------------------------
+Orbit(int, String)
+
+String toString()
 =====================================
 
 
@@ -150,8 +152,6 @@ Empty extends Orbit
 -------------------------------------
 -------------------------------------
 Empty(int, String)
-
-String toString()
 =====================================
 
 // long term this one and Empty may merge together
@@ -162,8 +162,6 @@ Forbidden extends Orbit
 -------------------------------------
 -------------------------------------
 Forbidden(int, String)
-
-String toString()
 =====================================
 
 // null object added to help build out the
@@ -175,8 +173,6 @@ Null extends Orbit
 -------------------------------------
 -------------------------------------
 Null(int, String)
-
-String toString()
 =====================================
 
 =====================================
@@ -185,12 +181,11 @@ GasGiant extends Orbit
 String size
 -------------------------------------
 GasGiant(int, String)
-
-String toString()
 =====================================
 
 =====================================
 Planet extends Orbit
 -------------------------------------
 -------------------------------------
+Planet(int, String)
 =====================================
