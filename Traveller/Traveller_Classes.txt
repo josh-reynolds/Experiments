@@ -92,6 +92,9 @@ String toString()
 
 // we also have overlap/conflict between orbits & companion
 // lists when loaded from JSON - fix!
+
+// companion might be better as a query against orbits[]
+// and by extension could do the same for other categories of satellite
 =====================================
 Star extends Orbit                         
 -------------------------------------
@@ -108,6 +111,7 @@ ArrayList<Star> companions                 OK (JSONArray - JSONObjects)
 Star closeCompanion                        OK (JSONObject)
 Orbit[] orbits                             OK (JSONArray - Strings)
 String[] orbitalZones                      OK - regenerate on load
+int gasGiantCount                          TBD (probably regen on load)
 -------------------------------------
 Star(Boolean, System)
 Star(Boolean, System, String)              DEPRECATE
@@ -127,11 +131,12 @@ void placeCompanions(int, int)
 void placeNullOrbits()
 void placeEmptyOrbits(int, int)
 void placeForbiddenOrbits()
-void placeCapturedPlanets()
+void placeCapturedPlanets()                STUB, needs some thought
 void placeGasGiants()
 void placePlanetoidBelts()
 int getRandomNullOrbit()
 IntList availableOrbitsForGiants()
+IntList availableOrbitsForPlanetoids()
 
 Boolean orbitIsTooHot(int)
 Boolean orbitIsNull(int)
@@ -178,7 +183,7 @@ Null(int, String)
 =====================================
 GasGiant extends Orbit
 -------------------------------------
-String size
+String size                                TBD
 -------------------------------------
 GasGiant(int, String)
 =====================================
@@ -186,6 +191,7 @@ GasGiant(int, String)
 =====================================
 Planet extends Orbit
 -------------------------------------
+int size                                   TBD
 -------------------------------------
 Planet(int, String)
 =====================================

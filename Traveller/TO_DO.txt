@@ -67,6 +67,7 @@
 //  * DONE Adding orbital zones
 //  * DONE Gather Star query methods together, and unify nomenclature
 //  * DONE Adding Gas Giants to Star
+//  * DONE Adding Planetoid Belts to Star
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
@@ -74,6 +75,7 @@
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Flesh out tests
 //  *      Deprecate Star String ctor
+//  *      Too many uses of getClass().getSimpleName() reflection - clean up
 //  *      Rework Coordinate / Hex classes - Reference objects?
 //  *      Override getHash() in Coordinate and adjust lookup procedure
 //  *      Refactor case statements in Ruleset

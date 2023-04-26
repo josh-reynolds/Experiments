@@ -82,9 +82,17 @@ class GasGiant extends Orbit {
   }  
 }
 
+
 class Planet extends Orbit {
-  Planet(int _orbit, String _zone){ 
+  int size; // covers both single planets and belts - need to consider creation (planetoid has UWP.size == 0)
+            // will move this into UWP as that gets wired up, but for now supports planetoids
+  Planet(int _orbit, String _zone, int _size){ 
     super(_orbit, _zone);
-    name = "Planet " + orbitalZone;
+    size = _size;
+    if (size == 0){
+      name = "Planetoid Belt " + orbitalZone;
+    } else {
+      name = "Planet " + orbitalZone;
+    }
   }  
 }

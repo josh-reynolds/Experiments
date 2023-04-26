@@ -15,6 +15,8 @@ class Star extends Orbit {
   
   Orbit[] orbits;
   String[] orbitalZones;    // will hold data from data\OrbitalZones.csv
+
+  int gasGiantCount = 0;
   
   Star(Boolean _primary, System _parent){
     super(-1, (String)null);   // TO_DO: making the compiler happy, may need to rethink this - don't like the magic value for the primary
@@ -424,40 +426,38 @@ class Star extends Orbit {
   void placeGasGiants(){
     println("Placing Gas Giants for " + this);
     if (twoDice() <= 9){
-      int giantCount = 0;
       switch(twoDice()){ 
         case 2:
         case 3:
-          giantCount = 1;
+          gasGiantCount = 1;
           break;        
         case 4:
         case 5:
-          giantCount = 2;
+          gasGiantCount = 2;
           break;        
         case 6:
         case 7:
-          giantCount = 3;
+          gasGiantCount = 3;
           break;        
         case 8:
         case 9:
         case 10:
-          giantCount = 4;        
+          gasGiantCount = 4;        
           break;        
         case 11:
         case 12:
-          giantCount = 5;        
+          gasGiantCount = 5;        
           break;
         default:
-          giantCount = 1;        
+          gasGiantCount = 1;        
           break;
       }
 
       IntList availableOrbits = availableOrbitsForGiants();
-      giantCount = min(giantCount, availableOrbits.size());
-      println(giantCount + " Gas Giants in-system");   // TO_DO: might want to stash this value in a field for later use...
-                                                       //    at the System level, consider Gas Giants on companion stars too
+      gasGiantCount = min(gasGiantCount, availableOrbits.size());
+      println(gasGiantCount + " Gas Giants in-system");   // need to consider at the System level, for Primary + all companions
       
-      for (int i = 0; i < giantCount; i++){
+      for (int i = 0; i < gasGiantCount; i++){
         availableOrbits.shuffle();
         int index = availableOrbits.remove(0);
         orbits[index] = new GasGiant(index, orbitalZones[index]);
@@ -467,8 +467,64 @@ class Star extends Orbit {
     }
   }
   
+  // will be very similar to GasGiants, above - duplication OK for now, but look for refactorings
   void placePlanetoidBelts(){
     println("Placing Planetoid Belts for " + this);
+    // uses # of Gas Giants as a modifier - rules don't specify, but I assume that means just for
+    // the star which the potential planetoids orbit, not all companions
+    int planetoidCount = 0;                      // not yet needed outside this method (MT and later include this count at System level, but IIRC Scouts does not)        
+    if (twoDice() - gasGiantCount <= 6){
+      switch(twoDice() - gasGiantCount){ 
+        case -3:
+        case -2:
+        case -1:
+        case 0:
+          planetoidCount = 3;
+          break;
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+          planetoidCount = 2;
+          break;        
+        default:
+          planetoidCount = 1;        
+          break;
+      }
+    
+      IntList availableOrbits = availableOrbitsForPlanetoids();
+      planetoidCount = min(planetoidCount, availableOrbits.size());
+      println(planetoidCount + " Planetoid Belts in-system");
+    
+      // RAW p. 35: "If possible, planetoid belts should be placed in the next orbit inward from gas giants."
+      IntList orbitsInwardFromGiants = new IntList();   // might want to refactor this out, do it inline for now
+      for (int i = 0; i < availableOrbits.size(); i++){
+        int index = availableOrbits.get(i); 
+        if (index == orbits.length-1){ continue; }
+        if (orbits[index].getClass().getSimpleName().equals("GasGiant")){    // TO_DO: this mechanic is used in multiple places now, look for a cleaner approach
+          orbitsInwardFromGiants.append(index);
+          availableOrbits.remove(i);
+        }
+      }
+
+      for (int i = 0; i < planetoidCount; i++){
+        if (orbitsInwardFromGiants.size() > 0){
+          orbitsInwardFromGiants.shuffle();
+          int index = orbitsInwardFromGiants.remove(0);
+          orbits[index] = new Planet(index, orbitalZones[index], 0);  // TO_DO: will be differentiated by UWP size digit only, need to pass that through
+          continue;
+        }
+        if (availableOrbits.size() > 0){
+          availableOrbits.shuffle();
+          int index = availableOrbits.remove(0);
+          orbits[index] = new Planet(index, orbitalZones[index], 0);  // TO_DO: see note above
+        }
+      }
+    } else {
+      println("No Planetoid Belts in-system");      
+    }
   }
 
   // TO_DO: this needs to be more robust
@@ -500,6 +556,19 @@ class Star extends Orbit {
     
     // TO_DO: one (awkward) special case:
     //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
+  }
+
+  // probably refactoring oppotunities w/ the similar Gas Giant method above - almost identical
+  IntList availableOrbitsForPlanetoids(){
+    IntList result = new IntList();
+    for (int i = 0; i < orbits.length; i++){
+      if (orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, I think not
+        println("Orbit " + i + " qualifies");    // though they never precisely define "available orbits"
+        result.append(i);
+      }
+    }
+    println("Found " + result.size() + " available orbits for Planetoids");    
+    return result;
   }
 
   Boolean orbitIsTooHot(int _num){
