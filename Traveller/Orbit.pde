@@ -1,12 +1,12 @@
 abstract class Orbit {
-  //Star barycenter;  // what happens with satellites orbiting planets? go with this for now, will need adjustment
-  //Object contents;  // and here - do we want a superclass that encompasses all entities?
-  // radius in AU & km?
-  String name;
+  Star barycenter;  // what happens with satellites orbiting planets? go with this for now, will need adjustment
+  String name;      //    also not _exactly_ the right word, but closest to meaning of "thing I orbit around"
   int orbitNumber;
   String orbitalZone;
+  // radius in AU & km? as a query method?
   
-  Orbit(int _orbit, String _zone){
+  Orbit(Star _barycenter, int _orbit, String _zone){
+    barycenter = _barycenter;
     orbitNumber = _orbit;
     orbitalZone = _zone;
   }
@@ -48,22 +48,22 @@ abstract class Orbit {
 //class Star extends Orbit {} // separate file/tab for this one
 
 class Empty extends Orbit {
-  Empty(int _orbit, String _zone){ 
-    super(_orbit, _zone);
+  Empty(Star _barycenter, int _orbit, String _zone){ 
+    super(_barycenter, _orbit, _zone);
     name = "Empty " + orbitalZone;
   }
 }
 
 class Forbidden extends Orbit {
-  Forbidden(int _orbit, String _zone){ 
-    super(_orbit, _zone);
+  Forbidden(Star _barycenter, int _orbit, String _zone){ 
+    super(_barycenter, _orbit, _zone);
     name = "Forbidden " + orbitalZone;
   }  
 }
 
 class Null extends Orbit {
-  Null(int _orbit, String _zone){ 
-    super(_orbit, _zone);
+  Null(Star _barycenter, int _orbit, String _zone){ 
+    super(_barycenter, _orbit, _zone);
     name = "Null " + orbitalZone;
   }  
 }
@@ -71,8 +71,8 @@ class Null extends Orbit {
 class GasGiant extends Orbit {
   String size;
   
-  GasGiant(int _orbit, String _zone){ 
-    super(_orbit, _zone);
+  GasGiant(Star _barycenter, int _orbit, String _zone){ 
+    super(_barycenter, _orbit, _zone);
     if (oneDie() >= 4){ 
       size = "S";
     } else {
@@ -84,15 +84,62 @@ class GasGiant extends Orbit {
 
 
 class Planet extends Orbit {
-  int size; // covers both single planets and belts - need to consider creation (planetoid has UWP.size == 0)
-            // will move this into UWP as that gets wired up, but for now supports planetoids
-  Planet(int _orbit, String _zone, int _size){ 
-    super(_orbit, _zone);
-    size = _size;
-    if (size == 0){
-      name = "Planetoid Belt " + orbitalZone;
+  Boolean isPlanetoid;
+  UWP_ScoutsEx uwp;
+  
+  Planet(Star _barycenter, int _orbit, String _zone, Boolean _planetoid){ 
+    super(_barycenter, _orbit, _zone);
+    
+    isPlanetoid = _planetoid;
+  
+    uwp = new UWP_ScoutsEx(this);
+
+    if (isPlanetoid){
+      name = "Planetoid Belt " + orbitalZone + " " + uwp;
     } else {
-      name = "Planet " + orbitalZone;
+      name = "Planet " + orbitalZone + " " + uwp;
     }
-  }  
+  }
+  
+  // the following query methods might be useful on the parent
+  //  currently only used by Planet and its components, though
+  Boolean isOrbitingClassM(){
+    return barycenter.type == 'M';
+  }
+  
+  Boolean isInnerZone(){
+    return orbitalZone.equals("I");
+  }
+  
+  Boolean isHabitableZone(){
+    return orbitalZone.equals("H");
+  }
+  
+  Boolean isOuterZone(){
+    return orbitalZone.equals("O");
+  }
+  
+  Boolean isAtLeastTwoBeyondHabitable(){    
+    if (isInnerZone() || isHabitableZone()){ return false; }
+    
+    // find habitable zone (move this to method on Star?)
+    int habitableOrbit = 0;
+    Boolean foundHabitable = false;
+    for (int i = 0; i < barycenter.orbitalZones.length; i++){
+      if (barycenter.orbitalZones[i].equals("H")){
+        habitableOrbit = i;
+        foundHabitable = true;
+        break;
+      }
+    }
+
+    // by RAW, undefined case: system has no habitable zone - we'll go with TRUE
+    if (!foundHabitable){
+      println("No habitable zone for " + barycenter);
+      return true;      
+    } else {
+      println("Habitable zone for " + barycenter + " in orbit " + habitableOrbit);
+      return (orbitNumber - habitableOrbit >= 2);
+    }
+  }
 }

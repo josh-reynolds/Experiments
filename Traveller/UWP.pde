@@ -6,22 +6,12 @@ class UWP {
   
   UWP(){
     starport = generateStarport();
-    
-    size     = twoDice() - 2;
-
-    atmo     = twoDice() - 7 + size;
-    if (size == 0 || atmo < 0){ atmo = 0; }
-    
+    size     = generateSize();
+    atmo     = generateAtmo();
     hydro    = generateHydro();
-    
-    pop      = twoDice() - 2;
-    
-    gov      = twoDice() - 7 + pop;
-    if (gov < 0){ gov = 0; }
-    
-    law      = twoDice() - 7 + gov;
-    if (law < 0){ law = 0; } 
-    
+    pop      = generatePop();
+    gov      = generateGov();
+    law      = generateLaw(); 
     tech     = generateTech(); 
   }
   
@@ -35,12 +25,61 @@ class UWP {
     law      = _json.getInt("Law Level");
     tech     = _json.getInt("Tech Level");
   }
+    
+  char generateStarport(){
+    int roll = twoDice();
+    
+    switch(roll){
+      case 2:
+      case 3:
+      case 4:
+        return 'A';
+      case 5:
+      case 6:
+        return 'B';
+      case 7:
+      case 8:
+        return 'C';
+      case 9:
+        return 'D';
+      case 10:
+      case 11:
+        return 'E';
+      case 12:
+        return 'X';
+      default:
+        println("Invalid result in generateStarport()");
+        return 'Z';
+    }
+  }
+  
+  int generateSize(){ return twoDice() - 2; }
+  
+  int generateAtmo(){
+    int result = twoDice() - 7 + size;
+    if (size == 0 || result < 0){ result = 0; }
+    return result;
+  }
   
   int generateHydro(){
     int result = twoDice() - 7 + size;
     if (atmo <= 1 || atmo >= 10){ result -= 4; }
     if (size <= 1 || result < 0){ result = 0; }
     if (result > 10) { result = 10; }
+    return result;
+  }
+
+  int generatePop(){ return twoDice() - 2; }
+  
+  int generateGov(){
+    int result = twoDice() - 7 + pop;
+    if (result < 0){ result = 0; }
+    return result;
+  }
+
+  int generateLaw(){
+    int result = twoDice() - 7 + gov;
+    if (result < 0){ result = 0; }
     return result;
   }
   
@@ -68,33 +107,6 @@ class UWP {
     if (gov == 13){            modifier -= 2; }
     
     return oneDie() + modifier;
-  }
-  
-  char generateStarport(){
-    int roll = twoDice();
-    
-    switch(roll){
-      case 2:
-      case 3:
-      case 4:
-        return 'A';
-      case 5:
-      case 6:
-        return 'B';
-      case 7:
-      case 8:
-        return 'C';
-      case 9:
-        return 'D';
-      case 10:
-      case 11:
-        return 'E';
-      case 12:
-        return 'X';
-      default:
-        println("Invalid result in generateStarport()");
-        return 'Z';
-    }
   }
   
   // Traveller uses hexadecimal to get single-digit utility,
@@ -174,6 +186,111 @@ class UWP_CT81 extends UWP {
     if (atmo <= 1 || atmo >= 10){ result -= 4; }
     if (size == 0 || result < 0){ result = 0; }
     if (result > 10) { result = 10; }
+    return result;
+  }
+}
+
+class UWP_ScoutsEx extends UWP {
+  Planet planet;
+  
+  UWP_ScoutsEx(){}
+  
+  UWP_ScoutsEx(Planet _planet){
+    // need to unravel inheritance problem
+    //  super ctor is automatically called before any of this
+    //  but with the overloaded methods extending the template, 
+    //  we have null pointers to worry about
+    planet = _planet;
+    size  = generateSize();
+    atmo  = generateAtmo();
+    hydro = generateHydro();
+    pop   = generatePop();
+
+    // stubbing out following for the time being
+    starport = 'X';
+    gov      = 0;
+    law      = 0; 
+    tech     = 0; 
+  }
+  
+  UWP_ScoutsEx(JSONObject _json){
+    super(_json);
+  }
+  
+  int generateSize(){
+    if (planet == null){ return super.generateSize(); }  // hacky approach to deal with automatic call to super ctor
+    if (planet.isPlanetoid){ return 0; }
+
+    int modifier = 0;
+    if (planet.orbitNumber == 0  ){ modifier -= 5; }
+    if (planet.orbitNumber == 1  ){ modifier -= 4; }
+    if (planet.orbitNumber == 2  ){ modifier -= 2; }
+    if (planet.isOrbitingClassM()){ modifier -= 2; }
+    int result = twoDice() - 2 + modifier;  
+    
+    if (result <= 0){ result = 0; }    // Scouts introduces an 'S' size value, need to think how to incorporate
+                                       // Two cases off the top of my head
+                                       // - size used as modifier in later UWP steps
+                                       // - size displayed in UWP string
+                                       // instead of a 'magic' negative number, what if we use Planet.isPlanetoid?
+                                       // that would necessitate using subclass in Planet, not the UWP parent interface
+                                       // but means we don't need to special case all the math bits
+    return result;
+  }
+  
+  int generateAtmo(){
+    if (planet == null){ return super.generateAtmo(); }  // see note above in generateSize()
+    
+    int modifier = 0;
+    if (planet.isInnerZone()){ modifier -= 2; }
+    if (planet.isOuterZone()){ modifier -= 4; }
+    
+    int result = twoDice() - 7 + size + modifier;
+    if (size == 0 || result < 0){ result = 0; }   // includes size 'S' (numerically zero)
+    
+    if (planet.isAtLeastTwoBeyondHabitable() &&
+        twoDice() == 12){ return 10; }    
+    
+    return result;    
+  }
+  
+  // Scouts reverts to +Size as a modifier
+  int generateHydro(){
+    if (planet == null){ return super.generateHydro(); }  // see note above in generateSize()
+
+    if (planet.isInnerZone()){ return 0; }
+    if (size <= 1           ){ return 0; }   // includes size 'S' (numerically zero)
+
+    int modifier = 0;
+    if (planet.isOuterZone()   ){ modifier -= 2; }
+    if (atmo <= 1 || atmo >= 10){ modifier -= 4; }
+     
+    int result = twoDice() - 7 + size + modifier;
+    result = constrain(result, 0, 10);    
+    
+    return result;    
+  }
+  
+  int generatePop(){
+    if (planet == null){ return super.generatePop(); }  // see note above in generateSize()
+    
+    int modifier = 0;
+    if (planet.isInnerZone()     ){ modifier -= 5; }
+    if (planet.isOuterZone()     ){ modifier -= 3; }
+    if (!(atmo == 0 || atmo == 5 ||
+          atmo == 6 || atmo == 8)){ modifier -= 2; }
+     
+    int result = twoDice() - 2 + modifier;
+    if (result < 0){ result = 0; }
+    
+    return result;
+  }
+  
+  String toString(){
+    String result = super.toString();
+    if (size == 0 && !planet.isPlanetoid){
+      result = result.substring(0,1) + "S" + result.substring(2, result.length());
+    }
     return result;
   }
 }

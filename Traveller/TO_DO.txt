@@ -69,11 +69,13 @@
 //  * DONE Adding Gas Giants to Star
 //  * DONE Adding Planetoid Belts to Star
 //  * DONE Adding Planets to Star
-//  *      Generating UWP for all Planets/Planetoids
+//  * DONE Proper display of size 'S' in Scouts UWP
+//  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
-//  *      System to use values from Star under Scouts ruleset
+//  *      Unravel inheritance issues in UWP hierarchy
+//  *      System to use values from Star mainworld under Scouts ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Flesh out tests
 //  *      Deprecate Star String ctor
@@ -105,7 +107,9 @@
 //  *      SIDE PROJECT: "linter" for output files to verify correctness
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      BUG: off-by-one issue in Star.createOrbits in some cases
+//  *      BUG: (possibly previous issue) placeCompanions sometimes fails due to companion in orbit -1 (with another CloseCompanion)
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
+//  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: duplicate code in test methods

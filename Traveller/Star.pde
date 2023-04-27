@@ -19,8 +19,8 @@ class Star extends Orbit {
   int gasGiantCount = 0;
   
   Star(Boolean _primary, System _parent){
-    super(-1, (String)null);   // TO_DO: making the compiler happy, may need to rethink this - don't like the magic value for the primary
-    primary = _primary;
+    super(null, -1, (String)null);   // TO_DO: making the compiler happy, may need to rethink this - don't like the magic value for the primary
+    primary = _primary;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
     parent = _parent;
     companions = new ArrayList<Star>();
     
@@ -33,7 +33,7 @@ class Star extends Orbit {
   } 
 
   Star(Boolean _primary, System _parent, String _s){               // TO_DO: deprecate this ctor
-    super(-1, (String)null);   // TO_DO: see note above in ctor
+    super(null, -1, (String)null);   // TO_DO: see note above in ctor
     primary = _primary;
     parent = _parent;
     companions = new ArrayList<Star>();
@@ -44,7 +44,7 @@ class Star extends Orbit {
   }
   
   Star(Boolean _primary, System _parent, JSONObject _json){
-    super(-1, (String)null);   // TO_DO: see note above in ctor
+    super(null, -1, (String)null);   // TO_DO: see note above in ctor
     primary = _primary;
     parent = _parent;
     companions = new ArrayList<Star>();
@@ -69,9 +69,9 @@ class Star extends Orbit {
       orbits = new Orbit[ob.size()];
       for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
         if (ob.getString(i).equals("Null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
-          orbits[i] = new Null(i, orbitalZones[i]);                                 // TO_DO: will go away once we populate all orbit variants 
+          orbits[i] = new Null(this, i, orbitalZones[i]);                                 // TO_DO: will go away once we populate all orbit variants 
         } else if (ob.getString(i).equals("Empty")){ 
-          orbits[i] = new Empty(i, orbitalZones[i]); 
+          orbits[i] = new Empty(this, i, orbitalZones[i]); 
         } else {
           orbits[i] = new Star(false, parent, ob.getString(i));    // TO_DO: conflict/duplication with companion list - deprecate and rework this
         }
@@ -333,7 +333,7 @@ class Star extends Orbit {
     if (orbits.length > 0){
       for (int i = 0; i < orbits.length; i++){
         if (orbitIsNull(i)){
-          orbits[i] = new Null(i, orbitalZones[i]);
+          orbits[i] = new Null(this, i, orbitalZones[i]);
         }
       }
     }
@@ -348,7 +348,7 @@ class Star extends Orbit {
       int startCount = max(0, _orbitCount);
       for (int i = startCount; i < orbits.length; i++){  
         if (orbitIsNull(i)){
-          orbits[i] = new Empty(i, orbitalZones[i]);
+          orbits[i] = new Empty(this, i, orbitalZones[i]);
         }
       }
     }
@@ -388,7 +388,7 @@ class Star extends Orbit {
         int choice = getRandomNullOrbit();
         if (choice == -1){ println("No null available"); break; } // don't much care for this 'magic value' - indicates no null orbits left
         println("Assigning " + choice + " to Empty");
-        orbits[choice] = new Empty(choice, orbitalZones[choice]);
+        orbits[choice] = new Empty(this, choice, orbitalZones[choice]);
       }
     }
   }
@@ -403,7 +403,7 @@ class Star extends Orbit {
       for (int i = 0; i < orbits.length; i++){
         if ((orbitInsideStar(i) || orbitMaskedByCompanion(i) || orbitIsTooHot(i)) &&
             orbitIsNullOrEmpty(i)){
-          orbits[i] = new Forbidden(i, orbitalZones[i]);
+          orbits[i] = new Forbidden(this, i, orbitalZones[i]);
         }
       }
     }
@@ -461,7 +461,7 @@ class Star extends Orbit {
       for (int i = 0; i < gasGiantCount; i++){
         availableOrbits.shuffle();
         int index = availableOrbits.remove(0);
-        orbits[index] = new GasGiant(index, orbitalZones[index]);
+        orbits[index] = new GasGiant(this, index, orbitalZones[index]);
       }
     } else {
       println("No Gas Giants in-system");
@@ -514,13 +514,13 @@ class Star extends Orbit {
         if (orbitsInwardFromGiants.size() > 0){
           orbitsInwardFromGiants.shuffle();
           int index = orbitsInwardFromGiants.remove(0);
-          orbits[index] = new Planet(index, orbitalZones[index], 0);  // TO_DO: will be differentiated by UWP size digit only, need to pass that through
+          orbits[index] = new Planet(this, index, orbitalZones[index], true);
           continue;
         }
         if (availableOrbits.size() > 0){
           availableOrbits.shuffle();
           int index = availableOrbits.remove(0);
-          orbits[index] = new Planet(index, orbitalZones[index], 0);  // TO_DO: see note above
+          orbits[index] = new Planet(this, index, orbitalZones[index], true);
         }
       }
     } else {
@@ -531,7 +531,7 @@ class Star extends Orbit {
   void placePlanets(){
     for (int i = 0; i < orbits.length; i++){
       if (orbitIsNull(i)){
-        orbits[i] = new Planet(i, orbitalZones[i], 1);    // TO_DO: see notes above re Planetoid & size
+        orbits[i] = new Planet(this, i, orbitalZones[i], false);
       }
     }
   }
