@@ -81,6 +81,7 @@ Boolean isForbidden()
 Boolean isNull()
 Boolean isGasGiant()
 Boolean isPlanet()
+Boolean isPlanetoid()
 
 String toString()
 =====================================
@@ -210,19 +211,34 @@ Boolean isGasGiant()
 =====================================
 
 =====================================
-Planet extends Orbit
+abstract Habitable extends Orbit
 -------------------------------------
-int size                                   TBD
-Boolean isPlanetoid                        TBD
-UWP_ScoutsEx uwp                           TBD
 -------------------------------------
-Planet(Star, int, String, Boolean)
-
-Boolean isPlanet()
+Habitable(Star, int, String)
 
 Boolean isOrbitingClassM()
 Boolean isInnerZone()
 Boolean isHabitableZone()
 Boolean isOuterZone()
 Boolean isAtLeastTwoBeyondHabitable()
+=====================================
+
+=====================================
+Planet extends Habitable
+-------------------------------------
+UWP_ScoutsEx uwp                           TBD
+-------------------------------------
+Planet(Star, int, String, Boolean)
+
+Boolean isPlanet()
+=====================================
+
+=====================================
+Planetoid extends Habitable
+-------------------------------------
+UWP_ScoutsEx uwp                           TBD
+-------------------------------------
+Planetoid(Star, int, String, Boolean)
+
+Boolean isPlanetoid()
 =====================================

@@ -504,13 +504,13 @@ class Star extends Orbit {
         if (orbitsInwardFromGiants.size() > 0){
           orbitsInwardFromGiants.shuffle();
           int index = orbitsInwardFromGiants.remove(0);
-          orbits[index] = new Planet(this, index, orbitalZones[index], true);
+          orbits[index] = new Planetoid(this, index, orbitalZones[index]);
           continue;
         }
         if (availableOrbits.size() > 0){
           availableOrbits.shuffle();
           int index = availableOrbits.remove(0);
-          orbits[index] = new Planet(this, index, orbitalZones[index], true);
+          orbits[index] = new Planetoid(this, index, orbitalZones[index]);
         }
       }
     } else {
@@ -521,7 +521,7 @@ class Star extends Orbit {
   void placePlanets(){
     for (int i = 0; i < orbits.length; i++){
       if (orbitIsNull(i)){
-        orbits[i] = new Planet(this, i, orbitalZones[i], false);
+        orbits[i] = new Planet(this, i, orbitalZones[i]);
       }
     }
   }

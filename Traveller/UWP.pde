@@ -191,11 +191,11 @@ class UWP_CT81 extends UWP {
 }
 
 class UWP_ScoutsEx extends UWP {
-  Planet planet;
+  Habitable planet;
   
   UWP_ScoutsEx(){}
   
-  UWP_ScoutsEx(Planet _planet){
+  UWP_ScoutsEx(Habitable _planet){
     // need to unravel inheritance problem
     //  super ctor is automatically called before any of this
     //  but with the overloaded methods extending the template, 
@@ -219,7 +219,7 @@ class UWP_ScoutsEx extends UWP {
   
   int generateSize(){
     if (planet == null){ return super.generateSize(); }  // hacky approach to deal with automatic call to super ctor
-    if (planet.isPlanetoid){ return 0; }
+    if (planet.isPlanetoid()){ return 0; }
 
     int modifier = 0;
     if (planet.orbitNumber == 0  ){ modifier -= 5; }
@@ -228,13 +228,8 @@ class UWP_ScoutsEx extends UWP {
     if (planet.isOrbitingClassM()){ modifier -= 2; }
     int result = twoDice() - 2 + modifier;  
     
-    if (result <= 0){ result = 0; }    // Scouts introduces an 'S' size value, need to think how to incorporate
-                                       // Two cases off the top of my head
-                                       // - size used as modifier in later UWP steps
-                                       // - size displayed in UWP string
-                                       // instead of a 'magic' negative number, what if we use Planet.isPlanetoid?
-                                       // that would necessitate using subclass in Planet, not the UWP parent interface
-                                       // but means we don't need to special case all the math bits
+    if (result <= 0){ result = 0; }
+
     return result;
   }
   
@@ -288,8 +283,8 @@ class UWP_ScoutsEx extends UWP {
   
   String toString(){
     String result = super.toString();
-    if (size == 0 && !planet.isPlanetoid){
-      result = result.substring(0,1) + "S" + result.substring(2, result.length());
+    if (size == 0 && !planet.isPlanetoid()){
+      result = result.substring(0,1) + "S" + result.substring(2, result.length());  // Scouts introduced size 'S' small worlds (as contrasted with size 0 planetoid belts)
     }
     return result;
   }

@@ -17,6 +17,7 @@ abstract class Orbit {
   Boolean isNull(){ return false; }  
   Boolean isGasGiant(){ return false; }
   Boolean isPlanet(){ return false; }
+  Boolean isPlanetoid(){ return false; }
 
   String toString(){ return name; }
 }
@@ -97,33 +98,15 @@ class GasGiant extends Orbit {
   Boolean isGasGiant(){ return true; }
 }
 
-
-class Planet extends Orbit {
-  Boolean isPlanetoid;    // TO_DO: consider how this relates to the new query methods... does it imply we should have a Planetoid subclass too?
-  UWP_ScoutsEx uwp;       //   a lot of the messiness in the ctor goes away if we do...
-  
-  Planet(Star _barycenter, int _orbit, String _zone, Boolean _planetoid){ 
+abstract class Habitable extends Orbit {
+  Habitable(Star _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    
-    isPlanetoid = _planetoid;
-  
-    uwp = new UWP_ScoutsEx(this);
-
-    if (isPlanetoid){
-      name = "Planetoid Belt " + orbitalZone + " " + uwp;
-    } else {
-      name = "Planet " + orbitalZone + " " + uwp;
-    }
   }
   
-  Boolean isPlanet(){ return true; }
-  
-  // the following query methods might be useful on the parent
-  //  currently only used by Planet and its components, though
   Boolean isOrbitingClassM(){
     return barycenter.type == 'M';
   }
-  
+    
   Boolean isInnerZone(){
     return orbitalZone.equals("I");
   }
@@ -136,6 +119,7 @@ class Planet extends Orbit {
     return orbitalZone.equals("O");
   }
   
+  // TO_DO: we could greatly simplify this by adding another code to the data tables...
   Boolean isAtLeastTwoBeyondHabitable(){    
     if (isInnerZone() || isHabitableZone()){ return false; }
     
@@ -159,4 +143,28 @@ class Planet extends Orbit {
       return (orbitNumber - habitableOrbit >= 2);
     }
   }
+}
+
+class Planet extends Habitable {
+  UWP_ScoutsEx uwp;
+  
+  Planet(Star _barycenter, int _orbit, String _zone){ 
+    super(_barycenter, _orbit, _zone);
+    uwp = new UWP_ScoutsEx(this);
+    name = "Planet " + orbitalZone + " " + uwp;
+  }
+  
+  Boolean isPlanet(){ return true; }
+}
+
+class Planetoid extends Habitable {
+  UWP_ScoutsEx uwp;
+  
+  Planetoid(Star _barycenter, int _orbit, String _zone){ 
+    super(_barycenter, _orbit, _zone);  
+    uwp = new UWP_ScoutsEx(this);
+    name = "Planetoid Belt " + orbitalZone + " " + uwp;
+  }
+
+  Boolean isPlanetoid(){ return true; }
 }

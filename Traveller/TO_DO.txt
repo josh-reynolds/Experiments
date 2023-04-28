@@ -72,6 +72,7 @@
 //  * DONE Proper display of size 'S' in Scouts UWP
 //  * DONE Eliminate duplication between companions / orbits in Star
 //  * DONE Too many uses of getClass().getSimpleName() reflection - clean up
+//  * DONE Splitting Planet/Planetoid into two subclasses
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
@@ -83,7 +84,7 @@
 //  *      Add die roller mock for testing?
 //  *      Deprecate Star String ctor
 //  *      Assess including companions of companions in getCompanions() result
-//  *      Assess splitting Planet/Planetoid into two subclasses
+//  *      Assess adding "two beyond habitable" code to orbital zone data file
 //  *      Rework Coordinate / Hex classes - Reference objects?
 //  *      Override getHash() in Coordinate and adjust lookup procedure
 //  *      Refactor case statements in Ruleset
