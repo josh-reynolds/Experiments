@@ -10,7 +10,7 @@ class Star extends Orbit {
   int size;
   int sizeRoll;
   
-  ArrayList<Star> companions;
+  //ArrayList<Star> companions;
   Star closeCompanion;
   
   Orbit[] orbits;
@@ -22,7 +22,7 @@ class Star extends Orbit {
     super(null, -1, (String)null);   // TO_DO: making the compiler happy, may need to rethink this - don't like the magic value for the primary
     primary = _primary;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
     parent = _parent;
-    companions = new ArrayList<Star>();
+    //companions = new ArrayList<Star>();
     
     type = generateType();  
     decimal = floor(random(10));
@@ -36,7 +36,7 @@ class Star extends Orbit {
     super(null, -1, (String)null);   // TO_DO: see note above in ctor
     primary = _primary;
     parent = _parent;
-    companions = new ArrayList<Star>();
+    //companions = new ArrayList<Star>();
     
     classFromString(_s);
     
@@ -47,7 +47,7 @@ class Star extends Orbit {
     super(null, -1, (String)null);   // TO_DO: see note above in ctor
     primary = _primary;
     parent = _parent;
-    companions = new ArrayList<Star>();
+    //companions = new ArrayList<Star>();
     
     classFromString(_json.getString("Class"));
 
@@ -57,12 +57,12 @@ class Star extends Orbit {
       closeCompanion = new Star(false, parent, _json.getJSONObject("Close Companion")); 
     }
     
-    if (!_json.isNull("Companions")){    
-      JSONArray comps = _json.getJSONArray("Companions");
-      for (int i = 0; i < comps.size(); i++){
-        companions.add(new Star(false, parent, comps.getJSONObject(i)));
-      }
-    }
+    //if (!_json.isNull("Companions")){    
+    //  JSONArray comps = _json.getJSONArray("Companions");
+    //  for (int i = 0; i < comps.size(); i++){
+    //    companions.add(new Star(false, parent, comps.getJSONObject(i)));
+    //  }
+    //}
 
     if (!_json.isNull("Orbits")){
       JSONArray ob = _json.getJSONArray("Orbits");
@@ -196,21 +196,35 @@ class Star extends Orbit {
   }
 
   void createSatellites(){
-    int maxCompanion = 0;
+    int maxCompanionOrbit = 0;
+    int compCount = 0;
     if (primary || orbitIsFar(orbitNumber)){
-      int compCount = generateCompanionCount();
-      println(compCount + " companions");
-      for (int i = 0; i < compCount; i++){
-        companions.add(new Star(false, parent));   // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
-      }                                            //   would need to re-order some of the steps - right now, we haven't assigned an orbit to any companion
-      maxCompanion = generateCompanionOrbits();    //   this also speaks to the duplication between orbits[] and companions[]
-    }  
-      
+      compCount = generateCompanionCount();
+    }
+    println(compCount + " companions");
+    
+    ArrayList<Star> tempCompanions = new ArrayList<Star>();
+    for (int i = 0; i < compCount; i++){
+      tempCompanions.add(new Star(false, parent));
+    }
+    maxCompanionOrbit = generateCompanionOrbits(tempCompanions);
+
     int orbitCount = calculateMaxOrbits();
     if (!primary){ orbitCount = constrain(orbitCount, 0, floor(orbitNumber/2)); }
-    orbits = createOrbits(orbitCount, maxCompanion);
+    orbits = createOrbits(orbitCount, maxCompanionOrbit);
+    placeCompanions(orbitCount, maxCompanionOrbit, tempCompanions);
     
-    placeCompanions(orbitCount, maxCompanion);
+    // TO_DO: this first section needs to be redone once companions is a query - need to assign orbits first
+    // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
+    //   would need to re-order some of the steps - right now, we haven't assigned an orbit to any companion
+    //   this also speaks to the duplication between orbits[] and companions[]
+    // 1. generateCompanionCount() - 0 if not primary or far
+    // 2. temporary list to hold companions     // leery of temp variables, using for now while hashing out this algorithm
+    // 3. new Star()
+    // 4. generateCompanionOrbits()     ---- passing in temp list - query will fail since orbits not populated yet
+    // 5. calculateMaxOrbits()
+    // 6. createOrbits()
+    // 7. placeCompanions()            ---- temp list needed here too
 
     placeNullOrbits();    // TO_DO: probably temporary scaffolding to smooth addition of later elements
                           // unclear if still needed, was used for initial orbital zones approach, but that's changed
@@ -223,16 +237,21 @@ class Star extends Orbit {
     // All others unassigned are Nulls
     // Remaining elements are placed in Null slots: additional Empties, Planets, Gas Giants, Asteroids
     
-    placeEmptyOrbits(orbitCount, maxCompanion);
+    placeEmptyOrbits(orbitCount, maxCompanionOrbit);
     placeForbiddenOrbits();
     placeCapturedPlanets();   // TO_DO: stub method, the decimal orbit values are tricky, need to think about it
     placeGasGiants();
     placePlanetoidBelts();
     placePlanets();
     
-    for (Star c : companions){
+    ArrayList<Star> comps = getCompanions();
+    for (Star c : comps){
       c.createSatellites();
     }
+    if (closeCompanion != null){ closeCompanion.orbits = new Orbit[0]; } // otherwise we get a null reference later
+
+    println("Companions for " + this);
+    printArray(getCompanions());
   }    
     
   int generateCompanionCount(){
@@ -251,12 +270,12 @@ class Star extends Orbit {
   }
 
   // from tables on Scouts p.46
-  int generateCompanionOrbits(){
+  int generateCompanionOrbits(ArrayList<Star> _comps){
     int maxCompanion = 0;
-    for (int i = 0; i < companions.size(); i++){
+    for (int i = 0; i < _comps.size(); i++){
       int modifier = 4 * (i);
       if (!primary){ modifier -= 4; }
-      println("Assessing companion star: " + companions.get(i) + " modifier: +" + modifier);
+      println("Assessing companion star: " + _comps.get(i) + " modifier: +" + modifier);
       int dieThrow = twoDice() + modifier;
       int result = 0;
       if (dieThrow < 4  ){ result = 0; }
@@ -279,16 +298,16 @@ class Star extends Orbit {
       
       if (result == 0 || orbitInsideStar(result)){
         println("Companion in CLOSE orbit");        
-        closeCompanion = companions.get(i);
-        companions.remove(i);
+        closeCompanion = _comps.get(i);
+        _comps.remove(i);
         closeCompanion.orbitNumber = result;
       } else {
         println("Companion in orbit: " + result);
-        companions.get(i).orbitNumber = result;
+        _comps.get(i).orbitNumber = result;
       }
       // TO_DO: need to handle two companions landing in same orbit
     }
-    return maxCompanion;   // TO_DO: off by one in the CLOSE Companion case
+    return maxCompanion;   // TO_DO: off by one in the CLOSE Companion case - should this value also be a query?
   }
 
   int calculateMaxOrbits(){
@@ -314,14 +333,14 @@ class Star extends Orbit {
     }    
   }
 
-  void placeCompanions(int _orbitCount, int _maxCompanion){   // TO_DO: args only used in debug output, can be removed once this stabilizes
-    if (companions.size() == 0){
+  void placeCompanions(int _orbitCount, int _maxCompanion, ArrayList<Star> _comps){   // TO_DO: first two args only used in debug output, can be removed once this stabilizes
+    if (_comps.size() == 0){
       println("Orbits: " + orbits.length);
     } else {
       println("Orbits: " + orbits.length + " EMPTY: " + (_maxCompanion - _orbitCount));
-      for (int i = 0; i < companions.size(); i++){
-        println("Companion star number " + (i+1) + " of " + companions.size() + " : Orbit = " + companions.get(i).orbitNumber + " : Usable Orbit Count = " + _orbitCount);
-        orbits[companions.get(i).orbitNumber] = companions.get(i);
+      for (int i = 0; i < _comps.size(); i++){
+        println("Companion star number " + (i+1) + " of " + _comps.size() + " : Orbit = " + _comps.get(i).orbitNumber + " : Usable Orbit Count = " + _orbitCount);
+        orbits[_comps.get(i).orbitNumber] = _comps.get(i);
       }
       if (closeCompanion != null){
         println("Close companion : Usable Orbit Count = " + _orbitCount);
@@ -580,6 +599,21 @@ class Star extends Orbit {
     return result;
   }
 
+  ArrayList<Star> getCompanions(){
+    ArrayList<Star> comps = new ArrayList<Star>();
+    
+    for (int i = 0; i < orbits.length; i++){
+      if (orbits[i].getClass().getSimpleName().equals("Star")){
+        comps.add((Star)orbits[i]);
+        //comps.addAll( ((Star)orbits[i]).getCompanions() );  // Companions of companions - rare
+                                                              // also, doesn't match current usage for companions list
+                                                              // leave out for now, consider later
+                                                              // this method only returns companions orbiting THIS star
+      }
+    }
+    return comps;
+  }
+
   Boolean orbitIsTooHot(int _num){
     return orbitalZones[_num].equals("X");
   }
@@ -625,12 +659,13 @@ class Star extends Orbit {
   }
 
   Boolean orbitMaskedByCompanion(int _orbitNum){
-    if (companions.size() == 0){
+    ArrayList<Star> comps = getCompanions();
+    if (comps.size() == 0){
       return false;
     } else {
-      for (int i = 0; i < companions.size(); i++){
-        int compOrbit = companions.get(i).orbitNumber;
-        print(" Evaluating companion mask for " + companions.get(i) + " in orbit " + compOrbit +" against " + _orbitNum);
+      for (int i = 0; i < comps.size(); i++){
+        int compOrbit = comps.get(i).orbitNumber;
+        print(" Evaluating companion mask for " + comps.get(i) + " in orbit " + compOrbit + " against " + _orbitNum);
         
         // some ambiguity here from RAW (Scouts p.23)
         // rule states: Orbits closer to the primary than the companion's orbit must be numbered no more than half of the companion's orbit number (round fractions down)
@@ -707,16 +742,17 @@ class Star extends Orbit {
     if (closeCompanion != null){
       json.setJSONObject("Close Companion", closeCompanion.asJSON());
     }
-
-    if (companions.size() > 0){
+    
+    ArrayList<Star> comps = getCompanions();
+    if (comps.size() > 0){
       JSONArray companionList = new JSONArray();
-      for (int i = 0; i < companions.size(); i++){
-        companionList.setJSONObject(i, companions.get(i).asJSON());
+      for (int i = 0; i < comps.size(); i++){
+        companionList.setJSONObject(i, comps.get(i).asJSON());
       }
       json.setJSONArray("Companions", companionList);
     }
       
-    if (orbits != null && orbits.length > 0){
+    if (orbits != null && orbits.length > 0){   // null test was only needed for Close Companions - that has been fixed - assess removing this
       JSONArray orbitsList = new JSONArray();
       for (int i = 0; i < orbits.length; i++){
         if (orbits[i] != null){               // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause

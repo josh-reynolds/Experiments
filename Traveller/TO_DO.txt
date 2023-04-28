@@ -70,6 +70,7 @@
 //  * DONE Adding Planetoid Belts to Star
 //  * DONE Adding Planets to Star
 //  * DONE Proper display of size 'S' in Scouts UWP
+//  * DONE Eliminate duplication between companions / orbits in Star
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
@@ -79,6 +80,7 @@
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Flesh out tests
 //  *      Deprecate Star String ctor
+//  *      Assess including companions of companions in getCompanions() result
 //  *      Too many uses of getClass().getSimpleName() reflection - clean up
 //  *      Rework Coordinate / Hex classes - Reference objects?
 //  *      Override getHash() in Coordinate and adjust lookup procedure
@@ -86,7 +88,6 @@
 //  *      Reassess parent pointer for non-primary stars
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Enforce inherited orbitNumber across all Orbit subclasses
-//  *      Eliminate duplication between companions / orbits in Star
 //  *      Parameter object for orbitCount/maxCompanion cluster in Star
 //  *      Rework approach to Far companions and orbit determination
 //  *      Flagging close/far companions - query methods?

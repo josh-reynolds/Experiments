@@ -273,7 +273,8 @@ class System_ScoutsEx extends System_CT81 {
       description += primary.toString() + " ";
       if (primary.closeCompanion != null){ description += primary.closeCompanion.toString(); }
       
-      for (Star s : primary.companions){
+      ArrayList<Star> comps = primary.getCompanions();
+      for (Star s : comps){
         description += s.toString() + " ";
       }
     }

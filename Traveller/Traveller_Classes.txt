@@ -91,9 +91,9 @@ String toString()
 // like these 'magic numbers' though)
 
 // we also have overlap/conflict between orbits & companion
-// lists when loaded from JSON - fix!
+// lists when loaded from JSON - fix!   ASSESS, companions is now a query
 
-// companion might be better as a query against orbits[]
+// companion might be better as a query against orbits[]  - DONE!
 // and by extension could do the same for other categories of satellite
 =====================================
 Star extends Orbit                         
@@ -107,7 +107,7 @@ char type                                  OK (String unpacking)
 int decimal                                OK (String unpacking)
 int size                                   OK (String unpacking)
 
-ArrayList<Star> companions                 OK (JSONArray - JSONObjects)
+//ArrayList<Star> companions           OK (JSONArray - JSONObjects) DEPRECATED
 Star closeCompanion                        OK (JSONObject)
 Orbit[] orbits                             OK (JSONArray - Strings)
 String[] orbitalZones                      OK - regenerate on load
@@ -138,6 +138,8 @@ void placePlanets()
 int getRandomNullOrbit()
 IntList availableOrbitsForGiants()
 IntList availableOrbitsForPlanetoids()
+
+ArrayList<Star> getCompanions()
 
 Boolean orbitIsTooHot(int)
 Boolean orbitIsNull(int)
