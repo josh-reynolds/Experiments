@@ -68,11 +68,19 @@ JSONObject asJSON()
 =====================================
 abstract Orbit
 -------------------------------------
-String name;                               ??
+Star barycenter                            ??
+String name                                ??
 int orbitNumber                            OK (primitive on subclasses)
 String orbitalZone                         ??
 -------------------------------------
-Orbit(int, String)
+Orbit(Star, int, String)
+
+Boolean isStar()
+Boolean isEmpty()
+Boolean isForbidden()
+Boolean isNull()
+Boolean isGasGiant()
+Boolean isPlanet()
 
 String toString()
 =====================================
@@ -117,6 +125,8 @@ Star(Boolean, System)
 Star(Boolean, System, String)              DEPRECATE
 Star(Boolean, System, JSONObject)
 
+Boolean isStar()
+
 char generateType()
 int generateSize()
 void classFromString(String)
@@ -159,7 +169,9 @@ JSONObject asJSON()
 Empty extends Orbit
 -------------------------------------
 -------------------------------------
-Empty(int, String)
+Empty(Star, int, String)
+
+Boolean isEmpty()
 =====================================
 
 // long term this one and Empty may merge together
@@ -169,7 +181,9 @@ Empty(int, String)
 Forbidden extends Orbit
 -------------------------------------
 -------------------------------------
-Forbidden(int, String)
+Forbidden(Star, int, String)
+
+Boolean isForbidden()
 =====================================
 
 // null object added to help build out the
@@ -180,7 +194,9 @@ Forbidden(int, String)
 Null extends Orbit
 -------------------------------------
 -------------------------------------
-Null(int, String)
+Null(Star, int, String)
+
+Boolean isNull()
 =====================================
 
 =====================================
@@ -188,13 +204,25 @@ GasGiant extends Orbit
 -------------------------------------
 String size                                TBD
 -------------------------------------
-GasGiant(int, String)
+GasGiant(Star, int, String)
+
+Boolean isGasGiant()
 =====================================
 
 =====================================
 Planet extends Orbit
 -------------------------------------
 int size                                   TBD
+Boolean isPlanetoid                        TBD
+UWP_ScoutsEx uwp                           TBD
 -------------------------------------
-Planet(int, String)
+Planet(Star, int, String, Boolean)
+
+Boolean isPlanet()
+
+Boolean isOrbitingClassM()
+Boolean isInnerZone()
+Boolean isHabitableZone()
+Boolean isOuterZone()
+Boolean isAtLeastTwoBeyondHabitable()
 =====================================

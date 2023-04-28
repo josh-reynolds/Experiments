@@ -11,6 +11,13 @@ abstract class Orbit {
     orbitalZone = _zone;
   }
   
+  Boolean isStar(){ return false; }
+  Boolean isEmpty(){ return false; }
+  Boolean isForbidden(){ return false; }
+  Boolean isNull(){ return false; }  
+  Boolean isGasGiant(){ return false; }
+  Boolean isPlanet(){ return false; }
+
   String toString(){ return name; }
 }
 
@@ -52,13 +59,17 @@ class Empty extends Orbit {
     super(_barycenter, _orbit, _zone);
     name = "Empty " + orbitalZone;
   }
+  
+  Boolean isEmpty(){ return true; }
 }
 
 class Forbidden extends Orbit {
   Forbidden(Star _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
     name = "Forbidden " + orbitalZone;
-  }  
+  }
+  
+  Boolean isForbidden(){ return true; }
 }
 
 class Null extends Orbit {
@@ -66,6 +77,8 @@ class Null extends Orbit {
     super(_barycenter, _orbit, _zone);
     name = "Null " + orbitalZone;
   }  
+  
+  Boolean isNull(){ return true; }
 }
 
 class GasGiant extends Orbit {
@@ -80,12 +93,14 @@ class GasGiant extends Orbit {
     }
     name = size + "GG " + orbitalZone;
   }  
+  
+  Boolean isGasGiant(){ return true; }
 }
 
 
 class Planet extends Orbit {
-  Boolean isPlanetoid;
-  UWP_ScoutsEx uwp;
+  Boolean isPlanetoid;    // TO_DO: consider how this relates to the new query methods... does it imply we should have a Planetoid subclass too?
+  UWP_ScoutsEx uwp;       //   a lot of the messiness in the ctor goes away if we do...
   
   Planet(Star _barycenter, int _orbit, String _zone, Boolean _planetoid){ 
     super(_barycenter, _orbit, _zone);
@@ -100,6 +115,8 @@ class Planet extends Orbit {
       name = "Planet " + orbitalZone + " " + uwp;
     }
   }
+  
+  Boolean isPlanet(){ return true; }
   
   // the following query methods might be useful on the parent
   //  currently only used by Planet and its components, though

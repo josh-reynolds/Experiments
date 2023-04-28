@@ -71,6 +71,7 @@
 //  * DONE Adding Planets to Star
 //  * DONE Proper display of size 'S' in Scouts UWP
 //  * DONE Eliminate duplication between companions / orbits in Star
+//  * DONE Too many uses of getClass().getSimpleName() reflection - clean up
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
@@ -79,9 +80,10 @@
 //  *      System to use values from Star mainworld under Scouts ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Flesh out tests
+//  *      Add die roller mock for testing?
 //  *      Deprecate Star String ctor
 //  *      Assess including companions of companions in getCompanions() result
-//  *      Too many uses of getClass().getSimpleName() reflection - clean up
+//  *      Assess splitting Planet/Planetoid into two subclasses
 //  *      Rework Coordinate / Hex classes - Reference objects?
 //  *      Override getHash() in Coordinate and adjust lookup procedure
 //  *      Refactor case statements in Ruleset

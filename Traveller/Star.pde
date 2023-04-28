@@ -4,13 +4,10 @@ class Star extends Orbit {
   
   char type;
   int typeRoll;
-
   int decimal;
-
   int size;
   int sizeRoll;
   
-  //ArrayList<Star> companions;
   Star closeCompanion;
   
   Orbit[] orbits;
@@ -22,7 +19,6 @@ class Star extends Orbit {
     super(null, -1, (String)null);   // TO_DO: making the compiler happy, may need to rethink this - don't like the magic value for the primary
     primary = _primary;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
     parent = _parent;
-    //companions = new ArrayList<Star>();
     
     type = generateType();  
     decimal = floor(random(10));
@@ -36,7 +32,6 @@ class Star extends Orbit {
     super(null, -1, (String)null);   // TO_DO: see note above in ctor
     primary = _primary;
     parent = _parent;
-    //companions = new ArrayList<Star>();
     
     classFromString(_s);
     
@@ -47,7 +42,6 @@ class Star extends Orbit {
     super(null, -1, (String)null);   // TO_DO: see note above in ctor
     primary = _primary;
     parent = _parent;
-    //companions = new ArrayList<Star>();
     
     classFromString(_json.getString("Class"));
 
@@ -56,13 +50,6 @@ class Star extends Orbit {
     if (!_json.isNull("Close Companion")){
       closeCompanion = new Star(false, parent, _json.getJSONObject("Close Companion")); 
     }
-    
-    //if (!_json.isNull("Companions")){    
-    //  JSONArray comps = _json.getJSONArray("Companions");
-    //  for (int i = 0; i < comps.size(); i++){
-    //    companions.add(new Star(false, parent, comps.getJSONObject(i)));
-    //  }
-    //}
 
     if (!_json.isNull("Orbits")){
       JSONArray ob = _json.getJSONArray("Orbits");
@@ -82,6 +69,8 @@ class Star extends Orbit {
       orbitNumber = _json.getInt("Orbit");  // TO_DO: currently null for primary - all companions have a value
     }
   }
+  
+  Boolean isStar(){ return true; }
   
   char generateType(){
     int dieThrow = twoDice();
@@ -214,28 +203,10 @@ class Star extends Orbit {
     orbits = createOrbits(orbitCount, maxCompanionOrbit);
     placeCompanions(orbitCount, maxCompanionOrbit, tempCompanions);
     
-    // TO_DO: this first section needs to be redone once companions is a query - need to assign orbits first
     // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
-    //   would need to re-order some of the steps - right now, we haven't assigned an orbit to any companion
-    //   this also speaks to the duplication between orbits[] and companions[]
-    // 1. generateCompanionCount() - 0 if not primary or far
-    // 2. temporary list to hold companions     // leery of temp variables, using for now while hashing out this algorithm
-    // 3. new Star()
-    // 4. generateCompanionOrbits()     ---- passing in temp list - query will fail since orbits not populated yet
-    // 5. calculateMaxOrbits()
-    // 6. createOrbits()
-    // 7. placeCompanions()            ---- temp list needed here too
 
     placeNullOrbits();    // TO_DO: probably temporary scaffolding to smooth addition of later elements
                           // unclear if still needed, was used for initial orbital zones approach, but that's changed
-    
-    // if we are going to use Null Orbits, makes sense to place just after Companions
-    // then, instead of testing '== null', later methods look for Null Orbits instead
-    // 
-    // the ordering of these method calls could come from which supplant or influence others:
-    // Companions force Empty & Forbidden orbits, so must come first
-    // All others unassigned are Nulls
-    // Remaining elements are placed in Null slots: additional Empties, Planets, Gas Giants, Asteroids
     
     placeEmptyOrbits(orbitCount, maxCompanionOrbit);
     placeForbiddenOrbits();
@@ -523,7 +494,7 @@ class Star extends Orbit {
       for (int i = 0; i < availableOrbits.size(); i++){
         int index = availableOrbits.get(i); 
         if (index == orbits.length-1){ continue; }
-        if (orbits[index].getClass().getSimpleName().equals("GasGiant")){    // TO_DO: this mechanic is used in multiple places now, look for a cleaner approach
+        if (orbits[index].isGasGiant()){
           orbitsInwardFromGiants.append(index);
           availableOrbits.remove(i);
         }
@@ -603,7 +574,7 @@ class Star extends Orbit {
     ArrayList<Star> comps = new ArrayList<Star>();
     
     for (int i = 0; i < orbits.length; i++){
-      if (orbits[i].getClass().getSimpleName().equals("Star")){
+      if (orbits[i].isStar()){
         comps.add((Star)orbits[i]);
         //comps.addAll( ((Star)orbits[i]).getCompanions() );  // Companions of companions - rare
                                                               // also, doesn't match current usage for companions list
@@ -618,15 +589,19 @@ class Star extends Orbit {
     return orbitalZones[_num].equals("X");
   }
 
+
+  // TO_DO: these methods can be supplanted by the new class queries baked into the hierarchy
+  //  won't catch null pointers, but ideally we've rooted out all such cases
+  //  and should squash any remaining bugs if not
   Boolean orbitIsNull(int _num){
     return (orbits[_num] == null ||
-            orbits[_num].getClass().getSimpleName().equals("Null"));
+            orbits[_num].isNull());
   }
 
   Boolean orbitIsNullOrEmpty(int _num){
     return (orbits[_num] == null ||
-            orbits[_num].getClass().getSimpleName().equals("Empty") ||
-            orbits[_num].getClass().getSimpleName().equals("Null"));
+            orbits[_num].isEmpty() ||
+            orbits[_num].isNull());
   }
 
   // Scouts includes data for Supergiants (Ia/Ib) but no means to generate randomly - leaving out
