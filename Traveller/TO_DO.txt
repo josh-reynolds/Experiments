@@ -74,6 +74,7 @@
 //  * DONE Too many uses of getClass().getSimpleName() reflection - clean up
 //  * DONE Splitting Planet/Planetoid into two subclasses
 //  * DONE Adding UWP.fromString() method
+//  * DONE Adding satellite counts for Planets & Gas Giants
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets

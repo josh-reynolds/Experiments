@@ -84,15 +84,19 @@ class Null extends Orbit {
 
 class GasGiant extends Orbit {
   String size;
+  int satelliteCount; // see notes below in Planet
   
   GasGiant(Star _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
     if (oneDie() >= 4){ 
       size = "S";
+      satelliteCount = twoDice() - 4;
     } else {
       size = "L";
+      satelliteCount = twoDice();
     }
-    name = size + "GG " + orbitalZone;
+    if (satelliteCount < 0){ satelliteCount = 0; }
+    name = size + "GG " + orbitalZone + " " + satelliteCount;
   }  
   
   Boolean isGasGiant(){ return true; }
@@ -147,11 +151,19 @@ abstract class Habitable extends Orbit {
 
 class Planet extends Habitable {
   UWP_ScoutsEx uwp;
+  int satelliteCount = 0; // probably becomes a list soon, no need for a field
+                          // also, only Planet & GasGiant need out of all the leaf classes in this tree
+                          // but their common parent is at the root (Orbit)
+                          // should this be an interface? overkill for now on just one field
   
   Planet(Star _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
     uwp = new UWP_ScoutsEx(this);
-    name = "Planet " + orbitalZone + " " + uwp;
+    if (uwp.size > 0){
+      satelliteCount = oneDie() - 3;
+      if (satelliteCount < 0){ satelliteCount = 0; }
+    }
+    name = "Planet " + orbitalZone + " " + uwp + " " + satelliteCount;
   }
   
   Boolean isPlanet(){ return true; }
