@@ -191,7 +191,7 @@ class UWP_CT81 extends UWP {
 }
 
 class UWP_ScoutsEx extends UWP {
-  Habitable planet;
+  Habitable planet;  // only used during ctor? should we pass in to methods rather than have a field?
   
   UWP_ScoutsEx(){}
   
@@ -285,6 +285,55 @@ class UWP_ScoutsEx extends UWP {
     String result = super.toString();
     if (size == 0 && !planet.isPlanetoid()){
       result = result.substring(0,1) + "S" + result.substring(2, result.length());  // Scouts introduced size 'S' small worlds (as contrasted with size 0 planetoid belts)
+    }
+    return result;
+  }
+  
+  UWP fromString(String _uwp){  // could/should this be in the parent class instead? only really need the subclass stuff during construction. 
+    // leave planet field as null - should only be needed during original construction, and would prevent pulling up the hierarchy (moot if we use parent class)
+    UWP u = new UWP();
+    u.starport = _uwp.charAt(0);
+    u.size     = unhex(_uwp.substring(1,2));
+    u.atmo     = unhex(_uwp.substring(2,3));
+    u.hydro    = unhex(_uwp.substring(3,4));
+    u.pop      = unhex(_uwp.substring(4,5));
+    u.gov      = unhex(_uwp.substring(5,6));
+    u.law      = unhex(_uwp.substring(6,7));
+    u.tech     = unModifiedHexChar(_uwp.substring(8,9)); // skip the dash character, and handle Traveller eHex
+    return u;
+  }
+  
+  int unModifiedHexChar(String _s){
+    int result = 0;
+    try {
+      result = unhex(_s);
+    }
+    catch (NumberFormatException _e){
+      switch(_s){
+        case "G":
+          result = 16;
+          break;
+        case "H":
+          result = 17;
+          break;
+        case "J":
+          result = 18;
+          break;        
+        case "K":
+          result = 19;
+          break;        
+        case "L":
+          result = 20;
+          break;        
+        case "M":
+          result = 21;
+          break;        
+        case "N":
+          result = 22;
+          break;
+        default:
+          println("Invalid input to modifiedHexChar()");
+      }
     }
     return result;
   }
