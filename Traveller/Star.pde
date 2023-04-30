@@ -189,9 +189,9 @@ class Star extends Orbit {
     int compCount = 0;
     if (primary || orbitIsFar(orbitNumber)){
       compCount = generateCompanionCount();
-    }
+    }    
     println(compCount + " companions");
-    
+        
     ArrayList<Star> tempCompanions = new ArrayList<Star>();
     for (int i = 0; i < compCount; i++){
       tempCompanions.add(new Star(false, parent));
@@ -243,7 +243,7 @@ class Star extends Orbit {
   // from tables on Scouts p.46
   int generateCompanionOrbits(ArrayList<Star> _comps){
     int maxCompanion = 0;
-    for (int i = 0; i < _comps.size(); i++){
+    for (int i = _comps.size()-1; i >= 0; i--){   // iterate backwards because we are removing elements in some cases
       int modifier = 4 * (i);
       if (!primary){ modifier -= 4; }
       println("Assessing companion star: " + _comps.get(i) + " modifier: +" + modifier);
@@ -270,8 +270,7 @@ class Star extends Orbit {
       if (result == 0 || orbitInsideStar(result)){
         println("Companion in CLOSE orbit");        
         closeCompanion = _comps.get(i);
-        _comps.remove(i); // modifying the list as we are iterating is a bad idea, think this is the root cause of the bug we hit occasionally
-                          // leaving in for now so I can pin it down precisely (best guess is this happens if we get two close companions)
+        _comps.remove(i);
         closeCompanion.orbitNumber = result;
       } else {
         println("Companion in orbit: " + result);

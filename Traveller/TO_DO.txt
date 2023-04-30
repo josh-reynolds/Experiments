@@ -75,11 +75,11 @@
 //  * DONE Splitting Planet/Planetoid into two subclasses
 //  * DONE Adding UWP.fromString() method
 //  * DONE Adding satellite counts for Planets & Gas Giants
+//  * FIX  BUG: placeCompanions sometimes fails due to companion in orbit -1 (filed issue in GitHub)
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
-//  * .... BUG: placeCompanions sometimes fails due to companion in orbit -1 (filed issue in GitHub)
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      System to use values from Star mainworld under Scouts ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
