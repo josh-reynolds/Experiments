@@ -79,6 +79,7 @@
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
+//  * .... BUG: placeCompanions sometimes fails due to companion in orbit -1 (filed issue in GitHub)
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      System to use values from Star mainworld under Scouts ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
@@ -87,6 +88,7 @@
 //  *      Deprecate Star String ctor
 //  *      Assess including companions of companions in getCompanions() result
 //  *      Assess adding "two beyond habitable" code to orbital zone data file
+//  *      Assess pushing Habitable query methods up the hierarchy
 //  *      Rework Coordinate / Hex classes - Reference objects?
 //  *      Override getHash() in Coordinate and adjust lookup procedure
 //  *      Refactor case statements in Ruleset
@@ -113,9 +115,9 @@
 //  *      SIDE PROJECT: "linter" for output files to verify correctness
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      BUG: off-by-one issue in Star.createOrbits in some cases
-//  *      BUG: (possibly previous issue) placeCompanions sometimes fails due to companion in orbit -1 (with another CloseCompanion)
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
+//  *      BUG: orbitalZones array isn't big enough to handle all possible values
 //  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: duplicate code in test methods

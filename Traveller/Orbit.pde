@@ -1,11 +1,11 @@
 abstract class Orbit {
-  Star barycenter;  // what happens with satellites orbiting planets? go with this for now, will need adjustment
-  String name;      //    also not _exactly_ the right word, but closest to meaning of "thing I orbit around"
+  Orbit barycenter;  // not _exactly_ the right word, but closest to meaning of "thing I orbit around"
+  String name;     
   int orbitNumber;
   String orbitalZone;
   // radius in AU & km? as a query method?
   
-  Orbit(Star _barycenter, int _orbit, String _zone){
+  Orbit(Orbit _barycenter, int _orbit, String _zone){
     barycenter = _barycenter;
     orbitNumber = _orbit;
     orbitalZone = _zone;
@@ -18,40 +18,11 @@ abstract class Orbit {
   Boolean isGasGiant(){ return false; }
   Boolean isPlanet(){ return false; }
   Boolean isPlanetoid(){ return false; }
+  Boolean isSatellite(){ return false; }
+  Boolean isRing(){ return false; }
 
   String toString(){ return name; }
 }
-
-// some thoughts about the structure and potential inheritance hierarchy
-
-// Primary Star
-// Orbits
-//   Companion Star
-//   Planet (including Asteroid belts) - have a UWP
-//   Gas Giant (handled separately due to Traveller convention)
-//   Satellite (including Rings) - have a UWP
-//   Empty
-//   Forbidden (does this need to be distinct from 'Empty'?)
-
-// Does this make sense? Move array out of System into Star...
-
-// System.primary
-//   primary.barycenter = self
-//   primary.contents = new Star()
-//   primary.number = null
-//   primary.zone = null
-//   primary.orbits[] = new Orbit[]
-
-//   primary.orbits[n] = new Star()
-//   primary.orbits[n] = new Planet()
-//   primary.orbits[n] = new GasGiant()
-
-//     primary.orbits[n].orbits[] = new Orbit[]
-//     primary.orbits[n].orbits[o] = new Star()
-//     primary.orbits[n].orbits[o] = new Planet() ...
-
-//   primary.orbits[n] = new Empty()
-//   primary.orbits[n] = new Forbidden()
 
 //class Star extends Orbit {} // separate file/tab for this one
 
@@ -103,12 +74,16 @@ class GasGiant extends Orbit {
 }
 
 abstract class Habitable extends Orbit {
-  Habitable(Star _barycenter, int _orbit, String _zone){ 
+  Habitable(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
   }
   
   Boolean isOrbitingClassM(){
-    return barycenter.type == 'M';
+    if (barycenter.isStar()){
+      return ((Star)barycenter).type == 'M';
+    } else {
+      return false;
+    }
   }
     
   Boolean isInnerZone(){
@@ -126,12 +101,14 @@ abstract class Habitable extends Orbit {
   // TO_DO: we could greatly simplify this by adding another code to the data tables...
   Boolean isAtLeastTwoBeyondHabitable(){    
     if (isInnerZone() || isHabitableZone()){ return false; }
+    if (barycenter.isPlanet()){ return ((Planet)barycenter).isAtLeastTwoBeyondHabitable(); }
+    // TO_DO: need to pull this up for satellites of GasGiants - will break once we start constructing them
     
-    // find habitable zone (move this to method on Star?)
+    // find habitable zone (move this to method on Star? esp now that we have to downcast)
     int habitableOrbit = 0;
     Boolean foundHabitable = false;
-    for (int i = 0; i < barycenter.orbitalZones.length; i++){
-      if (barycenter.orbitalZones[i].equals("H")){
+    for (int i = 0; i < ((Star)barycenter).orbitalZones.length; i++){
+      if (((Star)barycenter).orbitalZones[i].equals("H")){
         habitableOrbit = i;
         foundHabitable = true;
         break;
@@ -155,15 +132,41 @@ class Planet extends Habitable {
                           // also, only Planet & GasGiant need out of all the leaf classes in this tree
                           // but their common parent is at the root (Orbit)
                           // should this be an interface? overkill for now on just one field
+  Habitable[] moons; // common parent for Satellites and Rings 
   
-  Planet(Star _barycenter, int _orbit, String _zone){ 
+  Planet(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
     uwp = new UWP_ScoutsEx(this);
-    if (uwp.size > 0){
+    if (uwp.size > 0){                                         // Satellites pass through this via super ctor, need to handle properly
       satelliteCount = oneDie() - 3;
-      if (satelliteCount < 0){ satelliteCount = 0; }
+      if (satelliteCount <= 0){ 
+        satelliteCount = 0;
+        moons = new Habitable[0];
+      } else {
+        moons = new Habitable[satelliteCount];
+        for (int i = 0; i < satelliteCount; i++){
+          int size = this.uwp.size - oneDie();                  // just like with Planet/Planetoid, should we let UWP sort it out?
+          if (size == 0){
+            moons[i] = new Ring(this, this.orbitalZone);
+          } else {
+            moons[i] = new Satellite(this, this.orbitalZone);   // need to consider how to handle size 'S' moons
+          }
+        }
+      }
     }
     name = "Planet " + orbitalZone + " " + uwp + " " + satelliteCount;
+  }
+  
+  String toString(){    // temporary override so we can peek at the structure
+    String result = super.toString();
+    
+    if (moons != null){
+      for (int i = 0; i < moons.length; i++){ 
+        result += "\n\t" + moons[i];
+      }
+    }
+    
+    return result;
   }
   
   Boolean isPlanet(){ return true; }
@@ -172,11 +175,34 @@ class Planet extends Habitable {
 class Planetoid extends Habitable {
   UWP_ScoutsEx uwp;
   
-  Planetoid(Star _barycenter, int _orbit, String _zone){ 
+  Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);  
     uwp = new UWP_ScoutsEx(this);
     name = "Planetoid Belt " + orbitalZone + " " + uwp;
   }
 
   Boolean isPlanetoid(){ return true; }
+}
+
+// uncertain if following subclasses are needed
+// Satellite is a Planet whose barycenter is not a Star (i.e. GasGiant or Planet)
+// Ring is a Planetoid whose barycenter is not a Star (i.e. GasGiant or Planet)
+// could just do this via queries
+
+class Satellite extends Planet {
+  // need to work through inherited fields and hierarchy for these second-level children
+  
+  Satellite(Orbit _planet, String _zone){
+    super(_planet.barycenter, _planet.orbitNumber, _zone);   
+  }
+  
+  Boolean isSatellite(){ return true; }
+}
+
+class Ring extends Planetoid {
+  Ring(Orbit _planet, String _zone){
+    super(_planet.barycenter, _planet.orbitNumber, _zone);
+  }
+  
+  Boolean isRing(){ return true; }
 }

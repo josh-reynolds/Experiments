@@ -270,7 +270,8 @@ class Star extends Orbit {
       if (result == 0 || orbitInsideStar(result)){
         println("Companion in CLOSE orbit");        
         closeCompanion = _comps.get(i);
-        _comps.remove(i);
+        _comps.remove(i); // modifying the list as we are iterating is a bad idea, think this is the root cause of the bug we hit occasionally
+                          // leaving in for now so I can pin it down precisely (best guess is this happens if we get two close companions)
         closeCompanion.orbitNumber = result;
       } else {
         println("Companion in orbit: " + result);
