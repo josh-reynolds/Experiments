@@ -10,10 +10,13 @@ class System {
   TradeClass trade;
   String name = "";
   ArrayList<Route> routes;
+  Dice roll;
+    
     
   System(Coordinate _coord){
     coord = _coord;
     hex = new Polygon(coord.getScreenX(), coord.getScreenY(), hexRadius);
+    roll = new Dice();
     
     if (random(1) > 0.5){ 
       occupied = true;

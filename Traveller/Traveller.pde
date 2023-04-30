@@ -27,8 +27,6 @@ int currentRules = 0;
 
 TestSuite tests;
 
-Dice roll;
-
 void setup(){
   // calculated per metrics detailed in SubsectorDisplay, adjust if hexRadius changes
   // panel width = 464, panel height = 646
@@ -44,8 +42,6 @@ void setup(){
   textPanel = new TextPanel();
   
   tests = new TestSuite();
-  
-  roll = new Dice();
   
   buttons = new Button[4];
   buttons[0] = new Button("New", 32, border, border * 4);

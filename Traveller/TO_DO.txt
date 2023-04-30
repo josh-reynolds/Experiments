@@ -78,6 +78,7 @@
 //  * FIX  BUG: placeCompanions sometimes fails due to companion in orbit -1 (filed issue in GitHub)
 //  * FIX  BUG: orbitalZones array isn't big enough to handle all possible values
 //  * DONE REFACTOR: move utility functions out of main script
+//  * DONE Add die roller mock for testing
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
@@ -86,7 +87,6 @@
 //  *      System to use values from Star mainworld under Scouts ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Flesh out tests
-//  *      Add die roller mock for testing?
 //  *      Deprecate Star String ctor
 //  *      Assess including companions of companions in getCompanions() result
 //  *      Assess adding "two beyond habitable" code to orbital zone data file

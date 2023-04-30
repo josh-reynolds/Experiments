@@ -5,10 +5,14 @@ abstract class Orbit {
   String orbitalZone;
   // radius in AU & km? as a query method?
   
+  Dice roll;
+  
   Orbit(Orbit _barycenter, int _orbit, String _zone){
     barycenter = _barycenter;
     orbitNumber = _orbit;
     orbitalZone = _zone;
+
+    roll = new Dice();
   }
   
   Boolean isStar(){ return false; }

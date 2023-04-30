@@ -7,3 +7,14 @@ class Dice {
     return one() + one();
   } 
 }
+
+class DiceMock extends Dice {
+  int value;
+  
+  DiceMock(int _value){
+    value = _value;
+  }
+  
+  int one(){ return value; }
+  int two(){ return value; }
+}

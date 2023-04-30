@@ -7,12 +7,16 @@ class Subsector{
   int horzCount = 8;
   
   ArrayList<Route> routes;
+
+  Dice roll;
   
   Subsector(){
     name = "Subsector_" + lines[floor(random(lines.length))];
     
     systems = new LinkedHashMap<Coordinate, System>();
     routes = new ArrayList<Route>();
+    
+    roll = new Dice();
     
     for (int j = 1; j <= horzCount; j++){
       for (int i = 1; i <= vertCount; i++){      

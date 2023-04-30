@@ -3,8 +3,11 @@
 class UWP {
   char starport;
   int size, atmo, hydro, pop, gov, law, tech; 
+  Dice roll;
   
   UWP(){
+    roll = new Dice();
+    
     starport = generateStarport();
     size     = generateSize();
     atmo     = generateAtmo();
@@ -12,7 +15,7 @@ class UWP {
     pop      = generatePop();
     gov      = generateGov();
     law      = generateLaw(); 
-    tech     = generateTech(); 
+    tech     = generateTech();
   }
   
   UWP(JSONObject _json){
