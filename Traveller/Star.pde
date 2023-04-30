@@ -162,7 +162,7 @@ class Star extends Orbit {
   // - the system by RAW cannot generate supergiants (Ia/Ib) or O/B stars, so could omit that data
   // - special case for M9 not handled yet - all other decimal values round to 0/5 for all spectral classes except M
   String[] retrieveOrbitalZones(){
-    String[] output = new String[18];
+    String[] output = new String[21];
     
     // data from Scouts pp. 29-31
     Table table = loadTable("OrbitalZones.csv", "header");  // probably want to load this as a global resource
