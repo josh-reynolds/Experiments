@@ -77,6 +77,7 @@
 //  * DONE Adding satellite counts for Planets & Gas Giants
 //  * FIX  BUG: placeCompanions sometimes fails due to companion in orbit -1 (filed issue in GitHub)
 //  * FIX  BUG: orbitalZones array isn't big enough to handle all possible values
+//  * DONE REFACTOR: move utility functions out of main script
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
@@ -118,7 +119,8 @@
 //  *      BUG: off-by-one issue in Star.createOrbits in some cases
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
-//  *      REFACTOR: move utility functions out of main script
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: duplicate code in test methods
+//  *      REFACTOR: implement Command pattern for button code
+//  *      REFACTOR: move display code out of main script
 // ------------------------------------------------

@@ -196,75 +196,75 @@ class Subsector{
           pair = str(starportB) + str(starportA);
         }
   
-        int roll = oneDie();
+        int dieThrow = roll.one();
   
         // transcription of the table on p.2 of Book 3 (1st edition)
         // probably a clever way to make this shorter, refactoring opportunity
         // later perhaps
         if (pair.equals("AA")){
-          if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
-          if (dist == 2 && roll >= 2){ routes.add(new Route(candidate, target)); }
-          if (dist == 3 && roll >= 4){ routes.add(new Route(candidate, target)); }
-          if (dist == 4 && roll >= 5){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 1){ routes.add(new Route(candidate, target)); }
+          if (dist == 2 && dieThrow >= 2){ routes.add(new Route(candidate, target)); }
+          if (dist == 3 && dieThrow >= 4){ routes.add(new Route(candidate, target)); }
+          if (dist == 4 && dieThrow >= 5){ routes.add(new Route(candidate, target)); }
         }
         if (pair.equals("AB")){
-          if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
-          if (dist == 2 && roll >= 3){ routes.add(new Route(candidate, target)); }
-          if (dist == 3 && roll >= 4){ routes.add(new Route(candidate, target)); }
-          if (dist == 4 && roll >= 5){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 1){ routes.add(new Route(candidate, target)); }
+          if (dist == 2 && dieThrow >= 3){ routes.add(new Route(candidate, target)); }
+          if (dist == 3 && dieThrow >= 4){ routes.add(new Route(candidate, target)); }
+          if (dist == 4 && dieThrow >= 5){ routes.add(new Route(candidate, target)); }
         }
         if (pair.equals("AC")){
-          if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
-          if (dist == 2 && roll >= 4){ routes.add(new Route(candidate, target)); }
-          if (dist == 3 && roll >= 6){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 1){ routes.add(new Route(candidate, target)); }
+          if (dist == 2 && dieThrow >= 4){ routes.add(new Route(candidate, target)); }
+          if (dist == 3 && dieThrow >= 6){ routes.add(new Route(candidate, target)); }
         }
         if (pair.equals("AD")){
-          if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
-          if (dist == 2 && roll >= 5){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 1){ routes.add(new Route(candidate, target)); }
+          if (dist == 2 && dieThrow >= 5){ routes.add(new Route(candidate, target)); }
         }
         if (pair.equals("AE")){
-          if (dist == 1 && roll >= 2){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 2){ routes.add(new Route(candidate, target)); }
         }
   
         if (pair.equals("BB")){
-          if (dist == 1 && roll >= 1){ routes.add(new Route(candidate, target)); }
-          if (dist == 2 && roll >= 3){ routes.add(new Route(candidate, target)); }
-          if (dist == 3 && roll >= 4){ routes.add(new Route(candidate, target)); }
-          if (dist == 4 && roll >= 6){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 1){ routes.add(new Route(candidate, target)); }
+          if (dist == 2 && dieThrow >= 3){ routes.add(new Route(candidate, target)); }
+          if (dist == 3 && dieThrow >= 4){ routes.add(new Route(candidate, target)); }
+          if (dist == 4 && dieThrow >= 6){ routes.add(new Route(candidate, target)); }
         }
         if (pair.equals("BC")){
-          if (dist == 1 && roll >= 2){ routes.add(new Route(candidate, target)); }
-          if (dist == 2 && roll >= 4){ routes.add(new Route(candidate, target)); }
-          if (dist == 3 && roll >= 6){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 2){ routes.add(new Route(candidate, target)); }
+          if (dist == 2 && dieThrow >= 4){ routes.add(new Route(candidate, target)); }
+          if (dist == 3 && dieThrow >= 6){ routes.add(new Route(candidate, target)); }
         }
         if (pair.equals("BD")){
-          if (dist == 1 && roll >= 3){ routes.add(new Route(candidate, target)); }
-          if (dist == 2 && roll >= 6){ routes.add(new Route(candidate, target)); }  
+          if (dist == 1 && dieThrow >= 3){ routes.add(new Route(candidate, target)); }
+          if (dist == 2 && dieThrow >= 6){ routes.add(new Route(candidate, target)); }  
         }
         if (pair.equals("BE")){
-          if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 4){ routes.add(new Route(candidate, target)); }
         }
         
         if (pair.equals("CC")){
-          if (dist == 1 && roll >= 3){ routes.add(new Route(candidate, target)); }
-          if (dist == 2 && roll >= 6){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 3){ routes.add(new Route(candidate, target)); }
+          if (dist == 2 && dieThrow >= 6){ routes.add(new Route(candidate, target)); }
         }
         if (pair.equals("CD")){
-          if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 4){ routes.add(new Route(candidate, target)); }
         }
         if (pair.equals("CE")){
-          if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 4){ routes.add(new Route(candidate, target)); }
         }
         
         if (pair.equals("DD")){
-          if (dist == 1 && roll >= 4){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 4){ routes.add(new Route(candidate, target)); }
         }
         if (pair.equals("DE")){
-          if (dist == 1 && roll >= 5){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 5){ routes.add(new Route(candidate, target)); }
         }
         
         if (pair.equals("EE")){
-          if (dist == 1 && roll >= 6){ routes.add(new Route(candidate, target)); }
+          if (dist == 1 && dieThrow >= 6){ routes.add(new Route(candidate, target)); }
         }
       }
     }

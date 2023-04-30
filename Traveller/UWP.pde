@@ -27,9 +27,9 @@ class UWP {
   }
     
   char generateStarport(){
-    int roll = twoDice();
+    int dieThrow = roll.two();
     
-    switch(roll){
+    switch(dieThrow){
       case 2:
       case 3:
       case 4:
@@ -53,32 +53,32 @@ class UWP {
     }
   }
   
-  int generateSize(){ return twoDice() - 2; }
+  int generateSize(){ return roll.two() - 2; }
   
   int generateAtmo(){
-    int result = twoDice() - 7 + size;
+    int result = roll.two() - 7 + size;
     if (size == 0 || result < 0){ result = 0; }
     return result;
   }
   
   int generateHydro(){
-    int result = twoDice() - 7 + size;
+    int result = roll.two() - 7 + size;
     if (atmo <= 1 || atmo >= 10){ result -= 4; }
     if (size <= 1 || result < 0){ result = 0; }
     if (result > 10) { result = 10; }
     return result;
   }
 
-  int generatePop(){ return twoDice() - 2; }
+  int generatePop(){ return roll.two() - 2; }
   
   int generateGov(){
-    int result = twoDice() - 7 + pop;
+    int result = roll.two() - 7 + pop;
     if (result < 0){ result = 0; }
     return result;
   }
 
   int generateLaw(){
-    int result = twoDice() - 7 + gov;
+    int result = roll.two() - 7 + gov;
     if (result < 0){ result = 0; }
     return result;
   }
@@ -106,7 +106,7 @@ class UWP {
     if (gov == 0 || gov == 5){ modifier += 1; }
     if (gov == 13){            modifier -= 2; }
     
-    return oneDie() + modifier;
+    return roll.one() + modifier;
   }
   
   // Traveller uses hexadecimal to get single-digit utility,
@@ -182,7 +182,7 @@ class UWP_CT81 extends UWP {
   //  - table is identical to CT77 (other than change above)
   //  - text adds ATMO instead of SIZE; using that here
   int generateHydro(){
-    int result    = twoDice() - 7 + atmo;
+    int result    = roll.two() - 7 + atmo;
     if (atmo <= 1 || atmo >= 10){ result -= 4; }
     if (size == 0 || result < 0){ result = 0; }
     if (result > 10) { result = 10; }
@@ -226,7 +226,7 @@ class UWP_ScoutsEx extends UWP {
     if (planet.orbitNumber == 1  ){ modifier -= 4; }
     if (planet.orbitNumber == 2  ){ modifier -= 2; }
     if (planet.isOrbitingClassM()){ modifier -= 2; }
-    int result = twoDice() - 2 + modifier;  
+    int result = roll.two() - 2 + modifier;  
     
     if (result <= 0){ result = 0; }
 
@@ -240,11 +240,11 @@ class UWP_ScoutsEx extends UWP {
     if (planet.isInnerZone()){ modifier -= 2; }
     if (planet.isOuterZone()){ modifier -= 4; }
     
-    int result = twoDice() - 7 + size + modifier;
+    int result = roll.two() - 7 + size + modifier;
     if (size == 0 || result < 0){ result = 0; }   // includes size 'S' (numerically zero)
     
     if (planet.isAtLeastTwoBeyondHabitable() &&
-        twoDice() == 12){ return 10; }    
+        roll.two() == 12){ return 10; }    
     
     return result;    
   }
@@ -260,7 +260,7 @@ class UWP_ScoutsEx extends UWP {
     if (planet.isOuterZone()   ){ modifier -= 2; }
     if (atmo <= 1 || atmo >= 10){ modifier -= 4; }
      
-    int result = twoDice() - 7 + size + modifier;
+    int result = roll.two() - 7 + size + modifier;
     result = constrain(result, 0, 10);    
     
     return result;    
@@ -275,7 +275,7 @@ class UWP_ScoutsEx extends UWP {
     if (!(atmo == 0 || atmo == 5 ||
           atmo == 6 || atmo == 8)){ modifier -= 2; }
      
-    int result = twoDice() - 2 + modifier;
+    int result = roll.two() - 2 + modifier;
     if (result < 0){ result = 0; }
     
     return result;

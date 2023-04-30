@@ -59,12 +59,12 @@ class GasGiant extends Orbit {
   
   GasGiant(Star _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    if (oneDie() >= 4){ 
+    if (roll.one() >= 4){ 
       size = "S";
-      satelliteCount = twoDice() - 4;
+      satelliteCount = roll.two() - 4;
     } else {
       size = "L";
-      satelliteCount = twoDice();
+      satelliteCount = roll.two();
     }
     if (satelliteCount < 0){ satelliteCount = 0; }
     name = size + "GG " + orbitalZone + " " + satelliteCount;
@@ -138,14 +138,14 @@ class Planet extends Habitable {
     super(_barycenter, _orbit, _zone);
     uwp = new UWP_ScoutsEx(this);
     if (uwp.size > 0){                                         // Satellites pass through this via super ctor, need to handle properly
-      satelliteCount = oneDie() - 3;
+      satelliteCount = roll.one() - 3;
       if (satelliteCount <= 0){ 
         satelliteCount = 0;
         moons = new Habitable[0];
       } else {
         moons = new Habitable[satelliteCount];
         for (int i = 0; i < satelliteCount; i++){
-          int size = this.uwp.size - oneDie();                  // just like with Planet/Planetoid, should we let UWP sort it out?
+          int size = this.uwp.size - roll.one();                  // just like with Planet/Planetoid, should we let UWP sort it out?
           if (size == 0){
             moons[i] = new Ring(this, this.orbitalZone);
           } else {

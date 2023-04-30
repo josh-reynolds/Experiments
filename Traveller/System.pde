@@ -20,7 +20,7 @@ class System {
       uwp = generateUWP();
       navalBase = generateNavalBase();
       scoutBase = generateScoutBase();
-      if (twoDice() <= 9){ gasGiant = true; }  // this is in Book 2, p.35
+      if (roll.two() <= 9){ gasGiant = true; }  // this is in Book 2, p.35
       trade = generateTradeClass(uwp);
       name = lines[floor(random(lines.length))];
       routes = new ArrayList<Route>();
@@ -69,13 +69,13 @@ class System {
     if (uwp.starport == 'B'){ modifier = -2; }
     if (uwp.starport == 'C'){ modifier = -1; }
     if (uwp.starport == 'E' || uwp.starport == 'X'){ return false; }
-    if (twoDice() + modifier >= 7){ return true; }
+    if (roll.two() + modifier >= 7){ return true; }
     return false;
   }
   
   Boolean generateNavalBase(){
     if (uwp.starport == 'A' || uwp.starport == 'B'){ 
-      if (twoDice() >= 8){ return true; }
+      if (roll.two() >= 8){ return true; }
     }
     return false;
   }
@@ -191,12 +191,12 @@ class System_CT81 extends System {
     //  - no fuel available seems like an Amber condition to me, add that
     
     if (uwp.starport == 'X'){
-      if (twoDice() < 11){
+      if (roll.two() < 11){
         return "Red";
       }
     }
     
-    int dieThrow = twoDice();
+    int dieThrow = roll.two();
     if (dieThrow <= 3){ return "Amber"; }
     if (dieThrow == 12 && !(uwp.starport == 'X')){ return "Red"; }
     if ((uwp.starport == 'X' || uwp.starport == 'E') &&
