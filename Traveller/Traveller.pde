@@ -13,9 +13,9 @@ String lines[];
 ColorScheme scheme;
 
 Subsector subs;
-SubsectorDisplay subD;
-TextPanel textPanel;
 Boolean loading = true;
+
+Display display;
 
 Button[] buttons;
 String mode;
@@ -37,8 +37,7 @@ void setup(){
 
   ruleset = new Ruleset(rules[currentRules]);
 
-  subD = new SubsectorDisplay();
-  textPanel = new TextPanel();
+  display = new Display();
   
   tests = new TestSuite();
   
@@ -54,7 +53,7 @@ void draw(){
   if (mode.equals("menu")){
     drawMenu();
   } else if (mode.equals("display")){
-    drawScreen();
+    display.drawScreen();
   }
 }
 
@@ -99,9 +98,4 @@ void mouseClicked(){
   for (Button b : buttons){
     if (b.highlight){ b.run(); }
   }
-}  
-
-void drawScreen(){
-  subD.show(subs);
-  textPanel.show(subs);
 }
