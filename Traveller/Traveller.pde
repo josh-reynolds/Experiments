@@ -14,9 +14,7 @@ ColorScheme scheme;
 Subsector subs;
 Boolean loading = true;
 
-String mode;
-Menu menu;
-Display display;
+Screen screen;
 
 Ruleset ruleset;
 String[] rules = {"CT77", "CT81", "Scouts (Extended)"};
@@ -31,20 +29,14 @@ void setup(){
   lines = loadStrings(wordFile);
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
   ruleset = new Ruleset(rules[currentRules]);
-  menu = new Menu();
-  display = new Display();
   tests = new TestSuite();  
-  mode = "menu";
+  screen = new Menu();
 }
 
 void draw(){
-  if (mode.equals("menu")){     // pushing towards polymorphic design so we can just say something like "mode.drawScreen()"
-    menu.drawScreen();
-  } else if (mode.equals("display")){
-    display.drawScreen();
-  }
+  screen.drawScreen();
 }
 
 void mouseClicked(){
-  menu.mouseClicked();
+  screen.mouseClicked();
 }

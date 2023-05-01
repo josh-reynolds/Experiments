@@ -68,8 +68,8 @@ class NewSubsector extends ButtonUtilities implements Command {
     b.highlight = false;
     loading = false;
     subs = createSubsector();
-    mode = "display";
-    display.drawScreen();
+    screen = new Display();
+    screen.drawScreen();
     writeImage();
     writeText();
     writeJSON();
@@ -148,7 +148,7 @@ public class Load extends ButtonUtilities implements Command {
     tests.run();
   
     b.highlight = false;
-    mode = "display";
+    screen = new Display();
   }
 }
 
@@ -172,7 +172,7 @@ public class ChangeColors extends ButtonUtilities implements Command {
     scheme = new ColorScheme(loadJSONObject(_selection.toString()));
   
     b.highlight = false;
-    mode = "menu";
+    screen = new Menu();
   }
 }
 

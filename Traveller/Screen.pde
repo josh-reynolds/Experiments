@@ -1,5 +1,6 @@
 abstract class Screen {
-  void drawScreen(){};
+  abstract void drawScreen();
+  abstract void mouseClicked();
 }
 
 class Menu extends Screen {
@@ -70,4 +71,6 @@ class Display extends Screen {
     subD.show(subs);
     textPanel.show(subs);
   }
+  
+  void mouseClicked(){};
 }
