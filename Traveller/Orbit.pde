@@ -22,7 +22,7 @@ abstract class Orbit {
   Boolean isGasGiant(){ return false; }
   Boolean isPlanet(){ return false; }
   Boolean isPlanetoid(){ return false; }
-  Boolean isSatellite(){ return false; }
+  Boolean isMoon(){ return false; }
   Boolean isRing(){ return false; }
 
   String toString(){ return name; }
@@ -60,7 +60,8 @@ class Null extends Orbit {
 class GasGiant extends Orbit {
   String size;
   int satelliteCount; // see notes below in Planet
-  
+  Habitable[] moons; // common parent for Satellites and Rings
+    
   GasGiant(Star _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
     if (roll.one() >= 4){ 
@@ -70,11 +71,44 @@ class GasGiant extends Orbit {
       size = "L";
       satelliteCount = roll.two();
     }
-    if (satelliteCount < 0){ satelliteCount = 0; }
+    
+    if (satelliteCount <= 0){ 
+      satelliteCount = 0;
+      moons = new Habitable[0];
+    } else {
+      moons = new Habitable[satelliteCount];
+      for (int i = 0; i < satelliteCount; i++){                  // just like with Planet/Planetoid, should we let UWP sort it out?
+        int satelliteSize = 0;
+        if (size.equals("L")){                                   // also this section is heavily duplicated from Planet
+          satelliteSize = roll.two() - 4; 
+        } else {
+          satelliteSize = roll.two() - 6;          
+        }
+        
+        if (satelliteSize == 0){
+          moons[i] = new Ring(this, this.orbitalZone);
+        } else {
+          moons[i] = new Moon(this, this.orbitalZone);   // need to consider how to handle size 'S' moons
+        }
+      }
+    }
+    
     name = size + "GG " + orbitalZone + " " + satelliteCount;
   }  
   
   Boolean isGasGiant(){ return true; }
+
+  String toString(){    // temporary override so we can peek at the structure
+    String result = super.toString();
+    
+    if (moons != null){
+      for (int i = 0; i < moons.length; i++){ 
+        result += "\n\t" + moons[i];
+      }
+    }
+    
+    return result;
+  }
 }
 
 abstract class Habitable extends Orbit {
@@ -153,7 +187,7 @@ class Planet extends Habitable {
           if (size == 0){
             moons[i] = new Ring(this, this.orbitalZone);
           } else {
-            moons[i] = new Satellite(this, this.orbitalZone);   // need to consider how to handle size 'S' moons
+            moons[i] = new Moon(this, this.orbitalZone);   // need to consider how to handle size 'S' moons
           }
         }
       }
@@ -193,19 +227,21 @@ class Planetoid extends Habitable {
 // Ring is a Planetoid whose barycenter is not a Star (i.e. GasGiant or Planet)
 // could just do this via queries
 
-class Satellite extends Planet {
+class Moon extends Planet {
   // need to work through inherited fields and hierarchy for these second-level children
   
-  Satellite(Orbit _planet, String _zone){
-    super(_planet.barycenter, _planet.orbitNumber, _zone);   
+  Moon(Orbit _planet, String _zone){
+    super(_planet.barycenter, _planet.orbitNumber, _zone);
+    name = "Moon " + orbitalZone + " " + uwp + " " + satelliteCount;    
   }
   
-  Boolean isSatellite(){ return true; }
+  Boolean isMoon(){ return true; }
 }
 
 class Ring extends Planetoid {
   Ring(Orbit _planet, String _zone){
     super(_planet.barycenter, _planet.orbitNumber, _zone);
+    name = "Ring " + orbitalZone + " " + uwp;
   }
   
   Boolean isRing(){ return true; }

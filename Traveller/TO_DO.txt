@@ -89,13 +89,12 @@
 //  *      System to use values from Star mainworld under Scouts ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Flesh out tests
-//  *      Deprecate Star String ctor
+//  *      Deprecate Star String ctor (hrm, might be useful for testing though)
 //  *      Assess including companions of companions in getCompanions() result
 //  *      Assess adding "two beyond habitable" code to orbital zone data file
 //  *      Assess pushing Habitable query methods up the hierarchy
 //  *      Rework Coordinate / Hex classes - Reference objects?
 //  *      Override getHash() in Coordinate and adjust lookup procedure
-//  *      Refactor case statements in Ruleset
 //  *      Reassess parent pointer for non-primary stars
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Enforce inherited orbitNumber across all Orbit subclasses
@@ -121,6 +120,9 @@
 //  *      BUG: off-by-one issue in Star.createOrbits in some cases
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
+//  *      BUG: moons are themselves generating moons
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: duplicate code in test methods
+//  *      REFACTOR: current ruleset and array to Ruleset class
+//  *      REFACTOR: case statements in Ruleset
 // ------------------------------------------------
