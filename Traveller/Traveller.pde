@@ -44,10 +44,10 @@ void setup(){
   tests = new TestSuite();
   
   buttons = new Button[4];
-  buttons[0] = new Button("New", 32, border, border * 4);
-  buttons[1] = new Button("Load", 32, border, border * 6);
-  buttons[2] = new Button("Colors", 32, border, border * 8);
-  buttons[3] = new Button("Rules", 32, border, border * 10);
+  buttons[0] = new Button("New", 32, border, border * 4, new NewSubsector());
+  buttons[1] = new Button("Load", 32, border, border * 6, new Load());
+  buttons[2] = new Button("Colors", 32, border, border * 8, new ChangeColors());
+  buttons[3] = new Button("Rules", 32, border, border * 10, new ChangeRules());
   mode = "menu";
 }
 
@@ -106,86 +106,10 @@ Subsector createSubsector(){
 }
 
 void mouseClicked(){
-  if (buttons[0].highlight){ 
-    println(buttons[0].label);
-    buttons[0].highlight = false;
-    loading = false;
-    subs = createSubsector();
-    mode = "display";
-    drawScreen();
-    writeImage();
-    writeText();
-    writeJSON();
-    tests.run();
+  for (Button b : buttons){
+    if (b.highlight){ b.run(); }
   }
-  
-  if (buttons[1].highlight){ 
-    println(buttons[1].label);
-    selectInput("Select a subsector json file to load.", "subsectorFileSelected", dataFile(".\\output\\*.json"));
-    // this filters, though the dialog "Files of Type" box doesn't reflect that fact
-    // and if you type "*.txt" in the selection box, for instance, it will change the hidden filter in use
-    // see https://discourse.processing.org/t/selectinput-i-like-to-tell-it-the-folder-to-use/13703/10
-  }
-  
-  if (buttons[2].highlight){
-    println(buttons[2].label);
-    selectInput("Select a color json file to load.", "colorFileSelected", dataFile(".\\data\\*.json"));
-  }
-
-  if (buttons[3].highlight){
-    println(buttons[3].label);
-    currentRules++;
-    currentRules %= rules.length;
-    ruleset = new Ruleset(rules[currentRules]);
-  }
-}
-
-void colorFileSelected(File _selection){
-  if (nullSelection(_selection)){ return; }
-  if (notJSONFile(_selection)){ return; }
-  println(_selection);
-  
-  scheme = new ColorScheme(loadJSONObject(_selection.toString()));
-
-  buttons[2].highlight = false;
-  mode = "menu";
-}
-
-void subsectorFileSelected(File _selection){
-  if (nullSelection(_selection)){ return; }
-  if (notJSONFile(_selection)){ return; }    
-  println(_selection);
-  
-  jsonFile = _selection.toString();
-  loading = true;
-  subs = createSubsector();
-  println(subs.summary);
-  tests.run();
-
-  buttons[1].highlight = false;
-  mode = "display";
-}
-
-Boolean notJSONFile(File _selection){
-  String fileName = _selection.toString();
-  int fl = fileName.length();
-  String extension = fileName.substring(fl-4,fl).toLowerCase();
-
-  return badFileSelection(!extension.equals("json"));
-}
-
-Boolean nullSelection(File _selection){
-  return badFileSelection(_selection == null);
-}
-
-Boolean badFileSelection(Boolean _condition){
-  if (_condition){
-    println("Please select a json file, or choose NEW.");
-    return true;    
-  } else {
-    return false;
-  }
-}
+}  
 
 void drawScreen(){
   subD.show(subs);
