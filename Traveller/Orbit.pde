@@ -177,7 +177,7 @@ class Planet extends Habitable {
     uwp = new UWP_ScoutsEx(this);
     if (uwp.size > 0){                                         // Satellites pass through this via super ctor, need to handle properly
       satelliteCount = roll.one() - 3;
-      if (satelliteCount <= 0){ 
+      if (satelliteCount <= 0 || isMoon()){ 
         satelliteCount = 0;
         moons = new Habitable[0];
       } else {

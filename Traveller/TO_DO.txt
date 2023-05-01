@@ -81,6 +81,7 @@
 //  * DONE Add die roller mock for testing
 //  * DONE REFACTOR: implement Command pattern for button code
 //  * DONE REFACTOR: move display code out of main script
+//  * FIX  BUG: moons are themselves generating moons
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
@@ -120,7 +121,6 @@
 //  *      BUG: off-by-one issue in Star.createOrbits in some cases
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
-//  *      BUG: moons are themselves generating moons
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: duplicate code in test methods
 //  *      REFACTOR: current ruleset and array to Ruleset class
