@@ -80,7 +80,7 @@
 //  * DONE REFACTOR: move utility functions out of main script
 //  * DONE Add die roller mock for testing
 //  * DONE REFACTOR: implement Command pattern for button code
-//  * .... REFACTOR: move display code out of main script
+//  * DONE REFACTOR: move display code out of main script
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets

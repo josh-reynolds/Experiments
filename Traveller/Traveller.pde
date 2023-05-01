@@ -1,6 +1,5 @@
 // Traveller subsector generator
 // ------------------------------------------------
-
 import java.util.Map;
 import java.util.LinkedHashMap;
 
@@ -15,10 +14,9 @@ ColorScheme scheme;
 Subsector subs;
 Boolean loading = true;
 
-Display display;
-
-Button[] buttons;
 String mode;
+Menu menu;
+Display display;
 
 Ruleset ruleset;
 String[] rules = {"CT77", "CT81", "Scouts (Extended)"};
@@ -30,72 +28,23 @@ void setup(){
   // calculated per metrics detailed in SubsectorDisplay, adjust if hexRadius changes
   // panel width = 464, panel height = 646
   size(928, 646);  
-
   lines = loadStrings(wordFile);
-
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
-
   ruleset = new Ruleset(rules[currentRules]);
-
+  menu = new Menu();
   display = new Display();
-  
-  tests = new TestSuite();
-  
-  buttons = new Button[4];
-  buttons[0] = new Button("New", 32, border, border * 4, new NewSubsector());
-  buttons[1] = new Button("Load", 32, border, border * 6, new Load());
-  buttons[2] = new Button("Colors", 32, border, border * 8, new ChangeColors());
-  buttons[3] = new Button("Rules", 32, border, border * 10, new ChangeRules());
+  tests = new TestSuite();  
   mode = "menu";
 }
 
 void draw(){
-  if (mode.equals("menu")){
-    drawMenu();
+  if (mode.equals("menu")){     // pushing towards polymorphic design so we can just say something like "mode.drawScreen()"
+    menu.drawScreen();
   } else if (mode.equals("display")){
     display.drawScreen();
   }
 }
 
-void drawMenu(){
-  background(scheme.menuBackground);
-  
-  int titleSize = 72;
-  textSize(titleSize);
-  textAlign(LEFT, TOP);
-  fill(scheme.menuTitle);
-  String title = "TRAVELLER";
-  float titleWidth = textWidth(title);
-  text(title, width - titleWidth - border, border);
-  
-  textSize(titleSize/2);
-  textAlign(LEFT, TOP);
-  fill(scheme.menuText);
-  String subtitle = "Subsector Generator";
-  float subtitleWidth = textWidth(subtitle);
-  text(subtitle, width - subtitleWidth - border, titleSize + border);
-  
-  fill(scheme.menuDescriptions);
-  String colorSchemeDescription = "Color scheme: " + scheme.name;
-  float colorSchemeDescriptionWidth = textWidth(colorSchemeDescription); 
-  text(colorSchemeDescription, width - colorSchemeDescriptionWidth - border, height - titleSize - border);
-  
-  String rulesDescription = "Rules: " + rules[currentRules];
-  float rulesDescriptionWidth = textWidth(rulesDescription);
-  text(rulesDescription, width - rulesDescriptionWidth - border, height - titleSize/2 - border);
-  
-  strokeWeight(10);
-  stroke(scheme.menuTitle);
-  line(0, border, width, border);
-  
-  for (Button b : buttons){
-    b.mouseHover();
-    b.show();
-  }
-}
-
 void mouseClicked(){
-  for (Button b : buttons){
-    if (b.highlight){ b.run(); }
-  }
+  menu.mouseClicked();
 }
