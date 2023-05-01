@@ -53,7 +53,7 @@ interface Command {
   void run();
 }
 
-class NewSubsector implements Command {
+class NewSubsector extends ButtonUtilities implements Command {
   Button b;    // timing issue, button doesn't exist when we construct the command
                // was initially thinking of having this passed in during ctor
                // slightly hacky approach for now - button ctor should register itself with the
@@ -75,9 +75,46 @@ class NewSubsector implements Command {
     writeJSON();
     tests.run();
   }
+  
+  void writeImage(){
+    String imageFileName = ".\\output\\" + subs.name + "-###.png";
+    saveFrame(imageFileName);
+  }
+  
+  void writeText(){
+    String textFileName = ".\\output\\" + subs.name + ".txt";
+    PrintWriter output = createWriter(textFileName);
+    output.println(subs.name);
+    output.println();
+    output.println(subs.summary);
+    output.println("=========================");
+    for (System s : subs.systems.values()){    
+      if (s.occupied){
+        output.println(s);
+      }
+    }
+    
+    output.println("=========================");
+    for (Route r : subs.routes){
+      output.println(r);
+    }
+    
+    println("Saved " + subs.name);
+    output.println("=========================");
+    output.println("Saved " + subs.name);
+    output.flush();
+    output.close();
+    
+    println(subs.summary);
+  }
+  
+  void writeJSON(){
+    String jsonFileName = ".\\output\\" + subs.name + ".json";
+    saveJSONObject(subs.asJSON(), jsonFileName);
+  }
 }
 
-public class Load extends FileHandler implements Command {
+public class Load extends ButtonUtilities implements Command {
   Button b;
   
   Load(){}
@@ -115,7 +152,7 @@ public class Load extends FileHandler implements Command {
   }
 }
 
-public class ChangeColors extends FileHandler implements Command {
+public class ChangeColors extends ButtonUtilities implements Command {
   Button b;
   
   ChangeColors(){}
@@ -154,7 +191,12 @@ class ChangeRules implements Command {
   }
 }
 
-class FileHandler {
+// kind of a grab-bag for now - further refactoring can tease this apart
+// this allows Command classes access to formerly-public methods pushed
+// down from the parent script, without duplicating into each subclass
+class ButtonUtilities {
+  String jsonFile = "";
+  
   Boolean notJSONFile(File _selection){
     String fileName = _selection.toString();
     int fl = fileName.length();
@@ -173,6 +215,15 @@ class FileHandler {
       return true;    
     } else {
       return false;
+    }
   }
-}
+  
+  Subsector createSubsector(){
+    if (loading){
+      JSONObject subsectorData = loadJSONObject(jsonFile);
+      return new Subsector(subsectorData);
+    } else {
+      return new Subsector();
+    }
+  }
 }

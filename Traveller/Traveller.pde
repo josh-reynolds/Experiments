@@ -19,7 +19,6 @@ Boolean loading = true;
 
 Button[] buttons;
 String mode;
-String jsonFile = "";
 
 Ruleset ruleset;
 String[] rules = {"CT77", "CT81", "Scouts (Extended)"};
@@ -96,15 +95,6 @@ void drawMenu(){
   }
 }
 
-Subsector createSubsector(){
-  if (loading){
-    JSONObject subsectorData = loadJSONObject(jsonFile);
-    return new Subsector(subsectorData);
-  } else {
-    return new Subsector();
-  }
-}
-
 void mouseClicked(){
   for (Button b : buttons){
     if (b.highlight){ b.run(); }
@@ -114,41 +104,4 @@ void mouseClicked(){
 void drawScreen(){
   subD.show(subs);
   textPanel.show(subs);
-}
-
-void writeImage(){
-  String imageFileName = ".\\output\\" + subs.name + "-###.png";
-  saveFrame(imageFileName);
-}
-
-void writeText(){
-  String textFileName = ".\\output\\" + subs.name + ".txt";
-  PrintWriter output = createWriter(textFileName);
-  output.println(subs.name);
-  output.println();
-  output.println(subs.summary);
-  output.println("=========================");
-  for (System s : subs.systems.values()){    
-    if (s.occupied){
-      output.println(s);
-    }
-  }
-  
-  output.println("=========================");
-  for (Route r : subs.routes){
-    output.println(r);
-  }
-  
-  println("Saved " + subs.name);
-  output.println("=========================");
-  output.println("Saved " + subs.name);
-  output.flush();
-  output.close();
-  
-  println(subs.summary);
-}
-
-void writeJSON(){
-  String jsonFileName = ".\\output\\" + subs.name + ".json";
-  saveJSONObject(subs.asJSON(), jsonFileName);
 }
