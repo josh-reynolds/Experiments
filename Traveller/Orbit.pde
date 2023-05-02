@@ -114,7 +114,7 @@ class GasGiant extends Orbit {
     int satelliteCount;
     if (roll.one() >= 4){ 
       size = "S";
-      satelliteCount = roll.two() - 4;
+      satelliteCount = roll.two(-4);
     } else {
       size = "L";
       satelliteCount = roll.two();
@@ -128,9 +128,9 @@ class GasGiant extends Orbit {
       for (int i = 0; i < satelliteCount; i++){                  // just like with Planet/Planetoid, should we let UWP sort it out?
         int satelliteSize = 0;
         if (size.equals("L")){                                   // also this section is heavily duplicated from Planet
-          satelliteSize = roll.two() - 4; 
+          satelliteSize = roll.two(-4); 
         } else {
-          satelliteSize = roll.two() - 6;          
+          satelliteSize = roll.two(-6);          
         }
         
         if (satelliteSize == 0){
@@ -176,7 +176,7 @@ class Planet extends Habitable {
   Planet(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
 
-    int satelliteCount = roll.one() - 3;
+    int satelliteCount = roll.one(-3);
     if (satelliteCount <= 0 || isMoon() || uwp.size <= 0){ 
       satelliteCount = 0;
       moons = new Habitable[0];

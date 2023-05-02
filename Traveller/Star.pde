@@ -247,17 +247,17 @@ class Star extends Orbit {
       int modifier = 4 * (i);
       if (!primary){ modifier -= 4; }
       println("Assessing companion star: " + _comps.get(i) + " modifier: +" + modifier);
-      int dieThrow = roll.two() + modifier;
+      int dieThrow = roll.two(modifier);
       int result = 0;
       if (dieThrow < 4  ){ result = 0; }
       if (dieThrow == 4 ){ result = 1; }
       if (dieThrow == 5 ){ result = 2; }
       if (dieThrow == 6 ){ result = 3; }
-      if (dieThrow == 7 ){ result = 4 + roll.one(); }
-      if (dieThrow == 8 ){ result = 5 + roll.one(); }
-      if (dieThrow == 9 ){ result = 6 + roll.one(); }
-      if (dieThrow == 10){ result = 7 + roll.one(); }
-      if (dieThrow == 11){ result = 8 + roll.one(); }
+      if (dieThrow == 7 ){ result = roll.one(4); }
+      if (dieThrow == 8 ){ result = roll.one(5); }
+      if (dieThrow == 9 ){ result = roll.one(6); }
+      if (dieThrow == 10){ result = roll.one(7); }
+      if (dieThrow == 11){ result = roll.one(8); }
       if (dieThrow >= 12){ 
         int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
         if (distance == 1000                    ){ result = 14; }
@@ -288,7 +288,7 @@ class Star extends Orbit {
     if (type == 'M' ){ modifier -= 4; }
     if (type == 'K' ){ modifier -= 2; }
 
-    int result = roll.two() + modifier; 
+    int result = roll.two(modifier); 
     if (result < 1){ 
       return 0; 
     } else {
@@ -346,9 +346,9 @@ class Star extends Orbit {
     // Empty orbits per Scouts p.34 (table on p. 29)
     int modifier = 0;
     if (type == 'B' || type == 'A'){ modifier += 1; }
-    if (roll.one() + modifier >= 5){
+    if (roll.one(modifier) >= 5){
       int emptyCount = 0;
-      switch(roll.one() + modifier){ 
+      switch(roll.one(modifier)){ 
         case 1:
         case 2:
           emptyCount = 1;
@@ -464,8 +464,8 @@ class Star extends Orbit {
     // uses # of Gas Giants as a modifier - rules don't specify, but I assume that means just for
     // the star which the potential planetoids orbit, not all companions
     int planetoidCount = 0;                      // not yet needed outside this method (MT and later include this count at System level, but IIRC Scouts does not)        
-    if (roll.two() - gasGiantCount <= 6){
-      switch(roll.two() - gasGiantCount){ 
+    if (roll.two(-gasGiantCount) <= 6){
+      switch(roll.two(-gasGiantCount)){ 
         case -3:
         case -2:
         case -1:

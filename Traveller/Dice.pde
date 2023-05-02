@@ -3,9 +3,17 @@ class Dice {
     return floor(random(0,6)) + 1;
   }
   
+  int one(int _modifier){
+    return one() + _modifier;
+  }
+  
   int two(){
     return one() + one();
-  } 
+  }
+  
+  int two(int _modifier){
+    return two() + _modifier;
+  }
 }
 
 class DiceMock extends Dice {

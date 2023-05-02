@@ -72,7 +72,7 @@ class System {
     if (uwp.starport == 'B'){ modifier = -2; }
     if (uwp.starport == 'C'){ modifier = -1; }
     if (uwp.starport == 'E' || uwp.starport == 'X'){ return false; }
-    if (roll.two() + modifier >= 7){ return true; }
+    if (roll.two(modifier) >= 7){ return true; }
     return false;
   }
   
