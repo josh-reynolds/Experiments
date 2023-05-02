@@ -68,12 +68,19 @@ JSONObject asJSON()
 =====================================
 abstract Orbit
 -------------------------------------
-Star barycenter                            ??
+Orbit barycenter                           ??
 String name                                ??
 int orbitNumber                            OK (primitive on subclasses)
 String orbitalZone                         ??
+Dice roll                                  n/a - regenerate on load
 -------------------------------------
-Orbit(Star, int, String)
+Orbit(Orbit, int, String)
+
+Boolean isOrbitingClassM()
+Boolean isInnerZone()
+Boolean isHabitableZone()
+Boolean isOuterZone()
+Boolean isAtLeastTwoBeyondHabitable()
 
 Boolean isStar()
 Boolean isEmpty()
@@ -82,6 +89,8 @@ Boolean isNull()
 Boolean isGasGiant()
 Boolean isPlanet()
 Boolean isPlanetoid()
+Boolean isMoon()
+Boolean isRing()
 
 String toString()
 =====================================
@@ -204,41 +213,104 @@ Boolean isNull()
 GasGiant extends Orbit
 -------------------------------------
 String size                                TBD
+Habitable[] moons                          TBD
 -------------------------------------
 GasGiant(Star, int, String)
 
 Boolean isGasGiant()
+
+String toString()                 overloaded to show moon list structure
 =====================================
 
 =====================================
 abstract Habitable extends Orbit
 -------------------------------------
+UWP_ScoutsEx uwp                           TBD - implemented in subclasses
 -------------------------------------
-Habitable(Star, int, String)
+Habitable(Orbit, int, String)
 
-Boolean isOrbitingClassM()
-Boolean isInnerZone()
-Boolean isHabitableZone()
-Boolean isOuterZone()
-Boolean isAtLeastTwoBeyondHabitable()
+abstract UWP_ScoutsEx generateUWP()
 =====================================
 
 =====================================
 Planet extends Habitable
 -------------------------------------
-UWP_ScoutsEx uwp                           TBD
+Habitable[] moons                          TBD
 -------------------------------------
-Planet(Star, int, String, Boolean)
+Planet(Orbit, int, String)
+
+UWP_ScoutsEx generateUWP()
 
 Boolean isPlanet()
+
+String toString()                 overloaded to show moon list structure
 =====================================
 
 =====================================
 Planetoid extends Habitable
 -------------------------------------
-UWP_ScoutsEx uwp                           TBD
 -------------------------------------
-Planetoid(Star, int, String, Boolean)
+Planetoid(Orbit, int, String)
+
+UWP_ScoutsEx generateUWP()
 
 Boolean isPlanetoid()
 =====================================
+
+// still assessing whether following are
+// useful - could also implement this
+// via queries alone (class + barycenter.class)
+
+=====================================
+Moon extends Planet
+-------------------------------------
+-------------------------------------
+Moon(Orbit, String)
+
+Boolean isMoon()
+=====================================
+
+=====================================
+Ring extends Planetoid
+-------------------------------------
+-------------------------------------
+Ring(Orbit, String)
+
+Boolean isRing()
+=====================================
+
+
+May need to rejigger the Orbit hierarchy. We have three kinds of things
+in this tree that need to be mixed together:
+
+- objects that orbit other objects (Orbit hierarchy)
+- objects that can have other objects orbiting them (Orbit superclass)
+- objects that have a UWP (Habitable superclass)
+
+The first two are the Composite pattern. The contrast between Gas Giant & Planet
+on the one hand, and Planet/Moon vs. Planetoid/Ring are the crux of
+the matter.
+
+There's shared implementation in both Orbit & Habitable that's worth keeping,
+so can't just make one an interface without moving some things around. This 
+could be motivation to pull all the query methods up from Habitable. Then
+it could be an interface that exposes the UWP mechanics.
+
+                      |   TRUE             |   FALSE          |
+----------------------|--------------------|------------------|
+Can have children     |   (Orbit)          |   (Habitable)    |
+                      |   Star             |   Empty          |
+                      |   Gas Giant        |   Forbidden      |
+                      |   Planet           |   Null           |
+                      |                    |   Planetoid      |
+                      |                    |   Moon           |
+                      |                    |   Ring           |
+----------------------|--------------------|------------------|
+Has a UWP             |   (Habitable)      |   (Orbit)        |
+                      |   Planet           |   Star           |
+                      |   Moon             |   Gas Giant      |
+                      |   Planetoid        |   Empty          |
+                      |   Ring             |   Forbidden      |
+                      |                    |   Null           |
+----------------------|--------------------|------------------|
+

@@ -14,6 +14,54 @@ abstract class Orbit {
 
     roll = new Dice();
   }
+
+  Boolean isOrbitingClassM(){
+    if (barycenter.isStar()){
+      return ((Star)barycenter).type == 'M';
+    } else {
+      return false;
+    }
+  }
+
+  Boolean isInnerZone(){
+    return orbitalZone.equals("I");
+  }
+  
+  Boolean isHabitableZone(){
+    return orbitalZone.equals("H");
+  }
+  
+  Boolean isOuterZone(){
+    return orbitalZone.equals("O");
+  }
+
+  // TO_DO: we could greatly simplify this by adding another code to the data tables...
+  //  but then we would have to OR the symbols together for outer zone queries, think about it
+  Boolean isAtLeastTwoBeyondHabitable(){    
+    if (isInnerZone() || isHabitableZone()){ return false; }
+    if (barycenter.isPlanet()){ return ((Planet)barycenter).isAtLeastTwoBeyondHabitable(); }
+    if (barycenter.isGasGiant()){ return ((GasGiant)barycenter).isAtLeastTwoBeyondHabitable(); }
+    
+    // find habitable zone (move this to method on Star? esp now that we have to downcast)
+    int habitableOrbit = 0;
+    Boolean foundHabitable = false;
+    for (int i = 0; i < ((Star)barycenter).orbitalZones.length; i++){
+      if (((Star)barycenter).orbitalZones[i].equals("H")){
+        habitableOrbit = i;
+        foundHabitable = true;
+        break;
+      }
+    }
+
+    // by RAW, undefined case: system has no habitable zone - we'll go with TRUE
+    if (!foundHabitable){
+      println("No habitable zone for " + barycenter);
+      return true;      
+    } else {
+      println("Habitable zone for " + barycenter + " in orbit " + habitableOrbit);
+      return (orbitNumber - habitableOrbit >= 2);
+    }
+  }  
   
   Boolean isStar(){ return false; }
   Boolean isEmpty(){ return false; }
@@ -59,11 +107,11 @@ class Null extends Orbit {
 
 class GasGiant extends Orbit {
   String size;
-  int satelliteCount; // see notes below in Planet
   Habitable[] moons; // common parent for Satellites and Rings
     
   GasGiant(Star _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
+    int satelliteCount;
     if (roll.one() >= 4){ 
       size = "S";
       satelliteCount = roll.two() - 4;
@@ -93,7 +141,7 @@ class GasGiant extends Orbit {
       }
     }
     
-    name = size + "GG " + orbitalZone + " " + satelliteCount;
+    name = size + "GG " + orbitalZone + " " + moons.length;
   }  
   
   Boolean isGasGiant(){ return true; }
@@ -111,89 +159,47 @@ class GasGiant extends Orbit {
   }
 }
 
-abstract class Habitable extends Orbit {
+abstract class Habitable extends Orbit {   // distinct from "Habitable Zone" - this just means "has a UWP"
+  UWP_ScoutsEx uwp;
+  
   Habitable(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
+    uwp = generateUWP();
   }
   
-  Boolean isOrbitingClassM(){
-    if (barycenter.isStar()){
-      return ((Star)barycenter).type == 'M';
-    } else {
-      return false;
-    }
-  }
-    
-  Boolean isInnerZone(){
-    return orbitalZone.equals("I");
-  }
-  
-  Boolean isHabitableZone(){
-    return orbitalZone.equals("H");
-  }
-  
-  Boolean isOuterZone(){
-    return orbitalZone.equals("O");
-  }
-  
-  // TO_DO: we could greatly simplify this by adding another code to the data tables...
-  Boolean isAtLeastTwoBeyondHabitable(){    
-    if (isInnerZone() || isHabitableZone()){ return false; }
-    if (barycenter.isPlanet()){ return ((Planet)barycenter).isAtLeastTwoBeyondHabitable(); }
-    // TO_DO: need to pull this up for satellites of GasGiants - will break once we start constructing them
-    
-    // find habitable zone (move this to method on Star? esp now that we have to downcast)
-    int habitableOrbit = 0;
-    Boolean foundHabitable = false;
-    for (int i = 0; i < ((Star)barycenter).orbitalZones.length; i++){
-      if (((Star)barycenter).orbitalZones[i].equals("H")){
-        habitableOrbit = i;
-        foundHabitable = true;
-        break;
-      }
-    }
-
-    // by RAW, undefined case: system has no habitable zone - we'll go with TRUE
-    if (!foundHabitable){
-      println("No habitable zone for " + barycenter);
-      return true;      
-    } else {
-      println("Habitable zone for " + barycenter + " in orbit " + habitableOrbit);
-      return (orbitNumber - habitableOrbit >= 2);
-    }
-  }
+  abstract UWP_ScoutsEx generateUWP();
 }
 
 class Planet extends Habitable {
-  UWP_ScoutsEx uwp;
-  int satelliteCount = 0; // probably becomes a list soon, no need for a field
-                          // also, only Planet & GasGiant need out of all the leaf classes in this tree
-                          // but their common parent is at the root (Orbit)
-                          // should this be an interface? overkill for now on just one field
   Habitable[] moons; // common parent for Satellites and Rings 
   
   Planet(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    uwp = new UWP_ScoutsEx(this);
-    if (uwp.size > 0){                                         // Satellites pass through this via super ctor, need to handle properly
-      satelliteCount = roll.one() - 3;
-      if (satelliteCount <= 0 || isMoon()){ 
-        satelliteCount = 0;
-        moons = new Habitable[0];
-      } else {
-        moons = new Habitable[satelliteCount];
-        for (int i = 0; i < satelliteCount; i++){
-          int size = this.uwp.size - roll.one();                  // just like with Planet/Planetoid, should we let UWP sort it out?
-          if (size == 0){
-            moons[i] = new Ring(this, this.orbitalZone);
-          } else {
-            moons[i] = new Moon(this, this.orbitalZone);   // need to consider how to handle size 'S' moons
-          }
+
+    int satelliteCount = roll.one() - 3;
+    if (satelliteCount <= 0 || isMoon() || uwp.size <= 0){ 
+      satelliteCount = 0;
+      moons = new Habitable[0];
+    } else {
+      moons = new Habitable[satelliteCount];
+      for (int i = 0; i < satelliteCount; i++){
+        int size = this.uwp.size - roll.one();                  // just like with Planet/Planetoid, should we let UWP sort it out?
+        if (size == 0){
+          moons[i] = new Ring(this, this.orbitalZone);
+        } else {
+          moons[i] = new Moon(this, this.orbitalZone);   // need to consider how to handle size 'S' moons
         }
       }
     }
-    name = "Planet " + orbitalZone + " " + uwp + " " + satelliteCount;
+
+    name = "Planet " + orbitalZone + " " + uwp + " " + moons.length;
   }
+  
+  UWP_ScoutsEx generateUWP(){
+    return new UWP_ScoutsEx(this);
+  }
+
+  Boolean isPlanet(){ return true; }
   
   String toString(){    // temporary override so we can peek at the structure
     String result = super.toString();
@@ -206,17 +212,16 @@ class Planet extends Habitable {
     
     return result;
   }
-  
-  Boolean isPlanet(){ return true; }
 }
 
 class Planetoid extends Habitable {
-  UWP_ScoutsEx uwp;
-  
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);  
-    uwp = new UWP_ScoutsEx(this);
     name = "Planetoid Belt " + orbitalZone + " " + uwp;
+  }
+
+  UWP_ScoutsEx generateUWP(){
+    return new UWP_ScoutsEx(this);
   }
 
   Boolean isPlanetoid(){ return true; }
@@ -232,7 +237,7 @@ class Moon extends Planet {
   
   Moon(Orbit _planet, String _zone){
     super(_planet.barycenter, _planet.orbitNumber, _zone);
-    name = "Moon " + orbitalZone + " " + uwp + " " + satelliteCount;    
+    name = "Moon " + orbitalZone + " " + uwp + " " + moons.length;    
   }
   
   Boolean isMoon(){ return true; }

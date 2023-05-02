@@ -73,3 +73,5 @@ class TestSuite {
     }
   }
 }
+
+// Moons/Rings should not themselves have satellites
