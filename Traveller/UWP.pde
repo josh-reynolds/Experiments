@@ -194,11 +194,11 @@ class UWP_CT81 extends UWP {
 }
 
 class UWP_ScoutsEx extends UWP {
-  Habitable planet;  // only used during ctor? should we pass in to methods rather than have a field?
+  Orbit planet;  // only used during ctor? should we pass in to methods rather than have a field?
   
   UWP_ScoutsEx(){}
   
-  UWP_ScoutsEx(Habitable _planet){
+  UWP_ScoutsEx(Orbit _planet){
     // need to unravel inheritance problem
     //  super ctor is automatically called before any of this
     //  but with the overloaded methods extending the template, 

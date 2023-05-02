@@ -231,18 +231,16 @@ String toString()                 overloaded to show moon list structure
 =====================================
 
 =====================================
-abstract Habitable extends Orbit
+interface Habitable
 -------------------------------------
-UWP_ScoutsEx uwp                           TBD - implemented in subclasses
 -------------------------------------
-Habitable(Orbit, int, String)
-
 abstract UWP_ScoutsEx generateUWP()
 =====================================
 
 =====================================
-Planet extends Habitable
+Planet extends Orbit implements Habitable
 -------------------------------------
+UWP_ScoutsEx uwp                          ?? 
 -------------------------------------
 Planet(Orbit, int, String)
 
@@ -256,8 +254,9 @@ String toString()                 overloaded to show moon list structure
 =====================================
 
 =====================================
-Planetoid extends Habitable
+Planetoid extends Orbit implements Habitable
 -------------------------------------
+UWP_ScoutsEx uwp                          ?? 
 -------------------------------------
 Planetoid(Orbit, int, String)
 
@@ -329,12 +328,14 @@ Has a UWP             |   (Habitable)      |   (Orbit)        |
   Null
   Star
   GasGiant
-  (Habitable)
+  (Habitable)    ---- XXX now an interface
     Planet
     Planetoid
     Moon
     Ring
 
+OK, trying this out. Habitable is now an interface used by
+Planet & Planetoid.
 
 
 

@@ -82,6 +82,7 @@
 //  * DONE REFACTOR: implement Command pattern for button code
 //  * DONE REFACTOR: move display code out of main script
 //  * FIX  BUG: moons are themselves generating moons
+//  * DONE Assess pushing Habitable query methods up the hierarchy
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
@@ -93,7 +94,6 @@
 //  *      Deprecate Star String ctor (hrm, might be useful for testing though)
 //  *      Assess including companions of companions in getCompanions() result
 //  *      Assess adding "two beyond habitable" code to orbital zone data file
-//  *      Assess pushing Habitable query methods up the hierarchy
 //  *      Rework Coordinate / Hex classes - Reference objects?
 //  *      Override getHash() in Coordinate and adjust lookup procedure
 //  *      Reassess parent pointer for non-primary stars

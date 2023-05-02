@@ -183,20 +183,17 @@ class GasGiant extends Orbit {
   }
 }
 
-abstract class Habitable extends Orbit {   // distinct from "Habitable Zone" - this just means "has a UWP"
-  UWP_ScoutsEx uwp;
-  
-  Habitable(Orbit _barycenter, int _orbit, String _zone){ 
-    super(_barycenter, _orbit, _zone);
-    uwp = generateUWP();
-  }
-  
+interface Habitable {   // distinct from "Habitable Zone" - this just means "has a UWP"
   abstract UWP_ScoutsEx generateUWP();
 }
 
-class Planet extends Habitable { 
+class Planet extends Orbit implements Habitable { 
+  UWP_ScoutsEx uwp;
+  
   Planet(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
+
+    uwp = generateUWP();
 
     int satelliteCount = generateSatelliteCount();
     createSatellites(satelliteCount);
@@ -233,9 +230,12 @@ class Planet extends Habitable {
   }
 }
 
-class Planetoid extends Habitable {
+class Planetoid extends Orbit implements Habitable {
+  UWP_ScoutsEx uwp;
+
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
-    super(_barycenter, _orbit, _zone);  
+    super(_barycenter, _orbit, _zone); 
+    uwp = generateUWP();
     name = "Planetoid Belt " + orbitalZone + " " + uwp;
   }
 
