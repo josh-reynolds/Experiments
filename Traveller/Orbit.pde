@@ -5,6 +5,8 @@ abstract class Orbit {
   String orbitalZone;
   // radius in AU & km? as a query method?
   
+  Habitable[] moons;  // see notes below for createSatellites()
+  
   Dice roll;
   
   Orbit(Orbit _barycenter, int _orbit, String _zone){
@@ -14,6 +16,29 @@ abstract class Orbit {
 
     roll = new Dice();
   }
+
+  // pulled this method up to avoid duplication in GasGiant & Planet
+  //  however, that means we need the moons array and generateSatelliteSize()
+  //  in this class, even though most of the hierarchy does not use... may
+  //  reverse this one but try it out for now
+  // also, similarly named method in Star needs evaluation
+  void createSatellites(int _satelliteCount){
+    if (_satelliteCount <= 0){ 
+      moons = new Habitable[0];
+    } else {
+      moons = new Habitable[_satelliteCount];
+      for (int i = 0; i < _satelliteCount; i++){
+        int satelliteSize = generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
+        if (satelliteSize == 0){
+          moons[i] = new Ring(this, this.orbitalZone);
+        } else {
+          moons[i] = new Moon(this, this.orbitalZone);   // need to consider how to handle size 'S' moons
+        }
+      }
+    }
+  }
+
+  int generateSatelliteSize(){ return 0; }  // keeping the compiler happy - see note above in createSatellites()
 
   Boolean isOrbitingClassM(){
     if (barycenter.isStar()){
@@ -106,43 +131,42 @@ class Null extends Orbit {
 }
 
 class GasGiant extends Orbit {
-  String size;
-  Habitable[] moons; // common parent for Satellites and Rings
+  String size;       // potential to split this type code into subclasses, polymorphic logic below
     
   GasGiant(Star _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    int satelliteCount;
+
     if (roll.one() >= 4){ 
       size = "S";
-      satelliteCount = roll.two(-4);
     } else {
       size = "L";
-      satelliteCount = roll.two();
     }
-    
-    if (satelliteCount <= 0){ 
-      satelliteCount = 0;
-      moons = new Habitable[0];
-    } else {
-      moons = new Habitable[satelliteCount];
-      for (int i = 0; i < satelliteCount; i++){                  // just like with Planet/Planetoid, should we let UWP sort it out?
-        int satelliteSize = 0;
-        if (size.equals("L")){                                   // also this section is heavily duplicated from Planet
-          satelliteSize = roll.two(-4); 
-        } else {
-          satelliteSize = roll.two(-6);          
-        }
-        
-        if (satelliteSize == 0){
-          moons[i] = new Ring(this, this.orbitalZone);
-        } else {
-          moons[i] = new Moon(this, this.orbitalZone);   // need to consider how to handle size 'S' moons
-        }
-      }
-    }
+
+    int satelliteCount = generateSatelliteCount();
+    createSatellites(satelliteCount);
     
     name = size + "GG " + orbitalZone + " " + moons.length;
   }  
+
+  int generateSatelliteCount(){
+    int result = 0;
+    if (size.equals("S")){ 
+      result = roll.two(-4);
+    } else if (size.equals("L")){
+      result = roll.two();
+    }
+    return result;
+  }
+  
+  int generateSatelliteSize(){
+    int result = 0;
+    if (size.equals("S")){
+      result = roll.two(-6); 
+    } else if (size.equals("L")){
+      result = roll.two(-4);          
+    }
+    return result;
+  }
   
   Boolean isGasGiant(){ return true; }
 
@@ -170,29 +194,24 @@ abstract class Habitable extends Orbit {   // distinct from "Habitable Zone" - t
   abstract UWP_ScoutsEx generateUWP();
 }
 
-class Planet extends Habitable {
-  Habitable[] moons; // common parent for Satellites and Rings 
-  
+class Planet extends Habitable { 
   Planet(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
 
-    int satelliteCount = roll.one(-3);
-    if (satelliteCount <= 0 || isMoon() || uwp.size <= 0){ 
-      satelliteCount = 0;
-      moons = new Habitable[0];
-    } else {
-      moons = new Habitable[satelliteCount];
-      for (int i = 0; i < satelliteCount; i++){
-        int size = this.uwp.size - roll.one();                  // just like with Planet/Planetoid, should we let UWP sort it out?
-        if (size == 0){
-          moons[i] = new Ring(this, this.orbitalZone);
-        } else {
-          moons[i] = new Moon(this, this.orbitalZone);   // need to consider how to handle size 'S' moons
-        }
-      }
-    }
+    int satelliteCount = generateSatelliteCount();
+    createSatellites(satelliteCount);
 
     name = "Planet " + orbitalZone + " " + uwp + " " + moons.length;
+  }
+  
+  int generateSatelliteCount(){
+    int result = roll.one(-3);
+    if (result <= 0 || isMoon() || uwp.size <= 0){ result = 0; }
+    return result;
+  }
+    
+  int generateSatelliteSize(){
+    return this.uwp.size - roll.one();
   }
   
   UWP_ScoutsEx generateUWP(){

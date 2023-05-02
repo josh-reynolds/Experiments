@@ -72,9 +72,15 @@ Orbit barycenter                           ??
 String name                                ??
 int orbitNumber                            OK (primitive on subclasses)
 String orbitalZone                         ??
+
+Habitable[] moons                          ??
+
 Dice roll                                  n/a - regenerate on load
 -------------------------------------
 Orbit(Orbit, int, String)
+
+void createSatellites(int)
+int generateSatelliteSize()
 
 Boolean isOrbitingClassM()
 Boolean isInnerZone()
@@ -213,11 +219,13 @@ Boolean isNull()
 GasGiant extends Orbit
 -------------------------------------
 String size                                TBD
-Habitable[] moons                          TBD
 -------------------------------------
 GasGiant(Star, int, String)
 
 Boolean isGasGiant()
+
+int generateSatelliteCount()
+int generateSatelliteSize()
 
 String toString()                 overloaded to show moon list structure
 =====================================
@@ -235,10 +243,11 @@ abstract UWP_ScoutsEx generateUWP()
 =====================================
 Planet extends Habitable
 -------------------------------------
-Habitable[] moons                          TBD
 -------------------------------------
 Planet(Orbit, int, String)
 
+int generateSatelliteCount()
+int generateSatelliteSize()
 UWP_ScoutsEx generateUWP()
 
 Boolean isPlanet()
@@ -313,4 +322,19 @@ Has a UWP             |   (Habitable)      |   (Orbit)        |
                       |   Ring             |   Forbidden      |
                       |                    |   Null           |
 ----------------------|--------------------|------------------|
+
+(Orbit)
+  Empty
+  Forbidden
+  Null
+  Star
+  GasGiant
+  (Habitable)
+    Planet
+    Planetoid
+    Moon
+    Ring
+
+
+
 
