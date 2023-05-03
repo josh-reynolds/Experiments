@@ -199,6 +199,7 @@ class UWP_ScoutsEx extends UWP {
   UWP_ScoutsEx(){}
   
   UWP_ScoutsEx(Orbit _planet){
+    println("** UWP_ScoutsEx ctor(" + _planet.getClass() + ")");
     // need to unravel inheritance problem
     //  super ctor is automatically called before any of this
     //  but with the overloaded methods extending the template, 
@@ -214,6 +215,22 @@ class UWP_ScoutsEx extends UWP {
     gov      = 0;
     law      = 0; 
     tech     = 0; 
+  }
+  
+  UWP_ScoutsEx(Moon _moon, int _size){   // TO_DO: refactor heavy duplication from 'standard' ctor
+    println("** UWP_ScoutsEx Moon ctor(" + _moon.getClass() + ", " + _size + ")");
+    planet = _moon;
+    size   = _size;
+    if (size <= 0){ size = 0; }
+    atmo  = generateAtmo();
+    hydro = generateHydro();
+    pop   = generatePop();
+
+    // stubbing out following for the time being
+    starport = 'X';
+    gov      = 0;
+    law      = 0; 
+    tech     = 0;    
   }
   
   UWP_ScoutsEx(JSONObject _json){
@@ -237,30 +254,51 @@ class UWP_ScoutsEx extends UWP {
   }
   
   int generateAtmo(){
+    println("**** UWP_ScoutsEx.generateAtmo() for " + this.getClass());
     if (planet == null){ return super.generateAtmo(); }  // see note above in generateSize()
     
     int modifier = 0;
-    if (planet.isInnerZone()){ modifier -= 2; }
+    if (planet.isInnerZone()){ 
+      if (planet.isMoon()){    // Scouts p.33 + p.37 - Moons are _almost_ identical for Atmo determination
+        modifier -= 4;
+      } else {
+        modifier -= 2;
+      }
+    }
     if (planet.isOuterZone()){ modifier -= 4; }
     
     int result = roll.two(size + modifier - 7);
-    if (size == 0 || result < 0){ result = 0; }   // includes size 'S' (numerically zero)
+    if (size == 0 || result < 0){ result = 0; }        // includes size 'S' (numerically zero)
+    if (size <= 1 && planet.isMoon()){ result = 0; }   // see note above
     
-    if (planet.isAtLeastTwoBeyondHabitable() &&
-        roll.two() == 12){ return 10; }    
-    
+    Boolean farOuter = false;
+    if (planet.isMoon()){
+      farOuter = planet.barycenter.isAtLeastTwoBeyondHabitable();
+    } else {
+      farOuter = planet.isAtLeastTwoBeyondHabitable();
+    }
+    if (farOuter && roll.two() == 12){ result = 10; }
+          
     return result;    
   }
   
   // Scouts reverts to +Size as a modifier
   int generateHydro(){
+    println("**** UWP_ScoutsEx.generateHydro() for " + this.getClass());
     if (planet == null){ return super.generateHydro(); }  // see note above in generateSize()
 
-    if (planet.isInnerZone()){ return 0; }
-    if (size <= 1           ){ return 0; }   // includes size 'S' (numerically zero)
-
+    if (planet.isInnerZone()         ){ return 0; }
+    if (size == 0                    ){ return 0; }       // includes size 'S' (numerically zero)
+    if (size == 1 && !planet.isMoon()){ return 0; }       // Scouts p.33 + p.37 - as with atmo, Moons are _almost_ identical
+    
     int modifier = 0;
-    if (planet.isOuterZone()   ){ modifier -= 2; }
+    if (planet.isOuterZone()){
+      if (planet.isMoon()){                               // see note above
+        modifier -= 4;
+      } else {
+        modifier -= 2;
+      }
+    }
     if (atmo <= 1 || atmo >= 10){ modifier -= 4; }
      
     int result = roll.two(size + modifier - 7);
@@ -270,13 +308,25 @@ class UWP_ScoutsEx extends UWP {
   }
   
   int generatePop(){
+    println("**** UWP_ScoutsEx.generatePop() for " + this.getClass());
     if (planet == null){ return super.generatePop(); }  // see note above in generateSize()
+    
+    if (planet.isRing()){ return 0; }
     
     int modifier = 0;
     if (planet.isInnerZone()     ){ modifier -= 5; }
-    if (planet.isOuterZone()     ){ modifier -= 3; }
+    if (planet.isOuterZone()     ){
+      if (planet.isMoon()){                               // Scouts p.33 + p.37 - as with atmo, Moons are _almost_ identical
+        modifier -= 4;
+      } else {
+        modifier -= 3;
+      } 
+    }
     if (!(atmo == 0 || atmo == 5 ||
-          atmo == 6 || atmo == 8)){ modifier -= 2; }
+          atmo == 6 || atmo == 8)   ){ modifier -= 2; }
+    if (planet.isMoon() && atmo == 0){ modifier -= 2; }   // see note above
+    
+    if (planet.isMoon() && size <= 4){ modifier -= 2; }   // see note above
      
     int result = roll.two(modifier - 2);
     if (result < 0){ result = 0; }

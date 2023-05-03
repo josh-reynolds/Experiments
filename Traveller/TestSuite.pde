@@ -75,3 +75,6 @@ class TestSuite {
 }
 
 // Moons/Rings should not themselves have satellites
+// Planetoids/Rings always 000 for UWP Size/Atmo/Hydro
+// Rings have 0 population
+// Moons/Rings have the same orbital zone as their parent (barycenter)

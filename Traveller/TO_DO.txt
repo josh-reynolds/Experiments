@@ -83,8 +83,8 @@
 //  * DONE REFACTOR: move display code out of main script
 //  * FIX  BUG: moons are themselves generating moons
 //  * DONE Assess pushing Habitable query methods up the hierarchy
+//  * DONE Adding satellites to companions & planets
 //  * .... Generating UWP for all Planets/Planetoids
-//  * .... Adding satellites to companions & planets
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
 //  *      Unravel inheritance issues in UWP hierarchy
@@ -125,4 +125,5 @@
 //  *      REFACTOR: duplicate code in test methods
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset
+//  *      REFACTOR: duplicated code in UWP_ScoutsEx ctors
 // ------------------------------------------------

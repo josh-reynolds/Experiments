@@ -519,6 +519,7 @@ class Star extends Orbit {
   }
 
   void placePlanets(){
+    println("**** Star.placePlanets() for " + this);
     for (int i = 0; i < orbits.length; i++){
       if (orbitIsNull(i)){
         orbits[i] = new Planet(this, i, orbitalZones[i]);
