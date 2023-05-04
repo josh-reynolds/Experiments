@@ -190,7 +190,7 @@ class Star extends Orbit {
     if (primary || orbitIsFar(orbitNumber)){
       compCount = generateCompanionCount();
     }    
-    println(compCount + " companions");
+    if (debug >= 1){ println(compCount + " companions"); }
         
     ArrayList<Star> tempCompanions = new ArrayList<Star>();
     for (int i = 0; i < compCount; i++){
@@ -221,8 +221,10 @@ class Star extends Orbit {
     }
     if (closeCompanion != null){ closeCompanion.orbits = new Orbit[0]; } // otherwise we get a null reference later
 
-    println("Companions for " + this);
-    printArray(getCompanions());
+    if (debug >= 1){ 
+      println("Companions for " + this);
+      printArray(getCompanions());
+    }
   }    
     
   int generateCompanionCount(){
@@ -246,7 +248,7 @@ class Star extends Orbit {
     for (int i = _comps.size()-1; i >= 0; i--){   // iterate backwards because we are removing elements in some cases
       int modifier = 4 * (i);
       if (!primary){ modifier -= 4; }
-      println("Assessing companion star: " + _comps.get(i) + " modifier: +" + modifier);
+      if (debug >= 1){ println("Assessing companion star: " + _comps.get(i) + " modifier: +" + modifier); }
       int dieThrow = roll.two(modifier);
       int result = 0;
       if (dieThrow < 4  ){ result = 0; }
@@ -268,12 +270,12 @@ class Star extends Orbit {
       if (result > maxCompanion){ maxCompanion = result; }
       
       if (result == 0 || orbitInsideStar(result)){
-        println("Companion in CLOSE orbit");        
+        if (debug >= 1){ println("Companion in CLOSE orbit"); }        
         closeCompanion = _comps.get(i);
         _comps.remove(i);
         closeCompanion.orbitNumber = result;
       } else {
-        println("Companion in orbit: " + result);
+        if (debug >= 1){ println("Companion in orbit: " + result); }
         _comps.get(i).orbitNumber = result;
       }
       // TO_DO: need to handle two companions landing in same orbit
@@ -306,15 +308,15 @@ class Star extends Orbit {
 
   void placeCompanions(int _orbitCount, int _maxCompanion, ArrayList<Star> _comps){   // TO_DO: first two args only used in debug output, can be removed once this stabilizes
     if (_comps.size() == 0){
-      println("Orbits: " + orbits.length);
+      if (debug >= 1){ println("Orbits: " + orbits.length); }
     } else {
-      println("Orbits: " + orbits.length + " EMPTY: " + (_maxCompanion - _orbitCount));
+      if (debug >= 1){ println("Orbits: " + orbits.length + " EMPTY: " + (_maxCompanion - _orbitCount)); }
       for (int i = 0; i < _comps.size(); i++){
-        println("Companion star number " + (i+1) + " of " + _comps.size() + " : Orbit = " + _comps.get(i).orbitNumber + " : Usable Orbit Count = " + _orbitCount);
+        if (debug >= 1){ println("Companion star number " + (i+1) + " of " + _comps.size() + " : Orbit = " + _comps.get(i).orbitNumber + " : Usable Orbit Count = " + _orbitCount); }
         orbits[_comps.get(i).orbitNumber] = _comps.get(i);
       }
       if (closeCompanion != null){
-        println("Close companion : Usable Orbit Count = " + _orbitCount);
+        if (debug >= 1){ println("Close companion : Usable Orbit Count = " + _orbitCount); }
       }
     }
   }
@@ -376,8 +378,8 @@ class Star extends Orbit {
         // I am going to implement a random picker that fixes the last two issues (flat curve, only existing orbits to choose from)
         //   and keep the protections for orbits 0 & 1 (maybe they wanted to ensure all systems have viable orbits?)
         int choice = getRandomNullOrbit();
-        if (choice == -1){ println("No null available"); break; } // don't much care for this 'magic value' - indicates no null orbits left
-        println("Assigning " + choice + " to Empty");
+        if (choice == -1){ if (debug >= 1){ println("No null available"); } break; } // don't much care for this 'magic value' - indicates no null orbits left
+        if (debug >= 1){ println("Assigning " + choice + " to Empty"); }
         orbits[choice] = new Empty(this, choice, orbitalZones[choice]);
       }
     }
@@ -446,7 +448,7 @@ class Star extends Orbit {
 
       IntList availableOrbits = availableOrbitsForGiants();
       gasGiantCount = min(gasGiantCount, availableOrbits.size());
-      println(gasGiantCount + " Gas Giants in-system");   // need to consider at the System level, for Primary + all companions
+      if (debug >= 1){ println(gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
       
       for (int i = 0; i < gasGiantCount; i++){
         availableOrbits.shuffle();
@@ -454,7 +456,7 @@ class Star extends Orbit {
         orbits[index] = new GasGiant(this, index, orbitalZones[index]);
       }
     } else {
-      println("No Gas Giants in-system");
+      if (debug >= 1){ println("No Gas Giants in-system"); }
     }
   }
   
@@ -487,7 +489,7 @@ class Star extends Orbit {
     
       IntList availableOrbits = availableOrbitsForPlanetoids();
       planetoidCount = min(planetoidCount, availableOrbits.size());
-      println(planetoidCount + " Planetoid Belts in-system");
+      if (debug >= 1){ println(planetoidCount + " Planetoid Belts in-system"); }
     
       // RAW p. 35: "If possible, planetoid belts should be placed in the next orbit inward from gas giants."
       IntList orbitsInwardFromGiants = new IntList();   // might want to refactor this out, do it inline for now
@@ -514,12 +516,12 @@ class Star extends Orbit {
         }
       }
     } else {
-      println("No Planetoid Belts in-system");      
+      if (debug >= 1){ println("No Planetoid Belts in-system"); }      
     }
   }
 
   void placePlanets(){
-    println("**** Star.placePlanets() for " + this);
+    if (debug == 2){ println("**** Star.placePlanets() for " + this); }
     for (int i = 0; i < orbits.length; i++){
       if (orbitIsNull(i)){
         orbits[i] = new Planet(this, i, orbitalZones[i]);
@@ -547,11 +549,11 @@ class Star extends Orbit {
     for (int i = 0; i < orbits.length; i++){
       if (orbitalZones[i].equals("Z") || orbitalZones[i].equals("X") || orbitalZones[i].equals("I")){ continue; }
       if (orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, no
-        println("Orbit " + i + " qualifies");
+        if (debug >= 1){ println("Orbit " + i + " qualifies"); }
         result.append(i);
       }
     }
-    println("Found " + result.size() + " available orbits for Gas Giants");
+    if (debug >= 1){ println("Found " + result.size() + " available orbits for Gas Giants"); }
     return result;
     
     // TO_DO: one (awkward) special case:
@@ -562,12 +564,12 @@ class Star extends Orbit {
   IntList availableOrbitsForPlanetoids(){
     IntList result = new IntList();
     for (int i = 0; i < orbits.length; i++){
-      if (orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, I think not
-        println("Orbit " + i + " qualifies");    // though they never precisely define "available orbits"
+      if (orbitIsNull(i)){                                         // should we also allow them to drop into Empty orbits? by RAW, I think not
+        if (debug >= 1){ println("Orbit " + i + " qualifies"); }   // though they never precisely define "available orbits"
         result.append(i);
       }
     }
-    println("Found " + result.size() + " available orbits for Planetoids");    
+    if (debug >= 1){ println("Found " + result.size() + " available orbits for Planetoids"); }   
     return result;
   }
 
@@ -641,7 +643,7 @@ class Star extends Orbit {
     } else {
       for (int i = 0; i < comps.size(); i++){
         int compOrbit = comps.get(i).orbitNumber;
-        print(" Evaluating companion mask for " + comps.get(i) + " in orbit " + compOrbit + " against " + _orbitNum);
+        if (debug >= 1){ print(" Evaluating companion mask for " + comps.get(i) + " in orbit " + compOrbit + " against " + _orbitNum); }
         
         // some ambiguity here from RAW (Scouts p.23)
         // rule states: Orbits closer to the primary than the companion's orbit must be numbered no more than half of the companion's orbit number (round fractions down)
@@ -650,11 +652,11 @@ class Star extends Orbit {
         //                 in a system with a companion at orbit 5, orbits 0, 1 and 2 are available, and orbits 7 and higher are available (contrariwise, how is 2 OK? half of 5 rounded down is 2)
         // simplest is to assume first example is a typo, and orbit 1 should be available - then this is consistent - implementing this approach
         
-        if (_orbitNum < compOrbit && _orbitNum > compOrbit/2 ){ println(" TRUE!"); return true; }
-        if (_orbitNum == compOrbit                           ){ println(" TRUE!"); return true; } 
-        if (_orbitNum > compOrbit && _orbitNum <= compOrbit+1){ println(" TRUE!"); return true; }
+        if (_orbitNum < compOrbit && _orbitNum > compOrbit/2 ){ if (debug >= 1){ println(" TRUE!");} return true; }
+        if (_orbitNum == compOrbit                           ){ if (debug >= 1){ println(" TRUE!");} return true; } 
+        if (_orbitNum > compOrbit && _orbitNum <= compOrbit+1){ if (debug >= 1){ println(" TRUE!");} return true; }
       }
-      println(" FALSE"); return false;
+      if (debug >= 1){ println(" FALSE");} return false;
     }
   }
 

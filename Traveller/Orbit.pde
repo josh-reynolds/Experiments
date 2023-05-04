@@ -11,9 +11,9 @@ abstract class Orbit {
   
   Orbit(Orbit _barycenter, int _orbit, String _zone){
     if (_barycenter != null){
-      println("** Orbit ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")");
+      if (debug == 2){ println("** Orbit ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     } else {
-      println("** Orbit PRIMARY ctor(null, " + _orbit + ", " + _zone + ")");
+      if (debug == 2){ println("** Orbit PRIMARY ctor(null, " + _orbit + ", " + _zone + ")"); }
     }
     barycenter = _barycenter;
     orbitNumber = _orbit;
@@ -28,7 +28,7 @@ abstract class Orbit {
   //  reverse this one but try it out for now
   // also, similarly named method in Star needs evaluation
   void createSatellites(int _satelliteCount){
-    println("**** Orbit.createSatellites(" + _satelliteCount + ") for " + this.getClass());
+    if (debug == 2){ println("**** Orbit.createSatellites(" + _satelliteCount + ") for " + this.getClass()); }
     if (_satelliteCount <= 0){ 
       moons = new Habitable[0];
     } else {
@@ -36,10 +36,10 @@ abstract class Orbit {
       for (int i = 0; i < _satelliteCount; i++){
         int satelliteSize = generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
         if (satelliteSize == 0){
-          println("****** generating Ring for " + this.getClass());
+          if (debug == 2){  println("****** generating Ring for " + this.getClass()); }
           moons[i] = new Ring(this, this.orbitalZone);
         } else {
-          println("****** generating Moon for " + this.getClass());
+          if (debug == 2){ println("****** generating Moon for " + this.getClass()); }
           moons[i] = new Moon(this, this.orbitalZone, satelliteSize);   // need to consider how to handle size 'S' moons
         }
       }
@@ -49,7 +49,7 @@ abstract class Orbit {
   int generateSatelliteSize(){ return 0; }  // keeping the compiler happy - see note above in createSatellites()
 
   Boolean isOrbitingClassM(){
-    println("**** Orbit.isOrbitingClassM() for " + this.getClass());
+    if (debug == 2){ println("**** Orbit.isOrbitingClassM() for " + this.getClass()); }
     if (barycenter.isStar()){
       return ((Star)barycenter).type == 'M';
     } else {
@@ -58,24 +58,24 @@ abstract class Orbit {
   }
 
   Boolean isInnerZone(){
-    println("**** Orbit.isInnerZone() for " + this.getClass());
+    if (debug == 2){ println("**** Orbit.isInnerZone() for " + this.getClass()); }
     return orbitalZone.equals("I");
   }
   
   Boolean isHabitableZone(){
-    println("**** Orbit.isHabitableZone() for " + this.getClass());
+    if (debug == 2){ println("**** Orbit.isHabitableZone() for " + this.getClass()); }
     return orbitalZone.equals("H");
   }
   
   Boolean isOuterZone(){
-    println("**** Orbit.isOuterZone() for " + this.getClass());
+    if (debug == 2){ println("**** Orbit.isOuterZone() for " + this.getClass()); }
     return orbitalZone.equals("O");
   }
 
   // TO_DO: we could greatly simplify this by adding another code to the data tables...
   //  but then we would have to OR the symbols together for outer zone queries, think about it
   Boolean isAtLeastTwoBeyondHabitable(){
-    println("**** Orbit.isAtLeastTwoBeyondHabitable() for " + this.getClass());
+    if (debug == 2){ println("**** Orbit.isAtLeastTwoBeyondHabitable() for " + this.getClass()); }
     if (isInnerZone() || isHabitableZone()){ return false; }
     if (barycenter.isPlanet()){ return ((Planet)barycenter).isAtLeastTwoBeyondHabitable(); }
     if (barycenter.isGasGiant()){ return ((GasGiant)barycenter).isAtLeastTwoBeyondHabitable(); }
@@ -93,10 +93,10 @@ abstract class Orbit {
 
     // by RAW, undefined case: system has no habitable zone - we'll go with TRUE
     if (!foundHabitable){
-      println("No habitable zone for " + barycenter);
+      if (debug >= 1){ println("No habitable zone for " + barycenter); }
       return true;      
     } else {
-      println("Habitable zone for " + barycenter + " in orbit " + habitableOrbit);
+      if (debug >= 1){ println("Habitable zone for " + barycenter + " in orbit " + habitableOrbit); }
       return (orbitNumber - habitableOrbit >= 2);
     }
   }  
@@ -148,7 +148,7 @@ class GasGiant extends Orbit {
     
   GasGiant(Star _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    println("** GasGiant ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")");
+    if (debug == 2){ println("** GasGiant ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     if (roll.one() >= 4){ 
       size = "S";
     } else {
@@ -204,7 +204,7 @@ class Planet extends Orbit implements Habitable {
   
   Planet(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")");
+    if (debug == 2){ println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     uwp = generateUWP();
 
     int satelliteCount = generateSatelliteCount();
@@ -224,7 +224,7 @@ class Planet extends Orbit implements Habitable {
   }
   
   UWP_ScoutsEx generateUWP(){
-    println("**** Planet.generateUWP() for " + this.getClass());
+    if (debug == 2){ println("**** Planet.generateUWP() for " + this.getClass()); }
     return new UWP_ScoutsEx(this);
   }
 
@@ -269,7 +269,7 @@ class Moon extends Planet {
 
   Moon(Orbit _planet, String _zone, int _size){
     super(_planet, _planet.orbitNumber, _zone);
-    println("** Moon ctor(" + _planet.getClass() + ", " + _zone + ", " + _size + ")");
+    if (debug == 2){ println("** Moon ctor(" + _planet.getClass() + ", " + _zone + ", " + _size + ")"); }
     
     uwp = generateUWP(_size); // super generates a UWP but doesn't have a size parameter
                               // and doing this via polymorphism seems like more code than

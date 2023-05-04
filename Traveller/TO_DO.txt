@@ -84,6 +84,7 @@
 //  * FIX  BUG: moons are themselves generating moons
 //  * DONE Assess pushing Habitable query methods up the hierarchy
 //  * DONE Adding satellites to companions & planets
+//  * DONE Adding debug levels to control console spew
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset

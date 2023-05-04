@@ -199,7 +199,7 @@ class UWP_ScoutsEx extends UWP {
   UWP_ScoutsEx(){}
   
   UWP_ScoutsEx(Orbit _planet){
-    println("** UWP_ScoutsEx ctor(" + _planet.getClass() + ")");
+    if (debug == 2){ println("** UWP_ScoutsEx ctor(" + _planet.getClass() + ")"); }
     // need to unravel inheritance problem
     //  super ctor is automatically called before any of this
     //  but with the overloaded methods extending the template, 
@@ -218,7 +218,7 @@ class UWP_ScoutsEx extends UWP {
   }
   
   UWP_ScoutsEx(Moon _moon, int _size){   // TO_DO: refactor heavy duplication from 'standard' ctor
-    println("** UWP_ScoutsEx Moon ctor(" + _moon.getClass() + ", " + _size + ")");
+    if (debug == 2){ println("** UWP_ScoutsEx Moon ctor(" + _moon.getClass() + ", " + _size + ")"); }
     planet = _moon;
     size   = _size;
     if (size <= 0){ size = 0; }
@@ -254,7 +254,7 @@ class UWP_ScoutsEx extends UWP {
   }
   
   int generateAtmo(){
-    println("**** UWP_ScoutsEx.generateAtmo() for " + this.getClass());
+    if (debug == 2){ println("**** UWP_ScoutsEx.generateAtmo() for " + this.getClass()); }
     if (planet == null){ return super.generateAtmo(); }  // see note above in generateSize()
     
     int modifier = 0;
@@ -284,7 +284,7 @@ class UWP_ScoutsEx extends UWP {
   
   // Scouts reverts to +Size as a modifier
   int generateHydro(){
-    println("**** UWP_ScoutsEx.generateHydro() for " + this.getClass());
+    if (debug == 2){ println("**** UWP_ScoutsEx.generateHydro() for " + this.getClass()); }
     if (planet == null){ return super.generateHydro(); }  // see note above in generateSize()
 
     if (planet.isInnerZone()         ){ return 0; }
@@ -308,7 +308,7 @@ class UWP_ScoutsEx extends UWP {
   }
   
   int generatePop(){
-    println("**** UWP_ScoutsEx.generatePop() for " + this.getClass());
+    if (debug == 2){ println("**** UWP_ScoutsEx.generatePop() for " + this.getClass()); }
     if (planet == null){ return super.generatePop(); }  // see note above in generateSize()
     
     if (planet.isRing()){ return 0; }
