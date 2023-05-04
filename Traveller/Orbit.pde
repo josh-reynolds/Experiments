@@ -38,17 +38,59 @@ abstract class Orbit {
         int satelliteSize = generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
         if (satelliteSize == 0){
           if (debug == 2){  println("****** generating Ring for " + this.getClass()); }
-          moons.put(generateSatelliteOrbit(i), new Ring(this, this.orbitalZone));
+          moons.put(generateSatelliteOrbit(i, true), new Ring(this, this.orbitalZone));
         } else {
           if (debug == 2){ println("****** generating Moon for " + this.getClass()); }
-          moons.put(generateSatelliteOrbit(i), new Moon(this, this.orbitalZone, satelliteSize));
+          moons.put(generateSatelliteOrbit(i, false), new Moon(this, this.orbitalZone, satelliteSize));
         }
       }
     }
   }
 
-  int generateSatelliteOrbit(int _counter){   // TO_DO: just a stub for now 
-    return _counter;
+  // table from Scouts p. 28 (text on pp.36-7)
+  int generateSatelliteOrbit(int _counter, Boolean _ring){ 
+    int result = 0;
+    if (_ring){
+      int dieThrow = roll.one();
+      switch(dieThrow){
+        case 1:
+        case 2:
+        case 3:
+          result = 1;
+          break;        
+        case 4:
+        case 5:
+          result = 2;
+          break;
+        case 6:
+          result = 3;
+          break;
+        default:
+          result = 1;
+      }
+    } else {
+      // table omits, but text says "apply a DM for each throw after first equal to the throw number - 1"
+      // slightly ambiguous, but give the semicolon it seems to apply only to this first 'type' throw
+      // this does mean that only the first moon of a Gas Giant can have an extreme orbit
+      int firstDieThrow = roll.two(-_counter);
+      int secondDieThrow = roll.two();
+      if (firstDieThrow < 8){                       // Close orbits
+        result = secondDieThrow + 1;
+      } else {
+        if (isGasGiant() && firstDieThrow >= 12){   // Extreme orbits
+          result = (secondDieThrow * 25) + 25;
+        } else {                                    // Far orbits
+          result = (secondDieThrow + 1) * 5;
+        }
+      }
+    }
+
+    // throw again if orbit already assigned
+    // this will be a problem if there are more than three rings...
+    // we don't have an exit base case for this recursion
+    if (moons.keySet().contains(result)){ result = generateSatelliteOrbit(_counter, _ring); }
+    
+    return result;
   }
 
   int generateSatelliteSize(){ return 0; }  // keeping the compiler happy - see note above in createSatellites()
