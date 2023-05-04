@@ -2,6 +2,7 @@
 // ------------------------------------------------
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
 int hexRadius = 32;
 int border = hexRadius;

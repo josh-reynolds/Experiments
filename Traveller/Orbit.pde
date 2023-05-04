@@ -5,7 +5,8 @@ abstract class Orbit {
   String orbitalZone;
   // radius in AU & km? as a query method?
   
-  Habitable[] moons;  // see notes below for createSatellites()
+  TreeMap<Integer, Habitable> moons; // now very similar to the implementation in Star
+                                     // should assess unifying once we get moons working
   
   Dice roll;
   
@@ -19,31 +20,35 @@ abstract class Orbit {
     orbitNumber = _orbit;
     orbitalZone = _zone;
 
+    moons = new TreeMap();
+
     roll = new Dice();
   }
 
   // pulled this method up to avoid duplication in GasGiant & Planet
-  //  however, that means we need the moons array and generateSatelliteSize()
+  //  however, that means we need the moons list and generateSatelliteSize()
   //  in this class, even though most of the hierarchy does not use... may
   //  reverse this one but try it out for now
   // also, similarly named method in Star needs evaluation
   void createSatellites(int _satelliteCount){
     if (debug == 2){ println("**** Orbit.createSatellites(" + _satelliteCount + ") for " + this.getClass()); }
     if (_satelliteCount <= 0){ 
-      moons = new Habitable[0];
     } else {
-      moons = new Habitable[_satelliteCount];
       for (int i = 0; i < _satelliteCount; i++){
         int satelliteSize = generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
         if (satelliteSize == 0){
           if (debug == 2){  println("****** generating Ring for " + this.getClass()); }
-          moons[i] = new Ring(this, this.orbitalZone);
+          moons.put(generateSatelliteOrbit(i), new Ring(this, this.orbitalZone));
         } else {
           if (debug == 2){ println("****** generating Moon for " + this.getClass()); }
-          moons[i] = new Moon(this, this.orbitalZone, satelliteSize);   // need to consider how to handle size 'S' moons
+          moons.put(generateSatelliteOrbit(i), new Moon(this, this.orbitalZone, satelliteSize));
         }
       }
     }
+  }
+
+  int generateSatelliteOrbit(int _counter){   // TO_DO: just a stub for now 
+    return _counter;
   }
 
   int generateSatelliteSize(){ return 0; }  // keeping the compiler happy - see note above in createSatellites()
@@ -158,7 +163,7 @@ class GasGiant extends Orbit {
     int satelliteCount = generateSatelliteCount();
     createSatellites(satelliteCount);
     
-    name = size + "GG " + orbitalZone + " " + moons.length;
+    name = size + "GG " + orbitalZone;
   }  
 
   int generateSatelliteCount(){
@@ -185,12 +190,7 @@ class GasGiant extends Orbit {
 
   String toString(){    // temporary override so we can peek at the structure
     String result = super.toString();
-    if (moons != null){
-      for (int i = 0; i < moons.length; i++){ 
-        result += "\n\t" + moons[i];
-      }
-    }
-    
+    result += " " + moons.toString();
     return result;
   }
 }
@@ -210,7 +210,7 @@ class Planet extends Orbit implements Habitable {
     int satelliteCount = generateSatelliteCount();
     createSatellites(satelliteCount);
 
-    name = "Planet " + orbitalZone + " " + uwp + " " + moons.length;
+    name = "Planet " + orbitalZone + " " + uwp;
   }
     
   int generateSatelliteCount(){
@@ -232,13 +232,7 @@ class Planet extends Orbit implements Habitable {
   
   String toString(){    // temporary override so we can peek at the structure
     String result = super.toString();
-    
-    if (moons != null){
-      for (int i = 0; i < moons.length; i++){ 
-        result += "\n\t" + moons[i];
-      }
-    }
-    
+    result += " " + moons.toString();
     return result;
   }
 }
@@ -274,8 +268,8 @@ class Moon extends Planet {
     uwp = generateUWP(_size); // super generates a UWP but doesn't have a size parameter
                               // and doing this via polymorphism seems like more code than
                               // this way
-    
-    name = "Moon " + orbitalZone + " " + uwp + " " + moons.length;    
+       
+    name = "Moon " + orbitalZone + " " + uwp;
   }
   
   UWP_ScoutsEx generateUWP(int _size){
