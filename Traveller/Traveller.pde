@@ -22,7 +22,7 @@ String[] rules = {"CT77", "CT81", "Scouts (Extended)"};
 int currentRules = 0;
 
 TestSuite tests;
-int debug = 0;
+int debug = 2;
 
 void setup(){
   // calculated per metrics detailed in SubsectorDisplay, adjust if hexRadius changes

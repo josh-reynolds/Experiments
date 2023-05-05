@@ -86,11 +86,12 @@
 //  * DONE Adding satellites to companions & planets
 //  * DONE Adding debug levels to control console spew
 //  * DONE Orbit numbers for moons via TreeMap
-//  *      Determine mainworld
+//  *      BUG: infinite recursion if a planet/GG has more than three rings
+//  * .... Determine mainworld
+//  *      Assess merging/rationalizing moons & orbits lists (Orbit vs. Star)
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
-//  *      Assess merging/rationalizing moons & orbits lists (Orbit vs. Star)
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      System to use values from Star mainworld under Scouts ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
@@ -125,10 +126,16 @@
 //  *      BUG: off-by-one issue in Star.createOrbits in some cases
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
-//  *      BUG: infinite recursion if a planet/GG has more than three rings
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: duplicate code in test methods
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset
 //  *      REFACTOR: duplicated code in UWP_ScoutsEx ctors
 // ------------------------------------------------
+
+// After spending this much time with the Scouts algorithm, my suspicion
+//  is both High Pop and Barren systems will be rarer. Conditions for 
+//  the former are rarer, and so many little worldlets get a chance to
+//  have population in the latter case that a truly empty system will
+//  be unlikely. Run some statstics once this is all wired up to 
+//  contrast/compare.

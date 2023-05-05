@@ -211,7 +211,7 @@ class Star extends Orbit {
     placeEmptyOrbits(orbitCount, maxCompanionOrbit);
     placeForbiddenOrbits();
     placeCapturedPlanets();   // TO_DO: stub method, the decimal orbit values are tricky, need to think about it
-    placeGasGiants();
+    placeGasGiants();         //   now that we have added TreeMap moons list to Orbit, could switch to that instead
     placePlanetoidBelts();
     placePlanets();
     
@@ -526,6 +526,61 @@ class Star extends Orbit {
       if (orbitIsNull(i)){
         orbits[i] = new Planet(this, i, orbitalZones[i]);
       }
+    }
+  }
+
+  // TO_DO: need to save the result, so we either set a field on Star directly,
+  // or return the value - going with void for now for ease of implementation
+  // consider this is called by System so if return value, that's where the field lives
+  void designateMainworld(){
+    println("Finding mainworld");
+    // Scouts p. 37: "The main world is the world in the system which has the greatest
+    //  population. If more than one world has the same population, then select the world
+    //  which is in the habitable zone, or failing that, which is closest to the central
+    //  star. The main world need not be a planet; it can be a satellite or an asteroid
+    //  belt, or a small world. It may not be a ring. The main world need not orbit the 
+    //  central star in the system; it may be in orbit around the binary companion,
+    //  or it may orbit a gas giant or other world."
+    
+    // First stab at this logic, probably will be over-verbose
+    
+    int highestPop = 0;
+    Habitable candidate = null;
+    
+    for (Orbit o : orbits){                                    // TO_DO: would be good to have a recursive method in Orbit
+      println("Checking orbit: " + o);                         //   superclass like 'getHighestPop'
+      println("Leading candidate: " + candidate);              //   also, here's where we need to unify moons + orbits structures
+                                                               //   so we can recursively walk the entire tree
+      if (o.isHabitable()){
+        UWP uwp = ((Habitable)o).getUWP();
+        
+        if (candidate == null){
+          highestPop = uwp.pop;                    // these lines duplicated, prime candidate for extract method
+          candidate = (Habitable)o;
+          continue;
+        }
+        
+        if (uwp.pop > highestPop){
+          highestPop = uwp.pop;
+          candidate = (Habitable)o;
+          continue;
+        }
+        
+        if (uwp.pop == highestPop){          
+          if (((Orbit)candidate).isHabitableZone()){ continue; }
+
+          if (o.isHabitableZone()){
+            highestPop = uwp.pop;
+            candidate = (Habitable)o;
+            continue;
+          }
+          
+          if (o.orbitNumber < ((Orbit)candidate).orbitNumber){
+            highestPop = uwp.pop;
+            candidate = (Habitable)o;
+          }
+        }
+      } 
     }
   }
 

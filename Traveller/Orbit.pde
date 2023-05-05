@@ -48,7 +48,7 @@ abstract class Orbit {
   }
 
   // table from Scouts p. 28 (text on pp.36-7)
-  int generateSatelliteOrbit(int _counter, Boolean _ring){ 
+  int generateSatelliteOrbit(int _counter, Boolean _ring){
     int result = 0;
     if (_ring){
       int dieThrow = roll.one();
@@ -157,6 +157,7 @@ abstract class Orbit {
   Boolean isPlanetoid(){ return false; }
   Boolean isMoon(){ return false; }
   Boolean isRing(){ return false; }
+  Boolean isHabitable(){ return false; }
 
   String toString(){ return name; }
 }
@@ -238,6 +239,7 @@ class GasGiant extends Orbit {
 }
 
 interface Habitable {   // distinct from "Habitable Zone" - this just means "has a UWP"
+  abstract UWP getUWP();
   abstract UWP_ScoutsEx generateUWP();
 }
 
@@ -254,6 +256,8 @@ class Planet extends Orbit implements Habitable {
 
     name = "Planet " + orbitalZone + " " + uwp;
   }
+  
+  UWP getUWP(){ return uwp; }
     
   int generateSatelliteCount(){
     int result = roll.one(-3);
@@ -271,6 +275,7 @@ class Planet extends Orbit implements Habitable {
   }
 
   Boolean isPlanet(){ return true; }
+  Boolean isHabitable(){ return true; }
   
   String toString(){    // temporary override so we can peek at the structure
     String result = super.toString();
@@ -288,11 +293,14 @@ class Planetoid extends Orbit implements Habitable {
     name = "Planetoid Belt " + orbitalZone + " " + uwp;
   }
 
+  UWP getUWP(){ return uwp; }
+
   UWP_ScoutsEx generateUWP(){
     return new UWP_ScoutsEx(this);
   }
 
   Boolean isPlanetoid(){ return true; }
+  Boolean isHabitable(){ return true; }
 }
 
 // uncertain if following subclasses are needed
