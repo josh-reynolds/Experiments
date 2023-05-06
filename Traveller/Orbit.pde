@@ -47,50 +47,64 @@ abstract class Orbit {
     }
   }
 
-  // table from Scouts p. 28 (text on pp.36-7)
+  
+  // The original implementation for this method was closely based on the Scouts text
+  // however, that method runs into infinite regression and stack overflow
+  // when there are many moons (most likely case if there are more than three rings)
+  // because retries can never find an available slot.
+  //
+  // This alternate approach has roughly the same spread, if not exactly the same
+  // distribution biases. Rings will take orbits closer in; moons tend to cluster after
+  // that, and extreme orbits only get assigned for Gas Giants (either via the 12+ roll
+  // or because there are many moons and the options closer in are pruned away).
   int generateSatelliteOrbit(int _counter, Boolean _ring){
-    int result = 0;
+    // data from table on Scouts p. 28 (corresponding text on pp.36-7)  
+    IntList availableOrbits = new IntList();
+    availableOrbits.append( new int[]{1,1,1,2,2,3,3,4,5,6,7,8,9,10,11,12,13,15,20,25,30,35,40,45,50,55,60,65,75,100,125,150,175,200,225,250,275,300,325} );
+    prune(availableOrbits);
+    
+    int low, high;
+    
+    // need to adapt as the list shrinks or we get out of bounds errors
+    // this implementation is safe up to ~30 assignments
+    // which amply covers the Scouts algorithm (LGG can have up to 12 satellites max)
     if (_ring){
-      int dieThrow = roll.one();
-      switch(dieThrow){
-        case 1:
-        case 2:
-        case 3:
-          result = 1;
-          break;        
-        case 4:
-        case 5:
-          result = 2;
-          break;
-        case 6:
-          result = 3;
-          break;
-        default:
-          result = 1;
-      }
+      //println("Ring orbit");
+      low = 0;
+      high = min(availableOrbits.size()-1, low + 3);
     } else {
-      // table omits, but text says "apply a DM for each throw after first equal to the throw number - 1"
-      // slightly ambiguous, but give the semicolon it seems to apply only to this first 'type' throw
-      // this does mean that only the first moon of a Gas Giant can have an extreme orbit
-      int firstDieThrow = roll.two(-_counter);
-      int secondDieThrow = roll.two();
-      if (firstDieThrow < 8){                       // Close orbits
-        result = secondDieThrow + 1;
+      // the table omits this detail, but the text says "apply a DM for each throw after first equal to the throw number - 1"
+      // slightly ambiguous, but given the semicolon it seems to apply only to this first 'type' throw
+      // it does mean that only the first moon of a Gas Giant can have an extreme orbit
+      int dieThrow = roll.two(-_counter);
+      if (dieThrow < 8){                          // Close orbits
+        low = min(availableOrbits.size()-1, 6);
+        high = min(availableOrbits.size()-1, low + 10);
       } else {
-        if (isGasGiant() && firstDieThrow >= 12){   // Extreme orbits
-          result = (secondDieThrow * 25) + 25;
-        } else {                                    // Far orbits
-          result = (secondDieThrow + 1) * 5;
+        if (dieThrow >= 12 && isGasGiant()){      // Extreme orbits
+          low = availableOrbits.size()-10;
+          high = availableOrbits.size()-1;
+        } else {                                  // Far orbits
+          low = min(availableOrbits.size()-1, 16);
+          high = min(availableOrbits.size()-1, low + 10);
         }
       }
-    }
+    }                                                 
+  
+    int index = floor(random(low, high));
+    return availableOrbits.get(index);    
+  }
 
-    // throw again if orbit already assigned
-    // this will be a problem if there are more than three rings...
-    // we don't have an exit base case for this recursion
-    if (moons.keySet().contains(result)){ result = generateSatelliteOrbit(_counter, _ring); }
-    
-    return result;
+  void prune(IntList _list){
+    for (int i = _list.size()-1; i >= 0; i--){
+      if (orbitIsTaken(_list.get(i))){
+        _list.remove(i);
+      }
+    }
+  }
+
+  Boolean orbitIsTaken(int _orbit){
+    return moons.keySet().contains(_orbit);
   }
 
   int generateSatelliteSize(){ return 0; }  // keeping the compiler happy - see note above in createSatellites()

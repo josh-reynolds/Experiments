@@ -337,5 +337,29 @@ Has a UWP             |   (Habitable)      |   (Orbit)        |
 OK, trying this out. Habitable is now an interface used by
 Planet & Planetoid.
 
+5/6/23
 
+Reviewed Composite and have some thoughts about cleaning this up. Motivation
+is the "find the mainworld" code, which would be much simpler if we could 
+walk through the tree uniformly.
+
+In addition to the muddled hierarchy described above, the collections are
+implemented differently:
+
+- Stars have an array of Orbits
+- Orbits have a TreeMap of Habitables (this isn't used by Stars,
+    only by GasGiants + Planets)
+
+So - I think we want a TreeMap of Orbits used by all composite classes.
+(Added benefit: the TreeMap would allow Float indices, so we could
+handle Captured Planets too.)
+
+In the pattern terminology, the classes are:
+
+Component - (Orbit)
+Composite - Star, GasGiant, Planet
+Leaf      - Empty, Forbidden, Null, Planetoid, Moon, Ring
+
+(Habitable) as already noted is orthogonal to this structure. It means "has
+a UWP" and is an interface implemented by Planet/Moon/Planetoid/Ring.
 

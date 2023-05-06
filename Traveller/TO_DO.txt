@@ -86,9 +86,9 @@
 //  * DONE Adding satellites to companions & planets
 //  * DONE Adding debug levels to control console spew
 //  * DONE Orbit numbers for moons via TreeMap
-//  *      BUG: infinite recursion if a planet/GG has more than three rings
+//  * FIX  BUG: infinite recursion if a planet/GG has more than three rings
 //  * .... Determine mainworld
-//  *      Assess merging/rationalizing moons & orbits lists (Orbit vs. Star)
+//  * .... Assess merging/rationalizing moons & orbits lists (Orbit vs. Star)
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
