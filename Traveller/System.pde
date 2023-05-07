@@ -261,11 +261,13 @@ class System_ScoutsEx extends System_CT81 {
       primary.designateMainworld();
       println("PRIMARY : " + primary);
       printArray(primary.orbits);
+      println(primary.obts);
       ArrayList<Star> comps = primary.getCompanions();
       if (comps.size() > 0){
         for (Star c : comps){
           println("COMPANION : " + c);
           printArray(c.orbits);
+          println(c.obts);
         }
       }
     }

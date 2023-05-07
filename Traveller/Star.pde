@@ -11,6 +11,8 @@ class Star extends Orbit {
   Star closeCompanion;
   
   Orbit[] orbits;
+  TreeMap<Integer, Orbit> obts;  // implementing in parallel - will take over the Orbit[] array and its name once done
+  
   String[] orbitalZones;    // will hold data from data\OrbitalZones.csv
 
   int gasGiantCount = 0;
@@ -54,13 +56,17 @@ class Star extends Orbit {
     if (!_json.isNull("Orbits")){
       JSONArray ob = _json.getJSONArray("Orbits");
       orbits = new Orbit[ob.size()];
+      obts = new TreeMap();
       for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
         if (ob.getString(i).equals("Null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
-          orbits[i] = new Null(this, i, orbitalZones[i]);                                 // TO_DO: will go away once we populate all orbit variants 
+          orbits[i] = new Null(this, i, orbitalZones[i]);                                 // TO_DO: will go away once we populate all orbit variants
+          obts.put(i, orbits[i]);
         } else if (ob.getString(i).equals("Empty")){ 
-          orbits[i] = new Empty(this, i, orbitalZones[i]); 
+          orbits[i] = new Empty(this, i, orbitalZones[i]);
+          obts.put(i, orbits[i]);
         } else {
-          orbits[i] = new Star(false, parent, ob.getString(i));    // TO_DO: conflict/duplication with companion list - deprecate and rework this
+          orbits[i] = new Star(false, parent, ob.getString(i));
+          obts.put(i, orbits[i]);
         }
       }
     }
@@ -200,7 +206,8 @@ class Star extends Orbit {
 
     int orbitCount = calculateMaxOrbits();
     if (!primary){ orbitCount = constrain(orbitCount, 0, floor(orbitNumber/2)); }
-    orbits = createOrbits(orbitCount, maxCompanionOrbit);
+    orbits = createOrbits(orbitCount, maxCompanionOrbit);     // TO_DO: this was needed to pre-size the array, will go away - but! still need to initialize the Map
+    obts = new TreeMap();                                     // maybe just do this in the ctor, now that we don't need to calculate the size?
     placeCompanions(orbitCount, maxCompanionOrbit, tempCompanions);
     
     // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
@@ -219,8 +226,8 @@ class Star extends Orbit {
     for (Star c : comps){
       c.createSatellites();
     }
-    if (closeCompanion != null){ closeCompanion.orbits = new Orbit[0]; } // otherwise we get a null reference later
-
+    if (closeCompanion != null){ closeCompanion.orbits = new Orbit[0]; } //closeCompanion.obts = new TreeMap(); } // otherwise we get a null reference later
+                                                                                                                  // uncertain whether same is true of the Map
     if (debug >= 1){ 
       println("Companions for " + this);
       printArray(getCompanions());
@@ -298,7 +305,7 @@ class Star extends Orbit {
     }
   }  
 
-  Orbit[] createOrbits(int _orbitCount, int _maxCompanion){
+  Orbit[] createOrbits(int _orbitCount, int _maxCompanion){  // TO_DO: only sizes the array - will go away once TreeMap is in place since that sizes dynamically
     if (_orbitCount <= _maxCompanion){
       return new Orbit[_maxCompanion+1];   // TO_DO: off by one if there is a CLOSE companion or if both orbitCount + maxCompanion are zero
     } else {
@@ -308,12 +315,14 @@ class Star extends Orbit {
 
   void placeCompanions(int _orbitCount, int _maxCompanion, ArrayList<Star> _comps){   // TO_DO: first two args only used in debug output, can be removed once this stabilizes
     if (_comps.size() == 0){
-      if (debug >= 1){ println("Orbits: " + orbits.length); }
+      if (debug >= 1){ println("Orbits: " + orbits.length); println("Orbits: " + obts.size()); }
     } else {
-      if (debug >= 1){ println("Orbits: " + orbits.length + " EMPTY: " + (_maxCompanion - _orbitCount)); }
+      if (debug >= 1){ println("Orbits: " + orbits.length + " EMPTY: " + (_maxCompanion - _orbitCount)); println("Orbits: " + obts.size() + " EMPTY: " + (_maxCompanion - _orbitCount));}
       for (int i = 0; i < _comps.size(); i++){
         if (debug >= 1){ println("Companion star number " + (i+1) + " of " + _comps.size() + " : Orbit = " + _comps.get(i).orbitNumber + " : Usable Orbit Count = " + _orbitCount); }
+        int orbitNumber = _comps.get(i).orbitNumber; 
         orbits[_comps.get(i).orbitNumber] = _comps.get(i);
+        obts.put(orbitNumber, orbits[orbitNumber]);
       }
       if (closeCompanion != null){
         if (debug >= 1){ println("Close companion : Usable Orbit Count = " + _orbitCount); }
@@ -321,16 +330,20 @@ class Star extends Orbit {
     }
   }
 
-  void placeNullOrbits(){
+  void placeNullOrbits(){   // might not be necessary anymore since we don't have 'prefilled' empty spots in the TreeMap 
+    // if (obts.size() > 0){
     if (orbits.length > 0){
+      // for (int i = 0; i < obts.size(); i++){
       for (int i = 0; i < orbits.length; i++){
         if (orbitIsNull(i)){
           orbits[i] = new Null(this, i, orbitalZones[i]);
+          obts.put(i, orbits[i]);
         }
       }
     }
   }
   
+  // see note under placeNull above - once we shift to TreeMap, this algoritm can be simplified or eliminated
   // this might read better as two separate methods...
   void placeEmptyOrbits(int _orbitCount, int _maxCompanion){
     println("Determining empty orbits for " + this);
@@ -338,9 +351,11 @@ class Star extends Orbit {
     // Extra/empty orbits due to companions beyond generated orbit count
     if (_maxCompanion - _orbitCount > 0){
       int startCount = max(0, _orbitCount);
+      // for (int i = startCount; i< obts.size(); i++){
       for (int i = startCount; i < orbits.length; i++){  
         if (orbitIsNull(i)){
           orbits[i] = new Empty(this, i, orbitalZones[i]);
+          obts.put(i, orbits[i]);
         }
       }
     }
@@ -381,6 +396,7 @@ class Star extends Orbit {
         if (choice == -1){ if (debug >= 1){ println("No null available"); } break; } // don't much care for this 'magic value' - indicates no null orbits left
         if (debug >= 1){ println("Assigning " + choice + " to Empty"); }
         orbits[choice] = new Empty(this, choice, orbitalZones[choice]);
+        obts.put(choice, orbits[choice]);
       }
     }
   }
@@ -390,12 +406,16 @@ class Star extends Orbit {
   //  - DONE  orbit is suppressed by nearby companion star
   //  -         TO_DO (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
   //  - DONE  orbit is too hot to allow planets
+  // TO_DO: may need reworking once we switch to TreeMap
   void placeForbiddenOrbits(){
+    //if (obts.size() > 0){
     if (orbits.length > 0){
+      //for (int i = 0; i < obts.size(); i++){
       for (int i = 0; i < orbits.length; i++){
         if ((orbitInsideStar(i) || orbitMaskedByCompanion(i) || orbitIsTooHot(i)) &&
             orbitIsNullOrEmpty(i)){
           orbits[i] = new Forbidden(this, i, orbitalZones[i]);
+          obts.put(i, orbits[i]);
         }
       }
     }
@@ -454,6 +474,7 @@ class Star extends Orbit {
         availableOrbits.shuffle();
         int index = availableOrbits.remove(0);
         orbits[index] = new GasGiant(this, index, orbitalZones[index]);
+        obts.put(index, orbits[index]);
       }
     } else {
       if (debug >= 1){ println("No Gas Giants in-system"); }
@@ -496,7 +517,9 @@ class Star extends Orbit {
       for (int i = 0; i < availableOrbits.size(); i++){
         int index = availableOrbits.get(i); 
         if (index == orbits.length-1){ continue; }
+        // if (index == obts.size()-1){ continue; }
         if (orbits[index].isGasGiant()){
+        // if (obts.get(index).isGasGiant()){
           orbitsInwardFromGiants.append(index);
           availableOrbits.remove(i);
         }
@@ -507,12 +530,14 @@ class Star extends Orbit {
           orbitsInwardFromGiants.shuffle();
           int index = orbitsInwardFromGiants.remove(0);
           orbits[index] = new Planetoid(this, index, orbitalZones[index]);
+          obts.put(index, orbits[index]);
           continue;
         }
         if (availableOrbits.size() > 0){
           availableOrbits.shuffle();
           int index = availableOrbits.remove(0);
           orbits[index] = new Planetoid(this, index, orbitalZones[index]);
+          obts.put(index, orbits[index]);
         }
       }
     } else {
@@ -522,9 +547,11 @@ class Star extends Orbit {
 
   void placePlanets(){
     println("Placing Planets for " + this);
+    // for (int i = 0; i < obts.size(); i++){
     for (int i = 0; i < orbits.length; i++){
       if (orbitIsNull(i)){
         orbits[i] = new Planet(this, i, orbitalZones[i]);
+        obts.put(i, orbits[i]);
       }
     }
   }
@@ -547,6 +574,7 @@ class Star extends Orbit {
     int highestPop = 0;
     Habitable candidate = null;
     
+    // for (Orbit o : obts){
     for (Orbit o : orbits){                                    // TO_DO: would be good to have a recursive method in Orbit
       println("Checking orbit: " + o);                         //   superclass like 'getHighestPop'
       println("Leading candidate: " + candidate);              //   also, here's where we need to unify moons + orbits structures
@@ -584,12 +612,15 @@ class Star extends Orbit {
     }
   }
 
+  // TO_DO: approach changes with TreeMap - instead this becomes 'get random UNASSIGNED orbit'
   // TO_DO: this needs to be more robust
   int getRandomNullOrbit(){
     int counter = 0;  // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
     while(counter < 100){
       int choice = floor(random(2, orbits.length));  // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'
+      //int choice = floor(random(2, obts.size()));
       if (orbits.length <= 2){ break; }              // but this fails in the case of very small systems, so need to bail out
+      //if (obts.size() <= 2){ break; }
       if (orbitIsNull(choice)){
         return choice;
       }
@@ -601,6 +632,7 @@ class Star extends Orbit {
   IntList availableOrbitsForGiants(){
     // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
     IntList result = new IntList();
+    //for (int i = 0; i < obts.size(); i++){
     for (int i = 0; i < orbits.length; i++){
       if (orbitalZones[i].equals("Z") || orbitalZones[i].equals("X") || orbitalZones[i].equals("I")){ continue; }
       if (orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, no
@@ -618,6 +650,7 @@ class Star extends Orbit {
   // probably refactoring oppotunities w/ the similar Gas Giant method above - almost identical
   IntList availableOrbitsForPlanetoids(){
     IntList result = new IntList();
+    //for (int i = 0; i < obts.size(); i++){
     for (int i = 0; i < orbits.length; i++){
       if (orbitIsNull(i)){                                         // should we also allow them to drop into Empty orbits? by RAW, I think not
         if (debug >= 1){ println("Orbit " + i + " qualifies"); }   // though they never precisely define "available orbits"
@@ -631,9 +664,12 @@ class Star extends Orbit {
   ArrayList<Star> getCompanions(){
     ArrayList<Star> comps = new ArrayList<Star>();
     
+    //for (int i = 0; i < obts.size(); i++){
     for (int i = 0; i < orbits.length; i++){
+      //if (obts.get(i).isStar()){
       if (orbits[i].isStar()){
         comps.add((Star)orbits[i]);
+        //comps.add((Star)obts.get(i));
         //comps.addAll( ((Star)orbits[i]).getCompanions() );  // Companions of companions - rare
                                                               // also, doesn't match current usage for companions list
                                                               // leave out for now, consider later
@@ -647,19 +683,24 @@ class Star extends Orbit {
     return orbitalZones[_num].equals("X");
   }
 
-
+  // TO_DO: this is a core part of the orbit assignment algorithm, needed because we were using an array
+  //  with a TreeMap that's not necessary - and would be broken in fact because the 'empty' slots don't exist
+  //  could intercept in this method with a 'keyExists' call as we refactor the whole thing away
+  //  in fact we already have that method in Orbit.orbitIsTaken()
   // TO_DO: these methods can be supplanted by the new class queries baked into the hierarchy
   //  won't catch null pointers, but ideally we've rooted out all such cases
   //  and should squash any remaining bugs if not
   Boolean orbitIsNull(int _num){
     return (orbits[_num] == null ||
             orbits[_num].isNull());
+    //return obts.keySet().contains(_orbit);
   }
 
   Boolean orbitIsNullOrEmpty(int _num){
     return (orbits[_num] == null ||
             orbits[_num].isEmpty() ||
             orbits[_num].isNull());
+    //return obts.keySet().contains(_orbit);            
   }
 
   // Scouts includes data for Supergiants (Ia/Ib) but no means to generate randomly - leaving out
@@ -784,12 +825,17 @@ class Star extends Orbit {
       }
       json.setJSONArray("Companions", companionList);
     }
-      
+    
+    //if (orbits != null && obts.size() > 0){
     if (orbits != null && orbits.length > 0){   // null test was only needed for Close Companions - that has been fixed - assess removing this
       JSONArray orbitsList = new JSONArray();
+      //for (int i = 0; i < obts.size(); i++){
       for (int i = 0; i < orbits.length; i++){
+        //if (obts.get(i) != null){
         if (orbits[i] != null){               // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause
+                                              //   this all changes under TreeMap approach
           orbitsList.setString(i, orbits[i].toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
+          //orbitsList.setString(i, obts.get(i)].toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
         } else {
           orbitsList.setString(i, "null");
         }

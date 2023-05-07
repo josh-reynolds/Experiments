@@ -87,8 +87,9 @@
 //  * DONE Adding debug levels to control console spew
 //  * DONE Orbit numbers for moons via TreeMap
 //  * FIX  BUG: infinite recursion if a planet/GG has more than three rings
+//  * .... Merge moons & orbits lists (Orbit vs. Star)
+//  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Determine mainworld
-//  * .... Assess merging/rationalizing moons & orbits lists (Orbit vs. Star)
 //  * .... Generating UWP for all Planets/Planetoids
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset

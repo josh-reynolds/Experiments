@@ -5,8 +5,8 @@ abstract class Orbit {
   String orbitalZone;
   // radius in AU & km? as a query method?
   
-  TreeMap<Integer, Habitable> moons; // now very similar to the implementation in Star
-                                     // should assess unifying once we get moons working
+  TreeMap<Integer, Orbit> moons; // now very similar to the implementation in Star
+                                 // should assess unifying once we get moons working
   
   Dice roll;
   
