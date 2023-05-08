@@ -1,0 +1,129 @@
+5/8/2023
+
+Merging data structures for child orbits - this
+implies changes to the algorithm. The original version 
+(used in Star) is constrained and shaped by the 
+underlying array.
+
+Star uses an array of orbits: Orbit[] orbits
+Orbit uses a TreeMap of orbits: TreeMap<Integer,Orbit> moons
+
+In all cases, we want an ordered list by orbit number,
+hence the chosen data structures. In the case of Star,
+array was simple, and the algorithm produces lists of numbers
+before filling them, so this made sense. Additionally, for
+Stars, any empty/unassigned slots are intentionally flagged.
+
+For Orbit, however, values are assigned while creating each
+satellite so we don't know in advance how many slots to create.
+And there's no concern about empties.
+
+For traversal across the entire tree, it's much simpler to
+have a single structure and uniformity (as outlined in the 
+Composite pattern). It will be easier to shift the Star approach 
+over than the reverse, and TreeMaps are overall simpler to work 
+with. 
+
+A couple other bonuses:
+
+ * We have the tricky issue of Captured Planets to deal with, 
+   which have fractional orbit values and are difficult to do 
+   when orbits are implicitly integer values derived from the 
+   array indices.
+
+ * Star.createSatellites is called by an external entity (System)
+   rather than from within the ctor. IIRC there was a chicken+egg
+   issue forcing this design - hoping the revised algorithm doesn't
+   suffer from this and we can hide everything behind the ctor.
+
+There are at least a couple special cases, too:
+
+ * The primary star is root of the tree, and has null values
+   for some fields and a 'magic number' orbit (see super ctor 
+   args below).
+
+ * There is potentially one 'close companion' which doesn't have
+   an orbit number or any possibility of its own child satellites.
+
+Unsnarling the algorithm below. (Leaving out extraneous details 
+like UWP).
+
+Algorithm in Star -----------------------------
+
+  System_ScoutsEx.ctor(coordinate)                       // stored in Subsector
+    Star.ctor(isPrimary=true, system)                    // stored in System
+      Orbit.ctor(barycenter=null, orbit#=-1, zone=null)  // initializes Orbit.moons
+      Star.retrieveOrbitalZones()
+    Star.createSatellites()
+      Star.generateCompanionCount()                      // only active on primary + far companions
+                                                         // create temp companion list
+      [:for each companion:]
+        Star.ctor(isPrimary=false, system)               // stored in temp companion list
+      Star.generateCompanionOrbits(listCompanion)        // should be in loop?
+      Star.calculateMaxOrbits()
+      Star.createOrbits(count, maxCompanion)             // sizes/creates Star.orbits[]
+      Star.placeCompanions(count, maxCompanion, listCompanion)
+      Star.placeNullOrbits()
+        Null.ctor(this, orbit#, zone)                    // stored in Star.orbits[]
+      Star.placeEmptyOrbits(count, maxCompanion)
+        Star.getRandomNullOrbit()
+        Empty.ctor(this, orbit#, zone)                   // stored in Star.orbits[]
+      Star.placeForbiddenOrbits()
+        Forbidden.ctor(this, orbit#, zone)               // stored in Star.orbits[]
+      Star.placeCapturedPlanets()                        // still just a stub
+      Star.placeGasGiants()
+        Star.availableOrbitsForGiants()
+        GasGiant.ctor(this, orbit#, zone)                // stored in Star.orbits[]
+      Star.placePlanetoidBelts()
+        Star.availableOrbitsForPlanetoids()
+        Planetoid.ctor(this, orbit#, zone)               // stored in Star.orbits[]
+      Star.placePlanets()
+        Planet.ctor(this, orbit#, zone)                  // stored in Star.orbits[]
+      [:for each companion:]
+        Star.createSatellites()
+
+Algorithm in Orbit ----------------------------
+
+  GasGiant/Planet.ctor(barycenter, orbit#, zone)         // stored in parent Star.orbits[]
+    Orbit.ctor(barycenter, orbit#, zone)                 // initializes Orbit.moons
+    GasGiant/Planet.generateSatelliteCount()
+    Orbit.createSatellites(count)
+      [:for each count:]
+        GasGiant/Planet.generateSatelliteSize()
+        Orbit.generateSatelliteOrbit(counter, isRing)
+          Orbit.prune(list)
+            Orbit.isTaken(orbit)
+        Moon/Ring.ctor(barycenter, orbit#, zone)         // stored in Orbit.moons
+
+===============================================
+OBSERVATIONS
+
+Possible bug - moons/ring pass their parent planet orbit number
+to the super ctor. Probably does not agree with their 'true' value
+as stored in the TreeMap key. Investigate.
+
+Also - check whether we really need these references to barycenter and
+orbit # in the child object. Could this all be part of the collection
+management in the parent component? Query methods on the child could
+interrogate the parent instead.
+
+Star ctor is inconsistent w/ the rest, probably because we started out
+with the special case primary. Rest of orbit hierarchy takes an orbit
+number and that guides the order of operations in calling their ctor.
+
+Leftover from eliminating the previous/separate companions list - we
+create a temp list to hold them, _then_ we generate orbits and push them
+into the orbits array. Ties with the previous note. Seems like everything
+that takes the temp list as an arg should be _inside_ the loop instead.
+
+Once we clean up the ordering and unify, probably opportunity to simplify 
+a lot of the special case logic via appropriate subclassing and polymorphism.
+For example, should Primary and Companion be subclasses of Star?
+
+Refactoring in progress - structure documented above has already changed, but 
+leaving these notes as-is for now. First target is the temporary companions list
+and pulling all related operations into the loop. Then we probably pivot towards
+moving method calls prior to the createOrbits() call (which initializes the array).
+If they run w/o null pointer exception, they are clear. As this progresses, we
+start populating the array from the TreeMap and not the reverse - and finally,
+we can remove it altogether.

@@ -198,16 +198,21 @@ class Star extends Orbit {
     }    
     if (debug >= 1){ println(compCount + " companions"); }
         
-    ArrayList<Star> tempCompanions = new ArrayList<Star>();
+    obts = new TreeMap();                                     // maybe just do this in the ctor, now that we don't need to calculate the size?
+    ArrayList<Star> tempCompanions = new ArrayList<Star>();   // should happen via super.ctor once the data structure is unified across
     for (int i = 0; i < compCount; i++){
-      tempCompanions.add(new Star(false, parent));
+      Star companion = new Star(false, parent);
+      tempCompanions.add(companion);
+      generateCompanionOrbits(companion, i);
+      obts.put(companion.orbitNumber, companion);
     }
-    maxCompanionOrbit = generateCompanionOrbits(tempCompanions);
-
+    maxCompanionOrbit = getMaxCompanionOrbit();
+    
     int orbitCount = calculateMaxOrbits();
     if (!primary){ orbitCount = constrain(orbitCount, 0, floor(orbitNumber/2)); }
+    
+    //   ***    THIS IS THE PIVOT LINE FOR REFACTORING  ***
     orbits = createOrbits(orbitCount, maxCompanionOrbit);     // TO_DO: this was needed to pre-size the array, will go away - but! still need to initialize the Map
-    obts = new TreeMap();                                     // maybe just do this in the ctor, now that we don't need to calculate the size?
     placeCompanions(orbitCount, maxCompanionOrbit, tempCompanions);
     
     // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
@@ -249,45 +254,54 @@ class Star extends Orbit {
     return 0;
   }
 
-  // from tables on Scouts p.46
-  int generateCompanionOrbits(ArrayList<Star> _comps){
-    int maxCompanion = 0;
-    for (int i = _comps.size()-1; i >= 0; i--){   // iterate backwards because we are removing elements in some cases
-      int modifier = 4 * (i);
-      if (!primary){ modifier -= 4; }
-      if (debug >= 1){ println("Assessing companion star: " + _comps.get(i) + " modifier: +" + modifier); }
-      int dieThrow = roll.two(modifier);
-      int result = 0;
-      if (dieThrow < 4  ){ result = 0; }
-      if (dieThrow == 4 ){ result = 1; }
-      if (dieThrow == 5 ){ result = 2; }
-      if (dieThrow == 6 ){ result = 3; }
-      if (dieThrow == 7 ){ result = roll.one(4); }
-      if (dieThrow == 8 ){ result = roll.one(5); }
-      if (dieThrow == 9 ){ result = roll.one(6); }
-      if (dieThrow == 10){ result = roll.one(7); }
-      if (dieThrow == 11){ result = roll.one(8); }
-      if (dieThrow >= 12){ 
-        int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
-        if (distance == 1000                    ){ result = 14; }
-        if (distance == 2000                    ){ result = 15; }
-        if (distance == 3000 || distance == 4000){ result = 16; }
-        if (distance >= 5000                    ){ result = 17; } 
-      }
-      if (result > maxCompanion){ maxCompanion = result; }
-      
-      if (result == 0 || orbitInsideStar(result)){
-        if (debug >= 1){ println("Companion in CLOSE orbit"); }        
-        closeCompanion = _comps.get(i);
-        _comps.remove(i);
-        closeCompanion.orbitNumber = result;
-      } else {
-        if (debug >= 1){ println("Companion in orbit: " + result); }
-        _comps.get(i).orbitNumber = result;
-      }
-      // TO_DO: need to handle two companions landing in same orbit
+  int getMaxCompanionOrbit(){
+    //ArrayList<Star> comps = getCompanions();
+    // ** temp scaffolding - orbits array doesn't exist at this point
+    ArrayList<Star> comps = new ArrayList();
+    for (int i : obts.keySet()){
+      if (obts.get(i).isStar()){ comps.add((Star)obts.get(i)); }
     }
-    return maxCompanion;   // TO_DO: off by one in the CLOSE Companion case - should this value also be a query?
+    // ****
+    int max = 0;
+    for (Star s : comps){
+      if (s.orbitNumber > max){ max = s.orbitNumber; } 
+    }
+    return max;
+  }
+
+  // from tables on Scouts p.46
+  void generateCompanionOrbits(Star _companion, int _iteration){
+    int modifier = 4 * (_iteration);
+    if (!primary){ modifier -= 4; }
+    if (debug >= 1){ println("Assessing companion star: " + _companion + " modifier: +" + modifier); }
+    int dieThrow = roll.two(modifier);
+    int result = 0;
+    if (dieThrow < 4  ){ result = 0; }
+    if (dieThrow == 4 ){ result = 1; }
+    if (dieThrow == 5 ){ result = 2; }
+    if (dieThrow == 6 ){ result = 3; }
+    if (dieThrow == 7 ){ result = roll.one(4); }
+    if (dieThrow == 8 ){ result = roll.one(5); }
+    if (dieThrow == 9 ){ result = roll.one(6); }
+    if (dieThrow == 10){ result = roll.one(7); }
+    if (dieThrow == 11){ result = roll.one(8); }
+    if (dieThrow >= 12){ 
+      int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
+      if (distance == 1000                    ){ result = 14; }
+      if (distance == 2000                    ){ result = 15; }
+      if (distance == 3000 || distance == 4000){ result = 16; }
+      if (distance >= 5000                    ){ result = 17; } 
+    }
+    
+    if (result == 0 || orbitInsideStar(result)){
+      if (debug >= 1){ println("Companion in CLOSE orbit"); }        
+      closeCompanion = _companion;
+      closeCompanion.orbitNumber = result;
+    } else {
+      if (debug >= 1){ println("Companion in orbit: " + result); }
+      _companion.orbitNumber = result;
+    }
+    // TO_DO: need to handle two companions landing in same orbit
   }
 
   int calculateMaxOrbits(){

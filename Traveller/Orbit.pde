@@ -69,7 +69,6 @@ abstract class Orbit {
     // this implementation is safe up to ~30 assignments
     // which amply covers the Scouts algorithm (LGG can have up to 12 satellites max)
     if (_ring){
-      //println("Ring orbit");
       low = 0;
       high = min(availableOrbits.size()-1, low + 3);
     } else {
