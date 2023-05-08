@@ -199,28 +199,46 @@ class Star extends Orbit {
     if (debug >= 1){ println(compCount + " companions"); }
         
     obts = new TreeMap();                                     // maybe just do this in the ctor, now that we don't need to calculate the size?
-    ArrayList<Star> tempCompanions = new ArrayList<Star>();   // should happen via super.ctor once the data structure is unified across
+                                                              // should happen via super.ctor once the data structure is unified across
     for (int i = 0; i < compCount; i++){
       Star companion = new Star(false, parent);
-      tempCompanions.add(companion);
       generateCompanionOrbits(companion, i);
       obts.put(companion.orbitNumber, companion);
     }
     maxCompanionOrbit = getMaxCompanionOrbit();
+
+    // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
     
     int orbitCount = calculateMaxOrbits();
     if (!primary){ orbitCount = constrain(orbitCount, 0, floor(orbitNumber/2)); }
-    
-    //   ***    THIS IS THE PIVOT LINE FOR REFACTORING  ***
-    orbits = createOrbits(orbitCount, maxCompanionOrbit);     // TO_DO: this was needed to pre-size the array, will go away - but! still need to initialize the Map
-    placeCompanions(orbitCount, maxCompanionOrbit, tempCompanions);
-    
-    // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
 
-    placeNullOrbits();    // TO_DO: probably temporary scaffolding to smooth addition of later elements
-                          // unclear if still needed, was used for initial orbital zones approach, but that's changed
+    int max = max(orbitCount, maxCompanionOrbit + 1);
+    placeNullOrbits(max);                                     // TO_DO: keeping for now, but this makes the TreeMap behave like an Array in some senses 
+                                                              // the whole concept of null orbits may go away
+    fillEmptyOrbits(orbitCount, maxCompanionOrbit);           // first half of Empty assignment - still needed?
+    placeEmptyOrbits();                                       // second half of Empty assignment
+                                                              
+    //   ***    THIS IS THE PIVOT LINE FOR REFACTORING  ***
+    orbits = createOrbits(orbitCount, maxCompanionOrbit);     // TO_DO: this was needed to pre-size the array, will go away
     
-    placeEmptyOrbits(orbitCount, maxCompanionOrbit);
+    // **** temp scaffolding
+    for (int i : obts.keySet()){
+      if (obts.get(i).isStar() ){ orbits[i] = obts.get(i); }
+      if (obts.get(i).isNull() ){ orbits[i] = obts.get(i); }
+      if (obts.get(i).isEmpty()){ orbits[i] = obts.get(i); }
+    }
+    
+    println("******************************");
+    printArray(orbits);
+    println(obts);
+    println("orbitCount = " + orbitCount);
+    println("maxCompanionOrbit = " + maxCompanionOrbit);
+    println("orbits.length = " + orbits.length);
+    println("obts.size() = " + obts.size()); 
+    println("******************************");
+    
+    // ****
+
     placeForbiddenOrbits();
     placeCapturedPlanets();   // TO_DO: stub method, the decimal orbit values are tricky, need to think about it
     placeGasGiants();         //   now that we have added TreeMap moons list to Orbit, could switch to that instead
@@ -256,7 +274,7 @@ class Star extends Orbit {
 
   int getMaxCompanionOrbit(){
     //ArrayList<Star> comps = getCompanions();
-    // ** temp scaffolding - orbits array doesn't exist at this point
+    // **** temp scaffolding - orbits array doesn't exist at this point
     ArrayList<Star> comps = new ArrayList();
     for (int i : obts.keySet()){
       if (obts.get(i).isStar()){ comps.add((Star)obts.get(i)); }
@@ -327,52 +345,30 @@ class Star extends Orbit {
     }    
   }
 
-  void placeCompanions(int _orbitCount, int _maxCompanion, ArrayList<Star> _comps){   // TO_DO: first two args only used in debug output, can be removed once this stabilizes
-    if (_comps.size() == 0){
-      if (debug >= 1){ println("Orbits: " + orbits.length); println("Orbits: " + obts.size()); }
-    } else {
-      if (debug >= 1){ println("Orbits: " + orbits.length + " EMPTY: " + (_maxCompanion - _orbitCount)); println("Orbits: " + obts.size() + " EMPTY: " + (_maxCompanion - _orbitCount));}
-      for (int i = 0; i < _comps.size(); i++){
-        if (debug >= 1){ println("Companion star number " + (i+1) + " of " + _comps.size() + " : Orbit = " + _comps.get(i).orbitNumber + " : Usable Orbit Count = " + _orbitCount); }
-        int orbitNumber = _comps.get(i).orbitNumber; 
-        orbits[_comps.get(i).orbitNumber] = _comps.get(i);
-        obts.put(orbitNumber, orbits[orbitNumber]);
-      }
-      if (closeCompanion != null){
-        if (debug >= 1){ println("Close companion : Usable Orbit Count = " + _orbitCount); }
-      }
-    }
-  }
-
-  void placeNullOrbits(){   // might not be necessary anymore since we don't have 'prefilled' empty spots in the TreeMap 
-    // if (obts.size() > 0){
-    if (orbits.length > 0){
-      // for (int i = 0; i < obts.size(); i++){
-      for (int i = 0; i < orbits.length; i++){
-        if (orbitIsNull(i)){
-          orbits[i] = new Null(this, i, orbitalZones[i]);
-          obts.put(i, orbits[i]);
-        }
+  void placeNullOrbits(int _maxOrbit){    
+    for (int i = 0; i < _maxOrbit; i++){
+      if (!obts.keySet().contains(i)){                                             // TO_DO: will be replaced with orbitIsTaken in the superclass
+        obts.put(i, new Null(this, i, orbitalZones[i]));
       }
     }
   }
   
-  // see note under placeNull above - once we shift to TreeMap, this algoritm can be simplified or eliminated
-  // this might read better as two separate methods...
-  void placeEmptyOrbits(int _orbitCount, int _maxCompanion){
-    println("Determining empty orbits for " + this);
-
-    // Extra/empty orbits due to companions beyond generated orbit count
+  // splitting out first half of placeEmptyOrbits - method names need some improvement 
+  // Extra/empty orbits due to companions beyond generated orbit count
+  void fillEmptyOrbits(int _orbitCount, int _maxCompanion){
     if (_maxCompanion - _orbitCount > 0){
       int startCount = max(0, _orbitCount);
-      // for (int i = startCount; i< obts.size(); i++){
-      for (int i = startCount; i < orbits.length; i++){  
-        if (orbitIsNull(i)){
-          orbits[i] = new Empty(this, i, orbitalZones[i]);
-          obts.put(i, orbits[i]);
+      for (int i = startCount; i < obts.size(); i++){
+        if (!obts.keySet().contains(i) || obts.get(i).isNull()){                    // TO_DO: will be replaced with orbitIsTaken in the superclass
+          obts.put(i, new Empty(this, i, orbitalZones[i]));
         }
       }
-    }
+    }    
+  }
+  
+  // see note under placeNull above - once we shift to TreeMap, this algorithm can be simplified or eliminated
+  void placeEmptyOrbits(){
+    println("Determining empty orbits for " + this);
     
     // Empty orbits per Scouts p.34 (table on p. 29)
     int modifier = 0;
@@ -406,11 +402,10 @@ class Star extends Orbit {
         //  - Generates results outside existing orbits, needs lots of rerolls
         // I am going to implement a random picker that fixes the last two issues (flat curve, only existing orbits to choose from)
         //   and keep the protections for orbits 0 & 1 (maybe they wanted to ensure all systems have viable orbits?)
-        int choice = getRandomNullOrbit();
+        int choice = getRandomUnassignedOrbit();
         if (choice == -1){ if (debug >= 1){ println("No null available"); } break; } // don't much care for this 'magic value' - indicates no null orbits left
         if (debug >= 1){ println("Assigning " + choice + " to Empty"); }
-        orbits[choice] = new Empty(this, choice, orbitalZones[choice]);
-        obts.put(choice, orbits[choice]);
+        obts.put(choice, new Empty(this, choice, orbitalZones[choice]));
       }
     }
   }
@@ -626,21 +621,21 @@ class Star extends Orbit {
     }
   }
 
-  // TO_DO: approach changes with TreeMap - instead this becomes 'get random UNASSIGNED orbit'
+  // replacement for getRandomNullOrbit() using TreeMap structure
+  // flaws with this approach still exist and should be remedied later
+  // TreeMap might give us some tools to simplify
   // TO_DO: this needs to be more robust
-  int getRandomNullOrbit(){
-    int counter = 0;  // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
+  int getRandomUnassignedOrbit(){
+    int counter = 0;          // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
     while(counter < 100){
-      int choice = floor(random(2, orbits.length));  // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'
-      //int choice = floor(random(2, obts.size()));
-      if (orbits.length <= 2){ break; }              // but this fails in the case of very small systems, so need to bail out
-      //if (obts.size() <= 2){ break; }
-      if (orbitIsNull(choice)){
+      int choice = floor(random(2, obts.size()));      // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'
+      if (obts.size() <= 2){ break; }                  // but this fails in the case of very small systems, so need to bail out
+      if (obts.get(choice).isNull()){
         return choice;
       }
       counter++;
     }
-    return -1;  // and how would we handle this? will throw an exception when we use the value as an array index
+    return -1;  // and how would we handle this? will throw an exception when we use the value as an array index      
   }
 
   IntList availableOrbitsForGiants(){
