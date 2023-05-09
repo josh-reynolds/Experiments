@@ -10,7 +10,6 @@ class Star extends Orbit {
   
   Star closeCompanion;
   
-  Orbit[] orbits;
   TreeMap<Integer, Orbit> obts;  // implementing in parallel - will take over the Orbit[] array and its name once done
   
   String[] orbitalZones;    // will hold data from data\OrbitalZones.csv
@@ -19,6 +18,7 @@ class Star extends Orbit {
   
   Star(Boolean _primary, System _parent){
     super(null, -1, (String)null);   // TO_DO: making the compiler happy, may need to rethink this - don't like the magic value for the primary
+    if (debug == 2){ println("** Star ctor(" + _primary);}// + _parent); }  // BUG:  _parent is null on the primary call because its ctor has not completed - reassess
     primary = _primary;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
     parent = _parent;
     
@@ -55,18 +55,14 @@ class Star extends Orbit {
 
     if (!_json.isNull("Orbits")){
       JSONArray ob = _json.getJSONArray("Orbits");
-      orbits = new Orbit[ob.size()];
       obts = new TreeMap();
       for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
         if (ob.getString(i).equals("Null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
-          orbits[i] = new Null(this, i, orbitalZones[i]);                                 // TO_DO: will go away once we populate all orbit variants
-          obts.put(i, orbits[i]);
+          obts.put(i, new Null(this, i, orbitalZones[i]));         // TO_DO: may go away once we populate all orbit variants
         } else if (ob.getString(i).equals("Empty")){ 
-          orbits[i] = new Empty(this, i, orbitalZones[i]);
-          obts.put(i, orbits[i]);
+          obts.put(i, new Empty(this, i, orbitalZones[i]));
         } else {
-          orbits[i] = new Star(false, parent, ob.getString(i));
-          obts.put(i, orbits[i]);
+          obts.put(i, new Star(false, parent, ob.getString(i)));
         }
       }
     }
@@ -191,6 +187,7 @@ class Star extends Orbit {
   }
 
   void createSatellites(){
+    if (debug == 2){ println("Creating satellites for " + this); }
     int maxCompanionOrbit = 0;
     int compCount = 0;
     if (primary || orbitIsFar(orbitNumber)){
@@ -200,11 +197,12 @@ class Star extends Orbit {
         
     obts = new TreeMap();                                     // maybe just do this in the ctor, now that we don't need to calculate the size?
                                                               // should happen via super.ctor once the data structure is unified across
+
     for (int i = 0; i < compCount; i++){
-      Star companion = new Star(false, parent);
+      Star companion = new Star(false, parent);    // BUG: are we propagating a null parent to all companions? is this value even useful, then?
       generateCompanionOrbits(companion, i);
       obts.put(companion.orbitNumber, companion);
-    }
+    }    
     maxCompanionOrbit = getMaxCompanionOrbit();
 
     // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
@@ -227,37 +225,11 @@ class Star extends Orbit {
     for (Star c : comps){
       c.createSatellites();
     }
-    if (closeCompanion != null){ closeCompanion.orbits = new Orbit[0]; } //closeCompanion.obts = new TreeMap(); } // otherwise we get a null reference later
-                                                                                                                  // uncertain whether same is true of the Map
+
     if (debug >= 1){ 
       println("Companions for " + this);
       printArray(getCompanions());
     }                                                                                                                  
-
-    //   ***    THIS IS THE PIVOT LINE FOR REFACTORING  ***
-    orbits = createOrbits(orbitCount, maxCompanionOrbit);     // TO_DO: this was needed to pre-size the array, will go away
-    
-    // **** temp scaffolding
-    for (int i : obts.keySet()){
-      if (obts.get(i).isStar()      ){ orbits[i] = obts.get(i); }
-      if (obts.get(i).isNull()      ){ orbits[i] = obts.get(i); }
-      if (obts.get(i).isEmpty()     ){ orbits[i] = obts.get(i); }
-      if (obts.get(i).isForbidden() ){ orbits[i] = obts.get(i); }
-      if (obts.get(i).isGasGiant()  ){ orbits[i] = obts.get(i); }
-      if (obts.get(i).isPlanetoid() ){ orbits[i] = obts.get(i); }
-      if (obts.get(i).isPlanet()    ){ orbits[i] = obts.get(i); }
-    }
-    
-    println("******************************");
-    printArray(orbits);
-    println(obts);
-    println("orbitCount = " + orbitCount);
-    println("maxCompanionOrbit = " + maxCompanionOrbit);
-    println("orbits.length = " + orbits.length);
-    println("obts.size() = " + obts.size()); 
-    println("******************************");
-    
-    // ****
   }    
     
   int generateCompanionCount(){
@@ -276,13 +248,7 @@ class Star extends Orbit {
   }
 
   int getMaxCompanionOrbit(){
-    //ArrayList<Star> comps = getCompanions();
-    // **** temp scaffolding - orbits array doesn't exist at this point
-    ArrayList<Star> comps = new ArrayList();
-    for (int i : obts.keySet()){
-      if (obts.get(i).isStar()){ comps.add((Star)obts.get(i)); }
-    }
-    // ****
+    ArrayList<Star> comps = getCompanions();
     int max = 0;
     for (Star s : comps){
       if (s.orbitNumber > max){ max = s.orbitNumber; } 
@@ -575,8 +541,8 @@ class Star extends Orbit {
     int highestPop = 0;
     Habitable candidate = null;
     
-    // for (Orbit o : obts){
-    for (Orbit o : orbits){                                    // TO_DO: would be good to have a recursive method in Orbit
+    for (int i : obts.keySet()){                               // TO_DO: would be good to have a recursive method in Orbit
+      Orbit o = obts.get(i);
       println("Checking orbit: " + o);                         //   superclass like 'getHighestPop'
       println("Leading candidate: " + candidate);              //   also, here's where we need to unify moons + orbits structures
                                                                //   so we can recursively walk the entire tree
@@ -663,7 +629,7 @@ class Star extends Orbit {
   ArrayList<Star> getCompanions(){
     ArrayList<Star> comps = new ArrayList<Star>();
     
-    for (int i = 0; i < obts.size(); i++){
+    for (int i : obts.keySet()){
       if (obts.get(i).isStar()){
         comps.add((Star)obts.get(i));
         //comps.addAll( ((Star)obts.get(i)).getCompanions() );  // Companions of companions - rare
@@ -827,16 +793,11 @@ class Star extends Orbit {
       json.setJSONArray("Companions", companionList);
     }
     
-    //if (orbits != null && obts.size() > 0){
-    if (orbits != null && orbits.length > 0){   // null test was only needed for Close Companions - that has been fixed - assess removing this
+    if (obts.size() > 0){
       JSONArray orbitsList = new JSONArray();
-      //for (int i = 0; i < obts.size(); i++){
-      for (int i = 0; i < orbits.length; i++){
-        //if (obts.get(i) != null){
-        if (orbits[i] != null){               // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause
-                                              //   this all changes under TreeMap approach
-          orbitsList.setString(i, orbits[i].toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
-          //orbitsList.setString(i, obts.get(i)].toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
+      for (int i = 0; i < obts.size(); i++){
+        if (obts.get(i) != null){                            // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause
+          orbitsList.setString(i, obts.get(i).toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
         } else {
           orbitsList.setString(i, "null");
         }
