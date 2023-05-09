@@ -78,3 +78,4 @@ class TestSuite {
 // Planetoids/Rings always 000 for UWP Size/Atmo/Hydro
 // Rings have 0 population
 // Moons/Rings have the same orbital zone as their parent (barycenter)
+// No null orbits remain after system is created/populated

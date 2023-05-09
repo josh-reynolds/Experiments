@@ -127,3 +127,10 @@ moving method calls prior to the createOrbits() call (which initializes the arra
 If they run w/o null pointer exception, they are clear. As this progresses, we
 start populating the array from the TreeMap and not the reverse - and finally,
 we can remove it altogether.
+
+5/9/23
+
+First portions are done -  the temp array has been eliminated, and all method 
+calls in Star.createSatellite() are prior to initialization of the Orbit[] 
+array. We should be able to track down remaining references next, and eliminate
+it - then obts merges with the TreeMap in the superclass (currently Orbit.moons).

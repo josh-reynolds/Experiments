@@ -217,15 +217,35 @@ class Star extends Orbit {
                                                               // the whole concept of null orbits may go away
     fillEmptyOrbits(orbitCount, maxCompanionOrbit);           // first half of Empty assignment - still needed?
     placeEmptyOrbits();                                       // second half of Empty assignment
-                                                              
+    placeForbiddenOrbits();
+    placeCapturedPlanets();                                   // TO_DO: stub method, can finally implement now with TreeMap
+    placeGasGiants();
+    placePlanetoidBelts();
+    placePlanets();
+
+    ArrayList<Star> comps = getCompanions();
+    for (Star c : comps){
+      c.createSatellites();
+    }
+    if (closeCompanion != null){ closeCompanion.orbits = new Orbit[0]; } //closeCompanion.obts = new TreeMap(); } // otherwise we get a null reference later
+                                                                                                                  // uncertain whether same is true of the Map
+    if (debug >= 1){ 
+      println("Companions for " + this);
+      printArray(getCompanions());
+    }                                                                                                                  
+
     //   ***    THIS IS THE PIVOT LINE FOR REFACTORING  ***
     orbits = createOrbits(orbitCount, maxCompanionOrbit);     // TO_DO: this was needed to pre-size the array, will go away
     
     // **** temp scaffolding
     for (int i : obts.keySet()){
-      if (obts.get(i).isStar() ){ orbits[i] = obts.get(i); }
-      if (obts.get(i).isNull() ){ orbits[i] = obts.get(i); }
-      if (obts.get(i).isEmpty()){ orbits[i] = obts.get(i); }
+      if (obts.get(i).isStar()      ){ orbits[i] = obts.get(i); }
+      if (obts.get(i).isNull()      ){ orbits[i] = obts.get(i); }
+      if (obts.get(i).isEmpty()     ){ orbits[i] = obts.get(i); }
+      if (obts.get(i).isForbidden() ){ orbits[i] = obts.get(i); }
+      if (obts.get(i).isGasGiant()  ){ orbits[i] = obts.get(i); }
+      if (obts.get(i).isPlanetoid() ){ orbits[i] = obts.get(i); }
+      if (obts.get(i).isPlanet()    ){ orbits[i] = obts.get(i); }
     }
     
     println("******************************");
@@ -238,23 +258,6 @@ class Star extends Orbit {
     println("******************************");
     
     // ****
-
-    placeForbiddenOrbits();
-    placeCapturedPlanets();   // TO_DO: stub method, the decimal orbit values are tricky, need to think about it
-    placeGasGiants();         //   now that we have added TreeMap moons list to Orbit, could switch to that instead
-    placePlanetoidBelts();
-    placePlanets();
-    
-    ArrayList<Star> comps = getCompanions();
-    for (Star c : comps){
-      c.createSatellites();
-    }
-    if (closeCompanion != null){ closeCompanion.orbits = new Orbit[0]; } //closeCompanion.obts = new TreeMap(); } // otherwise we get a null reference later
-                                                                                                                  // uncertain whether same is true of the Map
-    if (debug >= 1){ 
-      println("Companions for " + this);
-      printArray(getCompanions());
-    }
   }    
     
   int generateCompanionCount(){
@@ -415,16 +418,12 @@ class Star extends Orbit {
   //  - DONE  orbit is suppressed by nearby companion star
   //  -         TO_DO (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
   //  - DONE  orbit is too hot to allow planets
-  // TO_DO: may need reworking once we switch to TreeMap
   void placeForbiddenOrbits(){
-    //if (obts.size() > 0){
-    if (orbits.length > 0){
-      //for (int i = 0; i < obts.size(); i++){
-      for (int i = 0; i < orbits.length; i++){
+    if (obts.size() > 0){
+      for (int i = 0; i < obts.size(); i++){
         if ((orbitInsideStar(i) || orbitMaskedByCompanion(i) || orbitIsTooHot(i)) &&
             orbitIsNullOrEmpty(i)){
-          orbits[i] = new Forbidden(this, i, orbitalZones[i]);
-          obts.put(i, orbits[i]);
+          obts.put(i, new Forbidden(this, i, orbitalZones[i]));
         }
       }
     }
@@ -482,8 +481,7 @@ class Star extends Orbit {
       for (int i = 0; i < gasGiantCount; i++){
         availableOrbits.shuffle();
         int index = availableOrbits.remove(0);
-        orbits[index] = new GasGiant(this, index, orbitalZones[index]);
-        obts.put(index, orbits[index]);
+        obts.put(index, new GasGiant(this, index, orbitalZones[index]));
       }
     } else {
       if (debug >= 1){ println("No Gas Giants in-system"); }
@@ -525,10 +523,8 @@ class Star extends Orbit {
       IntList orbitsInwardFromGiants = new IntList();   // might want to refactor this out, do it inline for now
       for (int i = 0; i < availableOrbits.size(); i++){
         int index = availableOrbits.get(i); 
-        if (index == orbits.length-1){ continue; }
-        // if (index == obts.size()-1){ continue; }
-        if (orbits[index].isGasGiant()){
-        // if (obts.get(index).isGasGiant()){
+        if (index == obts.size()-1){ continue; }
+        if (obts.get(index).isGasGiant()){
           orbitsInwardFromGiants.append(index);
           availableOrbits.remove(i);
         }
@@ -538,15 +534,13 @@ class Star extends Orbit {
         if (orbitsInwardFromGiants.size() > 0){
           orbitsInwardFromGiants.shuffle();
           int index = orbitsInwardFromGiants.remove(0);
-          orbits[index] = new Planetoid(this, index, orbitalZones[index]);
-          obts.put(index, orbits[index]);
+          obts.put(index, new Planetoid(this, index, orbitalZones[index]));
           continue;
         }
         if (availableOrbits.size() > 0){
           availableOrbits.shuffle();
           int index = availableOrbits.remove(0);
-          orbits[index] = new Planetoid(this, index, orbitalZones[index]);
-          obts.put(index, orbits[index]);
+          obts.put(index, new Planetoid(this, index, orbitalZones[index]));
         }
       }
     } else {
@@ -556,11 +550,9 @@ class Star extends Orbit {
 
   void placePlanets(){
     println("Placing Planets for " + this);
-    // for (int i = 0; i < obts.size(); i++){
-    for (int i = 0; i < orbits.length; i++){
+    for (int i = 0; i < obts.size(); i++){
       if (orbitIsNull(i)){
-        orbits[i] = new Planet(this, i, orbitalZones[i]);
-        obts.put(i, orbits[i]);
+        obts.put(i, new Planet(this, i, orbitalZones[i]));
       }
     }
   }
@@ -641,8 +633,7 @@ class Star extends Orbit {
   IntList availableOrbitsForGiants(){
     // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
     IntList result = new IntList();
-    //for (int i = 0; i < obts.size(); i++){
-    for (int i = 0; i < orbits.length; i++){
+    for (int i = 0; i < obts.size(); i++){
       if (orbitalZones[i].equals("Z") || orbitalZones[i].equals("X") || orbitalZones[i].equals("I")){ continue; }
       if (orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, no
         if (debug >= 1){ println("Orbit " + i + " qualifies"); }
@@ -659,8 +650,7 @@ class Star extends Orbit {
   // probably refactoring oppotunities w/ the similar Gas Giant method above - almost identical
   IntList availableOrbitsForPlanetoids(){
     IntList result = new IntList();
-    //for (int i = 0; i < obts.size(); i++){
-    for (int i = 0; i < orbits.length; i++){
+    for (int i = 0; i < obts.size(); i++){
       if (orbitIsNull(i)){                                         // should we also allow them to drop into Empty orbits? by RAW, I think not
         if (debug >= 1){ println("Orbit " + i + " qualifies"); }   // though they never precisely define "available orbits"
         result.append(i);
@@ -673,16 +663,13 @@ class Star extends Orbit {
   ArrayList<Star> getCompanions(){
     ArrayList<Star> comps = new ArrayList<Star>();
     
-    //for (int i = 0; i < obts.size(); i++){
-    for (int i = 0; i < orbits.length; i++){
-      //if (obts.get(i).isStar()){
-      if (orbits[i].isStar()){
-        comps.add((Star)orbits[i]);
-        //comps.add((Star)obts.get(i));
-        //comps.addAll( ((Star)orbits[i]).getCompanions() );  // Companions of companions - rare
-                                                              // also, doesn't match current usage for companions list
-                                                              // leave out for now, consider later
-                                                              // this method only returns companions orbiting THIS star
+    for (int i = 0; i < obts.size(); i++){
+      if (obts.get(i).isStar()){
+        comps.add((Star)obts.get(i));
+        //comps.addAll( ((Star)obts.get(i)).getCompanions() );  // Companions of companions - rare
+                                                                // also, doesn't match current usage for companions list
+                                                                // leave out for now, consider later
+                                                                // this method only returns companions orbiting THIS star
       }
     }
     return comps;
@@ -700,16 +687,21 @@ class Star extends Orbit {
   //  won't catch null pointers, but ideally we've rooted out all such cases
   //  and should squash any remaining bugs if not
   Boolean orbitIsNull(int _num){
-    return (orbits[_num] == null ||
-            orbits[_num].isNull());
-    //return obts.keySet().contains(_orbit);
+    if (obts.keySet().contains(_num)){
+      if (obts.get(_num).isNull()){ 
+        return true; 
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
   }
 
   Boolean orbitIsNullOrEmpty(int _num){
-    return (orbits[_num] == null ||
-            orbits[_num].isEmpty() ||
-            orbits[_num].isNull());
-    //return obts.keySet().contains(_orbit);            
+    if (orbitIsNull(_num)){ return true; }
+    if (obts.get(_num).isEmpty()){ return true; }
+    return false;
   }
 
   // Scouts includes data for Supergiants (Ia/Ib) but no means to generate randomly - leaving out
