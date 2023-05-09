@@ -5,8 +5,7 @@ abstract class Orbit {
   String orbitalZone;
   // radius in AU & km? as a query method?
   
-  TreeMap<Integer, Orbit> moons; // now very similar to the implementation in Star
-                                 // should assess unifying once we get moons working
+  TreeMap<Integer, Orbit> orbits;
   
   Dice roll;
   
@@ -20,7 +19,7 @@ abstract class Orbit {
     orbitNumber = _orbit;
     orbitalZone = _zone;
 
-    moons = new TreeMap();
+    orbits = new TreeMap();
 
     roll = new Dice();
   }
@@ -38,10 +37,10 @@ abstract class Orbit {
         int satelliteSize = generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
         if (satelliteSize == 0){
           if (debug == 2){  println("****** generating Ring for " + this.getClass()); }
-          moons.put(generateSatelliteOrbit(i, true), new Ring(this, this.orbitalZone));
+          orbits.put(generateSatelliteOrbit(i, true), new Ring(this, this.orbitalZone));
         } else {
           if (debug == 2){ println("****** generating Moon for " + this.getClass()); }
-          moons.put(generateSatelliteOrbit(i, false), new Moon(this, this.orbitalZone, satelliteSize));
+          orbits.put(generateSatelliteOrbit(i, false), new Moon(this, this.orbitalZone, satelliteSize));
         }
       }
     }
@@ -103,7 +102,7 @@ abstract class Orbit {
   }
 
   Boolean orbitIsTaken(int _orbit){
-    return moons.keySet().contains(_orbit);
+    return orbits.keySet().contains(_orbit);
   }
 
   int generateSatelliteSize(){ return 0; }  // keeping the compiler happy - see note above in createSatellites()
@@ -246,7 +245,7 @@ class GasGiant extends Orbit {
 
   String toString(){    // temporary override so we can peek at the structure
     String result = super.toString();
-    result += " " + moons.toString();
+    result += " " + orbits.toString();
     return result;
   }
 }
@@ -292,7 +291,7 @@ class Planet extends Orbit implements Habitable {
   
   String toString(){    // temporary override so we can peek at the structure
     String result = super.toString();
-    result += " " + moons.toString();
+    result += " " + orbits.toString();
     return result;
   }
 }

@@ -134,3 +134,8 @@ First portions are done -  the temp array has been eliminated, and all method
 calls in Star.createSatellite() are prior to initialization of the Orbit[] 
 array. We should be able to track down remaining references next, and eliminate
 it - then obts merges with the TreeMap in the superclass (currently Orbit.moons).
+
+And done! We now have a single data structure coming from the superclass, used
+for both moons and planets (and all the variants). Lots of additional cleanup
+and refactoring to do, and some potential bugs to investigate.
+

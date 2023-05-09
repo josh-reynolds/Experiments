@@ -87,10 +87,10 @@
 //  * DONE Adding debug levels to control console spew
 //  * DONE Orbit numbers for moons via TreeMap
 //  * FIX  BUG: infinite recursion if a planet/GG has more than three rings
-//  * .... Merge moons & orbits lists (Orbit vs. Star)
+//  * DONE Generating UWP for all Planets/Planetoids
+//  * DONE Merge moons & orbits lists (Orbit vs. Star)
 //  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Determine mainworld
-//  * .... Generating UWP for all Planets/Planetoids
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
 //  *      Unravel inheritance issues in UWP hierarchy
@@ -128,6 +128,7 @@
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      BUG: looks like parent pointer is null for primary and all companions
+//  *      BUG: moons/rings pass parent orbit# to super, probably not right
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: duplicate code in test methods
 //  *      REFACTOR: current ruleset and array to Ruleset class
