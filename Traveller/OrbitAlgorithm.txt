@@ -201,14 +201,6 @@ There are rules for which goes where, and a depth limit. Structure can be
 enforced and communicated through the parent back-reference, at least for the
 second-level entities, all of which orbit a Star only.
 
-Done - all ctors (except Star) have uniform calling convention, with just a 
-single special case with Moon:
-
-subclass (Orbit _barycenter, int _orbit, String _zone)
-  super(_barycenter, _orbit, _zone)
-
-
-
 Third-level is trickier - the only common class is the superclass.
 
 Tested the waters by first changing Planet/Planetoid's first argument to
@@ -221,6 +213,45 @@ of Composite anyway). As needed, we could downcast - and any such instances
 would be candidates for factoring into polymorphic method calls. GasGiant 
 most likely to cause problems - try that first. Worked trivially! Do the rest.
 
+Done - all ctors (except Star) have uniform calling convention, with just a 
+single special case with Moon:
+
+subclass (Orbit _barycenter, int _orbit, String _zone)
+  super(_barycenter, _orbit, _zone)
+
+On to Star...
+
+Besides the special values, the backreference is unique as it goes outside
+the Orbit hierarchy. Is it ever used? (And for that matter, is the _barycenter
+backreference in all the children used?) If we strip this out it simplifies
+matters.
+
+Other than the backreference to System, for Stars we have two cases:
+
+Primary stars: _barycenter==null, _orbit==-1, _zone==null
+   none of these fields make sense for the top of the tree
+Companion stars: _barycenter, _orbit, _zone
+   all these are valid, though the way we construct them, not used
+   (and the 'valid' results are somewhat nonsensical - zone for a Star?)
+
+We could approach at least two ways:
+
+* Overloaded ctors - one for the primary, another for the companions
+* Subclass Star and move variant behavior down the hierarchy
+
+Probably depends on whether we have any other behavioural differences
+outside the ctor. Review the class. We set a boolean flag in the ctor,
+and it is referenced 12 times.
+
+1 declaration
+3 ctor assignment
+1 logic (ctor fromJSON)
+1 logic (generateType())
+1 logic (generateSize())
+2 logic (createSatellites())
+1 logic (generateCompanionCount())
+1 logic (generateCompanionOrbits())
+1 logic (asJSON())
 
 
 
