@@ -37,10 +37,12 @@ abstract class Orbit {
         int satelliteSize = generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
         if (satelliteSize == 0){
           if (debug == 2){  println("****** generating Ring for " + this.getClass()); }
-          orbits.put(generateSatelliteOrbit(i, true), new Ring(this, this.orbitalZone));
+          int orbitNum = generateSatelliteOrbit(i, true); 
+          orbits.put(orbitNum, new Ring(this, orbitNum, this.orbitalZone));
         } else {
+          int orbitNum = generateSatelliteOrbit(i, false);
           if (debug == 2){ println("****** generating Moon for " + this.getClass()); }
-          orbits.put(generateSatelliteOrbit(i, false), new Moon(this, this.orbitalZone, satelliteSize));
+          orbits.put(orbitNum, new Moon(this, orbitNum, this.orbitalZone, satelliteSize));
         }
       }
     }
@@ -179,7 +181,7 @@ abstract class Orbit {
 class Empty extends Orbit {
   Empty(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    name = "Empty " + orbitNumber + orbitalZone;
+    name = "Empty " + orbitNumber + "-" + orbitalZone;
   }
   
   Boolean isEmpty(){ return true; }
@@ -188,7 +190,7 @@ class Empty extends Orbit {
 class Forbidden extends Orbit {
   Forbidden(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    name = "Forbidden " + orbitNumber + orbitalZone;
+    name = "Forbidden " + orbitNumber + "-" + orbitalZone;
   }
   
   Boolean isForbidden(){ return true; }
@@ -197,7 +199,7 @@ class Forbidden extends Orbit {
 class Null extends Orbit {
   Null(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    name = "Null " + orbitNumber + orbitalZone;
+    name = "Null " + orbitNumber + "-" + orbitalZone;
   }  
   
   Boolean isNull(){ return true; }
@@ -218,7 +220,7 @@ class GasGiant extends Orbit {
     int satelliteCount = generateSatelliteCount();
     createSatellites(satelliteCount);
     
-    name = size + "GG " + orbitNumber + orbitalZone;
+    name = size + "GG " + orbitNumber + "-" + orbitalZone;
   }  
 
   int generateSatelliteCount(){
@@ -266,7 +268,7 @@ class Planet extends Orbit implements Habitable {
     int satelliteCount = generateSatelliteCount();
     createSatellites(satelliteCount);
 
-    name = "Planet " + orbitNumber + orbitalZone + " " + uwp;
+    name = "Planet " + orbitNumber + "-" + orbitalZone + " " + uwp;
   }
   
   UWP getUWP(){ return uwp; }
@@ -302,7 +304,7 @@ class Planetoid extends Orbit implements Habitable {
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone); 
     uwp = generateUWP();
-    name = "Planetoid Belt " + orbitNumber + orbitalZone + " " + uwp;
+    name = "Planetoid Belt " + orbitNumber + "-" + orbitalZone + " " + uwp;
   }
 
   UWP getUWP(){ return uwp; }
@@ -323,15 +325,15 @@ class Planetoid extends Orbit implements Habitable {
 class Moon extends Planet {
   // need to work through inherited fields and hierarchy for these second-level children
 
-  Moon(Orbit _planet, String _zone, int _size){
-    super(_planet, _planet.orbitNumber, _zone);
-    if (debug == 2){ println("** Moon ctor(" + _planet.getClass() + ", " + _zone + ", " + _size + ")"); }
+  Moon(Orbit _barycenter, int _orbit, String _zone, int _size){
+    super(_barycenter, _orbit, _zone);
+    if (debug == 2){ println("** Moon ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ", " + _size + ")"); }
     
     uwp = generateUWP(_size); // super generates a UWP but doesn't have a size parameter
                               // and doing this via polymorphism seems like more code than
                               // this way
        
-    name = "Moon " + orbitNumber + orbitalZone + " " + uwp;
+    name = "Moon " + orbitNumber + "-"  + orbitalZone + " " + uwp;
   }
   
   UWP_ScoutsEx generateUWP(int _size){
@@ -342,9 +344,9 @@ class Moon extends Planet {
 }
 
 class Ring extends Planetoid {
-  Ring(Orbit _planet, String _zone){
-    super(_planet.barycenter, _planet.orbitNumber, _zone);
-    name = "Ring " + orbitNumber + orbitalZone + " " + uwp;
+  Ring(Orbit _barycenter, int _orbit, String _zone){
+    super(_barycenter, _orbit, _zone);
+    name = "Ring " + orbitNumber + "-" + orbitalZone + " " + uwp;
   }
   
   Boolean isRing(){ return true; }

@@ -201,6 +201,14 @@ There are rules for which goes where, and a depth limit. Structure can be
 enforced and communicated through the parent back-reference, at least for the
 second-level entities, all of which orbit a Star only.
 
+Done - all ctors (except Star) have uniform calling convention, with just a 
+single special case with Moon:
+
+subclass (Orbit _barycenter, int _orbit, String _zone)
+  super(_barycenter, _orbit, _zone)
+
+
+
 Third-level is trickier - the only common class is the superclass.
 
 Tested the waters by first changing Planet/Planetoid's first argument to
