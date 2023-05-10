@@ -139,3 +139,81 @@ And done! We now have a single data structure coming from the superclass, used
 for both moons and planets (and all the variants). Lots of additional cleanup
 and refactoring to do, and some potential bugs to investigate.
 
+5/10/23
+
+Compare ctors for all members of Orbit hierarchy. There's some inconsistency,
+which may be OK, as well as some odd looking calls to super and magic numbers.
+(Later we'll extend this comparison to the entire interface...)
+
+Orbit     (Orbit _barycenter, int _orbit, String _zone)
+
+Empty     (Star _barycenter,  int _orbit, String _zone)
+  super(_barycenter, _orbit, _zone);
+
+Forbidden (Star _barycenter,  int _orbit, String _zone)
+  super(_barycenter, _orbit, _zone);
+
+Null      (Star _barycenter,  int _orbit, String _zone)
+  super(_barycenter, _orbit, _zone);
+
+GasGiant  (Star _barycenter,  int _orbit, String _zone)
+  super(_barycenter, _orbit, _zone);
+
+Planet    (Orbit _barycenter, int _orbit, String _zone)
+  super(_barycenter, _orbit, _zone);
+
+Planetoid (Orbit _barycenter, int _orbit, String _zone)
+  super(_barycenter, _orbit, _zone);
+
+Moon      (Orbit _planet,                 String _zone, int _size)
+  super(_planet, _planet.orbitNumber, _zone);
+
+Ring      (Orbit _planet,                 String _zone)
+  super(_planet.barycenter, _planet.orbitNumber, _zone);
+
+Star      (Boolean _primary, System _parent)
+  super(null, -1, (String)null);
+
+Likely artifacts of putting this together over many days, as well as 
+following along with the RAW procedure as closely as I could. Some of
+this may still be OK, but we should reconcile & rationalize now.
+
+Star is the biggest outlier in terms of how it's handled. Then
+second-level satellites (Moons/Rings).
+
+Top level container     : primary Star
+Can contain             ~ 
+   2nd level leafs      : Empty
+                          Forbidden
+                          Null
+                          Planetoid
+
+   2nd level containers : companion Star
+               
+   2nd level containers : GasGiant
+                          Planet
+   Can contain          ~
+      3rd level leafs   : Moon
+                          Ring
+
+This isn't a 'pure' Composite where we can group and nest components ad hoc.
+There are rules for which goes where, and a depth limit. Structure can be
+enforced and communicated through the parent back-reference, at least for the
+second-level entities, all of which orbit a Star only.
+
+Third-level is trickier - the only common class is the superclass.
+
+Tested the waters by first changing Planet/Planetoid's first argument to
+Star. This causes downstream problems in Moon/Ring first from the super-ctor
+calls, then later queries against Star that fail with null references. Backing 
+this out for now.
+
+Another approach might be to handle everything via Orbit (kind of the point 
+of Composite anyway). As needed, we could downcast - and any such instances 
+would be candidates for factoring into polymorphic method calls. GasGiant 
+most likely to cause problems - try that first. Worked trivially! Do the rest.
+
+
+
+
+

@@ -538,7 +538,7 @@ class Star extends Orbit {
     for (int i : orbits.keySet()){                               // TO_DO: would be good to have a recursive method in Orbit
       Orbit o = orbits.get(i);
       println("Checking orbit: " + o);                         //   superclass like 'getHighestPop'
-      println("Leading candidate: " + candidate);              //   also, here's where we need to unify moons + orbits structures
+      println("Leading candidate: " + candidate);              //   also, here's where we need to unify moons + orbits structures (DONE)
                                                                //   so we can recursively walk the entire tree
       if (o.isHabitable()){
         UWP uwp = ((Habitable)o).getUWP();
