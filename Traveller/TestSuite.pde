@@ -27,6 +27,7 @@ class TestSuite {
     return result;
   }
 }
+// ===========================================================================
 
 class NavalBaseOnlyAtABStarports extends TestCase {
   NavalBaseOnlyAtABStarports(){
@@ -35,12 +36,8 @@ class NavalBaseOnlyAtABStarports extends TestCase {
   
   void run(System s){
     if (s.navalBase){
-      if (s.uwp.starport != 'A' && s.uwp.starport != 'B'){
-        details += "FAIL : " + s.name + " " + s.navalBase + " " + s.uwp.starport + "\n";
-        result += "F";
-      } else {
-        result += ".";
-      }
+      String message = s.name + " " + s.navalBase + " " + s.uwp.starport;
+      fails(s.uwp.starport != 'A' && s.uwp.starport != 'B', message);
     }    
   }
 }
@@ -52,12 +49,8 @@ class ScoutBaseOnlyAtABCDStarports extends TestCase {
   
   void run(System s){
     if (s.scoutBase){
-      if (s.uwp.starport == 'E' || s.uwp.starport == 'X'){
-        details += "FAIL : " + s.name + " " + s.scoutBase + " " + s.uwp.starport + "\n";
-        result += "F";            
-      } else {
-        result += ".";
-      }
+      String message = s.name + " " + s.scoutBase + " " + s.uwp.starport;
+      fails(s.uwp.starport == 'E' || s.uwp.starport == 'X', message);
     }  
   }
 }
@@ -69,23 +62,28 @@ class NoRoutesToRedZones extends TestCase {
   
   void run(System s){
     if (ruleset.supportsTravelZones()){
-      if (((System_CT81)s).travelZone.equals("Red") && s.routes.size() > 0){
-        details += "FAIL : " + s.name + " " + ((System_CT81)s).travelZone + " " + s.routes.size() + "\n";
-        result += "F";
-      } else {
-        result += ".";
-      }
+      String message = s.name + " " + ((System_CT81)s).travelZone + " " + s.routes.size();
+      fails(((System_CT81)s).travelZone.equals("Red") && s.routes.size() > 0, message);
     }
   }
 }
 
+
+// ===========================================================================
 class TestCase {
   String title = "Sample test";
   String result = "";
   String details = "";
   
-  void run(System s){
-    result = "PASS";
+  void run(System s){}
+  
+  void fails(Boolean _fail, String _message){
+    if (_fail){
+      details += "FAIL : " + _message + "\n";
+      result += "F";            
+    } else {
+      result += ".";
+    }
   }
   
   String getTitle(){
