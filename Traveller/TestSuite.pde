@@ -45,8 +45,6 @@ class TestSuite {
 // ===========================================================================
 
 // testing distance calculation algorithm
-// TO_DO: separate scaffolding - as is, this will run repeatedly for every 
-// hex in the subsector - really only need to run once
 class DistanceBetweenSubsectorCornersIsThirteen extends TestCase {
   DistanceBetweenSubsectorCornersIsThirteen(){ title = "Distance from top-left to bottom-right is 13"; }
   

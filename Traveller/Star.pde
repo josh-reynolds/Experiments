@@ -530,47 +530,40 @@ class Star extends Orbit {
     //  central star in the system; it may be in orbit around the binary companion,
     //  or it may orbit a gas giant or other world."
     
-    // First stab at this logic, probably will be over-verbose
-    
-    int highestPop = 0;
-    Habitable candidate = null;
-    
-    for (int i : orbits.keySet()){                               // TO_DO: would be good to have a recursive method in Orbit
-      Orbit o = orbits.get(i);
-      println("Checking orbit: " + o);                         //   superclass like 'getHighestPop'
-      println("Leading candidate: " + candidate);              //   also, here's where we need to unify moons + orbits structures (DONE)
-                                                               //   so we can recursively walk the entire tree
-      if (o.isHabitable()){
-        UWP uwp = ((Habitable)o).getUWP();
-        
-        if (candidate == null){
-          highestPop = uwp.pop;                    // these lines duplicated, prime candidate for extract method
-          candidate = (Habitable)o;
-          continue;
-        }
-        
-        if (uwp.pop > highestPop){
-          highestPop = uwp.pop;
-          candidate = (Habitable)o;
-          continue;
-        }
-        
-        if (uwp.pop == highestPop){          
-          if (((Orbit)candidate).isHabitableZone()){ continue; }
+    Habitable candidate = findHighestPop(this, 0);
+    println("*** WINNER IS: " + candidate);
+  }
 
-          if (o.isHabitableZone()){
-            highestPop = uwp.pop;
-            candidate = (Habitable)o;
-            continue;
-          }
-          
-          if (o.orbitNumber < ((Orbit)candidate).orbitNumber){
-            highestPop = uwp.pop;
-            candidate = (Habitable)o;
-          }
-        }
-      } 
+  Habitable findHighestPop(Orbit _o, int _depth){ // adding depth counter to assist w/ debugging
+    int maxPop = 0;
+    Habitable winner = null;
+    
+    println("findHighestPop depth " + _depth + " for " + _o);
+
+    // in case of ties, prefer Habitable zone
+    // if none, prefer closest to primary
+    
+    if (_o.isHabitable()){
+      println("... is Habitable");
+      winner = (Habitable)_o;
+      maxPop = ((Habitable)_o).getUWP().pop;
     }
+    
+    if (_o.isContainer()){
+      println("... is Container");
+      println(_o.orbits);
+      for (int i : _o.orbits.keySet()){
+        Orbit child = _o.orbits.get(i);
+        Habitable candidate = findHighestPop(child, _depth+1);
+        println("Candidate: " + candidate);
+        if (candidate == null){ return winner; }
+        if (candidate.getUWP().pop > maxPop){
+          winner = candidate;
+        }
+      }
+    }
+    
+    return winner;
   }
 
   // replacement for getRandomNullOrbit() using TreeMap structure

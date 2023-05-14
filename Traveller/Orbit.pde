@@ -162,6 +162,10 @@ abstract class Orbit {
     }
   }  
   
+  Boolean isContainer(){
+    return orbits.size() > 0;
+  }
+  
   Boolean isStar(){ return false; }
   Boolean isEmpty(){ return false; }
   Boolean isForbidden(){ return false; }
