@@ -91,6 +91,7 @@
 //  * DONE Merge moons & orbits lists (Orbit vs. Star)
 //  * FIX  BUG: moons/rings pass parent orbit# to super, probably not right
 //  * DONE REFACTOR: duplicate code in test methods
+//  * CNCL Deprecate Star String ctor (no, useful in testing)
 //  * .... Flesh out tests (this will take a while...)
 //  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Determine mainworld
@@ -99,7 +100,6 @@
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      System to use values from Star mainworld under Scouts ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
-//  *      Deprecate Star String ctor (hrm, might be useful for testing though)
 //  *      Assess including companions of companions in getCompanions() result
 //  *      Assess adding "two beyond habitable" code to orbital zone data file
 //  *      Rework Coordinate / Hex classes - Reference objects?

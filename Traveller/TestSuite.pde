@@ -9,6 +9,7 @@ class TestSuite {
     println(runAgainstSubsector(new SizeZeroWorldsHaveNoAtmosphere()));
     println(runAgainstSubsector(new SizeZeroWorldsHaveNoHydrosphere()));
     println(runOnce(new DistanceBetweenSubsectorCornersIsThirteen()));
+    println(runAgainstStar(new HabitableZoneForG0VIs3()));
   }
   
   // runs at the subsector level across all occupied systems
@@ -28,6 +29,23 @@ class TestSuite {
     }
     return result;
   }
+
+  // TO_DO: as we get more examples, this should be generalized to a fixture
+  //   also, the structure of this runner is mostly copy/paste - refactor!
+  String runAgainstStar(TestCase _t){
+    String result = "";
+    
+    Star s = new Star(true, null, "G0V");
+    
+    _t.run(s);
+    
+    result += _t.getTitle();
+    result += _t.getResult();
+    if (_t.getDetails().length() > 1){
+      result += _t.getDetails();
+    }
+    return result;    
+  }
   
   String runOnce(TestCase _t){
     String result = "";
@@ -43,6 +61,18 @@ class TestSuite {
   }
 }
 // ===========================================================================
+
+class HabitableZoneForG0VIs3 extends TestCase {
+  HabitableZoneForG0VIs3(){ title = "Habitable zone for a G0V star is orbit 3"; }
+  
+  void run(Star _s){
+    if (_s.type == 'G' && _s.decimal == 0 && _s.size == 5){ 
+      String zone = _s.orbitalZones[3];
+      String message = "G0V orbital zone recorded as " + zone;
+      fails(!zone.equals("H"), message);
+    }
+  }
+}
 
 // testing distance calculation algorithm
 class DistanceBetweenSubsectorCornersIsThirteen extends TestCase {
@@ -132,6 +162,8 @@ class TestCase {
   String details = "";
   
   void run(System _s){};
+  
+  void run(Star _s){};
   
   void run(){};
   

@@ -249,6 +249,7 @@ class System_ScoutsEx extends System_CT81 {
   //  - Extended/derived characteristics (save for later)
 
   Star primary;
+  Habitable mainworld;
   
   System_ScoutsEx(Coordinate _coord){
     super(_coord);
@@ -258,7 +259,7 @@ class System_ScoutsEx extends System_CT81 {
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       println("Primary: " + primary);
       primary.createSatellites();
-      primary.designateMainworld();
+      mainworld = primary.designateMainworld();
       println("PRIMARY : " + primary);
       //printArray(primary.orbits);
       println(primary.orbits);

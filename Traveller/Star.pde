@@ -28,7 +28,7 @@ class Star extends Orbit {
     orbitalZones = retrieveOrbitalZones();
   } 
 
-  Star(Boolean _primary, System _parent, String _s){               // TO_DO: deprecate this ctor
+  Star(Boolean _primary, System _parent, String _s){
     super(null, -1, (String)null);   // TO_DO: see note above in ctor
     primary = _primary;
     parent = _parent;
@@ -520,7 +520,7 @@ class Star extends Orbit {
   // TO_DO: need to save the result, so we either set a field on Star directly,
   // or return the value - going with void for now for ease of implementation
   // consider this is called by System so if return value, that's where the field lives
-  void designateMainworld(){
+  Habitable designateMainworld(){
     println("Finding mainworld");
     // Scouts p. 37: "The main world is the world in the system which has the greatest
     //  population. If more than one world has the same population, then select the world
@@ -545,6 +545,7 @@ class Star extends Orbit {
     println("WINNER IS: " + winner);
     println("@ @ @ @ @ @");
     
+    return winner;
   }
 
   // replacement for getRandomNullOrbit() using TreeMap structure
