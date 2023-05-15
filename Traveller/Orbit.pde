@@ -47,7 +47,23 @@ abstract class Orbit {
       }
     }
   }
-
+  
+  ArrayList<Habitable> getAllHabitables(){
+    ArrayList<Habitable> result = new ArrayList();
+    
+    if (isHabitable()){
+      result.add((Habitable)this);
+    }
+    
+    if (isContainer()){
+      for (int i : orbits.keySet()){
+        Orbit child = orbits.get(i);
+        result.addAll(child.getAllHabitables());
+      }
+    }
+    
+    return result;
+  }
   
   // The original implementation for this method was closely based on the Scouts text
   // however, that method runs into infinite regression and stack overflow
@@ -337,7 +353,7 @@ class Moon extends Planet {
                               // and doing this via polymorphism seems like more code than
                               // this way
        
-    name = "Moon " + orbitNumber + "-"  + orbitalZone + " " + uwp;
+    name = "Moon " + _barycenter.orbitNumber + ":" + orbitNumber + "-"  + orbitalZone + " " + uwp;
   }
   
   UWP_ScoutsEx generateUWP(int _size){
@@ -350,7 +366,7 @@ class Moon extends Planet {
 class Ring extends Planetoid {
   Ring(Orbit _barycenter, int _orbit, String _zone){
     super(_barycenter, _orbit, _zone);
-    name = "Ring " + orbitNumber + "-" + orbitalZone + " " + uwp;
+    name = "Ring " + _barycenter.orbitNumber + ":" + orbitNumber + "-" + orbitalZone + " " + uwp;
   }
   
   Boolean isRing(){ return true; }

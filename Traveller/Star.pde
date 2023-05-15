@@ -530,40 +530,21 @@ class Star extends Orbit {
     //  central star in the system; it may be in orbit around the binary companion,
     //  or it may orbit a gas giant or other world."
     
-    Habitable candidate = findHighestPop(this, 0);
-    println("*** WINNER IS: " + candidate);
-  }
-
-  Habitable findHighestPop(Orbit _o, int _depth){ // adding depth counter to assist w/ debugging
-    int maxPop = 0;
+    ArrayList<Habitable> candidates = this.getAllHabitables();
+    int maxPop = -1;
     Habitable winner = null;
-    
-    println("findHighestPop depth " + _depth + " for " + _o);
-
-    // in case of ties, prefer Habitable zone
-    // if none, prefer closest to primary
-    
-    if (_o.isHabitable()){
-      println("... is Habitable");
-      winner = (Habitable)_o;
-      maxPop = ((Habitable)_o).getUWP().pop;
-    }
-    
-    if (_o.isContainer()){
-      println("... is Container");
-      println(_o.orbits);
-      for (int i : _o.orbits.keySet()){
-        Orbit child = _o.orbits.get(i);
-        Habitable candidate = findHighestPop(child, _depth+1);
-        println("Candidate: " + candidate);
-        if (candidate == null){ return winner; }
-        if (candidate.getUWP().pop > maxPop){
-          winner = candidate;
-        }
+    for (Habitable h : candidates){
+      if (h.getUWP().pop > maxPop){
+        maxPop = h.getUWP().pop;
+        winner = h;
       }
     }
     
-    return winner;
+    println("@ @ @ @ @ @");
+    println(candidates);
+    println("WINNER IS: " + winner);
+    println("@ @ @ @ @ @");
+    
   }
 
   // replacement for getRandomNullOrbit() using TreeMap structure
