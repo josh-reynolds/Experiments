@@ -268,9 +268,7 @@ class UWP_ScoutsEx extends UWP {
     if (planet.isOuterZone()){ modifier -= 4; }
     
     int result = roll.two(size + modifier - 7);
-    if (size == 0 || result < 0){ result = 0; }        // includes size 'S' (numerically zero)
-    if (size <= 1 && planet.isMoon()){ result = 0; }   // see note above
-    
+
     Boolean farOuter = false;
     if (planet.isMoon()){
       farOuter = planet.barycenter.isAtLeastTwoBeyondHabitable();
@@ -278,6 +276,9 @@ class UWP_ScoutsEx extends UWP {
       farOuter = planet.isAtLeastTwoBeyondHabitable();
     }
     if (farOuter && roll.two() == 12){ result = 10; }
+
+    if (size == 0 || result < 0){ result = 0; }        // includes size 'S' (numerically zero)
+    if (size <= 1 && planet.isMoon()){ result = 0; }   // see note above          
           
     return result;    
   }
