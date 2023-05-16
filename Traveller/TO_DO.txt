@@ -92,9 +92,10 @@
 //  * FIX  BUG: moons/rings pass parent orbit# to super, probably not right
 //  * DONE REFACTOR: duplicate code in test methods
 //  * CNCL Deprecate Star String ctor (no, useful in testing)
+//  * DONE Determine mainworld
+//  * .... Complete UWP for mainworld and other Habitables in the System
 //  * .... Flesh out tests (this will take a while...)
 //  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
-//  * .... Determine mainworld
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
 //  *      Unravel inheritance issues in UWP hierarchy
@@ -130,6 +131,7 @@
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      BUG: looks like parent pointer is null for primary and all companions
+//  *      BUG: Ring generated with an 'A' atmosphere (Ring 6:1-O X0A0000-0)
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset

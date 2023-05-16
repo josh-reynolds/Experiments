@@ -517,9 +517,7 @@ class Star extends Orbit {
     }
   }
 
-  // TO_DO: need to save the result, so we either set a field on Star directly,
-  // or return the value - going with void for now for ease of implementation
-  // consider this is called by System so if return value, that's where the field lives
+  // TO_DO: may want to set a flag on the chosen world for use in UWP completion
   Habitable designateMainworld(){
     println("Finding mainworld");
     // Scouts p. 37: "The main world is the world in the system which has the greatest
@@ -538,12 +536,17 @@ class Star extends Orbit {
         maxPop = h.getUWP().pop;
         winner = h;
       }
+      
+      // TO_DO: lot of casting here, look for redesign to clean this up
+      if (h.getUWP().pop == maxPop){
+        if (((Orbit)h).isHabitableZone() || ((Orbit)winner).isHabitableZone()){      // habitable zone wins
+          if (((Orbit)h).isHabitableZone()){ winner = h; }
+        } else {                                                                     // else closest to primary
+          int direction = ((Orbit)h).orbitNumber - ((Orbit)winner).orbitNumber;      // current list ordered low to high
+          if (direction < 0){ winner = h; }                                          // so this may be redundant, but helps if list changes
+        }
+      }
     }
-    
-    println("@ @ @ @ @ @");
-    println(candidates);
-    println("WINNER IS: " + winner);
-    println("@ @ @ @ @ @");
     
     return winner;
   }

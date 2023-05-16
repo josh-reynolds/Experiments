@@ -271,6 +271,7 @@ class System_ScoutsEx extends System_CT81 {
           println(c.orbits);
         }
       }
+      println("MAINWORLD: " + mainworld);
     }
   }
 
