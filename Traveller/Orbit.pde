@@ -275,10 +275,14 @@ class GasGiant extends Orbit {
 interface Habitable {   // distinct from "Habitable Zone" - this just means "has a UWP"
   abstract UWP getUWP();
   abstract UWP_ScoutsEx generateUWP();
+  abstract void setMainworld(Boolean _isMainworld);
+  abstract Boolean isMainworld();
+  abstract void completeUWP();
 }
 
 class Planet extends Orbit implements Habitable { 
   UWP_ScoutsEx uwp;
+  Boolean mainworld;
   
   Planet(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
@@ -289,6 +293,7 @@ class Planet extends Orbit implements Habitable {
     createSatellites(satelliteCount);
 
     name = "Planet " + orbitNumber + "-" + orbitalZone + " " + uwp;
+    mainworld = false;
   }
   
   UWP getUWP(){ return uwp; }
@@ -308,6 +313,13 @@ class Planet extends Orbit implements Habitable {
     return new UWP_ScoutsEx(this);
   }
 
+  void setMainworld(Boolean _isMainworld){ mainworld = _isMainworld; }
+  Boolean isMainworld(){ return mainworld; }
+
+  void completeUWP(){
+    uwp.completeUWP(mainworld);
+  }
+
   Boolean isPlanet(){ return true; }
   Boolean isHabitable(){ return true; }
   
@@ -320,17 +332,26 @@ class Planet extends Orbit implements Habitable {
 
 class Planetoid extends Orbit implements Habitable {
   UWP_ScoutsEx uwp;
-
+  Boolean mainworld;
+  
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone); 
     uwp = generateUWP();
     name = "Planetoid Belt " + orbitNumber + "-" + orbitalZone + " " + uwp;
+    mainworld = false;
   }
 
   UWP getUWP(){ return uwp; }
 
   UWP_ScoutsEx generateUWP(){
     return new UWP_ScoutsEx(this);
+  }
+
+  void setMainworld(Boolean _isMainworld){ mainworld = _isMainworld; }
+  Boolean isMainworld(){ return mainworld; }
+
+  void completeUWP(){
+    uwp.completeUWP(mainworld);
   }
 
   Boolean isPlanetoid(){ return true; }

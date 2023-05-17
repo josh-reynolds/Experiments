@@ -233,6 +233,20 @@ class UWP_ScoutsEx extends UWP {
     tech     = 0;    
   }
   
+  void completeUWP(Boolean _isMainworld){
+    if (_isMainworld){                // for mainworld, gov/law/starport/tech identical to CT77
+      gov      = generateGov();
+      law      = generateLaw();
+      starport = generateStarport();
+      tech     = generateTech();
+    } else {
+      // need backreference to mainworld for the system
+      // subordinate government = 1D, +2 if mainworld gov 7+, 6 if mainworld gov 6
+      // subordinate law = 1D-3 + mainworld law
+      // 
+    }
+  }
+  
   UWP_ScoutsEx(JSONObject _json){
     super(_json);
   }

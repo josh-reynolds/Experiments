@@ -539,13 +539,25 @@ class Star extends Orbit {
       
       // TO_DO: lot of casting here, look for redesign to clean this up
       if (h.getUWP().pop == maxPop){
-        if (((Orbit)h).isHabitableZone() || ((Orbit)winner).isHabitableZone()){      // habitable zone wins
-          if (((Orbit)h).isHabitableZone()){ winner = h; }
-        } else {                                                                     // else closest to primary
-          int direction = ((Orbit)h).orbitNumber - ((Orbit)winner).orbitNumber;      // current list ordered low to high
-          if (direction < 0){ winner = h; }                                          // so this may be redundant, but helps if list changes
+        if (winner != null){                                                           // runtime null pointer error, though in practice this should always be assigned by this point
+          if (((Orbit)h).isHabitableZone() || ((Orbit)winner).isHabitableZone()){      // habitable zone wins
+            if (((Orbit)h).isHabitableZone()){ 
+              winner = h;
+            }
+          } else {                                                                     // else closest to primary
+            int direction = ((Orbit)h).orbitNumber - ((Orbit)winner).orbitNumber;      // current list ordered low to high
+            if (direction < 0){                                                        // so this may be redundant, but helps if list changes
+              winner = h; 
+            }                                          
+          }
         }
       }
+    }
+    
+    // need a separate loop as this depends on the value of the mainworld flag
+    if (winner != null){ winner.setMainworld(true); }                                  // potential runtime null pointer error here too to guard against
+    for (Habitable h : candidates){
+      h.completeUWP();
     }
     
     return winner;

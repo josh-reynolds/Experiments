@@ -48,8 +48,8 @@ class TradeClass_CT81 extends TradeClass {
   Boolean asteroid = false;
   Boolean icecapped = false;
   
-  TradeClass_CT81(UWP_CT81 _uwp){
-    super(_uwp);
+  TradeClass_CT81(UWP _uwp){   // UWP fields should be uniform across hierarchy - no need to be specific
+    super(_uwp);                    // and this causes issues for other UWP variants
     
     // agricultural/nonagricultural/industrial/nonindustrial/rich/poor identical to CT77
     

@@ -158,7 +158,7 @@ class System_CT81 extends System {
   }
   
   TradeClass generateTradeClass(UWP _uwp){
-    return new TradeClass_CT81((UWP_CT81)_uwp);
+    return new TradeClass_CT81(_uwp);   
   }
   
   UWP generateUWP(){
@@ -259,7 +259,13 @@ class System_ScoutsEx extends System_CT81 {
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       println("Primary: " + primary);
       primary.createSatellites();
+      
       mainworld = primary.designateMainworld();
+      uwp = mainworld.getUWP();                 // TO_DO: infrequent null pointer exception - issue filed in GitHub
+      navalBase = generateNavalBase();          // need to regenerate with the 'true' mainworld UWP - otherwise identical to CT77 
+      scoutBase = generateScoutBase();          // TO_DO: Scouts p. 37 notes base facilities at other worlds in the system
+      trade = generateTradeClass(uwp);
+                                                // TO_DO: routes need to be regenerated with updated starports?
       println("PRIMARY : " + primary);
       //printArray(primary.orbits);
       println(primary.orbits);

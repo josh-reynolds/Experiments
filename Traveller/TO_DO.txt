@@ -94,13 +94,19 @@
 //  * CNCL Deprecate Star String ctor (no, useful in testing)
 //  * DONE Determine mainworld
 //  * FIX  BUG: Ring generated with an 'A' atmosphere (Ring 6:1-O X0A0000-0)
-//  * .... Complete UWP for mainworld and other Habitables in the System
+//  * DONE Complete UWP for mainworld
+//  * DONE System to use values from Star mainworld under Scouts ruleset
+//  * .... Complete UWP for other Habitables in the System
 //  * .... Flesh out tests (this will take a while...)
 //  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
+//  * .... Assess case where system has no planets - overlooked in rules?
+//  *      Review UWP dependent values in System under ScoutsEx (bases, trade, routes, etc.)
+//  *      Orbit.toString() for Habitables is carrying old/invalid UWP
+//  *      BUG: Star.designateMainworld() sometimes fails to find a planet, leading to Null Pointer exception (filed issue in GitHub)
+//  *      Naval/Scout base facilities at non-mainworld locations
 //  *      Unravel inheritance issues in UWP hierarchy
-//  *      System to use values from Star mainworld under Scouts ruleset
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Assess including companions of companions in getCompanions() result
 //  *      Assess adding "two beyond habitable" code to orbital zone data file
@@ -112,7 +118,6 @@
 //  *      Parameter object for orbitCount/maxCompanion cluster in Star
 //  *      Rework approach to Far companions and orbit determination
 //  *      Flagging close/far companions - query methods?
-//  *      Assess case where system has no planets - overlooked in rules?
 //  *      Lots of debugging spew added during Scouts implementation - remove! (test?)
 //  *      UML-ish modeling and analysis
 //  *      Subsector density (and menu options for same)
