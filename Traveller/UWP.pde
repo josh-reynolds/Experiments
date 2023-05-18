@@ -210,7 +210,7 @@ class UWP_ScoutsEx extends UWP {
     hydro = generateHydro();
     pop   = generatePop();
 
-    // stubbing out following for the time being
+    // temporary values - will be populated once mainworld is established
     starport = 'X';
     gov      = 0;
     law      = 0; 
@@ -244,6 +244,20 @@ class UWP_ScoutsEx extends UWP {
       // subordinate government = 1D, +2 if mainworld gov 7+, 6 if mainworld gov 6
       // subordinate law = 1D-3 + mainworld law
       // 
+
+      System sys;                                // TO_DO: find a better way to plumb this value through, this is kinda ugly
+      if (planet.barycenter.isStar()){
+        sys = ((Star)planet.barycenter).parent;
+      } else {
+        sys = ((Star)planet.barycenter.barycenter).parent;
+      }
+      println("NOT MAINWORLD : " + planet + " : " + this + " : System = " + sys);
+      println("Mainworld in this system = " + ((System_ScoutsEx)sys).mainworld);
+      
+      // problem: mainworld is null at this point, not set until the call chain that calls this one completes
+      // (Planet(oid).completeUWP() called from Star.designateMainworld()
+      // really need to separate and finish the mainworld first, then loop through remainder
+      // (in addition to null reference, the final gov/law/etc. fields on the mainworld are needed in this block 
     }
   }
   
