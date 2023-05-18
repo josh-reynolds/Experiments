@@ -554,10 +554,19 @@ class Star extends Orbit {
       }
     }
     
-    // need a separate loop as this depends on the value of the mainworld flag
-    if (winner != null){ winner.setMainworld(true); }                                  // potential runtime null pointer error here too to guard against
+
+    if (winner != null){                                                               // potential runtime null pointer error here too to guard against
+      winner.setMainworld(true);                                 
+      winner.completeUWP();
+      println("MAINWORLD " + winner + " : System = " + parent + " : Mainworld = " + ((System_ScoutsEx)parent).mainworld);
+      ((System_ScoutsEx)parent).mainworld = winner;      /// TO_DO: need to rethink return value for this method... this is a hack
+    }
+
+    // need a separate loop as this depends on the value of the mainworld flag    
     for (Habitable h : candidates){
-      h.completeUWP();
+      if (!h.isMainworld()){
+        h.completeUWP();
+      }
     }
     
     return winner;

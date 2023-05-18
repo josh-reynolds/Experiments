@@ -257,7 +257,11 @@ class UWP_ScoutsEx extends UWP {
       // problem: mainworld is null at this point, not set until the call chain that calls this one completes
       // (Planet(oid).completeUWP() called from Star.designateMainworld()
       // really need to separate and finish the mainworld first, then loop through remainder
-      // (in addition to null reference, the final gov/law/etc. fields on the mainworld are needed in this block 
+      // (in addition to null reference, the final gov/law/etc. fields on the mainworld are needed in this block
+      //   put a hack in place upstream in Star.designateMainworld(), will need reworking
+      
+      Habitable main = ((System_ScoutsEx)sys).mainworld;
+      println("Mainworld UWP = " + main.getUWP());
     }
   }
   
