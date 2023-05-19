@@ -103,6 +103,7 @@
 //  * .... Add Scouts extended generation ruleset
 //  * .... Assess case where system has no planets - overlooked in rules?
 //  *      Review UWP dependent values in System under ScoutsEx (bases, trade, routes, etc.)
+//  *      Feed 'true' GasGiant count under ScoutsEx back to System
 //  *      Orbit.toString() for Habitables is carrying old/invalid UWP
 //  *      BUG: Star.designateMainworld() sometimes fails to find a planet, leading to Null Pointer exception (filed issue in GitHub)
 //  *      Naval/Scout base facilities at non-mainworld locations
@@ -142,6 +143,7 @@
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset
 //  *      REFACTOR: duplicated code in UWP_ScoutsEx ctors
+//  *      REFACTOR: aid - work up sequence diagram for ctors & build operations
 // ------------------------------------------------
 
 // After spending this much time with the Scouts algorithm, my suspicion

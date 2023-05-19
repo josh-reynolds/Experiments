@@ -240,10 +240,12 @@ class UWP_ScoutsEx extends UWP {
       starport = generateStarport();
       tech     = generateTech();
     } else {
-      // need backreference to mainworld for the system
-      // subordinate government = 1D, +2 if mainworld gov 7+, 6 if mainworld gov 6
-      // subordinate law = 1D-3 + mainworld law
-      // 
+      // need backreference to mainworld for the system - Scouts pp. 33 + 38
+      //  * subordinate government = 1D, +2 if mainworld gov 7+, 6 if mainworld gov 6; = 0 if pop = 0
+      //  * subordinate law = 1D-3 + mainworld law; = 0 if gov = 0
+      //  * 'note subordinate facilities'
+      //  * subordinate tech level = mainworld tech - 1; = mainworld tech if research lab / military facility
+      //  * spaceport type from table, modified by local pop
 
       System sys;                                // TO_DO: find a better way to plumb this value through, this is kinda ugly
       if (planet.barycenter.isStar()){
@@ -261,7 +263,13 @@ class UWP_ScoutsEx extends UWP {
       //   put a hack in place upstream in Star.designateMainworld(), will need reworking
       
       Habitable main = ((System_ScoutsEx)sys).mainworld;
-      println("Mainworld UWP = " + main.getUWP());
+      UWP mainUWP = main.getUWP();
+      println("Mainworld UWP = " + mainUWP);
+      
+      gov  = generateSubordinateGov(mainUWP.gov);
+      law  = generateSubordinateLaw(mainUWP.law);
+      tech = generateSubordinateTech(mainUWP.tech);
+      println("Subordinate UWP so far = " + this);
     }
   }
   
@@ -365,6 +373,41 @@ class UWP_ScoutsEx extends UWP {
     if (result < 0){ result = 0; }
     
     return result;
+  }
+  
+  int generateSubordinateGov(int _mainworldGov){
+    //  * subordinate government = 1D, +2 if mainworld gov 7+, 6 if mainworld gov 6; = 0 if pop = 0
+    println("Generate gov for " + this + " : mainworld gov = " + _mainworldGov);
+    
+    if (pop == 0          ){ return 0; }
+    if (_mainworldGov == 6){ return 6; }
+    
+    int dieThrow = roll.one();
+    if (_mainworldGov >= 7){ dieThrow += 2; }
+    
+    if (dieThrow < 5){
+      return dieThrow - 1;
+    } else {
+      return 6;
+    }
+  }
+  
+  int generateSubordinateLaw(int _mainworldLaw){
+    //  * subordinate law = 1D-3 + mainworld law; = 0 if gov = 0
+    println("Generate law for " + this + " : mainworld law = " + _mainworldLaw);
+    
+    if (gov == 0          ){ return 0; }
+    
+    return roll.one(_mainworldLaw - 3);
+  }
+  
+  int generateSubordinateTech(int _mainworldTech){
+    //  * subordinate tech level = mainworld tech - 1; = mainworld tech if research lab / military facility
+    println("Generate tech for " + this + " : mainworld tech = " + _mainworldTech);
+    
+    // TO_DO: adjust once subordinate facilities have been implemented
+    
+    return _mainworldTech - 1;
   }
   
   String toString(){
