@@ -517,7 +517,6 @@ class Star extends Orbit {
     }
   }
 
-  // TO_DO: may want to set a flag on the chosen world for use in UWP completion
   Habitable designateMainworld(){
     println("Finding mainworld");
     // Scouts p. 37: "The main world is the world in the system which has the greatest
@@ -529,6 +528,31 @@ class Star extends Orbit {
     //  or it may orbit a gas giant or other world."
     
     ArrayList<Habitable> candidates = this.getAllHabitables();
+    
+    // in some cases we can have a System with no Habitable orbits - need to insert one
+    // to prevent NullPointerException downstream, and to comply with Traveller assumptions -
+    // all systems can be represented by a UWP, which in terms here means 'has a Habitable'
+    // RAW doesn't address this possibility, though it is possible there
+    // simplest patch seems to be inserting a new Planet at the end of the orbits list
+    if (candidates.size() == 0){
+      println("No Habitables currently in-system - adding a new Planet");
+      int newOrbit = orbits.size();
+      Boolean addingOrbit = true;
+      while (addingOrbit){
+        orbits.put(newOrbit, new Null(this, newOrbit, orbitalZones[newOrbit]));
+        placeForbiddenOrbits();                   // need to test whether new orbit is valid
+        if (orbits.get(newOrbit).isNull()){
+          addingOrbit = false;
+        }
+        newOrbit++;
+      }
+      placePlanets();
+      candidates = this.getAllHabitables();
+    }
+
+    if (debug == 2){ println("**** Habitables list length = " + candidates.size()); }
+    if (debug == 2){ println("**** Orbits = " + orbits); }
+    
     int maxPop = -1;
     Habitable winner = null;
     for (Habitable h : candidates){

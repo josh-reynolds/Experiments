@@ -31,7 +31,8 @@ abstract class Orbit {
   // also, similarly named method in Star needs evaluation
   void createSatellites(int _satelliteCount){
     if (debug == 2){ println("**** Orbit.createSatellites(" + _satelliteCount + ") for " + this.getClass()); }
-    if (_satelliteCount <= 0){ 
+    if (_satelliteCount <= 0){
+      if (debug == 2){ println("**** No satellites for " + this.getClass()); }
     } else {
       for (int i = 0; i < _satelliteCount; i++){
         int satelliteSize = generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
