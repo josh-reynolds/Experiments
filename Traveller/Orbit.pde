@@ -194,7 +194,13 @@ abstract class Orbit {
   Boolean isRing(){ return false; }
   Boolean isHabitable(){ return false; }
 
-  String toString(){ return name; }
+  String toString(){ 
+    if (isHabitable()){
+      return name + " " + ((Habitable)this).getUWP();
+    } else {
+      return name;
+    }
+  }
 }
 
 //class Star extends Orbit {} // separate file/tab for this one
@@ -293,7 +299,7 @@ class Planet extends Orbit implements Habitable {
     int satelliteCount = generateSatelliteCount();
     createSatellites(satelliteCount);
 
-    name = "Planet " + orbitNumber + "-" + orbitalZone + " " + uwp;
+    name = "Planet " + orbitNumber + "-" + orbitalZone;
     mainworld = false;
   }
   
@@ -338,7 +344,7 @@ class Planetoid extends Orbit implements Habitable {
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone); 
     uwp = generateUWP();
-    name = "Planetoid Belt " + orbitNumber + "-" + orbitalZone + " " + uwp;
+    name = "Planetoid Belt " + orbitNumber + "-" + orbitalZone;
     mainworld = false;
   }
 
@@ -375,7 +381,7 @@ class Moon extends Planet {
                               // and doing this via polymorphism seems like more code than
                               // this way
        
-    name = "Moon " + _barycenter.orbitNumber + ":" + orbitNumber + "-"  + orbitalZone + " " + uwp;
+    name = "Moon " + _barycenter.orbitNumber + ":" + orbitNumber + "-"  + orbitalZone;
   }
   
   UWP_ScoutsEx generateUWP(int _size){
@@ -388,7 +394,7 @@ class Moon extends Planet {
 class Ring extends Planetoid {
   Ring(Orbit _barycenter, int _orbit, String _zone){
     super(_barycenter, _orbit, _zone);
-    name = "Ring " + _barycenter.orbitNumber + ":" + orbitNumber + "-" + orbitalZone + " " + uwp;
+    name = "Ring " + _barycenter.orbitNumber + ":" + orbitNumber + "-" + orbitalZone;
   }
   
   Boolean isRing(){ return true; }

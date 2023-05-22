@@ -99,13 +99,13 @@
 //  * DONE Assess case where system has no planets - overlooked in rules?
 //  * FIX  BUG: Star.designateMainworld() sometimes fails to find a planet, leading to Null Pointer exception (filed issue in GitHub)
 //  * DONE Complete UWP for other Habitables in the System
+//  * FIX  BUG: Orbit.toString() for Habitables is carrying old/invalid UWP
 //  * .... Flesh out tests (this will take a while...)
 //  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
 //  *      Review UWP dependent values in System under ScoutsEx (bases, trade, routes, etc.)
 //  *      Feed 'true' GasGiant count under ScoutsEx back to System
-//  *      Orbit.toString() for Habitables is carrying old/invalid UWP
 //  *      Naval/Scout base facilities at non-mainworld locations
 //  *      Other facilities at non-mainworld locations, and tech impact
 //  *      Unravel inheritance issues in UWP hierarchy
