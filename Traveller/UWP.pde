@@ -266,9 +266,10 @@ class UWP_ScoutsEx extends UWP {
       UWP mainUWP = main.getUWP();
       println("Mainworld UWP = " + mainUWP);
       
-      gov  = generateSubordinateGov(mainUWP.gov);
-      law  = generateSubordinateLaw(mainUWP.law);
-      tech = generateSubordinateTech(mainUWP.tech);
+      gov      = generateSubordinateGov(mainUWP.gov);
+      law      = generateSubordinateLaw(mainUWP.law);
+      starport = generateSubordinateStarport();     // actually a SPACEport per RAW, but we're sharing a field name w/ mainworlds...
+      tech     = generateSubordinateTech(mainUWP.tech);
       println("Subordinate UWP so far = " + this);
     }
   }
@@ -399,6 +400,32 @@ class UWP_ScoutsEx extends UWP {
     if (gov == 0          ){ return 0; }
     
     return roll.one(_mainworldLaw - 3);
+  }
+  
+  char generateSubordinateStarport(){
+    int modifier = 0;
+    if (pop >= 6){ modifier += 2; }
+    if (pop == 1){ modifier -= 2; }
+    if (pop == 0){ modifier -= 3; }    // text on p. 39 only has the previous two; this one is w/ the table on p. 29
+    int dieThrow = roll.one(modifier);
+    
+    switch(dieThrow){
+      case 1:
+      case 2:
+        return 'Y';
+      case 3:
+        return 'H';
+      case 4:
+      case 5:
+        return 'G';
+      case 6:
+      case 7:
+      case 8:
+        return 'F';
+      default:
+        println("Invalid result in generateSubordinateStarport()");
+        return 'Z';
+    }    
   }
   
   int generateSubordinateTech(int _mainworldTech){
