@@ -268,8 +268,8 @@ class UWP_ScoutsEx extends UWP {
       
       gov      = generateSubordinateGov(mainUWP.gov);
       law      = generateSubordinateLaw(mainUWP.law);
-      starport = generateSubordinateStarport();     // actually a SPACEport per RAW, but we're sharing a field name w/ mainworlds...
-      tech     = generateSubordinateTech(mainUWP.tech);
+      starport = generateSubordinateStarport();           // actually a SPACEport per RAW, but we're sharing a field name w/ mainworlds...
+      tech     = generateSubordinateTech(mainUWP.tech);   // will be adjusted later after facilities are generated
       println("Subordinate UWP so far = " + this);
     }
   }

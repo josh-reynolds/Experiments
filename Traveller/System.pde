@@ -261,11 +261,12 @@ class System_ScoutsEx extends System_CT81 {
       primary.createSatellites();
       
       mainworld = primary.designateMainworld();
-      uwp = mainworld.getUWP();                 // TO_DO: infrequent null pointer exception - issue filed in GitHub
+      uwp = mainworld.getUWP();                 
       navalBase = generateNavalBase();          // need to regenerate with the 'true' mainworld UWP - otherwise identical to CT77 
-      scoutBase = generateScoutBase();          // TO_DO: Scouts p. 37 notes base facilities at other worlds in the system
+      scoutBase = generateScoutBase();          
       trade = generateTradeClass(uwp);
-                                                // TO_DO: routes need to be regenerated with updated starports?
+      generateFacilities();
+                                                // TO_DO: routes need to be regenerated with updated starports? travel zones?
       println("PRIMARY : " + primary);
       //printArray(primary.orbits);
       println(primary.orbits);
@@ -287,6 +288,78 @@ class System_ScoutsEx extends System_CT81 {
     if (occupied){
       primary = new Star(true, this, _json.getJSONObject("Primary"));
     }
+  }
+  
+  
+  void generateFacilities(){
+    if (navalBase){
+      mainworld.addFacility("Naval Base");
+    }
+    
+    if (scoutBase){
+      mainworld.addFacility("Scout Base");
+    }
+    
+    for (Habitable h : primary.getAllHabitables()){
+      if (h.isMainworld()){ continue; }
+      
+      // Scouts p. 37 - base facilities at other planets in the system
+      // Naval Base
+      // Scout Base
+      
+      // Scouts p. 38 - other subordinate facilities
+      // Farming
+      if (((Orbit)h).isHabitableZone() && 
+          h.getUWP().atmo  > 3 &&
+          h.getUWP().atmo  < 10 &&
+          h.getUWP().hydro > 3 &&
+          h.getUWP().hydro < 9 &&
+          h.getUWP().pop   > 1){
+            h.addFacility("Farming");
+      }
+      
+      // Mining
+      if (this.trade.industrial &&
+          h.getUWP().pop   > 1){
+            h.addFacility("Mining");
+      }
+      
+      // Colony
+      if (h.getUWP().gov == 6 &&
+          h.getUWP().pop > 4){
+            h.addFacility("Colony");
+      }
+      
+      // Research Lab
+      if (mainworld.getUWP().tech > 8 && mainworld.getUWP().pop > 0){
+        int modifier = 0;
+        if (mainworld.getUWP().tech > 9){ modifier += 2; }
+        int dieThrow = roll.two(modifier);
+        if (dieThrow > 10){
+          h.addFacility("Research Lab");
+          if (h.getUWP().tech < mainworld.getUWP().tech){
+            h.getUWP().tech = mainworld.getUWP().tech;
+          }
+        }
+      }
+      
+      // TO_DO: Scouts p. 38: "Often, a military base can be noted with the symbol M in the base column of the statistics for the system"
+      // Military Base
+      if (!this.trade.poor && h.getUWP().pop > 0){
+        int modifier = 0;
+        if (mainworld.getUWP().pop > 7){ modifier += 1; }
+        if (mainworld.getUWP().atmo == h.getUWP().atmo){ modifier += 2; }
+        int dieThrow = roll.two(modifier);
+        if (dieThrow > 11){
+          h.addFacility("Military Base");
+          if (h.getUWP().tech < mainworld.getUWP().tech){
+            h.getUWP().tech = mainworld.getUWP().tech;
+          }
+        }        
+        
+      }
+    }
+    
   }
   
   String toString(){

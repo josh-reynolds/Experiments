@@ -196,7 +196,7 @@ abstract class Orbit {
 
   String toString(){ 
     if (isHabitable()){
-      return name + " " + ((Habitable)this).getUWP();
+      return name + " " + ((Habitable)this).getUWP() + " " + ((Habitable)this).getFacilities();
     } else {
       return name;
     }
@@ -285,11 +285,14 @@ interface Habitable {   // distinct from "Habitable Zone" - this just means "has
   abstract void setMainworld(Boolean _isMainworld);
   abstract Boolean isMainworld();
   abstract void completeUWP();
+  abstract void addFacility(String _facility);
+  abstract ArrayList<String> getFacilities();
 }
 
 class Planet extends Orbit implements Habitable { 
   UWP_ScoutsEx uwp;
   Boolean mainworld;
+  ArrayList<String> facilities;
   
   Planet(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
@@ -301,6 +304,7 @@ class Planet extends Orbit implements Habitable {
 
     name = "Planet " + orbitNumber + "-" + orbitalZone;
     mainworld = false;
+    facilities = new ArrayList();
   }
   
   UWP getUWP(){ return uwp; }
@@ -327,6 +331,14 @@ class Planet extends Orbit implements Habitable {
     uwp.completeUWP(mainworld);
   }
 
+  void addFacility(String _facility){
+    facilities.add(_facility);
+  }
+
+  ArrayList<String> getFacilities(){
+    return facilities;
+  }
+
   Boolean isPlanet(){ return true; }
   Boolean isHabitable(){ return true; }
   
@@ -340,12 +352,14 @@ class Planet extends Orbit implements Habitable {
 class Planetoid extends Orbit implements Habitable {
   UWP_ScoutsEx uwp;
   Boolean mainworld;
+  ArrayList<String> facilities;
   
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone); 
     uwp = generateUWP();
     name = "Planetoid Belt " + orbitNumber + "-" + orbitalZone;
     mainworld = false;
+    facilities = new ArrayList();
   }
 
   UWP getUWP(){ return uwp; }
@@ -359,6 +373,14 @@ class Planetoid extends Orbit implements Habitable {
 
   void completeUWP(){
     uwp.completeUWP(mainworld);
+  }
+
+  void addFacility(String _facility){
+    facilities.add(_facility);
+  }
+
+  ArrayList<String> getFacilities(){
+    return facilities;
   }
 
   Boolean isPlanetoid(){ return true; }
