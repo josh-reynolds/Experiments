@@ -250,6 +250,7 @@ class System_ScoutsEx extends System_CT81 {
 
   Star primary;
   Habitable mainworld;
+  int gasGiantCount;
   
   System_ScoutsEx(Coordinate _coord){
     super(_coord);
@@ -259,6 +260,15 @@ class System_ScoutsEx extends System_CT81 {
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       println("Primary: " + primary);
       primary.createSatellites();
+      
+      ArrayList gasGiants = primary.getAllGasGiants();
+      if (gasGiants.size() > 0){
+        gasGiant = true;
+        gasGiantCount = gasGiants.size();
+      } else {
+        gasGiant = false;
+        gasGiantCount = 0;
+      }
       
       mainworld = primary.designateMainworld();
       uwp = mainworld.getUWP();                 

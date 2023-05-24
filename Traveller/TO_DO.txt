@@ -101,12 +101,12 @@
 //  * DONE Complete UWP for other Habitables in the System
 //  * FIX  BUG: Orbit.toString() for Habitables is carrying old/invalid UWP
 //  * DONE Subordinate facilities at non-mainworld locations, and tech impact
+//  * DONE Feed 'true' GasGiant count under ScoutsEx back to System
 //  * .... Flesh out tests (this will take a while...)
 //  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
 //  *      Review UWP dependent values in System under ScoutsEx (bases, trade, routes, etc.)
-//  *      Feed 'true' GasGiant count under ScoutsEx back to System
 //  *      Naval/Scout base facilities at non-mainworld locations
 //  *      Military base in System base listing
 //  *      Unravel inheritance issues in UWP hierarchy
@@ -146,6 +146,7 @@
 //  *      REFACTOR: case statements in Ruleset
 //  *      REFACTOR: duplicated code in UWP_ScoutsEx ctors
 //  *      REFACTOR: aid - work up sequence diagram for ctors & build operations
+//  *      REFACTOR: create generic/templatize query across all orbits, merging Habitables/GasGiants queries
 // ------------------------------------------------
 
 // After spending this much time with the Scouts algorithm, my suspicion

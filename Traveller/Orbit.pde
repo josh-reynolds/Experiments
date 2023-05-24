@@ -66,6 +66,25 @@ abstract class Orbit {
     return result;
   }
   
+  // TO_DO: clear pattern between this and the Habitable query
+  //   should refactor this to a templatized function 
+  ArrayList<GasGiant> getAllGasGiants(){
+    ArrayList<GasGiant> result = new ArrayList();
+    
+    if (isGasGiant()){
+      result.add((GasGiant)this);
+    }
+    
+    if (isContainer()){
+      for (int i : orbits.keySet()){
+        Orbit child = orbits.get(i);
+        result.addAll(child.getAllGasGiants());
+      }
+    }
+    
+    return result;
+  }
+  
   // The original implementation for this method was closely based on the Scouts text
   // however, that method runs into infinite regression and stack overflow
   // when there are many moons (most likely case if there are more than three rings)
