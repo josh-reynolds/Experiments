@@ -102,6 +102,7 @@
 //  * FIX  BUG: Orbit.toString() for Habitables is carrying old/invalid UWP
 //  * DONE Subordinate facilities at non-mainworld locations, and tech impact
 //  * DONE Feed 'true' GasGiant count under ScoutsEx back to System
+//  * FIX  BUG: under ScoutsEx rules, the TextPanel list sometimes shows "DMDM" (no space) in Star column
 //  * .... Flesh out tests (this will take a while...)
 //  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Add captured planets
@@ -110,6 +111,7 @@
 //  *      Naval/Scout base facilities at non-mainworld locations
 //  *      Military base in System base listing
 //  *      Unravel inheritance issues in UWP hierarchy
+//  *      Ambiguous in RAW - but Close Companions logically should not have any planets
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Assess including companions of companions in getCompanions() result
 //  *      Assess adding "two beyond habitable" code to orbital zone data file
@@ -140,7 +142,7 @@
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      BUG: looks like parent pointer is null for primary and all companions
-//  *      BUG: under ScoutsEx rules, the TextPanel list sometimes shows "DMDM" (no space) in Star column
+//  *      BUG: generateSubordinateStarport() is printing out lots of "Invalid result"
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset

@@ -253,8 +253,6 @@ class UWP_ScoutsEx extends UWP {
       } else {
         sys = ((Star)planet.barycenter.barycenter).parent;
       }
-      println("NOT MAINWORLD : " + planet + " : " + this + " : System = " + sys);
-      println("Mainworld in this system = " + ((System_ScoutsEx)sys).mainworld);
       
       // problem: mainworld is null at this point, not set until the call chain that calls this one completes
       // (Planet(oid).completeUWP() called from Star.designateMainworld()
@@ -264,13 +262,11 @@ class UWP_ScoutsEx extends UWP {
       
       Habitable main = ((System_ScoutsEx)sys).mainworld;
       UWP mainUWP = main.getUWP();
-      println("Mainworld UWP = " + mainUWP);
       
       gov      = generateSubordinateGov(mainUWP.gov);
       law      = generateSubordinateLaw(mainUWP.law);
       starport = generateSubordinateStarport();           // actually a SPACEport per RAW, but we're sharing a field name w/ mainworlds...
       tech     = generateSubordinateTech(mainUWP.tech);   // will be adjusted later after facilities are generated
-      println("Subordinate UWP so far = " + this);
     }
   }
   
@@ -378,7 +374,6 @@ class UWP_ScoutsEx extends UWP {
   
   int generateSubordinateGov(int _mainworldGov){
     //  * subordinate government = 1D, +2 if mainworld gov 7+, 6 if mainworld gov 6; = 0 if pop = 0
-    println("Generate gov for " + this + " : mainworld gov = " + _mainworldGov);
     
     if (pop == 0          ){ return 0; }
     if (_mainworldGov == 6){ return 6; }
@@ -395,10 +390,7 @@ class UWP_ScoutsEx extends UWP {
   
   int generateSubordinateLaw(int _mainworldLaw){
     //  * subordinate law = 1D-3 + mainworld law; = 0 if gov = 0
-    println("Generate law for " + this + " : mainworld law = " + _mainworldLaw);
-    
     if (gov == 0          ){ return 0; }
-    
     return roll.one(_mainworldLaw - 3);
   }
   
@@ -430,9 +422,7 @@ class UWP_ScoutsEx extends UWP {
   
   int generateSubordinateTech(int _mainworldTech){
     //  * subordinate tech level = mainworld tech - 1; = mainworld tech if research lab / military facility
-    println("Generate tech for " + this + " : mainworld tech = " + _mainworldTech);
-    
-    // TO_DO: adjust once subordinate facilities have been implemented
+    // this value is adjusted once subordinate facilities have been created
     
     return _mainworldTech - 1;
   }

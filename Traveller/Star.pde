@@ -647,7 +647,13 @@ class Star extends Orbit {
     ArrayList<Star> comps = new ArrayList<Star>();
     
     for (int i : orbits.keySet()){
-      if (orbits.get(i).isStar()){
+      if (orbits.get(i).isStar() && orbits.get(i) != closeCompanion){
+        if (orbits.get(i) == closeCompanion){ 
+          println(" MATCH CLOSE COMPANION ");
+          println(" " + orbits.get(i).hashCode());
+          println(" " + closeCompanion.hashCode());
+        }
+        
         comps.add((Star)orbits.get(i));
         //comps.addAll( ((Star)obts.get(i)).getCompanions() );  // Companions of companions - rare
                                                                 // also, doesn't match current usage for companions list
