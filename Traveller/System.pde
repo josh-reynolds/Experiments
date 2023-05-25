@@ -275,16 +275,15 @@ class System_ScoutsEx extends System_CT81 {
       navalBase = generateNavalBase();          // need to regenerate with the 'true' mainworld UWP - otherwise identical to CT77 
       scoutBase = generateScoutBase();          
       trade = generateTradeClass(uwp);
+      travelZone = generateTravelZone();      
       generateFacilities();
                                                 // TO_DO: routes need to be regenerated with updated starports? travel zones?
       println("PRIMARY : " + primary);
-      //printArray(primary.orbits);
       println(primary.orbits);
       ArrayList<Star> comps = primary.getCompanions();
       if (comps.size() > 0){
         for (Star c : comps){
           println("COMPANION : " + c);
-          //printArray(c.orbits);
           println(c.orbits);
         }
       }
@@ -366,10 +365,8 @@ class System_ScoutsEx extends System_CT81 {
             h.getUWP().tech = mainworld.getUWP().tech;
           }
         }        
-        
       }
     }
-    
   }
   
   String toString(){

@@ -194,3 +194,4 @@ class TestCase {
 // Rings have 0 population
 // Moons/Rings have the same orbital zone as their parent (barycenter)
 // No null orbits remain after system is created/populated
+// Close companions are not listed as regular companions

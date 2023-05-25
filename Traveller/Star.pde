@@ -300,14 +300,6 @@ class Star extends Orbit {
     }
   }  
 
-  Orbit[] createOrbits(int _orbitCount, int _maxCompanion){  // TO_DO: only sizes the array - will go away once TreeMap is in place since that sizes dynamically
-    if (_orbitCount <= _maxCompanion){
-      return new Orbit[_maxCompanion+1];   // TO_DO: off by one if there is a CLOSE companion or if both orbitCount + maxCompanion are zero
-    } else {
-      return new Orbit[_orbitCount];
-    }    
-  }
-
   void placeNullOrbits(int _maxOrbit){    
     for (int i = 0; i < _maxOrbit; i++){
       if (!orbits.keySet().contains(i)){                                             // TO_DO: will be replaced with orbitIsTaken in the superclass

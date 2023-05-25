@@ -104,11 +104,12 @@
 //  * DONE Feed 'true' GasGiant count under ScoutsEx back to System
 //  * FIX  BUG: under ScoutsEx rules, the TextPanel list sometimes shows "DMDM" (no space) in Star column
 //  * FIX  BUG: generateSubordinateStarport() is printing out lots of "Invalid result"
+//  * DONE Review UWP dependent values in System under ScoutsEx (bases, trade, routes, etc.)
+//  * DONE Regenerate Travel Zone with final UWP
 //  * .... Flesh out tests (this will take a while...)
 //  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Add captured planets
 //  * .... Add Scouts extended generation ruleset
-//  *      Review UWP dependent values in System under ScoutsEx (bases, trade, routes, etc.)
 //  *      Naval/Scout base facilities at non-mainworld locations
 //  *      Military base in System base listing
 //  *      Unravel inheritance issues in UWP hierarchy
@@ -136,6 +137,7 @@
 //  *      Detailed systems/worlds
 //  *      Subsector statistics (pop distribution etc.)
 //  *      Name generation module with more variety
+//  *      'Inspector' mode wired through UI as debugging aid
 //  *      SIDE PROJECT: statistical analysis of large numbers of UWPs, per ruleset
 //  *      SIDE PROJECT: "linter" for output files to verify correctness
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
