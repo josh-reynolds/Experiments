@@ -402,6 +402,9 @@ class UWP_ScoutsEx extends UWP {
     int dieThrow = roll.one(modifier);
     
     switch(dieThrow){
+      case -2:
+      case -1:
+      case 0:      
       case 1:
       case 2:
         return 'Y';

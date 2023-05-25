@@ -103,6 +103,7 @@
 //  * DONE Subordinate facilities at non-mainworld locations, and tech impact
 //  * DONE Feed 'true' GasGiant count under ScoutsEx back to System
 //  * FIX  BUG: under ScoutsEx rules, the TextPanel list sometimes shows "DMDM" (no space) in Star column
+//  * FIX  BUG: generateSubordinateStarport() is printing out lots of "Invalid result"
 //  * .... Flesh out tests (this will take a while...)
 //  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Add captured planets
@@ -142,7 +143,6 @@
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      BUG: looks like parent pointer is null for primary and all companions
-//  *      BUG: generateSubordinateStarport() is printing out lots of "Invalid result"
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset
