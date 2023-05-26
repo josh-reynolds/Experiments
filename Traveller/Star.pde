@@ -302,7 +302,7 @@ class Star extends Orbit {
 
   void placeNullOrbits(int _maxOrbit){    
     for (int i = 0; i < _maxOrbit; i++){
-      if (!orbits.keySet().contains(i)){                                             // TO_DO: will be replaced with orbitIsTaken in the superclass
+      if (!orbitIsTaken(i)){                                 
         orbits.put(i, new Null(this, i, orbitalZones[i]));
       }
     }
@@ -314,7 +314,7 @@ class Star extends Orbit {
     if (_maxCompanion - _orbitCount > 0){
       int startCount = max(0, _orbitCount);
       for (int i = startCount; i < orbits.size(); i++){
-        if (!orbits.keySet().contains(i) || orbits.get(i).isNull()){                    // TO_DO: will be replaced with orbitIsTaken in the superclass
+        if (!orbitIsTaken(i) || orbits.get(i).isNull()){
           orbits.put(i, new Empty(this, i, orbitalZones[i]));
         }
       }

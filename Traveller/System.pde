@@ -277,7 +277,7 @@ class System_ScoutsEx extends System_CT81 {
       trade = generateTradeClass(uwp);
       travelZone = generateTravelZone();      
       generateFacilities();
-                                                // TO_DO: routes need to be regenerated with updated starports? travel zones?
+                                                
       println("PRIMARY : " + primary);
       println(primary.orbits);
       ArrayList<Star> comps = primary.getCompanions();

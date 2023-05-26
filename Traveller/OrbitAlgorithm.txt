@@ -310,6 +310,13 @@ a few remaining gaps:
 
 TreeMap seems most significant, assess that next.
 
+(Walking through, finding another small hitch - all Orbit subclasses
+take an integer value in their ctors, which is then passed up to the 
+super ctor for setting the orbitNumber. Since we only expect Planets
+to be captured - not Planetoid/GasGiant/Moon/Ring/etc. - we can just
+add a new ctor to Planet that takes a float, and possibly corresponding
+ctor in Orbit... we'd also need to slightly adjust the other ctor calls.)
+
 
 
 
