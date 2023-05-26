@@ -279,9 +279,9 @@ class UWP_ScoutsEx extends UWP {
     if (planet.isPlanetoid()){ return 0; }
 
     int modifier = 0;
-    if (planet.orbitNumber == 0  ){ modifier -= 5; }
-    if (planet.orbitNumber == 1  ){ modifier -= 4; }
-    if (planet.orbitNumber == 2  ){ modifier -= 2; }
+    if (planet.getOrbitNumber() == 0  ){ modifier -= 5; }
+    if (planet.getOrbitNumber() == 1  ){ modifier -= 4; }
+    if (planet.getOrbitNumber() == 2  ){ modifier -= 2; }
     if (planet.isOrbitingClassM()){ modifier -= 2; }
     int result = roll.two(modifier - 2);  
     

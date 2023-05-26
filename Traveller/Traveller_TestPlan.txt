@@ -41,3 +41,17 @@ Scouts	Print-friendly	New
 Scouts	Print-friendly	Load
 
 
+=======================================
+5/26/23
+
+I've overhauled the TestSuite class since writing the notes above. Still
+a bit primitive, but a test harness structure is emerging. Mimicking
+JUnit, at least my memory of it. Authoring new tests is fairly simple
+with minimal boilerplate - repeated/common code is factored out.
+
+Still exploring the 'runner' space. As we apply to different classes, the
+ways a test is invoked (and what kind of entities it expects) changes.
+Most notable is whether the test expects to run across a collection and
+gather net results, or against a single class. Also 'run once.' My 
+version mingles runner & fixture. This will get further refactored as
+more test variants are added.

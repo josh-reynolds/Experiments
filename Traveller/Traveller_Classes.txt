@@ -363,3 +363,215 @@ Leaf      - Empty, Forbidden, Null, Planetoid, Moon, Ring
 (Habitable) as already noted is orthogonal to this structure. It means "has
 a UWP" and is an interface implemented by Planet/Moon/Planetoid/Ring.
 
+
+=========================================
+5/26/23
+
+Above reworking is essentially complete (and Scouts is nearly feature complete).
+Lots of technical debt and no doubt bugs to handle from here. Exploring the space 
+below.
+
+
+-------------------------------------------
+Scenario: NEW, rules == "Scouts (Extended)"
+-------------------------------------------
+
+REVIEW for overrides/polymorphic calls
+
+new Subsector()
+  [for each coordinate]: 
+    ruleset.newSystem()
+      System_ScoutsEx.ctor()
+        System_CT81.ctor()
+          System.ctor()
+            [UI/utility stuff]
+            [set / if occupied]:
+              System_CT81.generateUWP()        // overridden, timing issue, is 'rerun'
+                UWP_CT81.ctor()
+              System.generateNavalBase()       // timing issue, is rerun
+              System.generateScoutBase()       // timing issue, is rerun
+              [set / if GasGiant]              // timing issue, is rerun
+              System_CT81.generateTradeClass() // overridden, timing issue, is rerun
+                TradeClass_CT81.ctor()
+              [set name]
+              [initialize routes list]
+          System_CT81.generateTravelZone()     // -- timing issue, need to rerun
+        Star.ctor()
+          Orbit.ctor()
+          Star.generateType()
+          Star.generateSize()
+          Star.retrieveOrbitalZones()
+        Star.createSatellites()
+          Star.generateCompanionCount()
+          [for each companion]:
+            Star.ctor()
+            Star.generateCompanionOrbits()
+          Star.calculateMaxOrbits()
+          Star.placeNullOrbits()
+            Null.ctor()
+              Orbit.ctor()
+          Star.fillEmptyOrbits()
+            Empty.ctor()
+              Orbit.ctor()
+          Star.placeEmptyOrbits()
+            Star.getRandomUnassignedOrbit()
+            Empty.ctor()
+              Orbit.ctor()
+          Star.placeForbiddenOrbits()
+            Forbidden.ctor()
+              Orbit.ctor()
+          Star.placeCapturedPlanets()          // still just a stub
+          Star.placeGasGiants()
+            Star.availableOrbitsForGiants()
+            GasGiant.ctor()
+              Orbit.ctor()
+              GasGiant.generateSatelliteCount()
+              Orbit.createSatellites()
+                xxx
+
+          Star.placePlanetoidBelts()
+            Star.availableOrbitsForPlanetoids()
+            Planetoid.ctor()
+              Orbit.ctor()
+              Planetoid.generateUWP()
+                UWP_ScoutsEx.ctor()
+                  UWP_ScoutsEx.generateSize()        // override
+                  UWP_ScoutsEx.generateAtmo()        // override
+                  UWP_ScoutsEx.generateHydro()       // override
+                  UWP_ScoutsEx.generatePop()         // override
+          Star.placePlanets()
+            Planet.ctor()
+              Orbit.ctor()
+              Planet.generateUWP()
+                UWP_ScoutsEx.ctor()
+                  UWP_ScoutsEx.generateSize()        // override
+                  UWP_ScoutsEx.generateAtmo()        // override
+                  UWP_ScoutsEx.generateHydro()       // override
+                  UWP_ScoutsEx.generatePop()         // override
+              Planet.generateSatelliteCount()
+              Orbit.createSatellites()
+                xxx
+
+          [for each companion]:
+            Star.createSatellites()
+              [as above...]
+        [get / set GasGiant]                   // rerunning due to timing issue
+        Star.designateMainworld()
+          [find highest pop Habitable]
+          Habitable.completeUWP()
+            UWP_ScoutsEx.completeUWP()
+              UWP.generateGov()
+              UWP.generateLaw()
+              UWP.generateStarport()
+              UWP.generateTech()
+          [for every other Habitable]:
+             Habitable.completeUWP()
+               UWP_ScoutsEx.completeUWP()
+                 UWP_ScoutsEx.generateSubordinateGov()
+                 UWP_ScoutsEx.generateSubordinateLaw()
+                 UWP_ScoutsEx.generateSubordinateStarport()
+                 UWP_ScoutsEx.generateSubordinateTech()
+
+// 'true' UWP exists from this point
+
+        System.generateNavalBase()             // rerunning due to timing issue
+        System.generateScoutBase()             // rerunning due to timing issue
+        System_CT81.generateTradeClass()       // rerunning due to timing issue
+        System_ScoutsEx.generateFacilities()
+  createSummary()                              // timing is OK, post 'true' UWPs
+    magnitudeFormatNumber()
+    commaFormatList()
+  calculateRoutes()                            // timing is OK, post 'true' UWPs
+
+--------------------------
+System
+  ctors()
+  generateTradeClass()
+  generateUWP()
+  addRoute()
+  distanceToSystem()
+  generateScoutBase()
+  generateNavalBase()
+  toString()
+  listRoutes()
+  asJSON()
+System_CT81
+  ctors()
+  generateTradeClass()                         // OVERRIDE
+  generateUWP()                                // OVERRIDE
+  generateTravelZone()
+  toString()                                   // OVERRIDE
+  asJSON()                                     // OVERRIDE
+System_ScoutsEx
+  ctors()
+  generateFacilities()
+  toString()                                   // OVERRIDE
+  asJSON()                                     // OVERRIDE
+  [generateUWP()]                              // -- missing override?
+--------------------------
+Would it be better to have some sort of factory/builder class handling 
+all the timing of events here, rather than confusing ctor chains? Could
+greatly simplify what are essentially just data classes after they've been
+built.
+
+Alternatively, the root class for each of these little trees is the
+data class. Subclasses override generation, but once complete, clients
+can just talk to the root interface and eliminate a ton of casting
+and visibility into exact types.
+--------------------------
+Random idea: should we add a common root class for all
+these data classes that could provide services (or interface)
+for functionality like to/from JSON? (Or maybe just an interface...)
+
+Catalog the classes here:
+
+Traveller 
+Button
+  Command                 // interface
+  NewSubsector
+  Load
+  ChangeColors
+  ChangeRules
+  ButtonUtilities
+ColorScheme               // asJSON() + ctor(JSONObject)
+Coordinate                // asJSON() + ctor(JSONObject)
+Dice
+  DiceMock
+Orbit                     // abstract  -- SHOULD have JSON functionality
+  Empty
+  Forbidden
+  Null
+  GasGiant
+  Habitable               // interface
+  Planet
+  Planetoid
+  Moon
+  Ring
+Polygon
+Route                     // asJSON() + ctor(JSONObject)
+Ruleset                   // -- SHOULD be subclassed
+Screen                    // abstract
+  Menu
+  Display
+Star                      // asJSON() + ctor(JSONObject)
+Subsector                 // asJSON() + ctor(JSONObject)
+SubsectorDisplay
+System                    // asJSON() + ctor(JSONObject) -- SHOULD be absract
+  System_CT81             // asJSON() + ctor(JSONObject)
+  System_ScoutsEx         // asJSON() + ctor(JSONObject)
+TestSuite
+  HabitableZoneForG0VIs3
+  DistanceBetweenSubsectorCornersIsThirteen
+  SizeZeroWorldsHaveNoHydrosphere
+  SizeZeroWorldsHaveNoAtmosphere
+  UnoccupiedSystemsHaveNoUWP
+  NavalBaseOnlyAtABStarports
+  ScoutBaseOnlyAtABCDStarports
+  NoRoutesToRedZones
+  TestCase                // -- SHOULD be abstract ?
+TextPanel
+TradeClass
+  TradeClass_CT81
+UWP                       // asJSON() + ctor(JSONObject)
+  UWP_CT81                // inherited.asJSON() + inherited.ctor(JSONObject)
+  UWP_ScoutsEx            // inherited.asJSON() + inherited.ctor(JSONObject)

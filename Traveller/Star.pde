@@ -65,9 +65,9 @@ class Star extends Orbit {
     }
     
     if (!primary){
-      orbitNumber = _json.getInt("Orbit");  // TO_DO: currently null for primary - all companions have a value
+      setOrbitNumber(_json.getInt("Orbit"));  // TO_DO: currently null for primary - all companions have a value
     }
-  }
+  } 
   
   Boolean isStar(){ return true; }
   
@@ -187,7 +187,7 @@ class Star extends Orbit {
     if (debug == 2){ println("Creating satellites for " + this); }
     int maxCompanionOrbit = 0;
     int compCount = 0;
-    if (primary || orbitIsFar(orbitNumber)){
+    if (primary || orbitIsFar(getOrbitNumber())){
       compCount = generateCompanionCount();
     }    
     if (debug >= 1){ println(compCount + " companions"); }
@@ -195,14 +195,14 @@ class Star extends Orbit {
     for (int i = 0; i < compCount; i++){
       Star companion = new Star(false, parent);    // BUG: are we propagating a null parent to all companions? is this value even useful, then?
       generateCompanionOrbits(companion, i);
-      orbits.put(companion.orbitNumber, companion);
+      orbits.put(companion.getOrbitNumber(), companion);
     }    
     maxCompanionOrbit = getMaxCompanionOrbit();
 
     // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
     
     int orbitCount = calculateMaxOrbits();
-    if (!primary){ orbitCount = constrain(orbitCount, 0, floor(orbitNumber/2)); }
+    if (!primary){ orbitCount = constrain(orbitCount, 0, floor(getOrbitNumber()/2)); }
 
     int max = max(orbitCount, maxCompanionOrbit + 1);
     placeNullOrbits(max);                                     // TO_DO: keeping for now, but this makes the TreeMap behave like an Array in some senses 
@@ -245,7 +245,7 @@ class Star extends Orbit {
     ArrayList<Star> comps = getCompanions();
     int max = 0;
     for (Star s : comps){
-      if (s.orbitNumber > max){ max = s.orbitNumber; } 
+      if (s.getOrbitNumber() > max){ max = s.getOrbitNumber(); } 
     }
     return max;
   }
@@ -277,10 +277,10 @@ class Star extends Orbit {
     if (result == 0 || orbitInsideStar(result)){
       if (debug >= 1){ println("Companion in CLOSE orbit"); }        
       closeCompanion = _companion;
-      closeCompanion.orbitNumber = result;
+      closeCompanion.setOrbitNumber(result);
     } else {
       if (debug >= 1){ println("Companion in orbit: " + result); }
-      _companion.orbitNumber = result;
+      _companion.setOrbitNumber(result);
     }
     // TO_DO: need to handle two companions landing in same orbit
   }
@@ -561,7 +561,7 @@ class Star extends Orbit {
               winner = h;
             }
           } else {                                                                     // else closest to primary
-            int direction = ((Orbit)h).orbitNumber - ((Orbit)winner).orbitNumber;      // current list ordered low to high
+            int direction = ((Orbit)h).getOrbitNumber() - ((Orbit)winner).getOrbitNumber();      // current list ordered low to high
             if (direction < 0){                                                        // so this may be redundant, but helps if list changes
               winner = h; 
             }                                          
@@ -720,7 +720,7 @@ class Star extends Orbit {
       return false;
     } else {
       for (int i = 0; i < comps.size(); i++){
-        int compOrbit = comps.get(i).orbitNumber;
+        int compOrbit = comps.get(i).getOrbitNumber();
         if (debug >= 1){ print(" Evaluating companion mask for " + comps.get(i) + " in orbit " + compOrbit + " against " + _orbitNum); }
         
         // some ambiguity here from RAW (Scouts p.23)
@@ -821,7 +821,7 @@ class Star extends Orbit {
     }
 
     if (!primary){
-      json.setInt("Orbit", orbitNumber);
+      json.setInt("Orbit", getOrbitNumber());
     }
     
     return json;

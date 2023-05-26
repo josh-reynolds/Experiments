@@ -254,5 +254,65 @@ and it is referenced 12 times.
 1 logic (asJSON())
 
 
+===================================================
+5/25/23
+
+Now that we've reworked the Orbit hierarchy, time to tackle Captured Planets.
+
+Core issue is they have a float orbit number, while every other instance 
+(and the current codebase) uses integers. The TreeMap makes this possible,
+as contrasted with the previous array, but still some trickiness.
+
+Reviewing usage:
+
+- orbitNumber is currently an int
+- lots of name string creation, these are trivial
+- orbits TreeMap uses Integer as keys
+- orbitalZones are stored as array - how to determine for float values?
+- UWP.generateSize() uses orbitNumber integer value matches
+- JSON functions use integer operations
+
+First obvious approach is to just convert the field to a float and 
+deal with all the breaking cases.
+
+What if instead of changing orbitNumber to float we:
+
+- keep orbitNumber as is
+- add an 'actualOrbitNumber' field that is:
+   - equal to orbitNumber for all except Captured Planets
+   - true offset value for Capture Planets
+   - rounded to generate 'normal' orbitNumber
+   - should show up in display, orbit TreeMap (?)
+
+The more I dig in, more complicated it seems, probably buggy.
+
+How about?
+
+- first, hide orbitNumber behind accessors/mutators
+- add a 'Captured' flag
+- for non-captured entities, behavior identical to current
+- for captured planets, store split values as above
+
+Exploring this last option now... first bit was easy, and done. Now
+only the methods on Orbit directly use the field.
+
+Two mutators, one taking an int, the other a float. These set the 
+'captured' flag and the orbit values.
+
+All this ought to work and allow us to create captured planets - with
+a few remaining gaps:
+
+- we aren't yet pruning or guarding against duplicate orbitNumbers, but
+  when we do we need to compare the 'true' orbit values
+- in that same vein, the keys in the TreeMap will overwrite
+- output all uses the integer/rounded value, so captured status is not
+  visible, won't even know we have one
+
+TreeMap seems most significant, assess that next.
+
+
+
+
+
 
 

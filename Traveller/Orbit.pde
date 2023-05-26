@@ -5,6 +5,9 @@ abstract class Orbit {
   String orbitalZone;
   // radius in AU & km? as a query method?
   
+  Boolean captured;
+  float offsetOrbitNumber;
+  
   TreeMap<Integer, Orbit> orbits;
   
   Dice roll;
@@ -16,12 +19,27 @@ abstract class Orbit {
       if (debug == 2){ println("** Orbit PRIMARY ctor(null, " + _orbit + ", " + _zone + ")"); }
     }
     barycenter = _barycenter;
-    orbitNumber = _orbit;
+    setOrbitNumber(_orbit);
     orbitalZone = _zone;
-
+    captured = false;
+    
     orbits = new TreeMap();
 
     roll = new Dice();
+  }
+
+  int getOrbitNumber(){ return orbitNumber; }
+
+  void setOrbitNumber(int _value){ 
+    orbitNumber = _value;
+    offsetOrbitNumber = _value;
+    captured = false;
+  }
+  
+  void setOrbitNumber(float _value){
+    orbitNumber = round(_value);
+    offsetOrbitNumber = _value;
+    captured = true;
   }
 
   // pulled this method up to avoid duplication in GasGiant & Planet
@@ -194,7 +212,7 @@ abstract class Orbit {
       return true;      
     } else {
       if (debug >= 1){ println("Habitable zone for " + barycenter + " in orbit " + habitableOrbit); }
-      return (orbitNumber - habitableOrbit >= 2);
+      return (getOrbitNumber() - habitableOrbit >= 2);
     }
   }  
   
@@ -227,7 +245,7 @@ abstract class Orbit {
 class Empty extends Orbit {
   Empty(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    name = "Empty " + orbitNumber + "-" + orbitalZone;
+    name = "Empty " + getOrbitNumber() + "-" + orbitalZone;
   }
   
   Boolean isEmpty(){ return true; }
@@ -236,7 +254,7 @@ class Empty extends Orbit {
 class Forbidden extends Orbit {
   Forbidden(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    name = "Forbidden " + orbitNumber + "-" + orbitalZone;
+    name = "Forbidden " + getOrbitNumber() + "-" + orbitalZone;
   }
   
   Boolean isForbidden(){ return true; }
@@ -245,7 +263,7 @@ class Forbidden extends Orbit {
 class Null extends Orbit {
   Null(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    name = "Null " + orbitNumber + "-" + orbitalZone;
+    name = "Null " + getOrbitNumber() + "-" + orbitalZone;
   }  
   
   Boolean isNull(){ return true; }
@@ -266,7 +284,7 @@ class GasGiant extends Orbit {
     int satelliteCount = generateSatelliteCount();
     createSatellites(satelliteCount);
     
-    name = size + "GG " + orbitNumber + "-" + orbitalZone;
+    name = size + "GG " + getOrbitNumber() + "-" + orbitalZone;
   }  
 
   int generateSatelliteCount(){
@@ -321,7 +339,7 @@ class Planet extends Orbit implements Habitable {
     int satelliteCount = generateSatelliteCount();
     createSatellites(satelliteCount);
 
-    name = "Planet " + orbitNumber + "-" + orbitalZone;
+    name = "Planet " + getOrbitNumber() + "-" + orbitalZone;
     mainworld = false;
     facilities = new ArrayList();
   }
@@ -376,7 +394,7 @@ class Planetoid extends Orbit implements Habitable {
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone); 
     uwp = generateUWP();
-    name = "Planetoid Belt " + orbitNumber + "-" + orbitalZone;
+    name = "Planetoid Belt " + getOrbitNumber() + "-" + orbitalZone;
     mainworld = false;
     facilities = new ArrayList();
   }
@@ -422,7 +440,7 @@ class Moon extends Planet {
                               // and doing this via polymorphism seems like more code than
                               // this way
        
-    name = "Moon " + _barycenter.orbitNumber + ":" + orbitNumber + "-"  + orbitalZone;
+    name = "Moon " + _barycenter.getOrbitNumber() + ":" + getOrbitNumber() + "-"  + orbitalZone;
   }
   
   UWP_ScoutsEx generateUWP(int _size){
@@ -435,7 +453,7 @@ class Moon extends Planet {
 class Ring extends Planetoid {
   Ring(Orbit _barycenter, int _orbit, String _zone){
     super(_barycenter, _orbit, _zone);
-    name = "Ring " + _barycenter.orbitNumber + ":" + orbitNumber + "-" + orbitalZone;
+    name = "Ring " + _barycenter.getOrbitNumber() + ":" + getOrbitNumber() + "-" + orbitalZone;
   }
   
   Boolean isRing(){ return true; }
