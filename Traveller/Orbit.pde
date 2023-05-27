@@ -8,7 +8,7 @@ abstract class Orbit {
   Boolean captured;
   float offsetOrbitNumber;
   
-  TreeMap<Integer, Orbit> orbits;
+  TreeMap<Float, Orbit> orbits;
   
   Dice roll;
   
@@ -57,11 +57,11 @@ abstract class Orbit {
         if (satelliteSize == 0){
           if (debug == 2){  println("****** generating Ring for " + this.getClass()); }
           int orbitNum = generateSatelliteOrbit(i, true); 
-          orbits.put(orbitNum, new Ring(this, orbitNum, this.orbitalZone));
+          orbits.put((float)orbitNum, new Ring(this, orbitNum, this.orbitalZone));
         } else {
           int orbitNum = generateSatelliteOrbit(i, false);
           if (debug == 2){ println("****** generating Moon for " + this.getClass()); }
-          orbits.put(orbitNum, new Moon(this, orbitNum, this.orbitalZone, satelliteSize));
+          orbits.put((float)orbitNum, new Moon(this, orbitNum, this.orbitalZone, satelliteSize));
         }
       }
     }
@@ -75,8 +75,8 @@ abstract class Orbit {
     }
     
     if (isContainer()){
-      for (int i : orbits.keySet()){
-        Orbit child = orbits.get(i);
+      for (float f : orbits.keySet()){
+        Orbit child = orbits.get(f);
         result.addAll(child.getAllHabitables());
       }
     }
@@ -94,8 +94,8 @@ abstract class Orbit {
     }
     
     if (isContainer()){
-      for (int i : orbits.keySet()){
-        Orbit child = orbits.get(i);
+      for (float f : orbits.keySet()){
+        Orbit child = orbits.get(f);
         result.addAll(child.getAllGasGiants());
       }
     }
@@ -158,7 +158,7 @@ abstract class Orbit {
   }
 
   Boolean orbitIsTaken(int _orbit){
-    return orbits.keySet().contains(_orbit);
+    return orbits.keySet().contains((float)_orbit);        // *** for this one, might want or need to change the function arg instead of casting inside
   }
 
   int generateSatelliteSize(){ return 0; }  // keeping the compiler happy - see note above in createSatellites()

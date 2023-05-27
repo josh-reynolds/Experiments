@@ -317,6 +317,31 @@ to be captured - not Planetoid/GasGiant/Moon/Ring/etc. - we can just
 add a new ctor to Planet that takes a float, and possibly corresponding
 ctor in Orbit... we'd also need to slightly adjust the other ctor calls.)
 
+5/27/23
+
+Going to try just changing declaration of the TreeMap to a Float key,
+and let the compiler help me find all the spots that need changing.
+
+Done. Not too terrible - all orbit values are displaying in list output
+as floats (though since these are all just integers, they are "x.0"). Some
+other observations:
+
+- The naive approach I'm taking is to leave everything alone as much as 
+  possible, and cast the integer values to float at point of use (which is
+  put, get, contains, and iterating over the collection).
+- The compiler was able to help with 'put/contains' statements and the iterators
+- It couldn't catch 'get' statements, though - these were all runtime
+- I fixed up the JSON functionality enough to work without error, but going to 
+  have to come back and think about how this should be persisted.
+- The current code has a lot of inconsistency w.r.t. testing contents, most notably
+  isNull(), which overlaps confusingly with the Null subclass (and after the move
+  away from arrays a true null test might not be necessary). If we had hidden more
+  of these tests, and even the iterator, behind functions, we could handle the 
+  slightly hacky casting in a small number of places. Should come back and do this
+  cleanup.
+- While the current state compiles and runs to completion w/o error, still not 100%
+  confident this is correct and bug-free. Should think about some tests.
+
 
 
 
