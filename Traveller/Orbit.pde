@@ -174,7 +174,7 @@ abstract class Orbit {
   }
 
   Boolean orbitIsTaken(int _orbit){
-    return orbits.keySet().contains((float)_orbit);        // *** for this one, might want or need to change the function arg instead of casting inside
+    return orbits.keySet().contains((float)_orbit);
   }
 
   int generateSatelliteSize(){ return 0; }  // keeping the compiler happy - see note above in createSatellites()

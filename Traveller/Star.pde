@@ -371,7 +371,7 @@ class Star extends Orbit {
   //  -         TO_DO (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
   //  - DONE  orbit is too hot to allow planets
   void placeForbiddenOrbits(){
-    if (orbits.size() > 0){
+    if (isContainer()){
       for (int i = 0; i < orbits.size(); i++){
         if ((orbitInsideStar(i) || orbitMaskedByCompanion(i) || orbitIsTooHot(i)) &&
             orbitIsNullOrEmpty(i)){
@@ -622,7 +622,7 @@ class Star extends Orbit {
     //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
   }
 
-  // probably refactoring oppotunities w/ the similar Gas Giant method above - almost identical
+  // probably refactoring opportunities w/ the similar Gas Giant method above - almost identical
   IntList availableOrbitsForPlanetoids(){
     IntList result = new IntList();
     for (int i = 0; i < orbits.size(); i++){
@@ -640,11 +640,11 @@ class Star extends Orbit {
     
     for (float f : orbits.keySet()){
       if (getOrbit(f).isStar() && getOrbit(f) != closeCompanion){
-        if (getOrbit(f) == closeCompanion){ 
-          println(" MATCH CLOSE COMPANION ");
-          println(" " + getOrbit(f).hashCode());
-          println(" " + closeCompanion.hashCode());
-        }
+        //if (getOrbit(f) == closeCompanion){ 
+        //  println(" MATCH CLOSE COMPANION ");
+        //  println(" " + getOrbit(f).hashCode());
+        //  println(" " + closeCompanion.hashCode());
+        //}
         
         comps.add((Star)getOrbit(f));
         //comps.addAll( ((Star)obts.get(i)).getCompanions() );  // Companions of companions - rare
@@ -668,7 +668,7 @@ class Star extends Orbit {
   //  won't catch null pointers, but ideally we've rooted out all such cases
   //  and should squash any remaining bugs if not
   Boolean orbitIsNull(int _num){
-    if (orbits.keySet().contains((float)_num)){
+    if (orbitIsTaken(_num)){
       if (getOrbit(_num).isNull()){ 
         return true; 
       } else {
@@ -808,7 +808,7 @@ class Star extends Orbit {
       json.setJSONArray("Companions", companionList);
     }
     
-    if (orbits.size() > 0){
+    if (isContainer()){
       JSONArray orbitsList = new JSONArray();
       for (int i = 0; i < orbits.size(); i++){
         if (getOrbit(i) != null){                            // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause
