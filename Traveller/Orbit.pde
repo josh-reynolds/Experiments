@@ -43,11 +43,19 @@ abstract class Orbit {
   }
 
   Orbit getOrbit(int _orbitNum){
-    return orbits.get((float)_orbitNum);
+    return getOrbit((float)_orbitNum);
   }
   
   Orbit getOrbit(float _orbitNum){
     return orbits.get(_orbitNum);
+  }
+
+  void addOrbit(int _orbitNum, Orbit _o){
+    addOrbit((float)_orbitNum, _o);
+  }
+
+  void addOrbit(float _orbitNum, Orbit _o){
+    orbits.put(_orbitNum, _o);
   }
 
   // pulled this method up to avoid duplication in GasGiant & Planet
@@ -64,12 +72,12 @@ abstract class Orbit {
         int satelliteSize = generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
         if (satelliteSize == 0){
           if (debug == 2){  println("****** generating Ring for " + this.getClass()); }
-          int orbitNum = generateSatelliteOrbit(i, true); 
-          orbits.put((float)orbitNum, new Ring(this, orbitNum, this.orbitalZone));
+          int orbitNum = generateSatelliteOrbit(i, true);
+          addOrbit(orbitNum, new Ring(this, orbitNum, this.orbitalZone));
         } else {
           int orbitNum = generateSatelliteOrbit(i, false);
           if (debug == 2){ println("****** generating Moon for " + this.getClass()); }
-          orbits.put((float)orbitNum, new Moon(this, orbitNum, this.orbitalZone, satelliteSize));
+          addOrbit(orbitNum, new Moon(this, orbitNum, this.orbitalZone, satelliteSize));
         }
       }
     }

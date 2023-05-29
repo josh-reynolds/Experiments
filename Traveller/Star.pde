@@ -55,11 +55,11 @@ class Star extends Orbit {
       JSONArray ob = _json.getJSONArray("Orbits");
       for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
         if (ob.getString(i).equals("Null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
-          orbits.put((float)i, new Null(this, i, orbitalZones[i]));         // TO_DO: may go away once we populate all orbit variants
+          addOrbit(i, new Null(this, i, orbitalZones[i]));         // TO_DO: may go away once we populate all orbit variants
         } else if (ob.getString(i).equals("Empty")){ 
-          orbits.put((float)i, new Empty(this, i, orbitalZones[i]));
+          addOrbit(i, new Empty(this, i, orbitalZones[i]));
         } else {
-          orbits.put((float)i, new Star(false, parent, ob.getString(i)));
+          addOrbit(i, new Star(false, parent, ob.getString(i)));
         }
       }
     }
@@ -195,7 +195,7 @@ class Star extends Orbit {
     for (int i = 0; i < compCount; i++){
       Star companion = new Star(false, parent);    // BUG: are we propagating a null parent to all companions? is this value even useful, then?
       generateCompanionOrbits(companion, i);
-      orbits.put((float)companion.getOrbitNumber(), companion);
+      addOrbit(companion.getOrbitNumber(), companion);
     }    
     maxCompanionOrbit = getMaxCompanionOrbit();
 
@@ -303,7 +303,7 @@ class Star extends Orbit {
   void placeNullOrbits(int _maxOrbit){    
     for (int i = 0; i < _maxOrbit; i++){
       if (!orbitIsTaken(i)){                                 
-        orbits.put((float)i, new Null(this, i, orbitalZones[i]));
+        addOrbit(i, new Null(this, i, orbitalZones[i]));
       }
     }
   }
@@ -315,7 +315,7 @@ class Star extends Orbit {
       int startCount = max(0, _orbitCount);
       for (int i = startCount; i < orbits.size(); i++){
         if (!orbitIsTaken(i) || getOrbit(i).isNull()){
-          orbits.put((float)i, new Empty(this, i, orbitalZones[i]));
+          addOrbit(i, new Empty(this, i, orbitalZones[i]));
         }
       }
     }    
@@ -360,7 +360,7 @@ class Star extends Orbit {
         int choice = getRandomUnassignedOrbit();
         if (choice == -1){ if (debug >= 1){ println("No null available"); } break; } // don't much care for this 'magic value' - indicates no null orbits left
         if (debug >= 1){ println("Assigning " + choice + " to Empty"); }
-        orbits.put((float)choice, new Empty(this, choice, orbitalZones[choice]));
+        addOrbit(choice, new Empty(this, choice, orbitalZones[choice]));
       }
     }
   }
@@ -375,7 +375,7 @@ class Star extends Orbit {
       for (int i = 0; i < orbits.size(); i++){
         if ((orbitInsideStar(i) || orbitMaskedByCompanion(i) || orbitIsTooHot(i)) &&
             orbitIsNullOrEmpty(i)){
-          orbits.put((float)i, new Forbidden(this, i, orbitalZones[i]));
+          addOrbit(i, new Forbidden(this, i, orbitalZones[i]));
         }
       }
     }
@@ -433,7 +433,7 @@ class Star extends Orbit {
       for (int i = 0; i < gasGiantCount; i++){
         availableOrbits.shuffle();
         int index = availableOrbits.remove(0);
-        orbits.put((float)index, new GasGiant(this, index, orbitalZones[index]));
+        addOrbit(index, new GasGiant(this, index, orbitalZones[index]));
       }
     } else {
       if (debug >= 1){ println("No Gas Giants in-system"); }
@@ -486,13 +486,13 @@ class Star extends Orbit {
         if (orbitsInwardFromGiants.size() > 0){
           orbitsInwardFromGiants.shuffle();
           int index = orbitsInwardFromGiants.remove(0);
-          orbits.put((float)index, new Planetoid(this, index, orbitalZones[index]));
+          addOrbit(index, new Planetoid(this, index, orbitalZones[index]));
           continue;
         }
         if (availableOrbits.size() > 0){
           availableOrbits.shuffle();
           int index = availableOrbits.remove(0);
-          orbits.put((float)index, new Planetoid(this, index, orbitalZones[index]));
+          addOrbit(index, new Planetoid(this, index, orbitalZones[index]));
         }
       }
     } else {
@@ -504,7 +504,7 @@ class Star extends Orbit {
     println("Placing Planets for " + this);
     for (int i = 0; i < orbits.size(); i++){
       if (orbitIsNull(i)){
-        orbits.put((float)i, new Planet(this, i, orbitalZones[i]));
+        addOrbit(i, new Planet(this, i, orbitalZones[i]));
       }
     }
   }
@@ -531,7 +531,7 @@ class Star extends Orbit {
       int newOrbit = orbits.size();
       Boolean addingOrbit = true;
       while (addingOrbit){
-        orbits.put((float)newOrbit, new Null(this, newOrbit, orbitalZones[newOrbit]));
+        addOrbit(newOrbit, new Null(this, newOrbit, orbitalZones[newOrbit]));
         placeForbiddenOrbits();                   // need to test whether new orbit is valid
         if (getOrbit(newOrbit).isNull()){
           addingOrbit = false;
