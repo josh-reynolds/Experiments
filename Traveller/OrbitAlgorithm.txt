@@ -342,6 +342,38 @@ other observations:
 - While the current state compiles and runs to completion w/o error, still not 100%
   confident this is correct and bug-free. Should think about some tests.
 
+5/28/23
+
+After the above changes, I took a first stab at implementing captured planets.
+This started throwing NullPointerExceptions from a few locations, most typically 
+from Star.placePlanetoids(), as well as occasional ArrayIndexOutOfBounds from 
+Star.placePlanetoids().
+
+I think the issue is iterating across the orbits. Due to the way this codebase
+grew, there are (at least) two different approaches happening here:
+
+* 'proper' iterating against the orbits collection via keySet
+* implicit iterating by an integer counter
+
+Both are flawed, but the latter causes the problem in this case. When we have
+a captured orbit beyond the last existing orbit (Null under the current approach),
+there are a bunch of 'empties' implied, that the naive iterator touches. They
+come back as null from the TreeMap lookup, leading to NullPointer issues.
+
+And for Planets, they just keep adding new instances in the gap, and the
+set of orbits outgrows the 21 we've established for the OrbitZone array.
+
+To get this on the right track, should first encapsulate the iterator (and
+probably the get/set/contains highlighted above while we're at it). I've pushed
+the Captured Planet changes to a side branch so we can work clean, will merge 
+back after we've improved the design. (IIRC, Composite calls for this 
+collection encapsulation in any case, we just haven't yet truly needed so took
+the lazy approach).
+
+
+
+
+
 
 
 

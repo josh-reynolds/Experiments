@@ -314,7 +314,7 @@ class Star extends Orbit {
     if (_maxCompanion - _orbitCount > 0){
       int startCount = max(0, _orbitCount);
       for (int i = startCount; i < orbits.size(); i++){
-        if (!orbitIsTaken(i) || orbits.get((float)i).isNull()){
+        if (!orbitIsTaken(i) || getOrbit(i).isNull()){
           orbits.put((float)i, new Empty(this, i, orbitalZones[i]));
         }
       }
@@ -476,7 +476,7 @@ class Star extends Orbit {
       for (int i = 0; i < availableOrbits.size(); i++){
         int index = availableOrbits.get(i); 
         if (index == orbits.size()-1){ continue; }
-        if (orbits.get((float)index).isGasGiant()){
+        if (getOrbit(index).isGasGiant()){
           orbitsInwardFromGiants.append(index);
           availableOrbits.remove(i);
         }
@@ -533,7 +533,7 @@ class Star extends Orbit {
       while (addingOrbit){
         orbits.put((float)newOrbit, new Null(this, newOrbit, orbitalZones[newOrbit]));
         placeForbiddenOrbits();                   // need to test whether new orbit is valid
-        if (orbits.get((float)newOrbit).isNull()){
+        if (getOrbit(newOrbit).isNull()){
           addingOrbit = false;
         }
         newOrbit++;
@@ -597,7 +597,7 @@ class Star extends Orbit {
     while(counter < 100){
       int choice = floor(random(2, orbits.size()));      // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'
       if (orbits.size() <= 2){ break; }                  // but this fails in the case of very small systems, so need to bail out
-      if (orbits.get((float)choice).isNull()){
+      if (getOrbit(choice).isNull()){
         return choice;
       }
       counter++;
@@ -639,14 +639,14 @@ class Star extends Orbit {
     ArrayList<Star> comps = new ArrayList<Star>();
     
     for (float f : orbits.keySet()){
-      if (orbits.get(f).isStar() && orbits.get(f) != closeCompanion){
-        if (orbits.get(f) == closeCompanion){ 
+      if (getOrbit(f).isStar() && getOrbit(f) != closeCompanion){
+        if (getOrbit(f) == closeCompanion){ 
           println(" MATCH CLOSE COMPANION ");
-          println(" " + orbits.get(f).hashCode());
+          println(" " + getOrbit(f).hashCode());
           println(" " + closeCompanion.hashCode());
         }
         
-        comps.add((Star)orbits.get(f));
+        comps.add((Star)getOrbit(f));
         //comps.addAll( ((Star)obts.get(i)).getCompanions() );  // Companions of companions - rare
                                                                 // also, doesn't match current usage for companions list
                                                                 // leave out for now, consider later
@@ -669,7 +669,7 @@ class Star extends Orbit {
   //  and should squash any remaining bugs if not
   Boolean orbitIsNull(int _num){
     if (orbits.keySet().contains((float)_num)){
-      if (orbits.get((float)_num).isNull()){ 
+      if (getOrbit(_num).isNull()){ 
         return true; 
       } else {
         return false;
@@ -681,7 +681,7 @@ class Star extends Orbit {
 
   Boolean orbitIsNullOrEmpty(int _num){
     if (orbitIsNull(_num)){ return true; }
-    if (orbits.get((float)_num).isEmpty()){ return true; }
+    if (getOrbit(_num).isEmpty()){ return true; }
     return false;
   }
 
@@ -811,8 +811,8 @@ class Star extends Orbit {
     if (orbits.size() > 0){
       JSONArray orbitsList = new JSONArray();
       for (int i = 0; i < orbits.size(); i++){
-        if (orbits.get((float)i) != null){                            // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause
-          orbitsList.setString(i, orbits.get((float)i).toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
+        if (getOrbit(i) != null){                            // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause
+          orbitsList.setString(i, getOrbit(i).toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
         } else {
           orbitsList.setString(i, "null");
         }

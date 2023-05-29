@@ -42,6 +42,14 @@ abstract class Orbit {
     captured = true;
   }
 
+  Orbit getOrbit(int _orbitNum){
+    return orbits.get((float)_orbitNum);
+  }
+  
+  Orbit getOrbit(float _orbitNum){
+    return orbits.get(_orbitNum);
+  }
+
   // pulled this method up to avoid duplication in GasGiant & Planet
   //  however, that means we need the moons list and generateSatelliteSize()
   //  in this class, even though most of the hierarchy does not use... may
@@ -76,7 +84,7 @@ abstract class Orbit {
     
     if (isContainer()){
       for (float f : orbits.keySet()){
-        Orbit child = orbits.get(f);
+        Orbit child = getOrbit(f);
         result.addAll(child.getAllHabitables());
       }
     }
@@ -95,7 +103,7 @@ abstract class Orbit {
     
     if (isContainer()){
       for (float f : orbits.keySet()){
-        Orbit child = orbits.get(f);
+        Orbit child = getOrbit(f);
         result.addAll(child.getAllGasGiants());
       }
     }
