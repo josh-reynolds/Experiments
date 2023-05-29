@@ -58,6 +58,10 @@ abstract class Orbit {
     orbits.put(_orbitNum, _o);
   }
 
+  Iterator<Float> orbitList(){
+    return orbits.keySet().iterator();
+  }
+
   // pulled this method up to avoid duplication in GasGiant & Planet
   //  however, that means we need the moons list and generateSatelliteSize()
   //  in this class, even though most of the hierarchy does not use... may
@@ -90,11 +94,12 @@ abstract class Orbit {
       result.add((Habitable)this);
     }
     
-    if (isContainer()){
-      for (float f : orbits.keySet()){
-        Orbit child = getOrbit(f);
-        result.addAll(child.getAllHabitables());
-      }
+    Iterator<Float> orbitNumbers = orbitList();
+    
+    while(orbitNumbers.hasNext()){
+      float f = orbitNumbers.next();  
+      Orbit child = getOrbit(f);
+      result.addAll(child.getAllHabitables());
     }
     
     return result;
@@ -109,11 +114,12 @@ abstract class Orbit {
       result.add((GasGiant)this);
     }
     
-    if (isContainer()){
-      for (float f : orbits.keySet()){
-        Orbit child = getOrbit(f);
-        result.addAll(child.getAllGasGiants());
-      }
+    Iterator<Float> orbitNumbers = orbitList();
+    
+    while(orbitNumbers.hasNext()){
+      float f = orbitNumbers.next();
+      Orbit child = getOrbit(f);
+      result.addAll(child.getAllGasGiants());
     }
     
     return result;

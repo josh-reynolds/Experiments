@@ -379,11 +379,11 @@ suspect. Reviewing usage:
 
 5 instances:
 for (int i = 0; i < orbits.size(); i++){
-  addOrbit(i, new Forbidden())
+  addOrbit(i, new Forbidden())                       // if isContainer()
   addOrbit(i, new Planet())
   result.append(i)
   result.append(i)
-  orbitsList.setString(i, getOrbit(i).toString())
+  orbitsList.setString(i, getOrbit(i).toString())    // if isContainer()
 
 1 instance:
 for (int i = startCount; i < orbits.size(); i++){
@@ -392,6 +392,8 @@ for (int i = startCount; i < orbits.size(); i++){
 3 instances:
 for (float f : orbits.keySet()){
   comps.add((Star)getOrbit(f))
+  result.addAll(child.getAllHabitables())             // if isContainer()
+  result.addAll(child.getAllGasGiants())              // if isContainer()
 
 These are often coupled with 
 
@@ -402,8 +404,94 @@ we already have isContainer(), so clean that up too while we're at
 it. Once we encapsulate the iterator, this may move inside as 
 leaf/container polymorphism should take care of it.
 
+Iterator method added, and the existing float loops have been shifted
+over. Minimal gain here, they were already doing the right thing, and 
+the Iterator overhead is actually more code. Should see more benefit (and
+protection) from the bug that spurred this refactoring) once the integer
+loops are handled.
 
+This all goes to the heart of the orbit assignment algorithm, and the 
+hints in earlier notes about overhauling the entire thing. Especially
+Null/Empty - it comes from a literal reading of RAW, and the initial
+array-based implementation. 
 
+There are two numbers governing the build process:
+  maxOrbits
+  maxCompanionOrbit
+
+First we fill list with Null, then fill gap (if any) with Empty. Then
+proceed to assign slots.
+
+---------------------
+Scenario: Existing algorithm
+
+maxOrbits = 5 ; maxCompanionOrbit = 7
+[7:Companion]
+
+placeNullOrbits(max = 8)           ** iterator
+[0:Null,1:Null,2:Null,3:Null,4:Null,5:Null,6:Null,7:Companion]
+
+fillEmptyOrbits(5,7)               ** iterator
+[0:Null,1:Null,2:Null,3:Null,4:Null,5:Empty,6:Empty,7:Companion]
+
+placeEmptyOrbits()
+getRandomUnassignedOrbit()
+size=8
+[0:Null,1:Null,2:Null,3:Empty,4:Null,5:Empty,6:Empty,7:Companion]
+
+placeForbiddenOrbits()             ** iterator
+[0:Forbidden,1:Null,2:Null,3:Empty,4:Null,5:Empty,6:Empty,7:Companion]
+
+placeCapturedPlanets()
+[0:Forbidden,1:Null,2:Null,3:Empty,4:Null,4.1:Planet,5:Empty,6:Empty,7:Companion]
+
+placeGasGiants()   - 1
+availableOrbitsForGasGiants()      ** iterator
+size=9, IntList = [1,2,4]
+[0:Forbidden,1:Null,2:GasGiant,3:Empty,4:Null,4.1:Planet,5:Empty,6:Empty,7:Companion]
+
+placePlanetoidBelts()  - 1
+availableOrbitsForPlanetoids()     ** iterator
+size=9, IntList = [1,4]
+[0:Forbidden,1:Planetoid,2:GasGiant,3:Empty,4:Null,4.1:Planet,5:Empty,6:Empty,7:Companion]
+
+placePlanets()                     ** iterator
+[0:Forbidden,1:Planetoid,2:GasGiant,3:Empty,4:Planet,4.1:Planet,5:Empty,6:Empty,7:Companion]
+
+---------------------
+Scenario: Alternative algorithm, no Null or FillEmpty
+
+maxOrbits = 5 ; maxCompanionOrbit = 7
+[7:Companion]
+
+placeEmptyOrbits()
+getRandomUnassignedOrbit()
+size=1
+[3:Empty,7:Companion]
+
+placeForbiddenOrbits()             ** iterator
+[0:Forbidden,3:Empty,7:Companion]
+
+placeCapturedPlanets()
+[0:Forbidden,3:Empty,4.1:Planet,7:Companion]
+
+placeGasGiants()   - 1
+availableOrbitsForGasGiants()      ** iterator
+size=4, xxxxxx IntList = [1,2,4]
+[0:Forbidden,2:GasGiant,3:Empty,4.1:Planet,7:Companion]
+
+placePlanetoidBelts()  - 1
+availableOrbitsForPlanetoids()     ** iterator
+size=5, xxxxxx IntList = [1,4]
+[0:Forbidden,1:Planetoid,2:GasGiant,3:Empty,4.1:Planet,7:Companion]
+
+placePlanets()                     ** iterator
+[0:Forbidden,1:Planetoid,2:GasGiant,3:Empty,4:Planet,4.1:Planet,7:Companion]
+
+Would require overhaul of all later placement methods. They:
+* derive bounds from the list size
+* look for Null entries to replace
+* work with integer values, normally from a 0:size range
 
 
 

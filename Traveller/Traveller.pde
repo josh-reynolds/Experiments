@@ -3,6 +3,7 @@
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.TreeMap;
+import java.util.Iterator;
 
 int hexRadius = 32;
 int border = hexRadius;
