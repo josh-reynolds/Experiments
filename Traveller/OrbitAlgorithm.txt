@@ -494,6 +494,71 @@ Would require overhaul of all later placement methods. They:
 * work with integer values, normally from a 0:size range
 
 
+5/30/23
+
+Thinking about it some more, there are two kinds of orbit placements going 
+on here: bounded, and unbounded.
+
+Per RAW, a star has a 'maximum orbit' and most entities must be placed 
+within this bound (GasGiant, Planetoid, Planet, Empty). But a few entities are allowed outside the limit (notably 
+companion Stars and captured Planets). Null is just bookeeping and algorithm 
+support (and the "fill in Empties" approach is similar).
+
+So if we use this boundary value instead of the Null orbit placeholders,
+we can get the same effect - and probably remove a bunch of suspect code.
+
+Let's look at GasGiants - this is the first straightforward application. We 
+should be able to get there stepwise by modifying availableOrbitsForGiants.
+
+(Side observation - the query methods sprinkled across Star and Orbit could
+use some cleanup, and they aren't consistently used everywhere - sometimes
+there's local hard-coded logic, like in availableOrbitsForGiants... FIXED just
+this last instance, worth doing additional cleanup later.)
+
+GasGiants was straightforward; same tactic can be applied to Planetoids.
+
+Planets are also simple for the main case, but potentially tricky for the
+fixup that happens in designateMainworld(). We don't have the maxorbit value
+accessible - it was a temp in createSatellites(). So the arg to the 
+placePlanets() call is unclear. But we're also fiddling with orbits.size()
+in here, which is suspect.
+
+Short term, to make this work, just plugging in the newOrbit value used in 
+that method. Since we are filling in any gaps from from companions with 
+Empty, this works OK, but will need adjustment once that is removed. We 
+will need to identify the gap (counting up and matching values perhaps?).
+
+Also, after the previous changes to GasGiants & Planetoids, there's a new
+bug showing up under this method. We sometimes exit construction with
+an orbits map containing a single Null, which shouldn't have survived
+the process. Walking through, I think the conditions are:
+
+* no companions
+* max orbit = 0, which places a single Null in the map
+* no Empty or Forbidden
+* GasGiant, Planetoid and Planet loops are no-op with a zero input
+
+Looks like this (added some debug spew):
+
+	No Habitables currently in-system - adding a new Planet
+	orbits.size() = 1 orbits = {0.0=Null 0-O}
+	orbits.size() = 2 orbits = {0.0=Null 0-O, 1.0=Null 1-O} newOrbit = 2
+
+Combining this with the patch process in designateMainworld(), we end up
+adding _two_ new Planets, so this is sort of OK, but still not quite right. 
+Fix might be as simple as making loop <= rather than <, but need to think
+it through.
+ 
+I think there's still some muddled code tripping over the difference between
+orbit count, orbit number, and the specialness of zero. Ripe for overhaul.
+
+
+
+
+
+
+
+
 
 
 

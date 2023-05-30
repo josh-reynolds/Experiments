@@ -211,9 +211,9 @@ class Star extends Orbit {
     placeEmptyOrbits();                                       // second half of Empty assignment
     placeForbiddenOrbits();
     placeCapturedPlanets();                                   // TO_DO: stub method, can finally implement now with TreeMap
-    placeGasGiants();
-    placePlanetoidBelts();
-    placePlanets();
+    placeGasGiants(orbitCount);
+    placePlanetoidBelts(orbitCount);
+    placePlanets(orbitCount);
 
     ArrayList<Star> comps = getCompanions();
     for (Star c : comps){
@@ -396,7 +396,7 @@ class Star extends Orbit {
     //  how is this listed?
   }
 
-  void placeGasGiants(){
+  void placeGasGiants(int _maxOrbit){
     println("Placing Gas Giants for " + this);
     if (roll.two() <= 9){
       switch(roll.two()){ 
@@ -426,7 +426,7 @@ class Star extends Orbit {
           break;
       }
 
-      IntList availableOrbits = availableOrbitsForGiants();
+      IntList availableOrbits = availableOrbitsForGiants(_maxOrbit);
       gasGiantCount = min(gasGiantCount, availableOrbits.size());
       if (debug >= 1){ println(gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
       
@@ -441,7 +441,7 @@ class Star extends Orbit {
   }
   
   // will be very similar to GasGiants, above - duplication OK for now, but look for refactorings
-  void placePlanetoidBelts(){
+  void placePlanetoidBelts(int _maxOrbit){
     println("Placing Planetoid Belts for " + this);
     // uses # of Gas Giants as a modifier - rules don't specify, but I assume that means just for
     // the star which the potential planetoids orbit, not all companions
@@ -467,7 +467,7 @@ class Star extends Orbit {
           break;
       }
     
-      IntList availableOrbits = availableOrbitsForPlanetoids();
+      IntList availableOrbits = availableOrbitsForPlanetoids(_maxOrbit);
       planetoidCount = min(planetoidCount, availableOrbits.size());
       if (debug >= 1){ println(planetoidCount + " Planetoid Belts in-system"); }
     
@@ -500,9 +500,9 @@ class Star extends Orbit {
     }
   }
 
-  void placePlanets(){
+  void placePlanets(int _maxOrbit){
     println("Placing Planets for " + this);
-    for (int i = 0; i < orbits.size(); i++){
+    for (int i = 0; i < _maxOrbit; i++){
       if (orbitIsNull(i)){
         addOrbit(i, new Planet(this, i, orbitalZones[i]));
       }
@@ -528,6 +528,10 @@ class Star extends Orbit {
     // simplest patch seems to be inserting a new Planet at the end of the orbits list
     if (candidates.size() == 0){
       println("No Habitables currently in-system - adding a new Planet");
+      
+      //*** 
+      println("orbits.size() = " + orbits.size() + " orbits = " + orbits);
+      
       int newOrbit = orbits.size();
       Boolean addingOrbit = true;
       while (addingOrbit){
@@ -535,10 +539,15 @@ class Star extends Orbit {
         placeForbiddenOrbits();                   // need to test whether new orbit is valid
         if (getOrbit(newOrbit).isNull()){
           addingOrbit = false;
+          //break;
         }
         newOrbit++;
+
+        //*** 
+        println("orbits.size() = " + orbits.size() + " orbits = " + orbits + " newOrbit = " + newOrbit);  
       }
-      placePlanets();
+      
+      placePlanets(newOrbit);
       candidates = this.getAllHabitables();
     }
 
@@ -605,16 +614,17 @@ class Star extends Orbit {
     return -1;  // and how would we handle this? will throw an exception when we use the value as an array index      
   }
 
-  IntList availableOrbitsForGiants(){
+  IntList availableOrbitsForGiants(int _maxOrbit){
     // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
     IntList result = new IntList();
-    for (int i = 0; i < orbits.size(); i++){
-      if (orbitalZones[i].equals("Z") || orbitalZones[i].equals("X") || orbitalZones[i].equals("I")){ continue; }
+    for (int i = 0; i < _maxOrbit; i++){
+      if (orbitInsideStar(i) || orbitIsTooHot(i) || orbitIsInnerZone(i)){ continue; }
       if (orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, no
         if (debug >= 1){ println("Orbit " + i + " qualifies"); }
         result.append(i);
       }
     }
+    
     if (debug >= 1){ println("Found " + result.size() + " available orbits for Gas Giants"); }
     return result;
     
@@ -623,9 +633,9 @@ class Star extends Orbit {
   }
 
   // probably refactoring opportunities w/ the similar Gas Giant method above - almost identical
-  IntList availableOrbitsForPlanetoids(){
+  IntList availableOrbitsForPlanetoids(int _maxOrbit){
     IntList result = new IntList();
-    for (int i = 0; i < orbits.size(); i++){
+    for (int i = 0; i < _maxOrbit; i++){
       if (orbitIsNull(i)){                                         // should we also allow them to drop into Empty orbits? by RAW, I think not
         if (debug >= 1){ println("Orbit " + i + " qualifies"); }   // though they never precisely define "available orbits"
         result.append(i);
@@ -684,26 +694,13 @@ class Star extends Orbit {
   // Scouts includes data for Supergiants (Ia/Ib) but no means to generate randomly - leaving out
   // Tables are on pp. 29-31, implementing RAW
   // TO_DO: tables handle orbit 0 inconsistently, so this func is incomplete - need to derive additional data
-  // TO_DO: redundant with the data in orbitalZones[] - refactor
   Boolean orbitInsideStar(int _num){
-    if (size == 2){
-      if (type == 'K'){
-        if (decimal < 5 ){ return false;     }
-        if (decimal >= 5){ return _num <= 1; }
-      }
-      if (type == 'M'){
-        if (decimal < 5 ){ return _num <= 3; }
-        if (decimal >= 5){ return _num <= 5; }
-      }
-      return false;
-    }
-    if (size == 3){
-      if (type != 'M'                 ){ return false; }
-      if (decimal < 5                 ){ return false; }
-      if (decimal >= 5 && decimal <= 7){ return _num <= 3; }
-      if (decimal > 7                 ){ return _num <= 4; }
-    }
-    return false;
+    return orbitalZones[_num].equals("Z");
+  }
+
+  // TO_DO: reconcile with similar queries in Orbit 
+  Boolean orbitIsInnerZone(int _num){
+    return orbitalZones[_num].equals("Z");
   }
 
   Boolean orbitIsFar(int _orbitNum){
