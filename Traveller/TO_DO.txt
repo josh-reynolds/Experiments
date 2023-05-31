@@ -107,8 +107,8 @@
 //  * DONE Review UWP dependent values in System under ScoutsEx (bases, trade, routes, etc.)
 //  * DONE Regenerate Travel Zone with final UWP
 //  * DONE REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
+//  * DONE Add captured planets
 //  * .... Flesh out tests (this will take a while...)
-//  * .... Add captured planets
 //  *      Naval/Scout base facilities at non-mainworld locations
 //  *      Military base in System base listing
 //  * .... Add Scouts extended generation ruleset

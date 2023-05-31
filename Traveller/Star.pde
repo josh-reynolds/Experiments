@@ -369,6 +369,36 @@ class Star extends Orbit {
     //  but how to represent and list in the orbit[] array?
     //  if, for example, we have a captured planet at orbit 8.5 and a 'regular' planet at 8 (as with Sol, Scouts p. 56)
     //  how is this listed?
+    
+    if (roll.one() > 4){
+      int quantity = floor(roll.one()/2);
+
+      for (int i = 0; i < quantity; i++){
+        int baseline = roll.two();
+        int deviation = roll.two(-7);
+
+        if (deviation == 0){      // RAW doesn't cover this scenario, but we should prevent captured planets in exact orbits
+          if (roll.one() < 4){    // or they will potentially overwrite another entity 
+            deviation = -1; 
+          } else {
+            deviation = 1;
+          }
+        }
+        
+        if (deviation < 0){
+          baseline -= 1;
+          deviation = 10 + deviation;
+        }
+        
+        float capturedOrbit = baseline + (float)deviation/10;
+        int effectiveOrbit = round(capturedOrbit);                   // chicken & egg w/ orbitalZones, may want to rethink how this passes to Orbit ctors
+
+        addOrbit(capturedOrbit, new Planet(this, effectiveOrbit, orbitalZones[effectiveOrbit]));
+        Planet captured = (Planet)getOrbit(capturedOrbit);
+        captured.setOrbitNumber(capturedOrbit);
+      }
+    }        
+    
   }
 
   void placeGasGiants(int _maxOrbit){
@@ -771,7 +801,8 @@ class Star extends Orbit {
     
     if (isContainer()){
       JSONArray orbitsList = new JSONArray();
-      for (int i = 0; i < orbits.size(); i++){
+      
+      for (int i = 0; i < orbits.size(); i++){               // leaving this alone for now - the JSON Array needs integer indices
         if (getOrbit(i) != null){                            // TO_DO: eventually all orbits should be populated (only null during creation) and we can remove this clause
           orbitsList.setString(i, getOrbit(i).toString());   // TO_DO: for now only use Star JSON in companion lists above, redundant here
         } else {

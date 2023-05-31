@@ -581,7 +581,11 @@ Reviewed, fixed a couple more instances, should be safe now. We can
 entirely strip out the Null class, Orbit.isNull(), and other code
 associated with this approach. Seems to be running clean.
 
-
+Should be able to bring Captured Planets in now. Done - we are nearly feature
+complete with the Scouts procedure. Plenty of cleanup and improvements still 
+to do of course, as well as getting the other primary scenarios working 
+(Save & Load). Right now only 'New' (and the corresponding display/output) is
+confirmed.
 
 
 
