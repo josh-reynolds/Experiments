@@ -244,8 +244,7 @@ abstract class Orbit {
   
   Boolean isStar(){ return false; }
   Boolean isEmpty(){ return false; }
-  Boolean isForbidden(){ return false; }
-  Boolean isNull(){ return false; }  
+  Boolean isForbidden(){ return false; }  
   Boolean isGasGiant(){ return false; }
   Boolean isPlanet(){ return false; }
   Boolean isPlanetoid(){ return false; }
@@ -280,15 +279,6 @@ class Forbidden extends Orbit {
   }
   
   Boolean isForbidden(){ return true; }
-}
-
-class Null extends Orbit {
-  Null(Orbit _barycenter, int _orbit, String _zone){ 
-    super(_barycenter, _orbit, _zone);
-    name = "Null " + getOrbitNumber() + "-" + orbitalZone;
-  }  
-  
-  Boolean isNull(){ return true; }
 }
 
 class GasGiant extends Orbit {

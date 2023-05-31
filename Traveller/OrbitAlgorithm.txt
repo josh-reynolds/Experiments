@@ -552,9 +552,34 @@ it through.
 I think there's still some muddled code tripping over the difference between
 orbit count, orbit number, and the specialness of zero. Ripe for overhaul.
 
+5/31/23
 
+Continuing with the previous, seeing if we can phase out placeNullOrbits() 
+and fillEmptyOrbits(). The latter goes away without significant issue (one 
+small wrinkle below). But the former causes NullPointerExceptions, so we 
+need to shift all the placement methods over to the int argument approach. 
+The only ones left that matter are placeEmptyOrbits() and placeForbiddenOrbits().
 
+Forbidden orbits face the same issue as Planets - we call this one twice, 
+the second time during the "fixup" process in designateMainworld(). Taking 
+the same approach, then once Nulls are gone we can adjust.
 
+As for the 'wrinkle' - once we stop placing the "filled in" Empties, we're
+left with Nulls in the gap between maxOrbit and a far companion (so not
+every system). Again, once Nulls are safely gone this goes away.
+
+After commenting out both placeNullOrbits and fillEmptyOrbits, I'm seeing
+NullPointerExceptions still, because without Null objects the lookup in the
+tree via getOrbit() is returning true null. Need to modify the test logic 
+in these methods to adapt.
+
+Seems to be working with minimal changes. Still should review all usage 
+of getOrbit() to see if we're calling methods directly on the result without 
+testing for null. There could still be some corner cases.
+
+Reviewed, fixed a couple more instances, should be safe now. We can 
+entirely strip out the Null class, Orbit.isNull(), and other code
+associated with this approach. Seems to be running clean.
 
 
 

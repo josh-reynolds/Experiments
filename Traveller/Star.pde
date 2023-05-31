@@ -54,9 +54,7 @@ class Star extends Orbit {
     if (!_json.isNull("Orbits")){
       JSONArray ob = _json.getJSONArray("Orbits");
       for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
-        if (ob.getString(i).equals("Null")){                       //          (some redundancy w/ companion list if we put JSONObjects here, though...) 
-          addOrbit(i, new Null(this, i, orbitalZones[i]));         // TO_DO: may go away once we populate all orbit variants
-        } else if (ob.getString(i).equals("Empty")){ 
+        if (ob.getString(i).equals("Empty")){
           addOrbit(i, new Empty(this, i, orbitalZones[i]));
         } else {
           addOrbit(i, new Star(false, parent, ob.getString(i)));
@@ -205,11 +203,9 @@ class Star extends Orbit {
     if (!primary){ orbitCount = constrain(orbitCount, 0, floor(getOrbitNumber()/2)); }
 
     int max = max(orbitCount, maxCompanionOrbit + 1);
-    placeNullOrbits(max);                                     // TO_DO: keeping for now, but this makes the TreeMap behave like an Array in some senses 
-                                                              // the whole concept of null orbits may go away
-    fillEmptyOrbits(orbitCount, maxCompanionOrbit);           // first half of Empty assignment - still needed?
-    placeEmptyOrbits();                                       // second half of Empty assignment
-    placeForbiddenOrbits();
+
+    placeEmptyOrbits(orbitCount);
+    placeForbiddenOrbits(orbitCount);
     placeCapturedPlanets();                                   // TO_DO: stub method, can finally implement now with TreeMap
     placeGasGiants(orbitCount);
     placePlanetoidBelts(orbitCount);
@@ -299,30 +295,9 @@ class Star extends Orbit {
       return result;
     }
   }  
-
-  void placeNullOrbits(int _maxOrbit){    
-    for (int i = 0; i < _maxOrbit; i++){
-      if (!orbitIsTaken(i)){                                 
-        addOrbit(i, new Null(this, i, orbitalZones[i]));
-      }
-    }
-  }
-  
-  // splitting out first half of placeEmptyOrbits - method names need some improvement 
-  // Extra/empty orbits due to companions beyond generated orbit count
-  void fillEmptyOrbits(int _orbitCount, int _maxCompanion){
-    if (_maxCompanion - _orbitCount > 0){
-      int startCount = max(0, _orbitCount);
-      for (int i = startCount; i < orbits.size(); i++){
-        if (!orbitIsTaken(i) || getOrbit(i).isNull()){
-          addOrbit(i, new Empty(this, i, orbitalZones[i]));
-        }
-      }
-    }    
-  }
   
   // see note under placeNull above - once we shift to TreeMap, this algorithm can be simplified or eliminated
-  void placeEmptyOrbits(){
+  void placeEmptyOrbits(int _maxOrbit){
     println("Determining empty orbits for " + this);
     
     // Empty orbits per Scouts p.34 (table on p. 29)
@@ -357,7 +332,7 @@ class Star extends Orbit {
         //  - Generates results outside existing orbits, needs lots of rerolls
         // I am going to implement a random picker that fixes the last two issues (flat curve, only existing orbits to choose from)
         //   and keep the protections for orbits 0 & 1 (maybe they wanted to ensure all systems have viable orbits?)
-        int choice = getRandomUnassignedOrbit();
+        int choice = getRandomUnassignedOrbit(_maxOrbit);
         if (choice == -1){ if (debug >= 1){ println("No null available"); } break; } // don't much care for this 'magic value' - indicates no null orbits left
         if (debug >= 1){ println("Assigning " + choice + " to Empty"); }
         addOrbit(choice, new Empty(this, choice, orbitalZones[choice]));
@@ -370,9 +345,9 @@ class Star extends Orbit {
   //  - DONE  orbit is suppressed by nearby companion star
   //  -         TO_DO (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
   //  - DONE  orbit is too hot to allow planets
-  void placeForbiddenOrbits(){
+  void placeForbiddenOrbits(int _maxOrbit){
     if (isContainer()){
-      for (int i = 0; i < orbits.size(); i++){
+      for (int i = 0; i < _maxOrbit; i++){
         if ((orbitInsideStar(i) || orbitMaskedByCompanion(i) || orbitIsTooHot(i)) &&
             orbitIsNullOrEmpty(i)){
           addOrbit(i, new Forbidden(this, i, orbitalZones[i]));
@@ -476,7 +451,7 @@ class Star extends Orbit {
       for (int i = 0; i < availableOrbits.size(); i++){
         int index = availableOrbits.get(i); 
         if (index == orbits.size()-1){ continue; }
-        if (getOrbit(index).isGasGiant()){
+        if (getOrbit(index) != null && getOrbit(index).isGasGiant()){
           orbitsInwardFromGiants.append(index);
           availableOrbits.remove(i);
         }
@@ -529,22 +504,15 @@ class Star extends Orbit {
     if (candidates.size() == 0){
       println("No Habitables currently in-system - adding a new Planet");
       
-      //*** 
-      println("orbits.size() = " + orbits.size() + " orbits = " + orbits);
-      
       int newOrbit = orbits.size();
       Boolean addingOrbit = true;
       while (addingOrbit){
-        addOrbit(newOrbit, new Null(this, newOrbit, orbitalZones[newOrbit]));
-        placeForbiddenOrbits();                   // need to test whether new orbit is valid
-        if (getOrbit(newOrbit).isNull()){
+        placeForbiddenOrbits(newOrbit);                   // need to test whether new orbit is valid
+        if (getOrbit(newOrbit) == null){
           addingOrbit = false;
           //break;
         }
-        newOrbit++;
-
-        //*** 
-        println("orbits.size() = " + orbits.size() + " orbits = " + orbits + " newOrbit = " + newOrbit);  
+        newOrbit++;  
       }
       
       placePlanets(newOrbit);
@@ -601,12 +569,12 @@ class Star extends Orbit {
   // flaws with this approach still exist and should be remedied later
   // TreeMap might give us some tools to simplify
   // TO_DO: this needs to be more robust
-  int getRandomUnassignedOrbit(){
-    int counter = 0;          // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
+  int getRandomUnassignedOrbit(int _maxOrbit){
+    int counter = 0;               // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
     while(counter < 100){
-      int choice = floor(random(2, orbits.size()));      // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'
-      if (orbits.size() <= 2){ break; }                  // but this fails in the case of very small systems, so need to bail out
-      if (getOrbit(choice).isNull()){
+      int choice = floor(random(2, _maxOrbit));      // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'  
+      if (_maxOrbit <= 2){ break; }                  // but this fails in the case of very small systems, so need to bail out
+      if (getOrbit(choice) == null){ 
         return choice;
       }
       counter++;
@@ -674,8 +642,8 @@ class Star extends Orbit {
   //  won't catch null pointers, but ideally we've rooted out all such cases
   //  and should squash any remaining bugs if not
   Boolean orbitIsNull(int _num){
-    if (orbitIsTaken(_num)){
-      if (getOrbit(_num).isNull()){ 
+    if (orbitIsTaken(_num)){ 
+      if (getOrbit(_num) == null){
         return true; 
       } else {
         return false;

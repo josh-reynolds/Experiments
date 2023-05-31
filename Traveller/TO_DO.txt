@@ -106,8 +106,8 @@
 //  * FIX  BUG: generateSubordinateStarport() is printing out lots of "Invalid result"
 //  * DONE Review UWP dependent values in System under ScoutsEx (bases, trade, routes, etc.)
 //  * DONE Regenerate Travel Zone with final UWP
+//  * DONE REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Flesh out tests (this will take a while...)
-//  * .... REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * .... Add captured planets
 //  *      Naval/Scout base facilities at non-mainworld locations
 //  *      Military base in System base listing
