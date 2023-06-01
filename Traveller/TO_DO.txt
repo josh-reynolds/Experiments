@@ -108,6 +108,7 @@
 //  * DONE Regenerate Travel Zone with final UWP
 //  * DONE REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * DONE Add captured planets
+//  * DONE REFACTOR: create generic/templatize query across all orbits, merging Habitables/GasGiants queries
 //  * .... Flesh out tests (this will take a while...)
 //  *      Naval/Scout base facilities at non-mainworld locations
 //  *      Military base in System base listing
@@ -151,7 +152,6 @@
 //  *      REFACTOR: case statements in Ruleset
 //  *      REFACTOR: duplicated code in UWP_ScoutsEx ctors
 //  *      REFACTOR: aid - work up sequence diagram for ctors & build operations
-//  *      REFACTOR: create generic/templatize query across all orbits, merging Habitables/GasGiants queries
 // ------------------------------------------------
 
 // After spending this much time with the Scouts algorithm, my suspicion

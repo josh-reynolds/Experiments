@@ -202,11 +202,9 @@ class Star extends Orbit {
     int orbitCount = calculateMaxOrbits();
     if (!primary){ orbitCount = constrain(orbitCount, 0, floor(getOrbitNumber()/2)); }
 
-    int max = max(orbitCount, maxCompanionOrbit + 1);
-
     placeEmptyOrbits(orbitCount);
     placeForbiddenOrbits(orbitCount);
-    placeCapturedPlanets();                                   // TO_DO: stub method, can finally implement now with TreeMap
+    placeCapturedPlanets();
     placeGasGiants(orbitCount);
     placePlanetoidBelts(orbitCount);
     placePlanets(orbitCount);
@@ -524,7 +522,8 @@ class Star extends Orbit {
     //  central star in the system; it may be in orbit around the binary companion,
     //  or it may orbit a gas giant or other world."
     
-    ArrayList<Habitable> candidates = this.getAllHabitables();
+    //ArrayList<Habitable> candidates = this.getAllHabitables();
+    ArrayList<Habitable> candidates = this.getAll(Habitable.class);
     
     // in some cases we can have a System with no Habitable orbits - need to insert one
     // to prevent NullPointerException downstream, and to comply with Traveller assumptions -
@@ -546,7 +545,8 @@ class Star extends Orbit {
       }
       
       placePlanets(newOrbit);
-      candidates = this.getAllHabitables();
+      //candidates = this.getAllHabitables();
+      candidates = this.getAll(Habitable.class);
     }
 
     if (debug == 2){ println("**** Habitables list length = " + candidates.size()); }

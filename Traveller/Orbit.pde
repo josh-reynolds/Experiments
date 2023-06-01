@@ -87,43 +87,62 @@ abstract class Orbit {
     }
   }
   
-  ArrayList<Habitable> getAllHabitables(){
-    ArrayList<Habitable> result = new ArrayList();
+  // genericizing previous lookup methods (getAllHabitables, getAllGasGiants)
+  <T> ArrayList<T> getAll(Class<T> _c){
+    ArrayList<T> result = new ArrayList();
     
-    if (isHabitable()){
-      result.add((Habitable)this);
+    if (_c.isInstance(this)){
+      result.add((T)this);
     }
     
     Iterator<Float> orbitNumbers = orbitList();
     
-    while(orbitNumbers.hasNext()){
-      float f = orbitNumbers.next();  
+    while (orbitNumbers.hasNext()){
+      float f = orbitNumbers.next();
       Orbit child = getOrbit(f);
-      result.addAll(child.getAllHabitables());
+      result.addAll(child.getAll(_c));
     }
     
     return result;
   }
   
+  //ArrayList<Habitable> getAllHabitables(){
+  //  ArrayList<Habitable> result = new ArrayList();
+    
+  //  if (isHabitable()){
+  //    result.add((Habitable)this);
+  //  }
+    
+  //  Iterator<Float> orbitNumbers = orbitList();
+    
+  //  while(orbitNumbers.hasNext()){
+  //    float f = orbitNumbers.next();  
+  //    Orbit child = getOrbit(f);
+  //    result.addAll(child.getAllHabitables());
+  //  }
+    
+  //  return result;
+  //}
+  
   // TO_DO: clear pattern between this and the Habitable query
   //   should refactor this to a templatized function 
-  ArrayList<GasGiant> getAllGasGiants(){
-    ArrayList<GasGiant> result = new ArrayList();
+  //ArrayList<GasGiant> getAllGasGiants(){
+  //  ArrayList<GasGiant> result = new ArrayList();
     
-    if (isGasGiant()){
-      result.add((GasGiant)this);
-    }
+  //  if (isGasGiant()){
+  //    result.add((GasGiant)this);
+  //  }
     
-    Iterator<Float> orbitNumbers = orbitList();
+  //  Iterator<Float> orbitNumbers = orbitList();
     
-    while(orbitNumbers.hasNext()){
-      float f = orbitNumbers.next();
-      Orbit child = getOrbit(f);
-      result.addAll(child.getAllGasGiants());
-    }
+  //  while(orbitNumbers.hasNext()){
+  //    float f = orbitNumbers.next();
+  //    Orbit child = getOrbit(f);
+  //    result.addAll(child.getAllGasGiants());
+  //  }
     
-    return result;
-  }
+  //  return result;
+  //}
   
   // The original implementation for this method was closely based on the Scouts text
   // however, that method runs into infinite regression and stack overflow

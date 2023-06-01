@@ -261,7 +261,8 @@ class System_ScoutsEx extends System_CT81 {
       println("Primary: " + primary);
       primary.createSatellites();
       
-      ArrayList gasGiants = primary.getAllGasGiants();
+      //ArrayList gasGiants = primary.getAllGasGiants();
+      ArrayList gasGiants = primary.getAll(GasGiant.class);
       if (gasGiants.size() > 0){
         gasGiant = true;
         gasGiantCount = gasGiants.size();
@@ -309,7 +310,8 @@ class System_ScoutsEx extends System_CT81 {
       mainworld.addFacility("Scout Base");
     }
     
-    for (Habitable h : primary.getAllHabitables()){
+    //for (Habitable h : primary.getAllHabitables()){
+    for (Habitable h : primary.getAll(Habitable.class)){
       if (h.isMainworld()){ continue; }
       
       // Scouts p. 37 - base facilities at other planets in the system
