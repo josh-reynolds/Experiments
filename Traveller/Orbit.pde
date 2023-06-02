@@ -106,44 +106,6 @@ abstract class Orbit {
     return result;
   }
   
-  //ArrayList<Habitable> getAllHabitables(){
-  //  ArrayList<Habitable> result = new ArrayList();
-    
-  //  if (isHabitable()){
-  //    result.add((Habitable)this);
-  //  }
-    
-  //  Iterator<Float> orbitNumbers = orbitList();
-    
-  //  while(orbitNumbers.hasNext()){
-  //    float f = orbitNumbers.next();  
-  //    Orbit child = getOrbit(f);
-  //    result.addAll(child.getAllHabitables());
-  //  }
-    
-  //  return result;
-  //}
-  
-  // TO_DO: clear pattern between this and the Habitable query
-  //   should refactor this to a templatized function 
-  //ArrayList<GasGiant> getAllGasGiants(){
-  //  ArrayList<GasGiant> result = new ArrayList();
-    
-  //  if (isGasGiant()){
-  //    result.add((GasGiant)this);
-  //  }
-    
-  //  Iterator<Float> orbitNumbers = orbitList();
-    
-  //  while(orbitNumbers.hasNext()){
-  //    float f = orbitNumbers.next();
-  //    Orbit child = getOrbit(f);
-  //    result.addAll(child.getAllGasGiants());
-  //  }
-    
-  //  return result;
-  //}
-  
   // The original implementation for this method was closely based on the Scouts text
   // however, that method runs into infinite regression and stack overflow
   // when there are many moons (most likely case if there are more than three rings)

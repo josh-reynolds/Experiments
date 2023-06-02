@@ -109,9 +109,9 @@
 //  * DONE REFACTOR: with TreeMap, orbit assignment algorithm can be simplified, possibly removing Nulls
 //  * DONE Add captured planets
 //  * DONE REFACTOR: create generic/templatize query across all orbits, merging Habitables/GasGiants queries
+//  * DONE Military base in System base listing
 //  * .... Flesh out tests (this will take a while...)
 //  *      Naval/Scout base facilities at non-mainworld locations
-//  *      Military base in System base listing
 //  * .... Add Scouts extended generation ruleset
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      Ambiguous in RAW - but Close Companions logically should not have any planets

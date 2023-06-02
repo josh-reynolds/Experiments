@@ -251,6 +251,7 @@ class System_ScoutsEx extends System_CT81 {
   Star primary;
   Habitable mainworld;
   int gasGiantCount;
+  Boolean militaryBase = false;
   
   System_ScoutsEx(Coordinate _coord){
     super(_coord);
@@ -261,7 +262,6 @@ class System_ScoutsEx extends System_CT81 {
       println("Primary: " + primary);
       primary.createSatellites();
       
-      //ArrayList gasGiants = primary.getAllGasGiants();
       ArrayList gasGiants = primary.getAll(GasGiant.class);
       if (gasGiants.size() > 0){
         gasGiant = true;
@@ -310,7 +310,6 @@ class System_ScoutsEx extends System_CT81 {
       mainworld.addFacility("Scout Base");
     }
     
-    //for (Habitable h : primary.getAllHabitables()){
     for (Habitable h : primary.getAll(Habitable.class)){
       if (h.isMainworld()){ continue; }
       
@@ -354,7 +353,6 @@ class System_ScoutsEx extends System_CT81 {
         }
       }
       
-      // TO_DO: Scouts p. 38: "Often, a military base can be noted with the symbol M in the base column of the statistics for the system"
       // Military Base
       if (!this.trade.poor && h.getUWP().pop > 0){
         int modifier = 0;
@@ -363,6 +361,7 @@ class System_ScoutsEx extends System_CT81 {
         int dieThrow = roll.two(modifier);
         if (dieThrow > 11){
           h.addFacility("Military Base");
+          militaryBase = true;
           if (h.getUWP().tech < mainworld.getUWP().tech){
             h.getUWP().tech = mainworld.getUWP().tech;
           }
@@ -381,6 +380,14 @@ class System_ScoutsEx extends System_CT81 {
       for (Star s : comps){
         description += s.toString() + " ";
       }
+      
+      String firstHalf = description.substring(0, 35);
+      String secondHalf = description.substring(35, description.length());
+
+      String mb = " ";
+      if (militaryBase){ mb = "M"; } // from Scouts p. 38: "Often, a military base can be noted with the symbol M in the base column of the statistics for the system"
+
+      description = firstHalf + mb + secondHalf;
     }
     return description;
   }

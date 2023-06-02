@@ -183,7 +183,6 @@ class Star extends Orbit {
 
   void createSatellites(){
     if (debug == 2){ println("Creating satellites for " + this); }
-    int maxCompanionOrbit = 0;
     int compCount = 0;
     if (primary || orbitIsFar(getOrbitNumber())){
       compCount = generateCompanionCount();
@@ -195,7 +194,6 @@ class Star extends Orbit {
       generateCompanionOrbits(companion, i);
       addOrbit(companion.getOrbitNumber(), companion);
     }    
-    maxCompanionOrbit = getMaxCompanionOrbit();
 
     // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
     
@@ -294,7 +292,7 @@ class Star extends Orbit {
     }
   }  
   
-  // see note under placeNull above - once we shift to TreeMap, this algorithm can be simplified or eliminated
+  // we have shifted to TreeMap, look for opportunities to simplify/eliminate this one
   void placeEmptyOrbits(int _maxOrbit){
     println("Determining empty orbits for " + this);
     
@@ -360,13 +358,6 @@ class Star extends Orbit {
     //  - by RAW, these are placed in orbit 2-12 +/- deviation
     //  - same biases as noted under Empty: 0 & 1 protected, bell curve around 7, nothing beyond 12
     //  - no notes for what to do if orbit is occupied
-    
-    // offset value could get tricky
-    //  only applies to captured planets, so want to keep integer orbit numbers
-    //  instead add an 'offset' field to the Planet class only
-    //  but how to represent and list in the orbit[] array?
-    //  if, for example, we have a captured planet at orbit 8.5 and a 'regular' planet at 8 (as with Sol, Scouts p. 56)
-    //  how is this listed?
     
     if (roll.one() > 4){
       int quantity = floor(roll.one()/2);
@@ -522,7 +513,6 @@ class Star extends Orbit {
     //  central star in the system; it may be in orbit around the binary companion,
     //  or it may orbit a gas giant or other world."
     
-    //ArrayList<Habitable> candidates = this.getAllHabitables();
     ArrayList<Habitable> candidates = this.getAll(Habitable.class);
     
     // in some cases we can have a System with no Habitable orbits - need to insert one
@@ -539,13 +529,11 @@ class Star extends Orbit {
         placeForbiddenOrbits(newOrbit);                   // need to test whether new orbit is valid
         if (getOrbit(newOrbit) == null){
           addingOrbit = false;
-          //break;
         }
         newOrbit++;  
       }
       
       placePlanets(newOrbit);
-      //candidates = this.getAllHabitables();
       candidates = this.getAll(Habitable.class);
     }
 
