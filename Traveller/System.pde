@@ -302,20 +302,33 @@ class System_ScoutsEx extends System_CT81 {
   
   
   void generateFacilities(){
+    int additionalNavalBases = 0;
     if (navalBase){
       mainworld.addFacility("Naval Base");
+      additionalNavalBases = roll.one(-3);
+      if (additionalNavalBases < 0){ additionalNavalBases = 0; }
     }
     
+    int additionalScoutBases = 0;
     if (scoutBase){
       mainworld.addFacility("Scout Base");
+      additionalScoutBases = roll.one(-4);
+      if (additionalScoutBases < 0){ additionalScoutBases = 0; }
     }
     
     for (Habitable h : primary.getAll(Habitable.class)){
       if (h.isMainworld()){ continue; }
       
       // Scouts p. 37 - base facilities at other planets in the system
-      // Naval Base
-      // Scout Base
+      if (navalBase && additionalNavalBases > 0 && h.getUWP().pop > 2){
+        h.addFacility("Naval Facility");
+        additionalNavalBases--;
+      }
+
+      if (scoutBase && additionalScoutBases > 0 && h.getUWP().pop > 1){
+        h.addFacility("Scout Facility");
+        additionalScoutBases--;
+      }
       
       // Scouts p. 38 - other subordinate facilities
       // Farming
