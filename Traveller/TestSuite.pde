@@ -16,42 +16,23 @@ class TestSuite {
   // may eventually need to split the iterator away and/or
   // create variant test cases or suites against other targets
   String runAgainstSubsector(TestCase _t){
-    String result = "";
-    
-    for (System s : subs.systems.values()){
-      _t.run(s);
-    }
-    
-    result += _t.getTitle();
-    result += _t.getResult();
-    if (_t.getDetails().length() > 1){
-      result += _t.getDetails();
-    }
-    return result;
+    for (System s : subs.systems.values()){ _t.run(s); }
+    return collectResults(_t);
   }
 
   // TO_DO: as we get more examples, this should be generalized to a fixture
-  //   also, the structure of this runner is mostly copy/paste - refactor!
   String runAgainstStar(TestCase _t){
-    String result = "";
-    
-    Star s = new Star(true, null, "G0V");
-    
-    _t.run(s);
-    
-    result += _t.getTitle();
-    result += _t.getResult();
-    if (_t.getDetails().length() > 1){
-      result += _t.getDetails();
-    }
-    return result;    
+    _t.run(new Star(true, null, "G0V"));
+    return collectResults(_t);
   }
   
   String runOnce(TestCase _t){
-    String result = "";
-    
     _t.run();
-    
+    return collectResults(_t);
+  }
+
+  String collectResults(TestCase _t){
+    String result = "";
     result += _t.getTitle();
     result += _t.getResult();
     if (_t.getDetails().length() > 1){
