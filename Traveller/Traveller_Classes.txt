@@ -575,3 +575,91 @@ TradeClass
 UWP                       // asJSON() + ctor(JSONObject)
   UWP_CT81                // inherited.asJSON() + inherited.ctor(JSONObject)
   UWP_ScoutsEx            // inherited.asJSON() + inherited.ctor(JSONObject)
+==========================================================
+6/3/23
+
+Scouts generation is feature complete. Time to circle back on app functionality,
+code cleanup, and bugs. We'll start with the JSON save/load.
+
+We currently have this JSON structure:
+
+Systems [
+  { Naval Base,
+    Gas Giant,
+    Occupied,
+    Travel Zone,
+    Coordinate
+      { Column,
+        Row },
+    Scout Base,
+    Primary
+      { Companions [
+         { Orbit,
+           Class,
+           Orbits [
+             "String",
+             ... ]},
+          ... ]},
+         Class,
+         Orbits [
+           "String",
+           ... ]},
+    Name,
+    UWP
+      { Law Level,
+        Government,
+        Tech Level,
+        Starport,
+        Size,
+        Atmosphere,
+        Population,
+        Hydrographics }},
+  ...]
+
+// --------------------------
+The corresponding code flow is:
+
+Subsector.asJSON()
+  [for each System]:
+    System_ScoutsEx.asJSON()
+      System_CT81.asJSON()
+        System.asJSON()
+          Coordinate.asJSON()   // "Coordinate"
+            setInt              // "Column"
+            setInt              // "Row"
+          setBoolean            // "Occupied"
+          setString             // "Name"              
+          setBoolean            // "Naval Base"
+          setBoolean            // "Scout Base"
+          setBoolean            // "Gas Giant"
+          UWP.asJSON()          // "UWP"     -- no overrides
+            setString           // "Starport"
+            setInt              // "Size"
+            setInt              // "Atmosphere"
+            setInt              // "Hydrographics"
+            setInt              // "Population"
+            setInt              // "Government"
+            setInt              // "Law Level"
+            setInt              // "Tech Level"
+      setString                 // "Travel Zone"
+    Star.asJSON()               // "Primary"
+      setString                 // "Class"
+      Star.asJSON()             // "Close Companion"
+        ...
+      [for each Companion]:     // "Companions"
+        Star.asJSON()           // array entry
+          ...
+      [for each Orbit]:         // "Orbits"
+        setString               // orbits entry
+        ...
+      setInt                    // "Orbit"   -- for non-primary entities  
+// --------------------------
+
+Obvious first candidate is the String representation for all non-Star
+Orbit objects. These should be compound JSONObjects just like the rest. I've
+kludged it so far by appending their own satellites to their toString()
+representation, but that's not going to support loading.
+
+Nothing in the Orbit hierarchy other than Star currently has asJSON().
+
+

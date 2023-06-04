@@ -233,15 +233,6 @@ class Star extends Orbit {
     return 0;
   }
 
-  int getMaxCompanionOrbit(){
-    ArrayList<Star> comps = getCompanions();
-    int max = 0;
-    for (Star s : comps){
-      if (s.getOrbitNumber() > max){ max = s.getOrbitNumber(); } 
-    }
-    return max;
-  }
-
   // from tables on Scouts p.46
   void generateCompanionOrbits(Star _companion, int _iteration){
     int modifier = 4 * (_iteration);
@@ -569,7 +560,6 @@ class Star extends Orbit {
     if (winner != null){                                                               // potential runtime null pointer error here too to guard against
       winner.setMainworld(true);                                 
       winner.completeUWP();
-      println("MAINWORLD " + winner + " : System = " + parent + " : Mainworld = " + ((System_ScoutsEx)parent).mainworld);
       ((System_ScoutsEx)parent).mainworld = winner;      /// TO_DO: need to rethink return value for this method... this is a hack
     }
 
@@ -686,7 +676,7 @@ class Star extends Orbit {
 
   // TO_DO: reconcile with similar queries in Orbit 
   Boolean orbitIsInnerZone(int _num){
-    return orbitalZones[_num].equals("Z");
+    return orbitalZones[_num].equals("I");
   }
 
   Boolean orbitIsFar(int _orbitNum){

@@ -147,6 +147,7 @@
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      BUG: looks like parent pointer is null for primary and all companions
 //  *      BUG: in some cases we can have an orbits array of just one Null after construction finishes
+//  *      BUG: when we have a far companion, JSON orbits array lists a 'null' instead of the companion star
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset

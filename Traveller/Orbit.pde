@@ -302,11 +302,11 @@ class GasGiant extends Orbit {
   
   Boolean isGasGiant(){ return true; }
 
-  String toString(){    // temporary override so we can peek at the structure
-    String result = super.toString();
-    result += " " + orbits.toString();
-    return result;
-  }
+  //String toString(){    // temporary override so we can peek at the structure
+  //  String result = super.toString();
+  //  result += " " + orbits.toString();
+  //  return result;
+  //}
 }
 
 interface Habitable {   // distinct from "Habitable Zone" - this just means "has a UWP"
@@ -372,11 +372,11 @@ class Planet extends Orbit implements Habitable {
   Boolean isPlanet(){ return true; }
   Boolean isHabitable(){ return true; }
   
-  String toString(){    // temporary override so we can peek at the structure
-    String result = super.toString();
-    result += " " + orbits.toString();
-    return result;
-  }
+  //String toString(){    // temporary override so we can peek at the structure
+  //  String result = super.toString();
+  //  result += " " + orbits.toString();
+  //  return result;
+  //}
 }
 
 class Planetoid extends Orbit implements Habitable {
