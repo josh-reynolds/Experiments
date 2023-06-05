@@ -159,5 +159,5 @@
 //  is both High Pop and Barren systems will be rarer. Conditions for 
 //  the former are rarer, and so many little worldlets get a chance to
 //  have population in the latter case that a truly empty system will
-//  be unlikely. Run some statstics once this is all wired up to 
+//  be unlikely. Run some statistics once this is all wired up to 
 //  contrast/compare.

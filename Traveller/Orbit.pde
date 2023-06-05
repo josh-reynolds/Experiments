@@ -240,6 +240,41 @@ abstract class Orbit {
       return name;
     }
   }
+  
+  JSONObject asJSON(){
+    JSONObject json = new JSONObject();
+    
+    json.setInt("Orbit", orbitNumber);
+    json.setString("Class", this.toString());
+    json.setString("Zone", orbitalZone);
+    
+    if (isHabitable()){      
+      json.setString("UWP", ((Habitable)this).getUWP().toString());
+      ArrayList<String> facilities = ((Habitable)this).getFacilities(); 
+      if (facilities.size() > 0){
+        JSONArray facilityList = new JSONArray();
+        for (int i = 0; i < facilities.size(); i++){
+          facilityList.setString(i, facilities.get(i));
+        }
+        json.setJSONArray("Facilities", facilityList);
+      }
+    }
+    
+    if (isContainer()){
+      JSONArray orbitsList = new JSONArray();
+      int counter = 0;                         // need to manually manage due to captured planets
+      
+      Iterator<Float> orbitNumbers = orbitList();    
+      while (orbitNumbers.hasNext()){
+        float f = orbitNumbers.next();
+        Orbit child = getOrbit(f);
+        orbitsList.setJSONObject(counter, child.asJSON());
+        counter++;
+      }
+      json.setJSONArray("Orbits", orbitsList);
+    }
+    return json;
+  }
 }
 
 //class Star extends Orbit {} // separate file/tab for this one
