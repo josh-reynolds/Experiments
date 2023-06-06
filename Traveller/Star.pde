@@ -93,6 +93,7 @@ class Star extends Orbit {
   
   int generateSize(){
     int dieThrow = roll.two();
+    
     if (primary){
       sizeRoll = dieThrow;
         
@@ -354,31 +355,45 @@ class Star extends Orbit {
       int quantity = floor(roll.one()/2);
 
       for (int i = 0; i < quantity; i++){
-        int baseline = roll.two();
-        int deviation = roll.two(-7);
-
-        if (deviation == 0){      // RAW doesn't cover this scenario, but we should prevent captured planets in exact orbits
-          if (roll.one() < 4){    // or they will potentially overwrite another entity 
-            deviation = -1; 
+        float capturedOrbit = 0;
+        int effectiveOrbit = 0;                     // chicken & egg w/ orbitalZones, may want to rethink how this passes to Orbit ctors
+        
+        Boolean assessingCandidates = true;
+        while (assessingCandidates){                // potential infinite loop if there are no valid locations...
+          capturedOrbit = generateCapturedOrbit();  // in practice would require an M or B giant star with a companion in orbit 11, extremely rare
+          effectiveOrbit = round(capturedOrbit);
+          if (orbitInsideStar(effectiveOrbit) || orbitMaskedByCompanion(effectiveOrbit) || orbitIsTooHot(effectiveOrbit)){
+            assessingCandidates = true;            
           } else {
-            deviation = 1;
+            assessingCandidates = false;
           }
         }
-        
-        if (deviation < 0){
-          baseline -= 1;
-          deviation = 10 + deviation;
-        }
-        
-        float capturedOrbit = baseline + (float)deviation/10;
-        int effectiveOrbit = round(capturedOrbit);                   // chicken & egg w/ orbitalZones, may want to rethink how this passes to Orbit ctors
 
         addOrbit(capturedOrbit, new Planet(this, effectiveOrbit, orbitalZones[effectiveOrbit]));
         Planet captured = (Planet)getOrbit(capturedOrbit);
         captured.setOrbitNumber(capturedOrbit);
       }
     }        
+  }
+
+  float generateCapturedOrbit(){
+    int baseline = roll.two();
+    int deviation = roll.two(-7);
+
+    if (deviation == 0){      // RAW doesn't cover this scenario, but we should prevent captured planets in exact orbits
+      if (roll.one() < 4){    // or they will potentially overwrite another entity 
+        deviation = -1; 
+      } else {
+        deviation = 1;
+      }
+    }
     
+    if (deviation < 0){
+      baseline -= 1;
+      deviation = 10 + deviation;
+    }
+    
+    return baseline + (float)deviation/10;
   }
 
   void placeGasGiants(int _maxOrbit){

@@ -115,6 +115,7 @@
 //  * FIX  BUG: in some cases we can have an orbits array of just one Null after construction finishes
 //  * FIX  BUG: when we have a far companion, JSON orbits array lists a 'null' instead of the companion star
 //  * FIX  BUG: we're placing planets/planetoids in forbidden orbits
+//  * FIX  BUG: Captured Planets can drop into Forbidden locations
 //  * .... Flesh out tests (this will take a while...)
 //  *      Think through orbital zones for satellites of companion stars
 //  *      Duplication in JSON between Companions and Orbits listings
@@ -151,7 +152,6 @@
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      BUG: looks like parent pointer is null for primary and all companions
-//  *      BUG: Captured Planets can drop into Forbidden locations
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset
