@@ -337,8 +337,7 @@ class Star extends Orbit {
   void placeForbiddenOrbits(int _maxOrbit){
     println("Determining forbidden orbits for " + this);
     for (int i = 0; i < _maxOrbit; i++){
-      if ((orbitInsideStar(i) || orbitMaskedByCompanion(i) || orbitIsTooHot(i)) &&
-          orbitIsNullOrEmpty(i)){
+      if (orbitIsForbidden(i) && orbitIsNullOrEmpty(i)){
         addOrbit(i, new Forbidden(this, i, orbitalZones[i]));
       }
     }
@@ -362,7 +361,7 @@ class Star extends Orbit {
         while (assessingCandidates){                // potential infinite loop if there are no valid locations...
           capturedOrbit = generateCapturedOrbit();  // in practice would require an M or B giant star with a companion in orbit 11, extremely rare
           effectiveOrbit = round(capturedOrbit);
-          if (orbitInsideStar(effectiveOrbit) || orbitMaskedByCompanion(effectiveOrbit) || orbitIsTooHot(effectiveOrbit)){
+          if (orbitIsForbidden(effectiveOrbit)){
             assessingCandidates = true;            
           } else {
             assessingCandidates = false;
@@ -609,7 +608,7 @@ class Star extends Orbit {
     // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
     IntList result = new IntList();
     for (int i = 0; i < _maxOrbit; i++){
-      if (orbitInsideStar(i) || orbitIsTooHot(i) || orbitIsInnerZone(i)){ continue; }
+      if (orbitIsForbidden(i) || orbitIsInnerZone(i)){ continue; }
       if (orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, no
         if (debug >= 1){ println("Orbit " + i + " qualifies"); }
         result.append(i);
@@ -687,6 +686,10 @@ class Star extends Orbit {
   // TO_DO: tables handle orbit 0 inconsistently, so this func is incomplete - need to derive additional data
   Boolean orbitInsideStar(int _num){
     return orbitalZones[_num].equals("Z");
+  }
+
+  Boolean orbitIsForbidden(int _num){
+    return (orbitInsideStar(_num) || orbitMaskedByCompanion(_num) || orbitIsTooHot(_num));
   }
 
   // TO_DO: reconcile with similar queries in Orbit 

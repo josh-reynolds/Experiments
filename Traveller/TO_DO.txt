@@ -114,7 +114,7 @@
 //  * DONE Add Scouts extended generation ruleset
 //  * FIX  BUG: in some cases we can have an orbits array of just one Null after construction finishes
 //  * FIX  BUG: when we have a far companion, JSON orbits array lists a 'null' instead of the companion star
-//  * FIX  BUG: we're placing planets/planetoids in forbidden orbits
+//  * ...  BUG: we're placing planets/planetoids in forbidden orbits
 //  * FIX  BUG: Captured Planets can drop into Forbidden locations
 //  * .... Flesh out tests (this will take a while...)
 //  *      Think through orbital zones for satellites of companion stars

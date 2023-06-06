@@ -17,6 +17,18 @@ class Ruleset {
     }
   }
   
+  Boolean supportsStars(){
+    switch(rules) {
+      case "CT77":
+      case "CT81":
+        return false;
+      case "Scouts (Extended)":
+        return true;
+      default:
+        return false;
+    }
+  }
+  
   System newSystem(Coordinate _coord){
     switch(rules) {
       case "CT77":

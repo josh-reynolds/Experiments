@@ -10,6 +10,7 @@ class TestSuite {
     println(runAgainstSubsector(new SizeZeroWorldsHaveNoHydrosphere()));
     println(runOnce(new DistanceBetweenSubsectorCornersIsThirteen()));
     println(runAgainstStar(new HabitableZoneForG0VIs3()));
+    println(runAgainstSubsector(new PlanetsCannotBeInForbiddenZones()));
   }
   
   // runs at the subsector level across all occupied systems
@@ -130,6 +131,32 @@ class NoRoutesToRedZones extends TestCase {
       if (_s.occupied){
         String message = _s.name + " " + ((System_CT81)_s).travelZone + " " + _s.routes.size();
         fails(_s.routes.size() > 0, message);
+      }
+    }
+  }
+}
+
+class PlanetsCannotBeInForbiddenZones extends TestCase {
+  PlanetsCannotBeInForbiddenZones(){ title = "Planets cannot be in Forbidden Zones"; }
+  
+  void run(System _s){
+    if (ruleset.supportsStars()){
+      if (_s.occupied){
+        String message = _s.name;
+        Star primary = ((System_ScoutsEx)_s).primary;
+        
+        Boolean invalidPlanet = false;
+        ArrayList<Planet> planets = primary.getAll(Planet.class);        
+        for (Planet p : planets){
+          if (p.isMoon()){ continue; }
+          
+          if (primary.orbitIsForbidden(p.getOrbitNumber())){
+            invalidPlanet = true;
+            message += " " + p.getOrbitNumber() + ":" + p.orbitalZone;
+          }
+        }
+
+        fails(invalidPlanet, message);
       }
     }
   }
