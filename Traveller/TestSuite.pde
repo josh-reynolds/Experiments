@@ -149,8 +149,9 @@ class PlanetsCannotBeInForbiddenZones extends TestCase {
         ArrayList<Planet> planets = primary.getAll(Planet.class);        
         for (Planet p : planets){
           if (p.isMoon()){ continue; }
-          
-          if (primary.orbitIsForbidden(p.getOrbitNumber())){
+          if (p.barycenter != primary){ continue; }     // TO_DO: zones are assigned from primary, we get invalid results in this test unless
+                                                        //   we filter them out. Loop back once we reconcile companion satellite orbital zones.
+          if (primary.orbitIsForbidden(p.getOrbitNumber())){            
             invalidPlanet = true;
             message += " " + p.getOrbitNumber() + ":" + p.orbitalZone;
           }
