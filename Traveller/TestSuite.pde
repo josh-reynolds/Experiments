@@ -176,3 +176,4 @@ class TestCase {
 // Moons/Rings have the same orbital zone as their parent (barycenter)
 // No null orbits remain after system is created/populated
 // Close companions are not listed as regular companions
+// Non-star orbits cannot be in 'too hot' or 'inside star' locations

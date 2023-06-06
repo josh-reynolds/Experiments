@@ -95,6 +95,7 @@ class Star extends Orbit {
     int dieThrow = roll.two();
     if (primary){
       sizeRoll = dieThrow;
+        
       if (dieThrow == 2                ){ return 2;  }
       if (dieThrow == 3                ){ return 3; }
       if (dieThrow == 4                ){ 
@@ -333,12 +334,11 @@ class Star extends Orbit {
   //  -         TO_DO (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
   //  - DONE  orbit is too hot to allow planets
   void placeForbiddenOrbits(int _maxOrbit){
-    if (isContainer()){
-      for (int i = 0; i < _maxOrbit; i++){
-        if ((orbitInsideStar(i) || orbitMaskedByCompanion(i) || orbitIsTooHot(i)) &&
-            orbitIsNullOrEmpty(i)){
-          addOrbit(i, new Forbidden(this, i, orbitalZones[i]));
-        }
+    println("Determining forbidden orbits for " + this);
+    for (int i = 0; i < _maxOrbit; i++){
+      if ((orbitInsideStar(i) || orbitMaskedByCompanion(i) || orbitIsTooHot(i)) &&
+          orbitIsNullOrEmpty(i)){
+        addOrbit(i, new Forbidden(this, i, orbitalZones[i]));
       }
     }
   }
