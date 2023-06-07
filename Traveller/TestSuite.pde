@@ -11,6 +11,8 @@ class TestSuite {
     println(runOnce(new DistanceBetweenSubsectorCornersIsThirteen()));
     println(runAgainstStar(new HabitableZoneForG0VIs3()));
     println(runAgainstSubsector(new PlanetsCannotBeInForbiddenZones()));
+    println(runAgainstSubsector(new PlanetoidsCannotBeInForbiddenZones()));
+    println(runAgainstSubsector(new GasGiantsCannotBeInForbiddenZones()));
   }
   
   // runs at the subsector level across all occupied systems
@@ -163,6 +165,58 @@ class PlanetsCannotBeInForbiddenZones extends TestCase {
   }
 }
 
+class PlanetoidsCannotBeInForbiddenZones extends TestCase {
+  PlanetoidsCannotBeInForbiddenZones(){ title = "Planetoids cannot be in Forbidden Zones"; }
+  
+  void run(System _s){
+    if (ruleset.supportsStars()){
+      if (_s.occupied){
+        String message = _s.name;
+        Star primary = ((System_ScoutsEx)_s).primary;
+        
+        Boolean invalidPlanetoid = false;
+        ArrayList<Planetoid> planetoids = primary.getAll(Planetoid.class);        
+        for (Planetoid p : planetoids){
+          if (p.isRing()){ continue; }
+          if (p.barycenter != primary){ continue; }     // TO_DO: zones are assigned from primary, we get invalid results in this test unless
+                                                        //   we filter them out. Loop back once we reconcile companion satellite orbital zones.
+          if (primary.orbitIsForbidden(p.getOrbitNumber())){            
+            invalidPlanetoid = true;
+            message += " " + p.getOrbitNumber() + ":" + p.orbitalZone;
+          }
+        }
+
+        fails(invalidPlanetoid, message);
+      }
+    }
+  }
+}
+
+class GasGiantsCannotBeInForbiddenZones extends TestCase {
+  GasGiantsCannotBeInForbiddenZones(){ title = "Gas Giants cannot be in Forbidden Zones"; }
+  
+  void run(System _s){
+    if (ruleset.supportsStars()){
+      if (_s.occupied){
+        String message = _s.name;
+        Star primary = ((System_ScoutsEx)_s).primary;
+        
+        Boolean invalidPlanet = false;
+        ArrayList<GasGiant> giants = primary.getAll(GasGiant.class);        
+        for (GasGiant g : giants){
+          if (g.barycenter != primary){ continue; }     // TO_DO: zones are assigned from primary, we get invalid results in this test unless
+                                                        //   we filter them out. Loop back once we reconcile companion satellite orbital zones.
+          if (primary.orbitIsForbidden(g.getOrbitNumber())){            
+            invalidPlanet = true;
+            message += " " + g.getOrbitNumber() + ":" + g.orbitalZone;
+          }
+        }
+
+        fails(invalidPlanet, message);
+      }
+    }
+  }
+}
 
 // ===========================================================================
 class TestCase {
@@ -204,4 +258,3 @@ class TestCase {
 // Moons/Rings have the same orbital zone as their parent (barycenter)
 // No null orbits remain after system is created/populated
 // Close companions are not listed as regular companions
-// Non-star orbits cannot be in 'too hot' or 'inside star' locations
