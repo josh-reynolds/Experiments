@@ -661,5 +661,3 @@ kludged it so far by appending their own satellites to their toString()
 representation, but that's not going to support loading.
 
 Nothing in the Orbit hierarchy other than Star currently has asJSON().
-
-

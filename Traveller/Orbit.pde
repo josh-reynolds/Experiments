@@ -21,12 +21,54 @@ abstract class Orbit {
     barycenter = _barycenter;
     setOrbitNumber(_orbit);
     orbitalZone = _zone;
+    
+    if (barycenter != null){           // null for the primary
+      if (barycenter.isStar()){
+        if (!((Star)barycenter).primary){
+          String fromPrimary   = ((Star)barycenter.barycenter).orbitalZones[barycenter.orbitNumber];          
+          String fromCompanion = ((Star)barycenter).orbitalZones[orbitNumber];
+          orbitalZone = adjustOrbitalZone(fromPrimary, fromCompanion); 
+        }
+      }
+    }
+        
     captured = false;
     
     orbits = new TreeMap();
 
     roll = new Dice();
   }
+
+  String adjustOrbitalZone(String _fromPrimary, String _fromCompanion){
+    println("Adjusting orbital zone for orbits around companion stars.");
+    println("Primary = " + _fromPrimary + " Companion = " + _fromCompanion);
+    
+    int primaryScore = scoreZone(_fromPrimary);
+    int companionScore = scoreZone(_fromCompanion);
+    if (primaryScore < companionScore){
+      return _fromPrimary;
+    } else {
+      return _fromCompanion;
+    }
+  }
+  
+  int scoreZone(String _zone){
+    switch(_zone){
+      case "Z":
+        return 0;
+      case "X":
+        return 1;
+      case "I":
+        return 2;
+      case "H":
+        return 3;
+      case "O":
+        return 4;
+      default:
+        return 5;
+    }
+  }
+
 
   int getOrbitNumber(){ return orbitNumber; }
 

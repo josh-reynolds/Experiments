@@ -257,10 +257,10 @@ class System_ScoutsEx extends System_CT81 {
     super(_coord);
     
     if (occupied){
-      primary = new Star(true, this);
+      primary = new Star(this);
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       println("Primary: " + primary);
-      primary.createSatellites();
+      primary.createSatellites();      
       
       ArrayList gasGiants = primary.getAll(GasGiant.class);
       if (gasGiants.size() > 0){

@@ -116,20 +116,21 @@
 //  * FIX  BUG: when we have a far companion, JSON orbits array lists a 'null' instead of the companion star
 //  * FIX  BUG: we're placing planets/planetoids in forbidden orbits
 //  * FIX  BUG: Captured Planets can drop into Forbidden locations
+//  * CNCL Parameter object for orbitCount/maxCompanion cluster in Star
+//  * DONE Reassess parent pointer for non-primary stars
+//  * CNCL BUG: looks like parent pointer is null for primary and all companions
+//  * DONE Think through orbital zones for satellites of companion stars
+//  * DONE Ambiguous in RAW - but Close Companions logically should not have any planets
+//  * DONE Enforce inherited orbitNumber across all Orbit subclasses
 //  * .... Flesh out tests (this will take a while...)
-//  *      Think through orbital zones for satellites of companion stars
 //  *      Duplication in JSON between Companions and Orbits listings
 //  *      Unravel inheritance issues in UWP hierarchy
-//  *      Ambiguous in RAW - but Close Companions logically should not have any planets
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Assess including companions of companions in getCompanions() result
 //  *      Assess adding "two beyond habitable" code to orbital zone data file
 //  *      Rework Coordinate / Hex classes - Reference objects?
 //  *      Override getHash() in Coordinate and adjust lookup procedure
-//  *      Reassess parent pointer for non-primary stars
 //  *      Move away from string parsing approach in Star JSON ctor
-//  *      Enforce inherited orbitNumber across all Orbit subclasses
-//  *      Parameter object for orbitCount/maxCompanion cluster in Star
 //  *      Rework approach to Far companions and orbit determination
 //  *      Flagging close/far companions - query methods?
 //  *      Lots of debugging spew added during Scouts implementation - remove! (test?)
@@ -151,7 +152,7 @@
 //  *      BUG: off-by-one issue in Star.createOrbits in some cases
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
-//  *      BUG: looks like parent pointer is null for primary and all companions
+//  *      BUG: we are not blocking orbits beyond companion star, allowing planets to be assigned to Forbidden
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset

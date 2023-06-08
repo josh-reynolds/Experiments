@@ -587,6 +587,49 @@ to do of course, as well as getting the other primary scenarios working
 (Save & Load). Right now only 'New' (and the corresponding display/output) is
 confirmed.
 
+6/7/23
+
+Captured Planets and remainder of Scouts features have been added, and initial 
+overhaul of saving to JSON has been completed. Need to review all fields are 
+covered, and that we can load.
+
+Along the way, an ambiguous scenario has come up: RAW is mute regarding orbital 
+zones for planets orbiting a companion star. Right now I am calculating everything 
+based on the primary.
+
+I think the simplest (and mostly correct) solution should be to compare 
+zone from companion and primary, and whichever one is "hotter" wins. So a 
+companion in the inner zone of its primary, for example, would effectively 
+have no habitable or outer zones. IIRC, the Scouts chapter following system 
+creation touches somewhat on this when calculating average temperature for 
+worlds in binary/trinary systems. And a 'real' solution would probably involve 
+figuring out min/max separation and so on - the planet might swing through 
+multiple zones effectively - but this is more complex than this warrants for 
+now.
+
+Listing out some scenarios off the top of my head:
+
+* Anything orbiting the primary, use the zone from there
+* Any moons/rings, use their barycenter's zone (Planet or Gas Giant)
+* Anything orbiting a companion star, compare zone the companion sits in,
+   with the zone calculated from the companion itself, and assign 'hotter'
+
+    Primary  Companion  Result
+    -------  ---------  ------
+      Z        ZXIHO       Z
+      X        XIHO        X
+      I        IHO         I
+      H        HO          H
+      O        O           O
+      ZXIHO    Z           Z
+      XIHO     X           X
+      IHO      I           I
+      HO       H           H
+      O        O           O
+
+In TO_DO, we've also noted that close companions probably shouldn't have 
+any planets - the algorithm above also handles this case.
+
 
 
 

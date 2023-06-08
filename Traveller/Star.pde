@@ -1,5 +1,5 @@
 class Star extends Orbit {
-  System parent;   // TO_DO: may want to rethink parent pointer for companions... (and I think this is always null anyway - BUG!)
+  System parent;
   Boolean primary;
   
   char type;
@@ -14,12 +14,28 @@ class Star extends Orbit {
 
   int gasGiantCount = 0;
   
-  Star(Boolean _primary, System _parent){
+  // ctor for primary star only
+  Star(System _parent){
     super(null, -1, (String)null);   // TO_DO: making the compiler happy, may need to rethink this - don't like the magic value for the primary
-    if (debug == 2){ println("** Star ctor(" + _primary);}// + _parent); }  // BUG:  _parent is null on the primary call because its ctor has not completed - reassess
-    primary = _primary;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
+    if (debug == 2){ println("** Star PRIMARY ctor"); }
+    primary = true;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
     parent = _parent;
     
+    type = generateType();  
+    decimal = floor(random(10));
+    size = generateSize();
+    if (size == 7){ decimal = 0; }
+    
+    orbitalZones = retrieveOrbitalZones();    
+  }
+  
+  // ctor for companion stars - TO_DO: refactor duplication w/ previous
+  Star(Orbit _barycenter, int _orbit, String _zone, System _parent){
+    super(_barycenter, _orbit, _zone);
+    if (debug == 2){ println("** Star COMPANION ctor"); }
+    primary = false;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
+    parent = _parent;
+
     type = generateType();  
     decimal = floor(random(10));
     size = generateSize();
@@ -192,8 +208,15 @@ class Star extends Orbit {
     if (debug >= 1){ println(compCount + " companions"); }
 
     for (int i = 0; i < compCount; i++){
-      Star companion = new Star(false, parent);    // BUG: are we propagating a null parent to all companions? is this value even useful, then?
-      generateCompanionOrbits(companion, i);
+      int orbitNum = generateCompanionOrbit(i);
+      
+      Star companion = new Star(this, orbitNum, orbitalZones[orbitNum], parent);
+
+      if (orbitNum == 0 || orbitInsideStar(orbitNum)){
+        if (debug >= 1){ println("Companion in CLOSE orbit"); }        
+        closeCompanion = companion;        
+      }
+
       addOrbit(companion.getOrbitNumber(), companion);
     }    
 
@@ -236,10 +259,10 @@ class Star extends Orbit {
   }
 
   // from tables on Scouts p.46
-  void generateCompanionOrbits(Star _companion, int _iteration){
+  int generateCompanionOrbit(int _iteration){
     int modifier = 4 * (_iteration);
     if (!primary){ modifier -= 4; }
-    if (debug >= 1){ println("Assessing companion star: " + _companion + " modifier: +" + modifier); }
+    if (debug >= 1){ println("Generating companion star orbit. Modifier: +" + modifier); }
     int dieThrow = roll.two(modifier);
     int result = 0;
     if (dieThrow < 4  ){ result = 0; }
@@ -259,14 +282,8 @@ class Star extends Orbit {
       if (distance >= 5000                    ){ result = 17; } 
     }
     
-    if (result == 0 || orbitInsideStar(result)){
-      if (debug >= 1){ println("Companion in CLOSE orbit"); }        
-      closeCompanion = _companion;
-      closeCompanion.setOrbitNumber(result);
-    } else {
-      if (debug >= 1){ println("Companion in orbit: " + result); }
-      _companion.setOrbitNumber(result);
-    }
+    return result;
+
     // TO_DO: need to handle two companions landing in same orbit
   }
 
