@@ -297,6 +297,7 @@ class System_ScoutsEx extends System_CT81 {
     
     if (occupied){
       primary = new Star(true, this, _json.getJSONObject("Primary"));
+      militaryBase = _json.getBoolean("Military Base");
     }
   }
   
@@ -410,6 +411,7 @@ class System_ScoutsEx extends System_CT81 {
     if (occupied){
       JSONObject star = primary.asJSON();
       json.setJSONObject("Primary", star);
+      json.setBoolean("Military Base", militaryBase);
     }
     return json;
   }

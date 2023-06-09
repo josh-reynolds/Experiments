@@ -661,3 +661,87 @@ kludged it so far by appending their own satellites to their toString()
 representation, but that's not going to support loading.
 
 Nothing in the Orbit hierarchy other than Star currently has asJSON().
+
+6/9/23
+
+That part is done - Orbit now has asJSON(), and it includes logic to handle
+Habitable and Container variants. Just need to review fields on all objects
+to make sure they're covered, and this bit is done.
+
+Subsector -----------------------------------------
+  String name;                                 ok
+  String summary;                              ok
+  [Ruleset ruleset]                            ok
+  Dice roll;                                   n/a
+  int vertCount;                               n/a
+  int horzCount;                               n/a
+  LinkedHashMap<Coordinate, System> systems; ------
+    Polygon hex;                               n/a
+    Coordinate coord; -----------------------------
+      int column, row;                         ok
+      int x, y, z;                             n/a
+      float yOffset;                           n/a
+      int startX;                              n/a 
+      int startY;                              n/a
+    Boolean occupied;                          ok
+    UWP uwp; --------------------------------------
+      char starport;                           ok
+      int size;                                ok 
+      int atmo;                                ok 
+      int hydro;                               ok
+      int pop;                                 ok
+      int gov;                                 ok
+      int law;                                 ok
+      int tech;                                ok
+      Dice roll;                               n/a
+      Orbit planet;                            ??   only used during ctor, so n/a
+    Boolean navalBase;                         ok
+    Boolean scoutBase;                         ok
+    Boolean gasGiant;                          ok
+    TradeClass trade;                          n/a
+    String name;                               ok
+    ArrayList<Route> routes;                   n/a
+    Dice roll;                                 n/a
+    String travelZone;                         ok
+    Star primary; ---------------------------------
+      System parent;                           ??
+      Boolean primary;                         ??
+      char type;                               ok   combined as 'class'
+      int typeRoll;                            n/a
+      int decimal;                             ok   combined as 'class'
+      int size;                                ok   combined as 'class'
+      int sizeRoll;                            n/a
+      Star closeCompanion;                     ok   should rethink companion listings
+      String[] orbitalZones;                   n/a
+      int gasGiantCount;                       ??   regenerate?
+      Orbit barycenter;                        ??   here and below from Orbit superclass
+      String name;                             ??
+      int orbitNumber;                         ok   add this
+      String orbitalZone;                      ok   add this
+      Boolean captured;                        ok   add this
+      float offsetOrbitNumber;                 ok   add this
+      TreeMap<Float, Orbit> orbits; ---------------
+        Orbit barycenter;                      ??
+        String name;                           ??
+        int orbitNumber;                       ok   add this
+        String orbitalZone;                    ok   add this
+        Boolean captured;                      ok   add this
+        float offsetOrbitNumber;               ok   add this
+        String size;                           ??   GasGiant subclass only
+        UWP_ScoutsEx uwp; ------------------------- Planet/Planetoid subclasses only
+          
+        Boolean mainworld;                          Planet/Planetoid subclasses only
+        ArrayList<String> facilities; ------------- Planet/Planetoid subclasses only
+          [String facility]                    ok
+        TreeMap<Float, Orbit> orbits;--------------
+
+        Dice roll;                             n/a
+      Dice roll;                               n/a
+    Habitable mainworld;                       ??   regenerate?
+    int gasGiantCount;                         ??   regenerate?
+    Boolean militaryBase;                      ok   add this
+  ArrayList<Route> routes; ------------------------
+    System s1;                                 ok
+    System s2;                                 ok
+    int distance;                              n/a
+

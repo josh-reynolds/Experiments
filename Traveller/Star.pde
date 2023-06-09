@@ -805,14 +805,15 @@ class Star extends Orbit {
       json.setJSONObject("Close Companion", closeCompanion.asJSON());
     }
     
-    ArrayList<Star> comps = getCompanions();
-    if (comps.size() > 0){
-      JSONArray companionList = new JSONArray();
-      for (int i = 0; i < comps.size(); i++){
-        companionList.setJSONObject(i, comps.get(i).asJSON());
-      }
-      json.setJSONArray("Companions", companionList);
-    }
+    // This is redundant w/ the orbits list, and dynamic companions lookup, prune it out
+    //ArrayList<Star> comps = getCompanions();
+    //if (comps.size() > 0){
+    //  JSONArray companionList = new JSONArray();
+    //  for (int i = 0; i < comps.size(); i++){
+    //    companionList.setJSONObject(i, comps.get(i).asJSON());
+    //  }
+    //  json.setJSONArray("Companions", companionList);
+    //}
     
     if (isContainer()){
       JSONArray orbitsList = new JSONArray();

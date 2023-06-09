@@ -122,8 +122,8 @@
 //  * DONE Think through orbital zones for satellites of companion stars
 //  * DONE Ambiguous in RAW - but Close Companions logically should not have any planets
 //  * DONE Enforce inherited orbitNumber across all Orbit subclasses
+//  * DONE Duplication in JSON between Companions and Orbits listings
 //  * .... Flesh out tests (this will take a while...)
-//  *      Duplication in JSON between Companions and Orbits listings
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Assess including companions of companions in getCompanions() result

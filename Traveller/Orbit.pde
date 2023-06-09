@@ -33,16 +33,11 @@ abstract class Orbit {
     }
         
     captured = false;
-    
     orbits = new TreeMap();
-
     roll = new Dice();
   }
 
   String adjustOrbitalZone(String _fromPrimary, String _fromCompanion){
-    println("Adjusting orbital zone for orbits around companion stars.");
-    println("Primary = " + _fromPrimary + " Companion = " + _fromCompanion);
-    
     int primaryScore = scoreZone(_fromPrimary);
     int companionScore = scoreZone(_fromCompanion);
     if (primaryScore < companionScore){
@@ -301,6 +296,12 @@ abstract class Orbit {
         json.setJSONArray("Facilities", facilityList);
       }
     }
+    
+    if (captured){
+      json.setBoolean("Captured", captured);     // TO_DO: should push this down the hierarchy to Planet...
+      json.setFloat("Offset", offsetOrbitNumber);
+    }
+    
     
     if (isContainer()){
       JSONArray orbitsList = new JSONArray();
