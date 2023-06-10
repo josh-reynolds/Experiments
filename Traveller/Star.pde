@@ -793,45 +793,12 @@ class Star extends Orbit {
       return str(type) + decimal + sizeToString();
     }
   }
-  
-  
-  // TO_DO: this is starting to overlap and duplicate code from the method in Orbit, refactor
+ 
   JSONObject asJSON(){
-    JSONObject json = new JSONObject();
-    
-    json.setString("Class", this.toString());
+    JSONObject json = super.asJSON();
 
     if (closeCompanion != null){
       json.setJSONObject("Close Companion", closeCompanion.asJSON());
-    }
-    
-    // This is redundant w/ the orbits list, and dynamic companions lookup, prune it out
-    //ArrayList<Star> comps = getCompanions();
-    //if (comps.size() > 0){
-    //  JSONArray companionList = new JSONArray();
-    //  for (int i = 0; i < comps.size(); i++){
-    //    companionList.setJSONObject(i, comps.get(i).asJSON());
-    //  }
-    //  json.setJSONArray("Companions", companionList);
-    //}
-    
-    if (isContainer()){
-      JSONArray orbitsList = new JSONArray();
-      int counter = 0;                         // need to manually manage due to captured planets
-
-      Iterator<Float> orbitNumbers = orbitList();    
-      while (orbitNumbers.hasNext()){
-        float f = orbitNumbers.next();
-        Orbit child = getOrbit(f);
-        orbitsList.setJSONObject(counter, child.asJSON());
-        counter++;
-      }
-      
-      json.setJSONArray("Orbits", orbitsList);  
-    }
-
-    if (!primary){
-      json.setInt("Orbit", getOrbitNumber());
     }
     
     return json;

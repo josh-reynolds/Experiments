@@ -153,6 +153,7 @@
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      BUG: we are not blocking orbits beyond companion star, allowing planets to be assigned to Forbidden
+//  *      BUG: offset orbit value is saved with many digits when output to JSON
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset

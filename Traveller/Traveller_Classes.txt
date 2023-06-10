@@ -704,8 +704,8 @@ Subsector -----------------------------------------
     Dice roll;                                 n/a
     String travelZone;                         ok
     Star primary; ---------------------------------
-      System parent;                           ??
-      Boolean primary;                         ??
+      System parent;                           n/a
+      Boolean primary;                         n/a
       char type;                               ok   combined as 'class'
       int typeRoll;                            n/a
       int decimal;                             ok   combined as 'class'
@@ -714,15 +714,16 @@ Subsector -----------------------------------------
       Star closeCompanion;                     ok   should rethink companion listings
       String[] orbitalZones;                   n/a
       int gasGiantCount;                       ??   regenerate?
-      Orbit barycenter;                        ??   here and below from Orbit superclass
-      String name;                             ??
+                                                    here and below from Orbit superclass
+      Orbit barycenter;                        ??   regenerate?
+      String name;                             ok   as 'class'
       int orbitNumber;                         ok   add this
       String orbitalZone;                      ok   add this
       Boolean captured;                        ok   add this
       float offsetOrbitNumber;                 ok   add this
       TreeMap<Float, Orbit> orbits; ---------------
-        Orbit barycenter;                      ??
-        String name;                           ??
+        Orbit barycenter;                      ??   regenerate?
+        String name;                           ok   as 'class'
         int orbitNumber;                       ok   add this
         String orbitalZone;                    ok   add this
         Boolean captured;                      ok   add this
@@ -744,4 +745,26 @@ Subsector -----------------------------------------
     System s1;                                 ok
     System s2;                                 ok
     int distance;                              n/a
+
+5/10/23
+
+Easy adds are done, and several others should be regenerated at load time, so 
+we'll solve then. Seems like two remaining areas:
+
+* Cross-references like mainworld, close companion and barycenter. To prevent 
+  duplication, these should probably be a pointer into the orbits list. I 
+  already removed the "companions" list for the same reason.
+
+* Exact subclass for various orbits. In my initial version of this code path,
+  we were using a "name" string in the orbit listing, and logic to build the 
+  correct object on load.
+
+Also, as we go through this, I'm spotting more instances where Star is 
+divergent from all the other Orbit classes and reconciling - usually by 
+eliminating the code in Star and merging it up. In general, all classes 
+should rely on Orbit.asJSON() entirely, or call it via super in their 
+own override and then add content.
+
+
+
 
