@@ -1,6 +1,5 @@
 abstract class Orbit {
-  Orbit barycenter;  // not _exactly_ the right word, but closest to meaning of "thing I orbit around"
-  String name;     
+  Orbit barycenter;  // not _exactly_ the right word, but closest to meaning of "thing I orbit around"     
   int orbitNumber;
   String orbitalZone;
   // radius in AU & km? as a query method?
@@ -271,7 +270,7 @@ abstract class Orbit {
   Boolean isHabitable(){ return false; }
 
   String toString(){ 
-    return name;
+    return this.getClass().getSimpleName();
   }
   
   JSONObject asJSON(){
@@ -321,7 +320,6 @@ abstract class Orbit {
 class Empty extends Orbit {
   Empty(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    name = "Empty";
   }
   
   Boolean isEmpty(){ return true; }
@@ -330,7 +328,6 @@ class Empty extends Orbit {
 class Forbidden extends Orbit {
   Forbidden(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
-    name = "Forbidden";
   }
   
   Boolean isForbidden(){ return true; }
@@ -350,8 +347,6 @@ class GasGiant extends Orbit {
 
     int satelliteCount = generateSatelliteCount();
     createSatellites(satelliteCount);
-    
-    name = size + "GG";
   }  
 
   int generateSatelliteCount(){
@@ -375,12 +370,12 @@ class GasGiant extends Orbit {
   }
   
   Boolean isGasGiant(){ return true; }
-
-  //String toString(){    // temporary override so we can peek at the structure
-  //  String result = super.toString();
-  //  result += " " + orbits.toString();
-  //  return result;
-  //}
+  
+  JSONObject asJSON(){
+    JSONObject json = super.asJSON();
+    json.setString("Size", size);    
+    return json;
+  }
 }
 
 interface Habitable {   // distinct from "Habitable Zone" - this just means "has a UWP"
@@ -406,7 +401,6 @@ class Planet extends Orbit implements Habitable {
     int satelliteCount = generateSatelliteCount();
     createSatellites(satelliteCount);
 
-    name = "Planet";
     mainworld = false;
     facilities = new ArrayList();
   }
@@ -445,12 +439,6 @@ class Planet extends Orbit implements Habitable {
 
   Boolean isPlanet(){ return true; }
   Boolean isHabitable(){ return true; }
-  
-  //String toString(){    // temporary override so we can peek at the structure
-  //  String result = super.toString();
-  //  result += " " + orbits.toString();
-  //  return result;
-  //}
 }
 
 class Planetoid extends Orbit implements Habitable {
@@ -461,7 +449,6 @@ class Planetoid extends Orbit implements Habitable {
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone); 
     uwp = generateUWP();
-    name = "Planetoid Belt";
     mainworld = false;
     facilities = new ArrayList();
   }
@@ -506,8 +493,6 @@ class Moon extends Planet {
     uwp = generateUWP(_size); // super generates a UWP but doesn't have a size parameter
                               // and doing this via polymorphism seems like more code than
                               // this way
-       
-    name = "Moon";
   }
   
   UWP_ScoutsEx generateUWP(int _size){
@@ -520,7 +505,6 @@ class Moon extends Planet {
 class Ring extends Planetoid {
   Ring(Orbit _barycenter, int _orbit, String _zone){
     super(_barycenter, _orbit, _zone);
-    name = "Ring";
   }
   
   Boolean isRing(){ return true; }

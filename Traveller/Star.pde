@@ -171,6 +171,14 @@ class Star extends Orbit {
     }
   }
 
+  String getSpectralType(){
+    if (size == 7){
+      return sizeToString() + str(type);
+    } else {
+      return str(type) + decimal + sizeToString();
+    }
+  }
+
   // this data can back other queries, like the Forbidden orbit logic (same data source for both)
   // TO_DO: look for refactoring opportunities... also:
   // - table has inconsistencies w.r.t. rows, having to guess at some values for orbit 0 esp.
@@ -184,9 +192,9 @@ class Star extends Orbit {
     String classForLookup = "";
     if (size < 7){  // white dwarfs (size 7) have a different naming convention, don't need to worry about decimal value
       int roundedDecimal  = floor(decimal/5) * 5;
-      classForLookup = str(type) + roundedDecimal + sizeToString();  // duplication from to_string()
+      classForLookup = str(type) + roundedDecimal + sizeToString();  // duplication from getSpectralType()
     } else {
-      classForLookup = this.toString();
+      classForLookup = getSpectralType();
     }
           
     for (TableRow row : table.rows()){
@@ -784,21 +792,14 @@ class Star extends Orbit {
         return 9;
     }
   }  
-  
-  // TO_DO: consider refactoring that pulled toString up to Orbit parent class
-  String toString(){
-    if (size == 7){
-      return sizeToString() + str(type);
-    } else {
-      return str(type) + decimal + sizeToString();
-    }
-  }
- 
+
   JSONObject asJSON(){
     JSONObject json = super.asJSON();
+    json.setString("Spectral Type", getSpectralType());
 
     if (closeCompanion != null){
       json.setJSONObject("Close Companion", closeCompanion.asJSON());
+
     }
     
     return json;
