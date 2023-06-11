@@ -123,6 +123,7 @@
 //  * DONE Ambiguous in RAW - but Close Companions logically should not have any planets
 //  * DONE Enforce inherited orbitNumber across all Orbit subclasses
 //  * DONE Duplication in JSON between Companions and Orbits listings
+//  * FIX  BUG: offset orbit value is saved with many digits when output to JSON
 //  * .... Flesh out tests (this will take a while...)
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      Review Star.size handling - getter/setter? polymorphism?
@@ -153,7 +154,6 @@
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      BUG: we are not blocking orbits beyond companion star, allowing planets to be assigned to Forbidden
-//  *      BUG: offset orbit value is saved with many digits when output to JSON
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset

@@ -294,9 +294,9 @@ abstract class Orbit {
     
     if (captured){
       json.setBoolean("Captured", captured);     // TO_DO: should push this down the hierarchy to Planet...
-      json.setFloat("Offset", offsetOrbitNumber);
-    }
-    
+      json.setString("Offset", nfc(offsetOrbitNumber,1));  // using setFloat results in many decimal digits
+    }                                                      //  this tweak is cosmetic only, and will need 
+                                                           //  to convert back with float() on load
     
     if (isContainer()){
       JSONArray orbitsList = new JSONArray();
