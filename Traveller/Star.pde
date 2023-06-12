@@ -12,7 +12,7 @@ class Star extends Orbit {
   
   String[] orbitalZones;    // will hold data from data\OrbitalZones.csv
 
-  int gasGiantCount = 0;
+  int gasGiantCount = 0;    // TO_DO: only used by placeGasGiants/placePlanetoidBelts during construction
   
   // ctor for primary star only
   Star(System _parent){
@@ -21,50 +21,38 @@ class Star extends Orbit {
     primary = true;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
     parent = _parent;
     
-    type = generateType();  
-    decimal = floor(random(10));
-    size = generateSize();
-    if (size == 7){ decimal = 0; }
-    
-    orbitalZones = retrieveOrbitalZones();    
+    createStar();    
   }
-  
-  // ctor for companion stars - TO_DO: refactor duplication w/ previous
-  Star(Orbit _barycenter, int _orbit, String _zone, System _parent){
-    super(_barycenter, _orbit, _zone);
-    if (debug == 2){ println("** Star COMPANION ctor"); }
-    primary = false;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
-    parent = _parent;
 
-    type = generateType();  
-    decimal = floor(random(10));
-    size = generateSize();
-    if (size == 7){ decimal = 0; }
-    
-    orbitalZones = retrieveOrbitalZones();
-  } 
-
-  Star(Boolean _primary, System _parent, String _s){
+  // primary ctor from JSON
+  Star(System _parent, JSONObject _json){
+    // should we pass JSON data to the super ctor? yes... need to add one
     super(null, -1, (String)null);   // TO_DO: see note above in ctor
-    primary = _primary;
+    primary = true;
     parent = _parent;
     
-    classFromString(_s);
-    
+    spectralTypeFromString(_json.getString("Spectral Type"));
     orbitalZones = retrieveOrbitalZones();
-  }
-  
-  Star(Boolean _primary, System _parent, JSONObject _json){
-    super(null, -1, (String)null);   // TO_DO: see note above in ctor
-    primary = _primary;
-    parent = _parent;
-    
-    classFromString(_json.getString("Class"));
 
-    orbitalZones = retrieveOrbitalZones();
+   // class                 - "Class" (inferred for Primary)                      -
+   // parent                - arg                                                 - ok
+   // primary               - inferred (how?)                                     -
+   // type / decimal / size - "Spectral Type"                                     - ok
+   // typeRoll / sizeRoll   - only needed on construction, n/a                    - ok
+   // closeCompanion        - does this matter post-construction?                 -
+   // orbitalZones          - recalculated (is this needed post-construction?)    - ok
+   // gasGiantCount         - only needed on construction, n/a                    - ok
+   //  -- from Orbit superclass --
+   // barycenter            - null for Primary                                    -
+   // orbitNumber           - "Orbit", -1 for Primary                             -
+   // orbitalZone           - null for Primary                                    -
+   // captured              - n/a for Stars                                       -
+   // offsetOrbitNumber     - n/a for Stars                                       -
+   // orbits                - "Orbits"                                            -
+   // roll                  - regenerated (needed post-construction?)             -
 
     if (!_json.isNull("Close Companion")){
-      closeCompanion = new Star(false, parent, _json.getJSONObject("Close Companion")); 
+      //closeCompanion = new Star(false, parent, _json.getJSONObject("Close Companion")); 
     }
 
     if (!_json.isNull("Orbits")){
@@ -81,9 +69,45 @@ class Star extends Orbit {
     if (!primary){
       setOrbitNumber(_json.getInt("Orbit"));  // TO_DO: currently null for primary - all companions have a value
     }
+  }  
+  
+  // ctor for companion stars
+  Star(Orbit _barycenter, int _orbit, String _zone, System _parent){
+    super(_barycenter, _orbit, _zone);
+    if (debug == 2){ println("** Star COMPANION ctor"); }
+    primary = false;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
+    parent = _parent;
+
+    createStar();
   } 
   
+  // companion ctor from JSON
+  Star(Orbit _barycenter, int _orbit, String _zone, System _parent, JSONObject _json){
+    super(null, -1, (String)null);   // TO_DO: see note above in ctor
+    primary = false;
+    parent = _parent;
+  }
+
+  Star(Boolean _primary, System _parent, String _s){
+    super(null, -1, (String)null);   // TO_DO: see note above in ctor
+    primary = _primary;
+    parent = _parent;
+    
+    spectralTypeFromString(_s);
+    
+    orbitalZones = retrieveOrbitalZones();
+  }  
+  
   Boolean isStar(){ return true; }
+
+  void createStar(){
+    type = generateType();  
+    decimal = floor(random(10));
+    size = generateSize();
+    if (size == 7){ decimal = 0; }
+    
+    orbitalZones = retrieveOrbitalZones();
+  }
   
   char generateType(){
     int dieThrow = roll.two();
@@ -158,7 +182,7 @@ class Star extends Orbit {
     }
   }
 
-  void classFromString(String _s){
+  void spectralTypeFromString(String _s){
     char first = _s.charAt(0);
     if (first == 'D'){  // convention is different for White Dwarfs
       type = _s.charAt(1);

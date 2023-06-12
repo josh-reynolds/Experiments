@@ -124,6 +124,7 @@
 //  * DONE Enforce inherited orbitNumber across all Orbit subclasses
 //  * DONE Duplication in JSON between Companions and Orbits listings
 //  * FIX  BUG: offset orbit value is saved with many digits when output to JSON
+//  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      Review Star.size handling - getter/setter? polymorphism?
@@ -131,7 +132,6 @@
 //  *      Assess adding "two beyond habitable" code to orbital zone data file
 //  *      Rework Coordinate / Hex classes - Reference objects?
 //  *      Override getHash() in Coordinate and adjust lookup procedure
-//  *      Move away from string parsing approach in Star JSON ctor
 //  *      Rework approach to Far companions and orbit determination
 //  *      Flagging close/far companions - query methods?
 //  *      Lots of debugging spew added during Scouts implementation - remove! (test?)

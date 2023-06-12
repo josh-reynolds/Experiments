@@ -262,14 +262,7 @@ class System_ScoutsEx extends System_CT81 {
       println("Primary: " + primary);
       primary.createSatellites();      
       
-      ArrayList gasGiants = primary.getAll(GasGiant.class);
-      if (gasGiants.size() > 0){
-        gasGiant = true;
-        gasGiantCount = gasGiants.size();
-      } else {
-        gasGiant = false;
-        gasGiantCount = 0;
-      }
+      countGasGiants();
       
       mainworld = primary.designateMainworld();
       uwp = mainworld.getUWP();                 
@@ -296,11 +289,23 @@ class System_ScoutsEx extends System_CT81 {
     super(_json);
     
     if (occupied){
-      primary = new Star(true, this, _json.getJSONObject("Primary"));
+      primary = new Star(this, _json.getJSONObject("Primary"));
+      countGasGiants();
+      // TO_DO: mainworld
       militaryBase = _json.getBoolean("Military Base");
     }
   }
-  
+
+  void countGasGiants(){
+    ArrayList gasGiants = primary.getAll(GasGiant.class);
+    if (gasGiants.size() > 0){
+      gasGiant = true;
+      gasGiantCount = gasGiants.size();
+    } else {
+      gasGiant = false;
+      gasGiantCount = 0;
+    }
+  }
   
   void generateFacilities(){
     int additionalNavalBases = 0;
@@ -387,12 +392,12 @@ class System_ScoutsEx extends System_CT81 {
   String toString(){
     String description = super.toString();
     if (occupied){
-      description += primary.toString() + " ";
-      if (primary.closeCompanion != null){ description += primary.closeCompanion.toString() + " "; }
+      description += primary.getSpectralType() + " ";
+      if (primary.closeCompanion != null){ description += primary.closeCompanion.getSpectralType() + " "; }
       
       ArrayList<Star> comps = primary.getCompanions();
       for (Star s : comps){
-        description += s.toString() + " ";
+        description += s.getSpectralType() + " ";
       }
       
       String firstHalf = description.substring(0, 35);
