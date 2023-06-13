@@ -36,6 +36,85 @@ abstract class Orbit {
     roll = new Dice();
   }
 
+  Orbit(Orbit _barycenter, JSONObject _json){
+    barycenter = _barycenter;
+
+    if (!_json.isNull("Captured")){
+      setOrbitNumber(_json.getFloat("Offset"));
+    } else {
+      setOrbitNumber(_json.getInt("Orbit"));
+    }
+
+    if (!_json.isNull("Zone")){
+      orbitalZone = _json.getString("Zone");
+    } else {
+      orbitalZone = null;  // primary star
+    }
+    
+    if (!_json.isNull("UWP")){
+      // json.setString("UWP", ((Habitable)this).getUWP().toString());
+      // can't downcast, not clear *which* subclass we are at this point
+      // possibilities:
+      //   move this responsibility down to subclass ctors - but will be duplication
+      //   add a method to Habitable interface, and cast via that
+      //    but doesn't seem to work: (Habitable)this.setUWP(_json.getString("UWP"));
+      //   try out first option
+      
+      // json.setJSONArray("Facilities", facilityList);
+      // Facilities
+      // same argument here
+    }
+
+    orbits = new TreeMap();
+    if (!_json.isNull("Orbits")){
+      JSONArray orbitList = _json.getJSONArray("Orbits");
+      for (int i = 0; i < orbitList.size(); i++){
+        JSONObject j = orbitList.getJSONObject(i);
+        float index = 0;
+        
+        // two considerations:
+        //   - JSONArray uses integer indices, but we need actual float values for the TreeMap
+        //   - we need to figure out the class of the orbit instance to call the right ctor
+
+        if (j.isNull("Captured")){
+          index = j.getInt("Orbit");  
+        } else {
+          index = j.getFloat("Offset");
+        }
+        
+        switch(j.getString("Class")){  // TO_DO: don't care for this hardcoding... look for dynamic way to do this
+          case "Star":
+          //   Star(Orbit _barycenter, int _orbit, String _zone, System _parent, JSONObject _json){
+            //addOrbit(index, new Star(this, index, xx, (Star)this.parent, j);
+            break;
+          case "Empty":
+            //addOrbit(index, new Empty(this,
+            break;
+          case "Forbidden":
+            //addOrbit(index, new Forbidden(this,
+            break;
+          case "GasGiant":
+            //addOrbit(index, new GasGiant(this,
+            break;
+          case "Planet":
+            //addOrbit(index, new Planet(this,
+            break;          
+          case "Planetoid":
+            //addOrbit(index, new Planetoid(this,
+            break;          
+          case "Moon":
+            //addOrbit(index, new Moon(this,
+            break;          
+          case "Ring":
+            //addOrbit(index, new Ring(this,
+            break;
+          default:
+            println("Invalid class in JSON file: " + j.getString("Class"));
+        }
+      }
+    }    
+  }
+
   String adjustOrbitalZone(String _fromPrimary, String _fromCompanion){
     int primaryScore = scoreZone(_fromPrimary);
     int companionScore = scoreZone(_fromCompanion);

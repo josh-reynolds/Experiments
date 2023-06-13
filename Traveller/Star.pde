@@ -26,49 +26,33 @@ class Star extends Orbit {
 
   // primary ctor from JSON
   Star(System _parent, JSONObject _json){
-    // should we pass JSON data to the super ctor? yes... need to add one
-    super(null, -1, (String)null);   // TO_DO: see note above in ctor
+    super(null, _json);
     primary = true;
     parent = _parent;
     
     spectralTypeFromString(_json.getString("Spectral Type"));
     orbitalZones = retrieveOrbitalZones();
 
-   // class                 - "Class" (inferred for Primary)                      -
+    if (!_json.isNull("Close Companion Orbit")){
+      closeCompanion = (Star)getOrbit(_json.getInt("Close Companion Orbit"));
+    }
+
+   // class                 - "Class" (inferred for Primary)                      - ok
    // parent                - arg                                                 - ok
-   // primary               - inferred (how?)                                     -
+   // primary               - inferred (how? for now separate ctors)              - ok
    // type / decimal / size - "Spectral Type"                                     - ok
-   // typeRoll / sizeRoll   - only needed on construction, n/a                    - ok
-   // closeCompanion        - does this matter post-construction?                 -
+   // typeRoll / sizeRoll   - only needed on construction, n/a                    - n/a
+   // closeCompanion        - does this matter post-construction?                 - ok
    // orbitalZones          - recalculated (is this needed post-construction?)    - ok
-   // gasGiantCount         - only needed on construction, n/a                    - ok
+   // gasGiantCount         - only needed on construction, n/a                    - n/a
    //  -- from Orbit superclass --
-   // barycenter            - null for Primary                                    -
-   // orbitNumber           - "Orbit", -1 for Primary                             -
-   // orbitalZone           - null for Primary                                    -
-   // captured              - n/a for Stars                                       -
-   // offsetOrbitNumber     - n/a for Stars                                       -
+   // barycenter            - null for Primary                                    - ok
+   // orbitNumber           - "Orbit", -1 for Primary                             - ok
+   // orbitalZone           - null for Primary                                    - ok
+   // captured              - n/a for Stars                                       - ok
+   // offsetOrbitNumber     - n/a for Stars                                       - ok
    // orbits                - "Orbits"                                            -
-   // roll                  - regenerated (needed post-construction?)             -
-
-    if (!_json.isNull("Close Companion")){
-      //closeCompanion = new Star(false, parent, _json.getJSONObject("Close Companion")); 
-    }
-
-    if (!_json.isNull("Orbits")){
-      JSONArray ob = _json.getJSONArray("Orbits");
-      for (int i = 0; i < ob.size(); i++){                         // TO_DO: very fragile, will want to push out to subclasses and stop relying on string parsing
-        if (ob.getString(i).equals("Empty")){
-          addOrbit(i, new Empty(this, i, orbitalZones[i]));
-        } else {
-          addOrbit(i, new Star(false, parent, ob.getString(i)));
-        }
-      }
-    }
-    
-    if (!primary){
-      setOrbitNumber(_json.getInt("Orbit"));  // TO_DO: currently null for primary - all companions have a value
-    }
+   // roll                  - only needed on construction, n/a                    - n/a
   }  
   
   // ctor for companion stars
@@ -822,8 +806,7 @@ class Star extends Orbit {
     json.setString("Spectral Type", getSpectralType());
 
     if (closeCompanion != null){
-      json.setJSONObject("Close Companion", closeCompanion.asJSON());
-
+      json.setInt("Close Companion Orbit", closeCompanion.orbitNumber);
     }
     
     return json;
