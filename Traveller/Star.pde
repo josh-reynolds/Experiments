@@ -67,7 +67,7 @@ class Star extends Orbit {
   
   // companion ctor from JSON
   Star(Orbit _barycenter, int _orbit, String _zone, System _parent, JSONObject _json){
-    super(null, -1, (String)null);   // TO_DO: see note above in ctor
+    super(_barycenter, _orbit, _zone);   // TO_DO: see note above in ctor
     primary = false;
     parent = _parent;
 

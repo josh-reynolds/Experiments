@@ -299,10 +299,6 @@ class System_ScoutsEx extends System_CT81 {
   void countGasGiants(){
     ArrayList gasGiants = primary.getAll(GasGiant.class);
     
-    println("gasGiants.size() = " + gasGiants.size());
-    println("primary.orbits = " + primary.orbits);
-    
-    
     if (gasGiants.size() > 0){
       gasGiant = true;
       gasGiantCount = gasGiants.size();

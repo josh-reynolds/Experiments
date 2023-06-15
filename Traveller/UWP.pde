@@ -230,7 +230,7 @@ class UWP_ScoutsEx extends UWP {
     starport = 'X';
     gov      = 0;
     law      = 0; 
-    tech     = 0;    
+    tech     = 0;        
   }
   
   void completeUWP(Boolean _isMainworld){
@@ -275,6 +275,7 @@ class UWP_ScoutsEx extends UWP {
   }
   
   int generateSize(){
+    if (debug == 2){ println("**** UWP_ScoutsEx.generateSize() for " + this.getClass()); }  
     if (planet == null){ return super.generateSize(); }  // hacky approach to deal with automatic call to super ctor
     if (planet.isPlanetoid()){ return 0; }
 
