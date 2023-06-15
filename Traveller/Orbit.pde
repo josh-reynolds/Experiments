@@ -12,6 +12,11 @@ abstract class Orbit {
   Dice roll;
   
   Orbit(Orbit _barycenter, int _orbit, String _zone){
+    
+    
+    println("Orbit ctor(" + _barycenter + ", " + _orbit + ", " + _zone + ")");
+    
+    
     if (_barycenter != null){
       if (debug == 2){ println("** Orbit ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     } else {
@@ -21,19 +26,40 @@ abstract class Orbit {
     setOrbitNumber(_orbit);
     orbitalZone = _zone;
     
+    println("here 1!");
+    
+    if (barycenter.isStar()){ println(((Star)barycenter).primary); }
+    println(this);
+    
     if (barycenter != null){           // null for the primary
       if (barycenter.isStar()){
-        if (!((Star)barycenter).primary){
+        
+        println("here 2!");
+        
+        if (((Star)barycenter).primary != null && !((Star)barycenter).primary){   // failing during JSON load due to ordering, hack addition
+
+          println("here 3!");
+          
           String fromPrimary   = ((Star)barycenter.barycenter).orbitalZones[barycenter.orbitNumber];          
+
+          println("here 4!");
+          
           String fromCompanion = ((Star)barycenter).orbitalZones[orbitNumber];
+
+          println("here 4!");          
+          
           orbitalZone = adjustOrbitalZone(fromPrimary, fromCompanion); 
         }
       }
     }
-        
+     
+    println("here 5!");    
+    
     captured = false;
     orbits = new TreeMap();
     roll = new Dice();
+    
+    println("here 6!");
   }
 
   Orbit(Orbit _barycenter, JSONObject _json){
@@ -89,18 +115,35 @@ abstract class Orbit {
             break;
           case "Empty":
             //addOrbit(index, new Empty(this,
+            
+            println("Found Empty at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
+            
             break;
           case "Forbidden":
             //addOrbit(index, new Forbidden(this,
+            
+            println("Found Forbidden at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
+            
+            
             break;
           case "GasGiant":
-            //addOrbit(index, new GasGiant(this,
+          
+            println("Found GasGiant at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));   
+          
+          
+            addOrbit(index, new GasGiant(this, j.getInt("Orbit"), j.getString("Zone")));
             break;
           case "Planet":
             //addOrbit(index, new Planet(this,
+            
+            println("Found Planet at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
+            
             break;          
           case "Planetoid":
             //addOrbit(index, new Planetoid(this,
+            
+            println("Found Planetoid at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
+            
             break;          
           case "Moon":
             //addOrbit(index, new Moon(this,
@@ -170,6 +213,9 @@ abstract class Orbit {
   }
 
   void addOrbit(float _orbitNum, Orbit _o){
+    
+    println("addOrbit(" + _orbitNum + ", " + _o + ")");
+    
     orbits.put(_orbitNum, _o);
   }
 
@@ -417,6 +463,10 @@ class GasGiant extends Orbit {
     
   GasGiant(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
+    
+    println("GasGiant ctor(" + _barycenter + ", " + _orbit + ", " + _zone + ")");
+    
+    
     if (debug == 2){ println("** GasGiant ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     if (roll.one() >= 4){ 
       size = "S";

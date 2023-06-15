@@ -70,6 +70,9 @@ class Star extends Orbit {
     super(null, -1, (String)null);   // TO_DO: see note above in ctor
     primary = false;
     parent = _parent;
+
+    spectralTypeFromString(_json.getString("Spectral Type"));
+    orbitalZones = retrieveOrbitalZones();
   }
 
   Star(Boolean _primary, System _parent, String _s){
