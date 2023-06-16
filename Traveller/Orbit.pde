@@ -84,40 +84,28 @@ abstract class Orbit {
         
         switch(j.getString("Class")){  // TO_DO: don't care for this hardcoding... look for dynamic way to do this
           case "Star":
-          //   Star(Orbit _barycenter, int _orbit, String _zone, System _parent, JSONObject _json){
-            //addOrbit(index, new Star(this, index, xx, (Star)this.parent, j);
+            println("Found Star at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));            
+            addOrbit(index, new Star(this, j.getInt("Orbit"), j.getString("Zone"), ((Star)this).parent, j));
             break;
           case "Empty":
             //addOrbit(index, new Empty(this,
-            
             println("Found Empty at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
-            
             break;
           case "Forbidden":
             //addOrbit(index, new Forbidden(this,
-            
-            println("Found Forbidden at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
-            
-            
+            println("Found Forbidden at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));            
             break;
           case "GasGiant":
-          
             println("Found GasGiant at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));   
-          
-          
             addOrbit(index, new GasGiant(this, j));
             break;
           case "Planet":
             //addOrbit(index, new Planet(this,
-            
             println("Found Planet at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
-            
             break;          
           case "Planetoid":
             //addOrbit(index, new Planetoid(this,
-            
             println("Found Planetoid at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
-            
             break;          
           case "Moon":
             //addOrbit(index, new Moon(this,
