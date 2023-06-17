@@ -83,35 +83,29 @@ abstract class Orbit {
         }
         
         switch(j.getString("Class")){  // TO_DO: don't care for this hardcoding... look for dynamic way to do this
-          case "Star":
-            println("Found Star at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));            
-            addOrbit(index, new Star(this, j.getInt("Orbit"), j.getString("Zone"), ((Star)this).parent, j));
+          case "Star":            
+            addOrbit(index, new Star(this, j.getInt("Orbit"), j.getString("Zone"), ((Star)this).parent, j)); // TO_DO: unify + streamline Star ctors
             break;
           case "Empty":
-            //addOrbit(index, new Empty(this,
-            println("Found Empty at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
+            addOrbit(index, new Empty(this, j));
             break;
           case "Forbidden":
-            //addOrbit(index, new Forbidden(this,
-            println("Found Forbidden at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));            
+            addOrbit(index, new Forbidden(this, j));
             break;
-          case "GasGiant":
-            println("Found GasGiant at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));   
+          case "GasGiant":   
             addOrbit(index, new GasGiant(this, j));
             break;
           case "Planet":
-            //addOrbit(index, new Planet(this,
-            println("Found Planet at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
+            addOrbit(index, new Planet(this, j));
             break;          
           case "Planetoid":
-            //addOrbit(index, new Planetoid(this,
-            println("Found Planetoid at " + index + " " + j.getInt("Orbit") + " " + j.getString("Zone"));
+            addOrbit(index, new Planetoid(this, j));
             break;          
           case "Moon":
-            //addOrbit(index, new Moon(this,
+            addOrbit(index, new Moon(this, j));
             break;          
           case "Ring":
-            //addOrbit(index, new Ring(this,
+            addOrbit(index, new Ring(this, j));
             break;
           default:
             println("Invalid class in JSON file: " + j.getString("Class"));
@@ -406,12 +400,20 @@ class Empty extends Orbit {
     super(_barycenter, _orbit, _zone);
   }
   
+  Empty(Orbit _barycenter, JSONObject _json){
+    super(_barycenter, _json);
+  }
+  
   Boolean isEmpty(){ return true; }
 }
 
 class Forbidden extends Orbit {
   Forbidden(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone);
+  }
+  
+  Forbidden(Orbit _barycenter, JSONObject _json){
+    super(_barycenter, _json);
   }
   
   Boolean isForbidden(){ return true; }
@@ -494,6 +496,10 @@ class Planet extends Orbit implements Habitable {
     facilities = new ArrayList();
   }
   
+  Planet(Orbit _barycenter, JSONObject _json){
+    super(_barycenter, _json);
+  }
+  
   UWP getUWP(){ return uwp; }
     
   int generateSatelliteCount(){
@@ -542,6 +548,10 @@ class Planetoid extends Orbit implements Habitable {
     facilities = new ArrayList();
   }
 
+  Planetoid(Orbit _barycenter, JSONObject _json){
+    super(_barycenter, _json);
+  }
+
   UWP getUWP(){ return uwp; }
 
   UWP_ScoutsEx generateUWP(){
@@ -584,6 +594,10 @@ class Moon extends Planet {
                               // this way
   }
   
+  Moon(Orbit _barycenter, JSONObject _json){
+    super(_barycenter, _json);
+  }
+  
   UWP_ScoutsEx generateUWP(int _size){
     return new UWP_ScoutsEx(this, _size);
   }
@@ -594,6 +608,10 @@ class Moon extends Planet {
 class Ring extends Planetoid {
   Ring(Orbit _barycenter, int _orbit, String _zone){
     super(_barycenter, _orbit, _zone);
+  }
+  
+  Ring(Orbit _barycenter, JSONObject _json){
+    super(_barycenter, _json);
   }
   
   Boolean isRing(){ return true; }
