@@ -84,7 +84,7 @@ abstract class Orbit {
         
         switch(j.getString("Class")){  // TO_DO: don't care for this hardcoding... look for dynamic way to do this
           case "Star":            
-            addOrbit(index, new Star(this, j.getInt("Orbit"), j.getString("Zone"), ((Star)this).parent, j)); // TO_DO: unify + streamline Star ctors
+            addOrbit(index, new Star(this, ((Star)this).parent, j)); // TO_DO: unify + streamline Star ctors
             break;
           case "Empty":
             addOrbit(index, new Empty(this, j));
@@ -210,7 +210,7 @@ abstract class Orbit {
     }
     
     Iterator<Float> orbitNumbers = orbitList();
-    
+
     while (orbitNumbers.hasNext()){
       float f = orbitNumbers.next();
       Orbit child = getOrbit(f);
