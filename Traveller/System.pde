@@ -101,6 +101,9 @@ class System {
     }
     
     if (occupied){
+      
+      println(uwp.getClass().getSimpleName());
+      
       return outputName + coord.toString() + " : " + uwp.toString() + " " + nb + sb + gg + " " + trade.toString();
     } else {
       return "EMPTY : " + coord.toString();
@@ -292,6 +295,11 @@ class System_ScoutsEx extends System_CT81 {
       primary = new Star(this, _json.getJSONObject("Primary"));
       countGasGiants();
       // TO_DO: mainworld
+      
+      println(this);
+      
+      uwp = new UWP_ScoutsEx(this.mainworld, _json.getJSONObject("UWP"));
+      
       militaryBase = _json.getBoolean("Military Base");
     }
   }
@@ -418,6 +426,7 @@ class System_ScoutsEx extends System_CT81 {
       JSONObject star = primary.asJSON();
       json.setJSONObject("Primary", star);
       json.setBoolean("Military Base", militaryBase);
+      json.setFloat("Mainworld",((Orbit)mainworld).orbitNumber);
     }
     return json;
   }

@@ -498,9 +498,10 @@ class Planet extends Orbit implements Habitable {
   
   Planet(Orbit _barycenter, JSONObject _json){
     super(_barycenter, _json);
+    uwp = new UWP_ScoutsEx(_json.getString("UWP"));
   }
   
-  UWP getUWP(){ return uwp; }
+  UWP_ScoutsEx getUWP(){ return uwp; }
     
   int generateSatelliteCount(){
     int result = roll.one(-3);
@@ -550,6 +551,7 @@ class Planetoid extends Orbit implements Habitable {
 
   Planetoid(Orbit _barycenter, JSONObject _json){
     super(_barycenter, _json);
+    uwp = new UWP_ScoutsEx(_json.getString("UWP"));
   }
 
   UWP getUWP(){ return uwp; }

@@ -270,8 +270,27 @@ class UWP_ScoutsEx extends UWP {
     }
   }
   
-  UWP_ScoutsEx(JSONObject _json){
+  UWP_ScoutsEx(Habitable _planet, JSONObject _json){
     super(_json);
+    planet = (Orbit)_planet;
+  }
+  
+  UWP_ScoutsEx(String _uwp){
+    starport = _uwp.charAt(0);
+    
+    String sz = _uwp.substring(1,2); 
+    if (sz.equals("S")){
+      size = 0;
+    } else {
+      size = unhex(sz);
+    }
+
+    atmo     = unhex(_uwp.substring(2,3));
+    hydro    = unhex(_uwp.substring(3,4));
+    pop      = unhex(_uwp.substring(4,5));
+    gov      = unhex(_uwp.substring(5,6));
+    law      = unhex(_uwp.substring(6,7));
+    tech     = unModifiedHexChar(_uwp.substring(8,9)); // skip the dash character, and handle Traveller eHex
   }
   
   int generateSize(){
@@ -439,9 +458,12 @@ class UWP_ScoutsEx extends UWP {
     return result;
   }
   
-  UWP fromString(String _uwp){  // could/should this be in the parent class instead? only really need the subclass stuff during construction. 
+  
+  // TO_DO - this has been folded into a ctor - deprecate? there are no callers
+  UWP_ScoutsEx fromString(String _uwp){  // could/should this be in the parent class instead? only really need the subclass stuff during construction.
+                                         // no - there is special formatting for size 'S' planets, need the subclass specificity
     // leave planet field as null - should only be needed during original construction, and would prevent pulling up the hierarchy (moot if we use parent class)
-    UWP u = new UWP();
+    UWP_ScoutsEx u = new UWP_ScoutsEx();
     u.starport = _uwp.charAt(0);
     u.size     = unhex(_uwp.substring(1,2));
     u.atmo     = unhex(_uwp.substring(2,3));
