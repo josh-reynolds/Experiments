@@ -13,6 +13,7 @@ class TestSuite {
     println(runAgainstSubsector(new PlanetsCannotBeInForbiddenZones()));
     println(runAgainstSubsector(new PlanetoidsCannotBeInForbiddenZones()));
     println(runAgainstSubsector(new GasGiantsCannotBeInForbiddenZones()));
+    println(runAgainstSubsector(new RingsHaveZeroPopulation()));
   }
   
   // runs at the subsector level across all occupied systems
@@ -218,6 +219,30 @@ class GasGiantsCannotBeInForbiddenZones extends TestCase {
   }
 }
 
+class RingsHaveZeroPopulation extends TestCase {
+  RingsHaveZeroPopulation(){ title = "Rings have zero population"; }
+  
+  void run(System _s){
+    if (ruleset.supportsStars()){
+      if (_s.occupied){
+        String message = _s.name;
+        Star primary = ((System_ScoutsEx)_s).primary;
+        
+        Boolean invalidPlanet = false;
+        ArrayList<Ring> rings = primary.getAll(Ring.class);
+        for (Ring r : rings){  
+          if (r.uwp.pop > 0){            
+            invalidPlanet = true;
+            message += " " + r.getOrbitNumber() + ":" + r.uwp.pop;
+          }
+        }
+
+        fails(invalidPlanet, message);
+      }
+    }
+  }
+}
+
 // ===========================================================================
 class TestCase {
   String title = "Sample test";
@@ -254,7 +279,6 @@ class TestCase {
 
 // Moons/Rings should not themselves have satellites
 // Planetoids/Rings always 000 for UWP Size/Atmo/Hydro
-// Rings have 0 population
 // Moons/Rings have the same orbital zone as their parent (barycenter)
-// No null orbits remain after system is created/populated
+// No null orbits remain after system is created/populated   (n/a - Null class has been removed)
 // Close companions are not listed as regular companions
