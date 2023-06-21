@@ -14,6 +14,7 @@ class TestSuite {
     println(runAgainstSubsector(new PlanetoidsCannotBeInForbiddenZones()));
     println(runAgainstSubsector(new GasGiantsCannotBeInForbiddenZones()));
     println(runAgainstSubsector(new RingsHaveZeroPopulation()));
+    println(runAgainstSubsector(new PlanetoidHasZeroSizeAtmoHydro()));
   }
   
   // runs at the subsector level across all occupied systems
@@ -243,6 +244,31 @@ class RingsHaveZeroPopulation extends TestCase {
   }
 }
 
+class PlanetoidHasZeroSizeAtmoHydro extends TestCase {
+  PlanetoidHasZeroSizeAtmoHydro(){ title = "Planetoids have zero Size/Atmosphere/Hydrosphere"; }
+  
+  void run(System _s){
+    if (ruleset.supportsStars()){
+      if (_s.occupied){
+        String message = _s.name;
+        Star primary = ((System_ScoutsEx)_s).primary;
+        
+        Boolean invalidPlanet = false;
+        ArrayList<Planetoid> planetoids = primary.getAll(Planetoid.class);  // this includes Rings + Planetoids
+        for (Planetoid p : planetoids){
+          if (p.uwp.size > 0 || p.uwp.atmo > 0 || p.uwp.hydro > 0){            
+            invalidPlanet = true;
+            message += " " + p.getOrbitNumber() + ":" + p.uwp.pop;
+          }
+        }
+
+        fails(invalidPlanet, message);
+        
+      }
+    }
+  }
+}
+
 // ===========================================================================
 class TestCase {
   String title = "Sample test";
@@ -278,7 +304,6 @@ class TestCase {
 }
 
 // Moons/Rings should not themselves have satellites
-// Planetoids/Rings always 000 for UWP Size/Atmo/Hydro
 // Moons/Rings have the same orbital zone as their parent (barycenter)
 // No null orbits remain after system is created/populated   (n/a - Null class has been removed)
 // Close companions are not listed as regular companions
