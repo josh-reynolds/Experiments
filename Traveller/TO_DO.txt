@@ -125,6 +125,7 @@
 //  * DONE Duplication in JSON between Companions and Orbits listings
 //  * FIX  BUG: offset orbit value is saved with many digits when output to JSON
 //  * FIX  BUG: on load from JSON, GasGiants orbiting companions are not counting towards system gasGiant flag
+//  * FIX  BUG: we are not blocking orbits beyond companion star, allowing planets to be assigned to Forbidden
 //  * ...  BUG: on load from JSON, size 'S' worlds are incorrectly displaying as '0' in listing
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)
@@ -155,7 +156,6 @@
 //  *      BUG: off-by-one issue in Star.createOrbits in some cases
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
-//  *      BUG: we are not blocking orbits beyond companion star, allowing planets to be assigned to Forbidden
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: current ruleset and array to Ruleset class
 //  *      REFACTOR: case statements in Ruleset

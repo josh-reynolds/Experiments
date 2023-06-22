@@ -372,7 +372,7 @@ class Star extends Orbit {
   //  - DONE  orbit is too hot to allow planets
   void placeForbiddenOrbits(int _maxOrbit){
     println("Determining forbidden orbits for " + this);
-    for (int i = 0; i < _maxOrbit; i++){
+    for (int i = 0; i <= _maxOrbit; i++){
       if (orbitIsForbidden(i) && orbitIsNullOrEmpty(i)){
         addOrbit(i, new Forbidden(this, i, orbitalZones[i]));
       }
