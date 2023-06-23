@@ -458,23 +458,6 @@ class UWP_ScoutsEx extends UWP {
     return result;
   }
   
-  
-  // TO_DO - this has been folded into a ctor - deprecate? there are no callers
-  UWP_ScoutsEx fromString(String _uwp){  // could/should this be in the parent class instead? only really need the subclass stuff during construction.
-                                         // no - there is special formatting for size 'S' planets, need the subclass specificity
-    // leave planet field as null - should only be needed during original construction, and would prevent pulling up the hierarchy (moot if we use parent class)
-    UWP_ScoutsEx u = new UWP_ScoutsEx();
-    u.starport = _uwp.charAt(0);
-    u.size     = unhex(_uwp.substring(1,2));
-    u.atmo     = unhex(_uwp.substring(2,3));
-    u.hydro    = unhex(_uwp.substring(3,4));
-    u.pop      = unhex(_uwp.substring(4,5));
-    u.gov      = unhex(_uwp.substring(5,6));
-    u.law      = unhex(_uwp.substring(6,7));
-    u.tech     = unModifiedHexChar(_uwp.substring(8,9)); // skip the dash character, and handle Traveller eHex
-    return u;
-  }
-  
   int unModifiedHexChar(String _s){
     int result = 0;
     try {
