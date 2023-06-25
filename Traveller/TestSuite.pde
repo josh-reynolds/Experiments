@@ -15,7 +15,9 @@ class TestSuite {
     println(runAgainstSubsector(new GasGiantsCannotBeInForbiddenZones()));
     println(runAgainstSubsector(new RingsHaveZeroPopulation()));
     println(runAgainstSubsector(new PlanetoidHasZeroSizeAtmoHydro()));
-  }
+    println(runAgainstSubsector(new MoonsHaveZeroSatellites()));
+    println(runAgainstSubsector(new PlanetoidsHaveZeroSatellites()));
+}
   
   // runs at the subsector level across all occupied systems
   // may eventually need to split the iterator away and/or
@@ -269,6 +271,57 @@ class PlanetoidHasZeroSizeAtmoHydro extends TestCase {
   }
 }
 
+class MoonsHaveZeroSatellites extends TestCase {
+  MoonsHaveZeroSatellites(){ title = "Moons have zero satellites"; }
+  
+  void run(System _s){
+    if (ruleset.supportsStars()){
+      if (_s.occupied){
+        String message = _s.name;
+        Star primary = ((System_ScoutsEx)_s).primary;
+        
+        Boolean invalidPlanet = false;
+        ArrayList<Moon> moons = primary.getAll(Moon.class);
+        for (Moon m : moons){
+          if (m.isContainer()){            
+            invalidPlanet = true;
+            message += " " + m.getOrbitNumber() + ":" + m.orbits.size();
+          }
+        }
+
+        fails(invalidPlanet, message);
+        
+      }
+    }
+  }  
+}
+
+class PlanetoidsHaveZeroSatellites extends TestCase {
+  PlanetoidsHaveZeroSatellites(){ title = "Planetoids have zero satellites"; }
+  
+  void run(System _s){
+    if (ruleset.supportsStars()){
+      if (_s.occupied){
+        String message = _s.name;
+        Star primary = ((System_ScoutsEx)_s).primary;
+        
+        Boolean invalidPlanet = false;
+        ArrayList<Planetoid> planetoids = primary.getAll(Planetoid.class);
+        for (Planetoid p : planetoids){
+          if (p.isContainer()){            
+            invalidPlanet = true;
+            message += " " + p.getOrbitNumber() + ":" + p.orbits.size();
+          }
+        }
+
+        fails(invalidPlanet, message);
+        
+      }
+    }
+  }  
+}
+
+
 // ===========================================================================
 class TestCase {
   String title = "Sample test";
@@ -303,7 +356,6 @@ class TestCase {
   }
 }
 
-// Moons/Rings should not themselves have satellites
 // Moons/Rings have the same orbital zone as their parent (barycenter)
 // No null orbits remain after system is created/populated   (n/a - Null class has been removed)
 // Close companions are not listed as regular companions
