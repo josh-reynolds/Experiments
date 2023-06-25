@@ -126,7 +126,7 @@
 //  * FIX  BUG: offset orbit value is saved with many digits when output to JSON
 //  * FIX  BUG: on load from JSON, GasGiants orbiting companions are not counting towards system gasGiant flag
 //  * FIX  BUG: we are not blocking orbits beyond companion star, allowing planets to be assigned to Forbidden
-//  * ...  BUG: on load from JSON, size 'S' worlds are incorrectly displaying as '0' in listing
+//  * FIX  BUG: on load from JSON, size 'S' worlds are incorrectly displaying as '0' in listing
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)
 //  *      Unravel inheritance issues in UWP hierarchy

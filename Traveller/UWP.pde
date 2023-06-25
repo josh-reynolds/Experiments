@@ -194,7 +194,10 @@ class UWP_CT81 extends UWP {
 }
 
 class UWP_ScoutsEx extends UWP {
-  Orbit planet;  // only used during ctor? should we pass in to methods rather than have a field?
+  Orbit planet;              //
+  Boolean isPlanet = false;  // planet field is also used to format size value for small worlds (size S)
+                             // but this causes issues with the system-level UWP when loaded from JSON
+                             // adding this flag to persist the relevant information
   
   UWP_ScoutsEx(){}
   
@@ -205,6 +208,7 @@ class UWP_ScoutsEx extends UWP {
     //  but with the overloaded methods extending the template, 
     //  we have null pointers to worry about
     planet = _planet;
+    isPlanet = planet.isPlanet();
     size  = generateSize();
     atmo  = generateAtmo();
     hydro = generateHydro();
@@ -220,6 +224,7 @@ class UWP_ScoutsEx extends UWP {
   UWP_ScoutsEx(Moon _moon, int _size){   // TO_DO: refactor heavy duplication from 'standard' ctor
     if (debug == 2){ println("** UWP_ScoutsEx Moon ctor(" + _moon.getClass() + ", " + _size + ")"); }
     planet = _moon;
+    isPlanet = true;   // Moons are subclass of Planet
     size   = _size;
     if (size <= 0){ size = 0; }
     atmo  = generateAtmo();
@@ -272,7 +277,8 @@ class UWP_ScoutsEx extends UWP {
   
   UWP_ScoutsEx(Habitable _planet, JSONObject _json){
     super(_json);
-    planet = (Orbit)_planet;
+    isPlanet = _json.getBoolean("Planet");
+    planet = (Orbit)_planet;   // TO_DO: this is always null for the system-level mainworld UWP, remove?
   }
   
   UWP_ScoutsEx(String _uwp){
@@ -281,6 +287,7 @@ class UWP_ScoutsEx extends UWP {
     String sz = _uwp.substring(1,2); 
     if (sz.equals("S")){
       size = 0;
+      isPlanet = true;
     } else {
       size = unhex(sz);
     }
@@ -452,10 +459,16 @@ class UWP_ScoutsEx extends UWP {
   
   String toString(){
     String result = super.toString();
-    if (size == 0 && !planet.isPlanetoid()){
+    if (size == 0 && isPlanet){
       result = result.substring(0,1) + "S" + result.substring(2, result.length());  // Scouts introduced size 'S' small worlds (as contrasted with size 0 planetoid belts)
     }
     return result;
+  }
+
+  JSONObject asJSON(){
+    JSONObject json = super.asJSON();
+    json.setBoolean("Planet", isPlanet);
+    return json;
   }
   
   int unModifiedHexChar(String _s){
