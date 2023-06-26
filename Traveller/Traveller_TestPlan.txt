@@ -55,3 +55,38 @@ Most notable is whether the test expects to run across a collection and
 gather net results, or against a single class. Also 'run once.' My 
 version mingles runner & fixture. This will get further refactored as
 more test variants are added.
+
+=======================================
+6/26/23
+
+Scouts is feature complete, and the obvious bugs have been handled. There's
+still some refactoring opportunities and more subtle issues listed in TO_DO, 
+but now's a good time to run a test pass and see where things stand.
+
+In addition to the above three criteria, all automated tests need to pass. 
+And if anything new is uncovered, we should ideally add another automated 
+test for the future (and to TDD our way to a fix).
+
+Rules	Scheme		Mode	Pass/Fail
+------------------------------------------
+CT77	Default		New	PASS
+CT77	Default		Load	PASS
+CT77	Print-friendly	New	PASS
+CT77	Print-friendly	Load	PASS
+
+CT81	Default		New	PASS
+CT81	Default		Load	PASS
+CT81	Print-friendly	New	PASS
+CT81	Print-friendly	Load	PASS
+
+Scouts	Default		New	PASS
+Scouts	Default		Load	PASS
+Scouts	Print-friendly	New	PASS
+Scouts	Print-friendly	Load	PASS
+
+Only nagging issue so far is extra output during ScoutsEx (both New + Load), 
+and some stray debugging spew coming from System.toString().
+
+Another: I thought I added an Amber Zone condition for "no fuel available"
+(i.e. no water and no Gas Giants in-system). Spotted at least one violation,
+need to check the logic. (Subsector_Shu 0703)

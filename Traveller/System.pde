@@ -101,9 +101,6 @@ class System {
     }
     
     if (occupied){
-      
-      println(uwp.getClass().getSimpleName());
-      
       return outputName + coord.toString() + " : " + uwp.toString() + " " + nb + sb + gg + " " + trade.toString();
     } else {
       return "EMPTY : " + coord.toString();

@@ -359,3 +359,4 @@ class TestCase {
 // Moons/Rings have the same orbital zone as their parent (barycenter)
 // No null orbits remain after system is created/populated   (n/a - Null class has been removed)
 // Close companions are not listed as regular companions
+// Small world size is displayed as 'S' in UWP string output
