@@ -55,4 +55,8 @@ class Polygon {
       
     _pg.popMatrix();
   }
+  
+  Boolean contains(float _x, float _y){
+    return dist(x, y, _x, _y) < radius;
+  }
 }

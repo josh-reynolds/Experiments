@@ -68,6 +68,7 @@ class Display extends Screen {
   }
   
   void drawScreen(){
+    subD.mouseHover(subs);
     subD.show(subs);
     textPanel.show(subs);
   }

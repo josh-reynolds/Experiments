@@ -123,4 +123,15 @@ class SubsectorDisplay {
       _pg.text(_s.name, _s.hex.x, _s.hex.y + hexRadius/2);
     }
   }
+  
+  void mouseHover(Subsector _sub){
+    if (mouseX > 0 && mouseX < width/2 &&
+        mouseY > 0  && mouseY < height){
+      for (System s : _sub.systems.values()){        
+        if (s.hex.contains(mouseX, mouseY)){
+          println(s.coord);
+        }
+      }      
+    }
+  }
 }
