@@ -157,7 +157,7 @@ class Subsector{
     JSONObject json = new JSONObject();
     json.setString("Subsector Name", name);
     json.setString("Summary", summary);
-    json.setString("Ruleset", rules[currentRules]);
+    json.setString("Ruleset", ruleset.name);
     json.setJSONArray("Systems", systemList);
     json.setJSONArray("Routes", routeList);
     

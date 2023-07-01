@@ -1,7 +1,7 @@
 class TestSuite {  
   void run(){
     println("\nTesting " + subs.name);
-    println("Ruleset: " + rules[currentRules]);
+    println("Ruleset: " + ruleset.name);
     println(runAgainstSubsector(new NavalBaseOnlyAtABStarports()));
     println(runAgainstSubsector(new ScoutBaseOnlyAtABCDStarports()));
     println(runAgainstSubsector(new NoRoutesToRedZones()));

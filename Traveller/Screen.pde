@@ -37,7 +37,7 @@ class Menu extends Screen {
     float colorSchemeDescriptionWidth = textWidth(colorSchemeDescription); 
     text(colorSchemeDescription, width - colorSchemeDescriptionWidth - border, height - titleSize - border);
     
-    String rulesDescription = "Rules: " + rules[currentRules];
+    String rulesDescription = "Rules: " + ruleset.name;
     float rulesDescriptionWidth = textWidth(rulesDescription);
     text(rulesDescription, width - rulesDescriptionWidth - border, height - titleSize/2 - border);
     

@@ -129,7 +129,8 @@ class SubsectorDisplay {
         mouseY > 0  && mouseY < height){
       for (System s : _sub.systems.values()){        
         if (s.hex.contains(mouseX, mouseY)){
-          println(s.coord);
+          //println(s.coord);
+          //println(s);
         }
       }      
     }

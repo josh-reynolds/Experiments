@@ -1,12 +1,12 @@
 class Ruleset {
-  String rules;  // default is CT77
+  String name;  // default is CT77
   
   Ruleset(String _rules){
-    rules = _rules;
+    name = _rules;
   }
   
   Boolean supportsTravelZones(){
-    switch(rules) {
+    switch(name) {
       case "CT77":
         return false;
       case "CT81":
@@ -18,7 +18,7 @@ class Ruleset {
   }
   
   Boolean supportsStars(){
-    switch(rules) {
+    switch(name) {
       case "CT77":
       case "CT81":
         return false;
@@ -30,7 +30,7 @@ class Ruleset {
   }
   
   System newSystem(Coordinate _coord){
-    switch(rules) {
+    switch(name) {
       case "CT77":
         return new System(_coord);
       case "CT81":
@@ -44,7 +44,7 @@ class Ruleset {
   
   System newSystem(JSONObject _json){
     // TO_DO: maybe we should detect ruleset from a JSON field... or think about polymorphism here
-    switch(rules) {
+    switch(name) {
       case "CT77":
         return new System(_json);
       case "CT81":
