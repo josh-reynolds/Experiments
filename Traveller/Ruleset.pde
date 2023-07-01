@@ -1,8 +1,31 @@
 class Ruleset {
-  String name;  // default is CT77
+  String name;
+  int currentRules = 0;
+  String[] rules = {"CT77", "CT81", "Scouts (Extended)"};
+
+  // would like to handle creation via a static factory method,
+  // but Processing's inner class approach won't allow that
+
+  Ruleset(){
+    name = rules[currentRules];
+  }
   
   Ruleset(String _rules){
-    name = _rules;
+    for (int i = 0; i < rules.length; i++){
+      if (rules[i].equals(_rules)){ currentRules = i; }
+    }
+    name = rules[currentRules];
+  }
+  
+  Ruleset(int _current){
+    currentRules = _current;
+    name = rules[currentRules];
+  }
+  
+  void next(){
+    currentRules++;
+    currentRules %= rules.length;
+    ruleset = new Ruleset(currentRules);
   }
   
   Boolean supportsTravelZones(){

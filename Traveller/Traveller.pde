@@ -19,8 +19,6 @@ Boolean loading = true;
 Screen screen;
 
 Ruleset ruleset;
-String[] rules = {"CT77", "CT81", "Scouts (Extended)"};
-int currentRules = 0;
 
 TestSuite tests;
 int debug = 0;
@@ -31,7 +29,7 @@ void setup(){
   size(928, 646);  
   lines = loadStrings(wordFile);
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
-  ruleset = new Ruleset(rules[currentRules]);
+  ruleset = new Ruleset();
   tests = new TestSuite();  
   screen = new Menu();
 }

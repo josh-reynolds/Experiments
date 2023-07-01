@@ -185,9 +185,7 @@ class ChangeRules implements Command {
   
   void run(){
     println(b.label);
-    currentRules++;
-    currentRules %= rules.length;
-    ruleset = new Ruleset(rules[currentRules]);
+    ruleset.next();
   }
 }
 
