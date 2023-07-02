@@ -417,7 +417,6 @@ class System_ScoutsEx extends System_CT81 {
     return description;
   }
   
-  // TO_DO: orbit entries should be indented under their barycenter
   String list(){
     String result = "";
     if (occupied){
@@ -425,7 +424,10 @@ class System_ScoutsEx extends System_CT81 {
       result += "Primary: " + primary.toString() + "\n";
       for (Orbit o : primary.getAll(Orbit.class)){
         if (o.orbitNumber == -1){ continue; }
-        result += o.offsetOrbitNumber + " " + o + "\n";
+        for (int i = 0; i < o.orbitDepth - 1; i++){
+          result += "   ";
+        }
+        result += o.offsetOrbitNumber + " " + o + " " + o.orbitalZone + "\n";
       }
     } else {
     }

@@ -2,6 +2,7 @@ abstract class Orbit {
   Orbit barycenter;  // not _exactly_ the right word, but closest to meaning of "thing I orbit around"     
   int orbitNumber;
   String orbitalZone;
+  int orbitDepth;
   // radius in AU & km? as a query method?
   
   Boolean captured;
@@ -29,6 +30,10 @@ abstract class Orbit {
           orbitalZone = adjustOrbitalZone(fromPrimary, fromCompanion); 
         }
       }
+      
+      orbitDepth = barycenter.orbitDepth + 1;
+    } else {
+      orbitDepth = 0;
     }
     
     captured = false;
@@ -547,8 +552,16 @@ class Planet extends Orbit implements Habitable {
   Boolean isHabitable(){ return true; }
   
   String toString(){ 
-    String result = super.toString();
+    String result = "";
+    if (isMainworld()){
+      result += "MAINWORLD";
+    } else {
+      result += super.toString();
+    }
     result += " : " + uwp;
+    if (facilities.size() > 0){
+      result += " " + getFacilities();
+    }
     return result;
   }
 }
@@ -595,8 +608,16 @@ class Planetoid extends Orbit implements Habitable {
   Boolean isHabitable(){ return true; }
   
   String toString(){ 
-    String result = super.toString();
+    String result = "";
+    if (isMainworld()){
+      result += "MAINWORLD";
+    } else {
+      result += super.toString();
+    }
     result += " : " + uwp;
+    if (facilities.size() > 0){
+      result += " " + getFacilities();
+    }
     return result;
   }
 }
