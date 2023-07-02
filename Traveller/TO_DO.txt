@@ -128,6 +128,7 @@
 //  * FIX  BUG: we are not blocking orbits beyond companion star, allowing planets to be assigned to Forbidden
 //  * FIX  BUG: on load from JSON, size 'S' worlds are incorrectly displaying as '0' in listing
 //  * DONE REFACTOR: current ruleset and array to Ruleset class
+//  * DONE System listing method
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)

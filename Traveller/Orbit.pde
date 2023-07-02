@@ -351,11 +351,15 @@ abstract class Orbit {
     return this.getClass().getSimpleName();
   }
   
+  String className(){
+    return this.getClass().getSimpleName();
+  }
+  
   JSONObject asJSON(){
     JSONObject json = new JSONObject();
     
     json.setInt("Orbit", orbitNumber);
-    json.setString("Class", this.toString());
+    json.setString("Class", this.className());
     json.setString("Zone", orbitalZone);
     
     if (isHabitable()){      
@@ -462,6 +466,12 @@ class GasGiant extends Orbit {
   
   Boolean isGasGiant(){ return true; }
   
+  String toString(){ 
+    String result = super.toString();
+    result += " (" + size + ")";
+    return result;
+  }
+  
   JSONObject asJSON(){
     JSONObject json = super.asJSON();
     json.setString("Size", size);    
@@ -535,6 +545,12 @@ class Planet extends Orbit implements Habitable {
 
   Boolean isPlanet(){ return true; }
   Boolean isHabitable(){ return true; }
+  
+  String toString(){ 
+    String result = super.toString();
+    result += " : " + uwp;
+    return result;
+  }
 }
 
 class Planetoid extends Orbit implements Habitable {
@@ -577,6 +593,12 @@ class Planetoid extends Orbit implements Habitable {
 
   Boolean isPlanetoid(){ return true; }
   Boolean isHabitable(){ return true; }
+  
+  String toString(){ 
+    String result = super.toString();
+    result += " : " + uwp;
+    return result;
+  }
 }
 
 // uncertain if following subclasses are needed

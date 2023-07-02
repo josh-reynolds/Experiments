@@ -131,6 +131,9 @@ class SubsectorDisplay {
         if (s.hex.contains(mouseX, mouseY)){
           //println(s.coord);
           //println(s);
+          if (ruleset.supportsStars()){
+            println(((System_ScoutsEx)s).list());
+          }
         }
       }      
     }

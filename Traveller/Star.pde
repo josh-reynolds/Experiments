@@ -804,6 +804,12 @@ class Star extends Orbit {
     }
   }  
 
+  String toString(){ 
+    String result = super.toString();
+    result += " " + getSpectralType();
+    return result;
+  }
+
   JSONObject asJSON(){
     JSONObject json = super.asJSON();
     json.setString("Spectral Type", getSpectralType());

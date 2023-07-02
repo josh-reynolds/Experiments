@@ -417,6 +417,21 @@ class System_ScoutsEx extends System_CT81 {
     return description;
   }
   
+  // TO_DO: orbit entries should be indented under their barycenter
+  String list(){
+    String result = "";
+    if (occupied){
+      result += this.toString() + "\n";
+      result += "Primary: " + primary.toString() + "\n";
+      for (Orbit o : primary.getAll(Orbit.class)){
+        if (o.orbitNumber == -1){ continue; }
+        result += o.offsetOrbitNumber + " " + o + "\n";
+      }
+    } else {
+    }
+    return result;
+  }
+  
   JSONObject asJSON(){
     JSONObject json = super.asJSON();
     if (occupied){
