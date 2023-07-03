@@ -101,7 +101,16 @@ class NewSubsector extends ButtonUtilities implements Command {
     
     println("Saved " + subs.name);
     output.println("=========================");
-    output.println("Saved " + subs.name);
+    
+    if (ruleset.supportsStars()){
+      for (System s : subs.systems.values()){ 
+        if (s.occupied){
+          output.println(((System_ScoutsEx)s).list());
+          output.println("=========================");
+        }
+      }
+    }
+    
     output.flush();
     output.close();
     
