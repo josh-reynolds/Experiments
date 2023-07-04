@@ -127,15 +127,15 @@ class SubsectorDisplay {
   void mouseHover(Subsector _sub){
     if (mouseX > 0 && mouseX < width/2 &&
         mouseY > 0  && mouseY < height){
-      for (System s : _sub.systems.values()){        
-        if (s.hex.contains(mouseX, mouseY)){
-          //println(s.coord);
-          //println(s);
-          if (ruleset.supportsStars()){
-            println(((System_ScoutsEx)s).list());
-          }
-        }
-      }      
+      //for (System s : _sub.systems.values()){
+      //  if (s.hex.contains(mouseX, mouseY)){
+      //    //println(s.coord);
+      //    //println(s);
+      //    if (ruleset.supportsStars()){
+      //      println(((System_ScoutsEx)s).list());
+      //    }
+      //  }
+      //}
     }
   }
 }

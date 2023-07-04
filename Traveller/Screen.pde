@@ -73,5 +73,13 @@ class Display extends Screen {
     textPanel.show(subs);
   }
   
-  void mouseClicked(){};
+  void mouseClicked(){
+    for (System s : subs.systems.values()){
+      if (s.hex.contains(mouseX, mouseY)){
+        if (ruleset.supportsStars()){
+          println(((System_ScoutsEx)s).list());
+        }
+      }
+    }
+  }
 }
