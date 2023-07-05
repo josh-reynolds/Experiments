@@ -13,12 +13,12 @@ class System {
   Dice roll;
     
     
-  System(Coordinate _coord){
+  System(Coordinate _coord, float _density){
     coord = _coord;
     hex = new Polygon(coord.getScreenX(), coord.getScreenY(), hexRadius);
     roll = new Dice();
     
-    if (random(1) > 0.5){ 
+    if (random(1) < _density){  // TO_DO: may want to rethink this living in System - move up a level?
       occupied = true;
       uwp = generateUWP();
       navalBase = generateNavalBase();
@@ -134,8 +134,8 @@ class System {
 class System_CT81 extends System {
   String travelZone = "Green";
   
-  System_CT81(Coordinate _coord){
-    super(_coord);
+  System_CT81(Coordinate _coord, float _density){
+    super(_coord, _density);
     
     // system occurrence identical to CT77
     // naval base identical to CT77
@@ -253,8 +253,8 @@ class System_ScoutsEx extends System_CT81 {
   int gasGiantCount;
   Boolean militaryBase = false;
   
-  System_ScoutsEx(Coordinate _coord){
-    super(_coord);
+  System_ScoutsEx(Coordinate _coord, float _density){
+    super(_coord, _density);
     
     if (occupied){
       primary = new Star(this);

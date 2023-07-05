@@ -129,6 +129,7 @@
 //  * FIX  BUG: on load from JSON, size 'S' worlds are incorrectly displaying as '0' in listing
 //  * DONE REFACTOR: current ruleset and array to Ruleset class
 //  * DONE System listing method
+//  * .... Subsector density (and menu options for same)
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)
@@ -142,7 +143,6 @@
 //  *      Flagging close/far companions - query methods?
 //  *      Lots of debugging spew added during Scouts implementation - remove! (test?)
 //  *      UML-ish modeling and analysis
-//  *      Subsector density (and menu options for same)
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)

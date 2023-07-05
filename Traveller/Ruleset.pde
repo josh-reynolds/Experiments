@@ -52,16 +52,16 @@ class Ruleset {
     }
   }
   
-  System newSystem(Coordinate _coord){
+  System newSystem(Coordinate _coord, Float _density){
     switch(name) {
       case "CT77":
-        return new System(_coord);
+        return new System(_coord, _density);
       case "CT81":
-        return new System_CT81(_coord);
+        return new System_CT81(_coord, _density);
       case "Scouts (Extended)":
-        return new System_ScoutsEx(_coord);
+        return new System_ScoutsEx(_coord, _density);
       default:
-        return new System(_coord);
+        return new System(_coord, _density);
     }
   }
   
