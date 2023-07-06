@@ -129,10 +129,11 @@
 //  * FIX  BUG: on load from JSON, size 'S' worlds are incorrectly displaying as '0' in listing
 //  * DONE REFACTOR: current ruleset and array to Ruleset class
 //  * DONE System listing method
-//  * .... Subsector density (and menu options for same)
+//  * DONE Subsector density (and menu options for same)
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)
+//  *      Density setting should be restricted to appropriate rulesets
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Assess including companions of companions in getCompanions() result
@@ -162,6 +163,7 @@
 //  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: duplicated code in UWP_ScoutsEx ctors
 //  *      REFACTOR: aid - work up sequence diagram for ctors & build operations
+//  *      REFACTOR: clean up duplication in density setting plumbing
 // ------------------------------------------------
 
 // After spending this much time with the Scouts algorithm, my suspicion

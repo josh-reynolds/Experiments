@@ -20,6 +20,8 @@ Screen screen;
 
 Ruleset ruleset;
 
+SubsectorDensity density;
+
 TestSuite tests;
 int debug = 0;
 
@@ -30,6 +32,7 @@ void setup(){
   lines = loadStrings(wordFile);
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
   ruleset = new Ruleset();
+  density = new SubsectorDensity();
   tests = new TestSuite();  
   screen = new Menu();
 }

@@ -198,6 +198,19 @@ class ChangeRules implements Command {
   }
 }
 
+class ChangeDensity implements Command {
+  Button b;
+  
+  ChangeDensity(){}
+  
+  void register(Button _b){ b = _b; }
+  
+  void run(){
+    println(b.label);
+    density.next();
+  }
+}
+
 // kind of a grab-bag for now - further refactoring can tease this apart
 // this allows Command classes access to formerly-public methods pushed
 // down from the parent script, without duplicating into each subclass

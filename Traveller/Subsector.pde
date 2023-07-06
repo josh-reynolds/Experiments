@@ -1,7 +1,6 @@
 class Subsector{
   String name;
-  String summary;
-  Float density;
+  String summary; 
   
   LinkedHashMap<Coordinate, System> systems;
   int vertCount = 10;
@@ -13,7 +12,6 @@ class Subsector{
   
   Subsector(){
     name = "Subsector_" + lines[floor(random(lines.length))];
-    density = 0.5;
     
     systems = new LinkedHashMap<Coordinate, System>();
     routes = new ArrayList<Route>();
@@ -23,7 +21,7 @@ class Subsector{
     for (int j = 1; j <= horzCount; j++){
       for (int i = 1; i <= vertCount; i++){      
         Coordinate coord = new Coordinate(j, i);
-        systems.put(coord, ruleset.newSystem(coord, density));
+        systems.put(coord, ruleset.newSystem(coord, density.value));
       }
     }
     
