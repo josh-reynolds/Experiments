@@ -130,10 +130,10 @@
 //  * DONE REFACTOR: current ruleset and array to Ruleset class
 //  * DONE System listing method
 //  * DONE Subsector density (and menu options for same)
+//  * DONE Density setting should be restricted to appropriate rulesets
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)
-//  *      Density setting should be restricted to appropriate rulesets
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Assess including companions of companions in getCompanions() result

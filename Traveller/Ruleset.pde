@@ -52,6 +52,18 @@ class Ruleset {
     }
   }
   
+  Boolean supportsDensity(){
+    switch(name) {
+      case "CT77":
+      case "CT81":
+        return false;
+      case "Scouts (Extended)":
+        return true;
+      default:
+        return false;
+    }
+  }
+  
   System newSystem(Coordinate _coord, Float _density){
     switch(name) {
       case "CT77":

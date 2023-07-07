@@ -207,7 +207,11 @@ class ChangeDensity implements Command {
   
   void run(){
     println(b.label);
-    density.next();
+    if (ruleset.supportsDensity()){
+      density.next();
+    } else {
+      println("This ruleset doesn't support system density. Defaulting to Standard.");
+    }
   }
 }
 
