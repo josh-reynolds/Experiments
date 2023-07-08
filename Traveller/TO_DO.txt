@@ -134,6 +134,13 @@
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)
+//  *      Add MegaTraveller extended generation ruleset
+//  *      Add New Era generation ruleset
+//  *      Add T4 generation ruleset
+//  *      Add T5 generation ruleset
+//  *      Add MongTrav generation ruleset
+//  *      Add T20 generation ruleset
+//  *      Add GURPS Traveller First In generation ruleset
 //  *      Unravel inheritance issues in UWP hierarchy
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Assess including companions of companions in getCompanions() result

@@ -7,7 +7,7 @@ class SubsectorDensity {
   String[] labels = { "Rift", "Sparse", "Scattered", "Standard", "Dense" }; 
   
   SubsectorDensity(){
-    current = 3;
+    current = 3;   // "Standard" i.e. 50% chance
     value = values[current];
   }
   
