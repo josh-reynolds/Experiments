@@ -96,6 +96,7 @@ class Star extends Orbit {
     orbitalZones = retrieveOrbitalZones();
   }
   
+  // MegaTraveller uses the same odds for both Primary and Companion stars (MTRM p. 26)
   char generateType(){
     int dieThrow = roll.two();
     if (primary){
@@ -118,12 +119,13 @@ class Star extends Orbit {
     }
   }
   
+  // MegaTraveller uses the same odds for Primary, but changed the Companion table (MTRM p.26)
+  // The table is now identical to Primary, so I wonder if this was a copy/paste typo?
+  // TO_DO: In any case, will implement RAW
   int generateSize(){
     int dieThrow = roll.two();
-    
     if (primary){
       sizeRoll = dieThrow;
-        
       if (dieThrow == 2                ){ return 2;  }
       if (dieThrow == 3                ){ return 3; }
       if (dieThrow == 4                ){ 
@@ -261,7 +263,9 @@ class Star extends Orbit {
       printArray(getCompanions());
     }                                                                                                                  
   }    
-    
+  
+  // MegaTraveller uses the same odds for companion stars, with one adjustment  
+  // TO_DO: MTRM p. 26: "Use DM -1 when returning to this table for a far companion."   
   int generateCompanionCount(){
     println("Determining companion count for " + this);
     int dieThrow = roll.two();
@@ -278,6 +282,8 @@ class Star extends Orbit {
   }
 
   // from tables on Scouts p.46
+  // MegaTraveller follows the same procedure (MTRM p. 26)
+  // Note: to ease handling, I am converting RAW "Close" + "Far" to equivalent orbit numbers
   int generateCompanionOrbit(int _iteration){
     int modifier = 4 * (_iteration);
     if (!primary){ modifier -= 4; }

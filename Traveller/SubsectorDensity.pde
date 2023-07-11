@@ -3,6 +3,7 @@ class SubsectorDensity {
   int current;
   
   // data from Scouts p. 25
+  // MegaTraveller uses the same values (Referee's Manual pp. 24 + 26)
   float[] values  = { 0.04,   0.16,     0.33,        0.5,        0.66    };
   String[] labels = { "Rift", "Sparse", "Scattered", "Standard", "Dense" }; 
   

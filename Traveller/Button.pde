@@ -195,6 +195,9 @@ class ChangeRules implements Command {
   void run(){
     println(b.label);
     ruleset.next();
+    if (!ruleset.supportsDensity()){
+      density = new SubsectorDensity();
+    }
   }
 }
 
