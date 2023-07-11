@@ -739,18 +739,18 @@ class Star extends Orbit {
     return orbitalZones[_num].equals("I");
   }
 
-  Boolean orbitIsFar(int _orbitNum){
-    return _orbitNum >= 14;  // Scouts p.46 - does not assign orbit numbers to "Far" (just AU values), but this is equivalent and easier to handle in rest of methods
+  Boolean orbitIsFar(int _num){
+    return _num >= 14;  // Scouts p.46 - does not assign orbit numbers to "Far" (just AU values), but this is equivalent and easier to handle in rest of methods
   }
 
-  Boolean orbitMaskedByCompanion(int _orbitNum){
+  Boolean orbitMaskedByCompanion(int _num){
     ArrayList<Star> comps = getCompanions();
     if (comps.size() == 0){
       return false;
     } else {
       for (int i = 0; i < comps.size(); i++){
         int compOrbit = comps.get(i).getOrbitNumber();
-        if (debug >= 1){ print(" Evaluating companion mask for " + comps.get(i) + " in orbit " + compOrbit + " against " + _orbitNum); }
+        if (debug >= 1){ print(" Evaluating companion mask for " + comps.get(i) + " in orbit " + compOrbit + " against " + _num); }
         
         // some ambiguity here from RAW (Scouts p.23)
         // rule states: Orbits closer to the primary than the companion's orbit must be numbered no more than half of the companion's orbit number (round fractions down)
@@ -759,9 +759,9 @@ class Star extends Orbit {
         //                 in a system with a companion at orbit 5, orbits 0, 1 and 2 are available, and orbits 7 and higher are available (contrariwise, how is 2 OK? half of 5 rounded down is 2)
         // simplest is to assume first example is a typo, and orbit 1 should be available - then this is consistent - implementing this approach
         
-        if (_orbitNum < compOrbit && _orbitNum > compOrbit/2 ){ if (debug >= 1){ println(" TRUE!");} return true; }
-        if (_orbitNum == compOrbit                           ){ if (debug >= 1){ println(" TRUE!");} return true; } 
-        if (_orbitNum > compOrbit && _orbitNum <= compOrbit+1){ if (debug >= 1){ println(" TRUE!");} return true; }
+        if (_num < compOrbit && _num > compOrbit/2 ){ if (debug >= 1){ println(" TRUE!");} return true; }
+        if (_num == compOrbit                      ){ if (debug >= 1){ println(" TRUE!");} return true; } 
+        if (_num > compOrbit && _num <= compOrbit+1){ if (debug >= 1){ println(" TRUE!");} return true; }
       }
       if (debug >= 1){ println(" FALSE");} return false;
     }

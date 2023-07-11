@@ -765,6 +765,149 @@ eliminating the code in Star and merging it up. In general, all classes
 should rely on Orbit.asJSON() entirely, or call it via super in their 
 own override and then add content.
 
+--------------------------------------------------------
+7/11/23
+
+Preparing to implement the MegaTraveller ruleset. To get started, review
+the creation process and note differences from Scouts - it's pretty close.
+Likely handled via subclasses.
+
+But also, reviewing the Star class, it's gotten pretty big - this might
+be the time to separate out the creational methods into a Builder. Most 
+of the code (and the most complicated logic) is only invoked on creation,
+and is also likely where all the differences are.
+
+Would be helpful if we had access controls in place - likely all private
+methods are creational (or utility), and we could break out that way. But
+unfortunately the Processing Inner Class model means everything is 
+accessible, so have been lazy and not marked anything. Maybe a quick review
+will help. (Same argument applies to fields - haven't been consistent with
+getters/setters, and they can't be guaranteed encapsulated.)
+
+====================
+Sketch of the initial process flow:
+
+new Subsector()
+  ...
+  ruleset.newSystem(...)
+    new System_MTEx          // TO_DO, based on System_ScoutsEx
+      primary = new Star()   // TO_DO, need an MT subclass
+      primary.createSatellites()
+      countGasGiants()
+      mainworld = primary.designateMainworld()
+      uwp = mainworld.getUWP()
+      ...      
+
+References		====================
+			Star extends Orbit
+			--------------------
+Orbit, Star, UWP	System parent
+Orbit, Star		Boolean primary
+Orbit, Star, TestSuite	char type
+Star			int typeRoll
+Star, TestSuite		int decimal
+Star, TestSuite		int size
+Star			int sizeRoll
+Star, System		Star closeCompanion
+Orbit, Star, TestSuite	String[] orbitalZones
+Star			int gasGiantCount
+			--------------------
+Star, System		Star(System _parent)
+Star, System		Star(System _parent, JSONObject _json)
+Star			Star(Orbit _barycenter, int _orbit, String _zone, System _parent)
+Orbit, Star		Star(Orbit _barycenter, System _parent, JSONObject _json)
+Star, TestSuite		Star(Boolean _primary, System _parent, String _s)
+			--------------------
+Star			Boolean isStar()
+Star			Boolean orbitIsTooHot(int _num)
+Star			Boolean orbitIsNull(int _num)
+Star			Boolean orbitIsNullOrEmpty(int _num)
+Star			Boolean orbitInsideStar(int _num)
+Star, TestSuite		Boolean orbitIsForbidden(int _num)
+Star			Boolean orbitIsInnerZone(int _num)
+Star			Boolean orbitIsFar(int _num)
+Star			Boolean orbitMaskedByCompanion(int _num)
+			--------------------
+Star			void createStar()
+Star			char generateType()
+Star			int generateSize()
+Star			void spectralTypeFromString(String _s)
+Star, System		String getSpectralType()
+Star			String[] retrieveOrbitalZones()
+Star, System		void createSatellites()
+Star			int generateCompanionCount()
+Star			int generateCompanionOrbit(int _iteration)
+Star			int calculateMaxOrbits()
+Star			void placeEmptyOrbits(int _maxOrbit)
+Star			void placeForbiddenOrbits(int _maxOrbit)
+Star			void placeCapturedPlanets()
+Star			float generateCapturedOrbit()
+Star			void placeGasGiants(int _maxOrbit)
+Star			void placePlanetoidBelts(int _maxOrbit)
+Star			void placePlanets(int _maxOrbit)
+Star, System		Habitable designateMainworld()
+Star			int getRandomUnassignedOrbit(int _maxOrbit)
+Star			IntList availableOrbitsForGiants(int _maxOrbit)
+Star			IntList availableOrbitsForPlanetoids(int _maxOrbit)
+Star, System		ArrayList<Star> getCompanions()
+Star			String sizeToString()
+Star			int sizeFromString(String _s)
+Star, System		String toString()
+Star, System		JSONObject asJSON()
+			====================
+
+In this same vein, might be worthwhile to draw up some code metrics and look 
+for hotspots. What is the size of each class? Of each method? At some point,
+would also like to apply the analysis from "Your Code as a Crime Scene" to 
+the repository history.
+
+Another refactoring target: initially I was thinking Ruleset would become a 
+polymorphic family - and it still might. But right now it is just maintaining
+a single setting and a few queries, yet it keeps being reconstructed. When I 
+added SubsectorDensity, that design works similarly without the ctor calls.
+Push ruleset to the same model.
 
 
+=====================
+SubsectorDensity
+  float value
+  int current
+  float[] values
+  String[] labels
+  ---------------
+  SubsectorDensity()
+  ---------------
+  void next()
+=====================
+
+Traveller
+  density = new SubsectorDensity()
+Button
+  density = new SubsectorDensity()
+
+
+=====================
+Ruleset
+  String name
+  int currentRules
+  String[] rules
+  ---------------
+  Ruleset()
+  Ruleset(String _rules)
+  Ruleset(int _current)
+  ---------------
+  void next()
+  Boolean supportsTravelZones()
+  Boolean supportsStars()
+  Boolean supportsDensity()
+  System newSystem(Coordinate _coord, Float _density)
+  system newSystem(JSONObject _json)
+=====================
+
+Traveller
+  ruleset = new Ruleset()
+Subsector
+  ruleset = new Ruleset(_json.getString("Ruleset"))
+Ruleset
+  ruleset = new Ruleset(currentRules)
 
