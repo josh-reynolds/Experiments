@@ -252,12 +252,14 @@ class System_ScoutsEx extends System_CT81 {
   Habitable mainworld;
   int gasGiantCount;
   Boolean militaryBase = false;
+  StarBuilder builder;
   
   System_ScoutsEx(Coordinate _coord, float _density){
     super(_coord, _density);
     
     if (occupied){
-      primary = new Star(this);
+      builder = new StarBuilder();
+      primary = builder.newStar(this);
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       println("Primary: " + primary);
       primary.createSatellites();      
