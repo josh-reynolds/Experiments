@@ -1,31 +1,27 @@
 class Ruleset {
   String name;
-  int currentRules = 0;
+  int current = 0;
   String[] rules = {"CT77", "CT81", "Scouts (Extended)", "MegaTraveller (Extended)"};
 
   // would like to handle creation via a static factory method,
   // but Processing's inner class approach won't allow that
 
   Ruleset(){
-    name = rules[currentRules];
+    name = rules[current];
   }
   
+  // used when loading from JSON
   Ruleset(String _rules){
     for (int i = 0; i < rules.length; i++){
-      if (rules[i].equals(_rules)){ currentRules = i; }
+      if (rules[i].equals(_rules)){ current = i; }
     }
-    name = rules[currentRules];
-  }
-  
-  Ruleset(int _current){
-    currentRules = _current;
-    name = rules[currentRules];
+    name = rules[current];
   }
   
   void next(){
-    currentRules++;
-    currentRules %= rules.length;
-    ruleset = new Ruleset(currentRules);
+    current++;
+    current %= rules.length;
+    name = rules[current];
   }
   
   Boolean supportsTravelZones(){

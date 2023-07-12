@@ -885,7 +885,6 @@ Traveller
 Button
   density = new SubsectorDensity()
 
-
 =====================
 Ruleset
   String name
@@ -910,4 +909,13 @@ Subsector
   ruleset = new Ruleset(_json.getString("Ruleset"))
 Ruleset
   ruleset = new Ruleset(currentRules)
+
+OK, this is done. Small tweak to Ruleset.next() and removal of the superfluous 
+ctor and it now behaves like SubsectorDensity. Effectively a Singleton, we 
+create once on startup (or again on load from JSON). Probably not worth the
+effort to put in the actual pattern.
+
+
+
+
 
