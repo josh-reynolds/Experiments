@@ -834,6 +834,7 @@ Star			int generateSize()
 Star			void spectralTypeFromString(String _s)
 Star, System		String getSpectralType()
 Star			String[] retrieveOrbitalZones()
+   ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 Star, System		void createSatellites()
 Star			int generateCompanionCount()
 Star			int generateCompanionOrbit(int _iteration)
@@ -915,7 +916,23 @@ ctor and it now behaves like SubsectorDensity. Effectively a Singleton, we
 create once on startup (or again on load from JSON). Probably not worth the
 effort to put in the actual pattern.
 
+7/13/23
 
+Returning to the Star interface... I've added a StarBuilder class to move 
+methods to. Right now, each system creates a new one - uncertain if there 
+should be a single global builder in the future, but this ought to work for 
+now.
 
+Most of the 'private' methods identified above are creational, and candidates 
+to move. Some make sense as part of the ctor and can stay (Star -> createStar -> 
+generateType/generateSize/retrieveOrbitalZone). But the others are concerned 
+more with the composite structure, and that's what the builder helps with.
 
+That second set starts from the createSatellites entry point. First issue - 
+we get a NullPointerException from generateType() when we call it from the 
+StarBuilder - need to untangle references here.
+
+OK, sorted - the primary reference in the parent system hadn't been set. 
+Solution is a bit of an ugly hack, this will probably get cleaned up as we 
+move bits over to the builder.
 

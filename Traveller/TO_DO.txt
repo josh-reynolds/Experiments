@@ -138,6 +138,7 @@
 //  * .... Flesh out tests (this will take a while...)
 //  *      Add New Era generation ruleset
 //  *      Add T4 generation ruleset
+//  *      Add T4 Pocket Empires ruleset
 //  *      Add T5 generation ruleset
 //  *      Add MongTrav generation ruleset
 //  *      Add T20 generation ruleset

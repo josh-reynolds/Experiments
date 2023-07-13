@@ -258,15 +258,13 @@ class System_ScoutsEx extends System_CT81 {
     super(_coord, _density);
     
     if (occupied){
-      builder = new StarBuilder();
-      primary = builder.newStar(this);
+      builder = new StarBuilder();             // TO_DO: do we need to keep the builder around after this point?
+      builder.newStar(this);                   // could just do (new StarBuilder()).newStar(this) instead
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
-      println("Primary: " + primary);
-      primary.createSatellites();      
+      println("Primary: " + primary);      
       
       countGasGiants();
       
-      mainworld = primary.designateMainworld();
       uwp = mainworld.getUWP();                 
       navalBase = generateNavalBase();          // need to regenerate with the 'true' mainworld UWP - otherwise identical to CT77 
       scoutBase = generateScoutBase();          
