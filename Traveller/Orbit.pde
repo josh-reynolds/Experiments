@@ -24,7 +24,8 @@ abstract class Orbit {
         
     if (barycenter != null){           // null for the primary
       if (barycenter.isStar()){
-        if (((Star)barycenter).primary != null && !((Star)barycenter).primary){   // failing during JSON load due to ordering, hack addition
+        //if (((Star)barycenter).primary != null && !((Star)barycenter).primary){   // failing during JSON load due to ordering, hack addition
+        if (((Star)barycenter).isCompanion()){   // failing during JSON load due to ordering, hack addition
           String fromPrimary   = ((Star)barycenter.barycenter).orbitalZones[barycenter.orbitNumber];          
           String fromCompanion = ((Star)barycenter).orbitalZones[orbitNumber];
           orbitalZone = adjustOrbitalZone(fromPrimary, fromCompanion); 

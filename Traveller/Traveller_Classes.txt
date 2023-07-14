@@ -936,3 +936,18 @@ OK, sorted - the primary reference in the parent system hadn't been set.
 Solution is a bit of an ugly hack, this will probably get cleaned up as we 
 move bits over to the builder.
 
+7/14/23
+
+Testing the waters by moving part of createSatellites() over to the builder. 
+The first stage creates companions. As part of this, I'm encapsulating 
+the primary field on Star.
+
+On the surface this is innocuous, and appears to run correctly. However, I'm
+seeing some odd output in the console. The "Determing X for Star" lines all
+reference the *next* system, including companion stars. I don't think the 
+encapsulation change did this - probably was from the insertion of StarBuilder - 
+so will proceed with this, then trace and figure it out. Likely to be a bit 
+of jankiness as this gets shifted over anyway, so not entirely unexpected.
+(Ought to review test coverage as we go too, of course...)
+
+

@@ -87,6 +87,18 @@ class Star extends Orbit {
   
   Boolean isStar(){ return true; }
 
+  Boolean isPrimary(){ 
+    if (primary != null){
+      return primary;
+    } else {
+      return false;
+    }
+  }
+  
+  Boolean isCompanion(){
+    return !isPrimary();
+  }
+  
   void createStar(){
     type = generateType();  
     decimal = floor(random(10));
@@ -99,7 +111,7 @@ class Star extends Orbit {
   // MegaTraveller uses the same odds for both Primary and Companion stars (MTRM p. 26)
   char generateType(){
     int dieThrow = roll.two();
-    if (primary){
+    if (isPrimary()){
       typeRoll = dieThrow;
       if (dieThrow == 2               ){ return 'A'; }
       if (dieThrow > 2 && dieThrow < 8){ return 'M'; }
@@ -124,7 +136,7 @@ class Star extends Orbit {
   // TO_DO: In any case, will implement RAW
   int generateSize(){
     int dieThrow = roll.two();
-    if (primary){
+    if (isPrimary()){
       sizeRoll = dieThrow;
       if (dieThrow == 2                ){ return 2;  }
       if (dieThrow == 3                ){ return 3; }
@@ -223,7 +235,7 @@ class Star extends Orbit {
   void createSatellites(){
     if (debug == 2){ println("Creating satellites for " + this); }
     int compCount = 0;
-    if (primary || orbitIsFar(getOrbitNumber())){
+    if (isPrimary() || orbitIsFar(getOrbitNumber())){
       compCount = generateCompanionCount();
     }    
     if (debug >= 1){ println(compCount + " companions"); }
@@ -244,7 +256,7 @@ class Star extends Orbit {
     // TO_DO: should we track orbital zones for companions? align w/ Orbit ctor? (same argument for orbit #)
     
     int orbitCount = calculateMaxOrbits();
-    if (!primary){ orbitCount = constrain(orbitCount, 0, floor(getOrbitNumber()/2)); }
+    if (isCompanion()){ orbitCount = constrain(orbitCount, 0, floor(getOrbitNumber()/2)); }
 
     placeEmptyOrbits(orbitCount);
     placeForbiddenOrbits(orbitCount);
@@ -272,7 +284,7 @@ class Star extends Orbit {
     if (dieThrow < 8){ return 0; }
     if (dieThrow > 7 && dieThrow < 12){ return 1; }
     if (dieThrow == 12){ 
-      if (primary){ 
+      if (isPrimary()){ 
         return 2; 
       } else {
         return 1;
@@ -286,7 +298,7 @@ class Star extends Orbit {
   // Note: to ease handling, I am converting RAW "Close" + "Far" to equivalent orbit numbers
   int generateCompanionOrbit(int _iteration){
     int modifier = 4 * (_iteration);
-    if (!primary){ modifier -= 4; }
+    if (isCompanion()){ modifier -= 4; }
     if (debug >= 1){ println("Generating companion star orbit. Modifier: +" + modifier); }
     int dieThrow = roll.two(modifier);
     int result = 0;
