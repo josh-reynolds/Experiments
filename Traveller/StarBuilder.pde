@@ -5,39 +5,49 @@ class StarBuilder {
     Star star = new Star(_parent);
     _parent.primary = star;
     
-    println(" *** system = " + _parent);
-    println(" *** star = " + star);
-    
     createCompanionsFor(star);
-    
+    createSatellitesFor(star);     // Star.createSatellites() is recursive on companion stars - need to handle this case
+                                   // should there be something in createCompanions()? work this out later
+                                   
     star.createSatellites();
     
     _parent.mainworld = star.designateMainworld();
   }
   
-  void createCompanionsFor(Star _star){
-    println(" *** Creating companions for " + _star);
-    println(" *** Parent = " + _star.parent);
+  void createSatellitesFor(Star _star){
+    int orbitCount = _star.calculateMaxOrbits();
+    if (_star.isCompanion()){ orbitCount = constrain(orbitCount, 0, floor(_star.getOrbitNumber()/2)); }
     
+    //placeEmptyOrbits(orbitCount);
+    //placeForbiddenOrbits(orbitCount);
+    //placeCapturedPlanets();
+    //placeGasGiants(orbitCount);
+    //placePlanetoidBelts(orbitCount);
+    //placePlanets(orbitCount);
+    
+    println("@@@ orbitCount = " + orbitCount);
+  }
+  
+  void createCompanionsFor(Star _star){
     if (debug == 2){ println("Creating companions for " + _star); }
     int compCount = 0;
-    //if (_star.isPrimary() || _star.orbitIsFar()){
-    //  compCount = generateCompanionCount();
-    //}    
+    if (_star.isPrimary() || _star.isFar()){
+      compCount = _star.generateCompanionCount();
+    }    
     if (debug >= 1){ println(compCount + " companions"); }
 
-    //for (int i = 0; i < compCount; i++){
-    //  int orbitNum = generateCompanionOrbit(i);
+    for (int i = 0; i < compCount; i++){
+      int orbitNum = _star.generateCompanionOrbit(i);
       
-    //  Star companion = new Star(this, orbitNum, orbitalZones[orbitNum], parent);
+      Star companion = new Star(_star, orbitNum, _star.orbitalZones[orbitNum], _star.parent);
 
-    //  if (orbitNum == 0 || orbitInsideStar(orbitNum)){
-    //    if (debug >= 1){ println("Companion in CLOSE orbit"); }        
-    //    closeCompanion = companion;        
-    //  }
+      if (orbitNum == 0 || companion.insideStar()){
+        if (debug >= 1){ println("Companion in CLOSE orbit"); }        
+        _star.closeCompanion = companion;        
+      }
 
-    //  addOrbit(companion.getOrbitNumber(), companion);
-    //} 
+      _star.addOrbit(companion.getOrbitNumber(), companion);
+    } 
   }
   
   //void placePlanets(int _maxOrbit){

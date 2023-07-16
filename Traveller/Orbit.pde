@@ -339,6 +339,15 @@ abstract class Orbit {
     }
   }  
   
+  Boolean isFar(){
+    return barycenter.isStar() && orbitNumber >= 14;
+  }
+  
+  Boolean insideStar(){
+    if (debug == 2){ println("**** Orbit.insideStar() for " + this.getClass()); }
+    return orbitalZone.equals("Z");
+  }
+  
   Boolean isContainer(){
     return orbits.size() > 0;
   }

@@ -14,8 +14,6 @@ class System {
     
     
   System(Coordinate _coord, float _density){
-    println(" *** System ctor");
-    
     coord = _coord;
     hex = new Polygon(coord.getScreenX(), coord.getScreenY(), hexRadius);
     roll = new Dice();
@@ -30,9 +28,6 @@ class System {
       name = lines[floor(random(lines.length))];
       routes = new ArrayList<Route>();
     }
-    
-    println(" *** Name = " + name);
-    println(" *** Coordinate = " + coord);
   } 
   
   System(JSONObject _json){
@@ -141,8 +136,6 @@ class System_CT81 extends System {
   
   System_CT81(Coordinate _coord, float _density){
     super(_coord, _density);
-    
-    println(" *** System_CT81 ctor");
     
     // system occurrence identical to CT77
     // naval base identical to CT77
@@ -265,9 +258,6 @@ class System_ScoutsEx extends System_CT81 {
     super(_coord, _density);
     
     if (occupied){
-      
-      println(" *** OCCUPIED");
-      println(" *** Name = " + name);
       builder = new StarBuilder();             // TO_DO: do we need to keep the builder around after this point?
       builder.newStar(this);                   // could just do (new StarBuilder()).newStar(this) instead
       println("\n--------------\nSystem: " + name + " (" + coord + ")");

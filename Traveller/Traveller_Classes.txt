@@ -954,3 +954,6 @@ On review (and some debugging spew), I think this is just due to folding
 createSatellites() into the builder.newStar() call. Will need to shuffle the 
 output ordering, but that will probably all shake out naturally during the 
 progress of this refactoring.
+
+7/16/23
+
