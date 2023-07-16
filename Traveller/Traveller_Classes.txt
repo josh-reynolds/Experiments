@@ -950,4 +950,7 @@ so will proceed with this, then trace and figure it out. Likely to be a bit
 of jankiness as this gets shifted over anyway, so not entirely unexpected.
 (Ought to review test coverage as we go too, of course...)
 
-
+On review (and some debugging spew), I think this is just due to folding 
+createSatellites() into the builder.newStar() call. Will need to shuffle the 
+output ordering, but that will probably all shake out naturally during the 
+progress of this refactoring.

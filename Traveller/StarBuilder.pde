@@ -5,6 +5,9 @@ class StarBuilder {
     Star star = new Star(_parent);
     _parent.primary = star;
     
+    println(" *** system = " + _parent);
+    println(" *** star = " + star);
+    
     createCompanionsFor(star);
     
     star.createSatellites();
@@ -13,6 +16,9 @@ class StarBuilder {
   }
   
   void createCompanionsFor(Star _star){
+    println(" *** Creating companions for " + _star);
+    println(" *** Parent = " + _star.parent);
+    
     if (debug == 2){ println("Creating companions for " + _star); }
     int compCount = 0;
     //if (_star.isPrimary() || _star.orbitIsFar()){
