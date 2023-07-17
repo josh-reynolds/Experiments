@@ -132,6 +132,7 @@
 //  * DONE Subsector density (and menu options for same)
 //  * DONE Density setting should be restricted to appropriate rulesets
 //  * FIX  BUG: if density is adjusted, then ruleset changed, you can adjust for invalid rulesets
+//  * .... REFACTOR: move Orbit composite creation to a Builder class
 //  * .... Add MegaTraveller extended generation ruleset
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor

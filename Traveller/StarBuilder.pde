@@ -8,24 +8,34 @@ class StarBuilder {
     createCompanionsFor(star);
     createSatellitesFor(star);     // Star.createSatellites() is recursive on companion stars - need to handle this case
                                    // should there be something in createCompanions()? work this out later
-                                   
-    star.createSatellites();
     
     _parent.mainworld = star.designateMainworld();
   }
   
   void createSatellitesFor(Star _star){
+    if (debug == 2){ println("Creating satellites for " + _star); }
+        
     int orbitCount = _star.calculateMaxOrbits();
     if (_star.isCompanion()){ orbitCount = constrain(orbitCount, 0, floor(_star.getOrbitNumber()/2)); }
     
-    //placeEmptyOrbits(orbitCount);
-    //placeForbiddenOrbits(orbitCount);
-    //placeCapturedPlanets();
-    //placeGasGiants(orbitCount);
-    //placePlanetoidBelts(orbitCount);
-    //placePlanets(orbitCount);
+    _star.placeEmptyOrbits(orbitCount);
+    _star.placeForbiddenOrbits(orbitCount);
+    _star.placeCapturedPlanets();
+    _star.placeGasGiants(orbitCount);
+    _star.placePlanetoidBelts(orbitCount);
+    _star.placePlanets(orbitCount);
     
     println("@@@ orbitCount = " + orbitCount);
+    
+    ArrayList<Star> comps = _star.getCompanions();
+    for (Star c : comps){
+      createSatellitesFor(c);
+    }
+
+    if (debug >= 1){ 
+      println("Companions for " + this);
+      printArray(_star.getCompanions());
+    } 
   }
   
   void createCompanionsFor(Star _star){

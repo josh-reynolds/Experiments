@@ -231,30 +231,6 @@ class Star extends Orbit {
     }
     return output;
   }
-
-  void createSatellites(){
-    if (debug == 2){ println("Creating satellites for " + this); }
-    
-    int orbitCount = calculateMaxOrbits();
-    if (isCompanion()){ orbitCount = constrain(orbitCount, 0, floor(getOrbitNumber()/2)); }
-
-    placeEmptyOrbits(orbitCount);
-    placeForbiddenOrbits(orbitCount);
-    placeCapturedPlanets();
-    placeGasGiants(orbitCount);
-    placePlanetoidBelts(orbitCount);
-    placePlanets(orbitCount);
-
-    ArrayList<Star> comps = getCompanions();
-    for (Star c : comps){
-      c.createSatellites();
-    }
-
-    if (debug >= 1){ 
-      println("Companions for " + this);
-      printArray(getCompanions());
-    }                                                                                                                  
-  }    
   
   // MegaTraveller uses the same odds for companion stars, with one adjustment  
   // TO_DO: MTRM p. 26: "Use DM -1 when returning to this table for a far companion."   
