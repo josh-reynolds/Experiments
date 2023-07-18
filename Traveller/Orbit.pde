@@ -10,7 +10,7 @@ abstract class Orbit {
   
   TreeMap<Float, Orbit> orbits;
   
-  Dice roll;
+  Dice roll;    // if we move all creational methods to a builder, this probably moves out
   
   Orbit(Orbit _barycenter, int _orbit, String _zone){
     if (_barycenter != null){
