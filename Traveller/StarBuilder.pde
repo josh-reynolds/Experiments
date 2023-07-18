@@ -15,6 +15,72 @@ class StarBuilder {
     
     _parent.mainworld = star.designateMainworld();
   }
+
+  void placeCapturedPlanetsFor(Star _star){
+    println("Placing Captured Planets for " + _star);
+    // ambiguity here - some of the notes from Empty Orbits (above) also applies - but:
+    //  - by RAW, these are placed in orbit 2-12 +/- deviation
+    //  - same biases as noted under Empty: 0 & 1 protected, bell curve around 7, nothing beyond 12
+    //  - no notes for what to do if orbit is occupied
+    
+    if (roll.one() > 4){
+      int quantity = floor(roll.one()/2);
+
+      for (int i = 0; i < quantity; i++){
+        float capturedOrbit = 0;
+        int effectiveOrbit = 0;                     // chicken & egg w/ orbitalZones, may want to rethink how this passes to Orbit ctors
+        
+        Boolean assessingCandidates = true;
+        while (assessingCandidates){                // potential infinite loop if there are no valid locations...
+          capturedOrbit = generateCapturedOrbit();  // in practice would require an M or B giant star with a companion in orbit 11, extremely rare
+          effectiveOrbit = round(capturedOrbit);
+          if (_star.orbitIsForbidden(effectiveOrbit)){
+            assessingCandidates = true;            
+          } else {
+            assessingCandidates = false;
+          }
+        }
+
+        _star.addOrbit(capturedOrbit, new Planet(_star, effectiveOrbit, _star.orbitalZones[effectiveOrbit]));
+        Planet captured = (Planet)_star.getOrbit(capturedOrbit);
+        captured.setOrbitNumber(capturedOrbit);
+      }
+    }        
+  }
+
+  float generateCapturedOrbit(){
+    int baseline = roll.two();
+    int deviation = roll.two(-7);
+
+    if (deviation == 0){      // RAW doesn't cover this scenario, but we should prevent captured planets in exact orbits
+      if (roll.one() < 4){    // or they will potentially overwrite another entity 
+        deviation = -1; 
+      } else {
+        deviation = 1;
+      }
+    }
+    
+    if (deviation < 0){
+      baseline -= 1;
+      deviation = 10 + deviation;
+    }
+    
+    return baseline + (float)deviation/10;
+  }
+
+  // three cases:
+  //  - DONE  orbit is inside star (have query method)
+  //  - DONE  orbit is suppressed by nearby companion star
+  //  -         TO_DO (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
+  //  - DONE  orbit is too hot to allow planets
+  void placeForbiddenOrbitsFor(Star _star, int _maxOrbit){
+    println("Determining forbidden orbits for " + _star);
+    for (int i = 0; i <= _maxOrbit; i++){
+      if (_star.orbitIsForbidden(i) && _star.orbitIsNullOrEmpty(i)){
+        _star.addOrbit(i, new Forbidden(_star, i, _star.orbitalZones[i]));
+      }
+    }
+  }  
   
   // we have shifted to TreeMap, look for opportunities to simplify/eliminate this one
   void placeEmptyOrbitsFor(Star _star, int _maxOrbit){
@@ -82,8 +148,8 @@ class StarBuilder {
     if (_star.isCompanion()){ orbitCount = constrain(orbitCount, 0, floor(_star.getOrbitNumber()/2)); }
     
     placeEmptyOrbitsFor(_star, orbitCount);
-    _star.placeForbiddenOrbits(orbitCount);
-    _star.placeCapturedPlanets();
+    placeForbiddenOrbitsFor(_star, orbitCount);
+    placeCapturedPlanetsFor(_star);
     _star.placeGasGiants(orbitCount);
     _star.placePlanetoidBelts(orbitCount);
     _star.placePlanets(orbitCount);
@@ -124,16 +190,5 @@ class StarBuilder {
 
       _star.addOrbit(companion.getOrbitNumber(), companion);
     } 
-  }
-  
-  //void placePlanets(int _maxOrbit){
-  //  println("Placing Planets for " + this);
-  //  for (int i = 0; i < _maxOrbit; i++){
-  //    if (orbitIsNull(i)){
-  //      addOrbit(i, new Planet(this, i, orbitalZones[i]));
-  //    }
-  //  }
-  //}
-  
-  
+  }  
 }
