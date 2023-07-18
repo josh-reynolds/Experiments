@@ -150,7 +150,7 @@ class StarBuilder {
     placeEmptyOrbitsFor(_star, orbitCount);
     placeForbiddenOrbitsFor(_star, orbitCount);
     placeCapturedPlanetsFor(_star);
-    _star.placeGasGiants(orbitCount);
+    placeGasGiantsFor(_star, orbitCount);
     _star.placePlanetoidBelts(orbitCount);
     _star.placePlanets(orbitCount);
     
@@ -174,7 +174,7 @@ class StarBuilder {
     if (debug == 2){ println("Creating companions for " + _star); }
     int compCount = 0;
     if (_star.isPrimary() || _star.isFar()){
-      compCount = _star.generateCompanionCount();
+      compCount = generateCompanionCountFor(_star);
     }    
     if (debug >= 1){ println(compCount + " companions"); }
 
@@ -190,5 +190,66 @@ class StarBuilder {
 
       _star.addOrbit(companion.getOrbitNumber(), companion);
     } 
-  }  
+  }
+  
+  // MegaTraveller uses the same odds for companion stars, with one adjustment  
+  // TO_DO: MTRM p. 26: "Use DM -1 when returning to this table for a far companion."   
+  int generateCompanionCountFor(Star _star){
+    println("Determining companion count for " + _star);
+    int dieThrow = roll.two();
+    if (dieThrow < 8){ return 0; }
+    if (dieThrow > 7 && dieThrow < 12){ return 1; }
+    if (dieThrow == 12){ 
+      if (_star.isPrimary()){ 
+        return 2; 
+      } else {
+        return 1;
+      }
+    }
+    return 0;
+  }
+  
+  void placeGasGiantsFor(Star _star, int _maxOrbit){
+    println("Placing Gas Giants for " + _star);
+    if (roll.two() <= 9){
+      switch(roll.two()){ 
+        case 2:
+        case 3:
+          _star.gasGiantCount = 1;
+          break;        
+        case 4:
+        case 5:
+          _star.gasGiantCount = 2;
+          break;        
+        case 6:
+        case 7:
+          _star.gasGiantCount = 3;
+          break;        
+        case 8:
+        case 9:
+        case 10:
+          _star.gasGiantCount = 4;        
+          break;        
+        case 11:
+        case 12:
+          _star.gasGiantCount = 5;        
+          break;
+        default:
+          _star.gasGiantCount = 1;        
+          break;
+      }
+
+      IntList availableOrbits = _star.availableOrbitsForGiants(_maxOrbit);
+      _star.gasGiantCount = min(_star.gasGiantCount, availableOrbits.size());
+      if (debug >= 1){ println(_star.gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
+      
+      for (int i = 0; i < _star.gasGiantCount; i++){
+        availableOrbits.shuffle();
+        int index = availableOrbits.remove(0);
+        _star.addOrbit(index, new GasGiant(_star, index, _star.orbitalZones[index]));
+      }
+    } else {
+      if (debug >= 1){ println("No Gas Giants in-system"); }
+    }
+  }
 }
