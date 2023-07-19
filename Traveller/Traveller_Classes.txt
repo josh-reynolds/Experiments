@@ -955,5 +955,18 @@ createSatellites() into the builder.newStar() call. Will need to shuffle the
 output ordering, but that will probably all shake out naturally during the 
 progress of this refactoring.
 
-7/16/23
+7/19/23
 
+Finished moving Star creational methods over to StarBuilder. Fairly straightforward.
+One wrinkle I noticed is we no longer check for companions of Far companions, 
+so will need to fix that. Quaternary systems were rare, but possible previously.
+
+Some of these blend into methods in the Orbit root class, and next opportunity 
+is probably to make the "StarBuilder" into an "OrbitBuilder." The pattern helps 
+most with assembly of a complex Composite, like we have here.
+
+As we do that, some of the special casing in the Star procedure can be merged 
+into a more generalized Orbit procedure (with appropriate steps by type, of 
+course). The builder should take advantage of the Composite, and walk its way
+through. This merger will probably help clean up the Far companion issue noted 
+above.

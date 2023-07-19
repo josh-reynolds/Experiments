@@ -118,7 +118,7 @@ class StarBuilder {
         //  - Generates results outside existing orbits, needs lots of rerolls
         // I am going to implement a random picker that fixes the last two issues (flat curve, only existing orbits to choose from)
         //   and keep the protections for orbits 0 & 1 (maybe they wanted to ensure all systems have viable orbits?)
-        int choice = _star.getRandomUnassignedOrbit(_maxOrbit);
+        int choice = getRandomUnassignedOrbitFor(_star, _maxOrbit);
         if (choice == -1){ if (debug >= 1){ println("No null available"); } break; } // don't much care for this 'magic value' - indicates no null orbits left
         if (debug >= 1){ println("Assigning " + choice + " to Empty"); }
         _star.addOrbit(choice, new Empty(_star, choice, _star.orbitalZones[choice]));
@@ -151,10 +151,8 @@ class StarBuilder {
     placeForbiddenOrbitsFor(_star, orbitCount);
     placeCapturedPlanetsFor(_star);
     placeGasGiantsFor(_star, orbitCount);
-    _star.placePlanetoidBelts(orbitCount);
-    _star.placePlanets(orbitCount);
-    
-    println("@@@ orbitCount = " + orbitCount);
+    placePlanetoidBeltsFor(_star, orbitCount);
+    placePlanetsFor(_star, orbitCount);
     
     ArrayList<Star> comps = _star.getCompanions();
     for (Star c : comps){
@@ -179,7 +177,7 @@ class StarBuilder {
     if (debug >= 1){ println(compCount + " companions"); }
 
     for (int i = 0; i < compCount; i++){
-      int orbitNum = _star.generateCompanionOrbit(i);
+      int orbitNum = generateCompanionOrbitFor(_star, i);
       
       Star companion = new Star(_star, orbitNum, _star.orbitalZones[orbitNum], _star.parent);
 
@@ -239,7 +237,7 @@ class StarBuilder {
           break;
       }
 
-      IntList availableOrbits = _star.availableOrbitsForGiants(_maxOrbit);
+      IntList availableOrbits = availableOrbitsForGiantsFor(_star, _maxOrbit);
       _star.gasGiantCount = min(_star.gasGiantCount, availableOrbits.size());
       if (debug >= 1){ println(_star.gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
       
@@ -252,4 +250,153 @@ class StarBuilder {
       if (debug >= 1){ println("No Gas Giants in-system"); }
     }
   }
+
+  // will be very similar to GasGiants, above - duplication OK for now, but look for refactorings
+  void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
+    println("Placing Planetoid Belts for " + _star);
+    // uses # of Gas Giants as a modifier - rules don't specify, but I assume that means just for
+    // the star which the potential planetoids orbit, not all companions
+    int planetoidCount = 0;                      // not yet needed outside this method (MT and later include this count at System level, but IIRC Scouts does not)        
+    if (roll.two(-_star.gasGiantCount) <= 6){
+      switch(roll.two(-_star.gasGiantCount)){ 
+        case -3:
+        case -2:
+        case -1:
+        case 0:
+          planetoidCount = 3;
+          break;
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+          planetoidCount = 2;
+          break;        
+        default:
+          planetoidCount = 1;        
+          break;
+      }
+    
+      IntList availableOrbits = availableOrbitsForPlanetoidsFor(_star, _maxOrbit);
+      planetoidCount = min(planetoidCount, availableOrbits.size());
+      if (debug >= 1){ println(planetoidCount + " Planetoid Belts in-system"); }
+    
+      // RAW p. 35: "If possible, planetoid belts should be placed in the next orbit inward from gas giants."
+      IntList orbitsInwardFromGiants = new IntList();   // might want to refactor this out, do it inline for now
+      for (int i = 0; i < availableOrbits.size(); i++){
+        int index = availableOrbits.get(i); 
+        if (index == _star.orbits.size()-1){ continue; }
+        if (_star.getOrbit(index) != null && _star.getOrbit(index).isGasGiant()){
+          orbitsInwardFromGiants.append(index);
+          availableOrbits.remove(i);
+        }
+      }
+
+      for (int i = 0; i < planetoidCount; i++){
+        if (orbitsInwardFromGiants.size() > 0){
+          orbitsInwardFromGiants.shuffle();
+          int index = orbitsInwardFromGiants.remove(0);
+          _star.addOrbit(index, new Planetoid(_star, index, _star.orbitalZones[index]));
+          continue;
+        }
+        if (availableOrbits.size() > 0){
+          availableOrbits.shuffle();
+          int index = availableOrbits.remove(0);
+          _star.addOrbit(index, new Planetoid(_star, index, _star.orbitalZones[index]));
+        }
+      }
+    } else {
+      if (debug >= 1){ println("No Planetoid Belts in-system"); }      
+    }
+  }
+
+  void placePlanetsFor(Star _star, int _maxOrbit){
+    println("Placing Planets for " + _star);
+    for (int i = 0; i < _maxOrbit; i++){
+      if (_star.orbitIsNull(i)){
+        _star.addOrbit(i, new Planet(_star, i, _star.orbitalZones[i]));
+      }
+    }
+  }
+
+  // from tables on Scouts p.46
+  // MegaTraveller follows the same procedure (MTRM p. 26)
+  // Note: to ease handling, I am converting RAW "Close" + "Far" to equivalent orbit numbers
+  int generateCompanionOrbitFor(Star _star, int _iteration){
+    int modifier = 4 * (_iteration);
+    if (_star.isCompanion()){ modifier -= 4; }
+    if (debug >= 1){ println("Generating companion star orbit. Modifier: +" + modifier); }
+    int dieThrow = roll.two(modifier);
+    int result = 0;
+    if (dieThrow < 4  ){ result = 0; }
+    if (dieThrow == 4 ){ result = 1; }
+    if (dieThrow == 5 ){ result = 2; }
+    if (dieThrow == 6 ){ result = 3; }
+    if (dieThrow == 7 ){ result = roll.one(4); }
+    if (dieThrow == 8 ){ result = roll.one(5); }
+    if (dieThrow == 9 ){ result = roll.one(6); }
+    if (dieThrow == 10){ result = roll.one(7); }
+    if (dieThrow == 11){ result = roll.one(8); }
+    if (dieThrow >= 12){ 
+      int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
+      if (distance == 1000                    ){ result = 14; }
+      if (distance == 2000                    ){ result = 15; }
+      if (distance == 3000 || distance == 4000){ result = 16; }
+      if (distance >= 5000                    ){ result = 17; } 
+    }
+    
+    return result;
+
+    // TO_DO: need to handle two companions landing in same orbit
+  }
+
+  // replacement for getRandomNullOrbit() using TreeMap structure
+  // flaws with this approach still exist and should be remedied later
+  // TreeMap might give us some tools to simplify
+  // TO_DO: this needs to be more robust
+  int getRandomUnassignedOrbitFor(Star _star, int _maxOrbit){
+    int counter = 0;               // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
+    while(counter < 100){
+      int choice = floor(random(2, _maxOrbit));      // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'  
+      if (_maxOrbit <= 2){ break; }                  // but this fails in the case of very small systems, so need to bail out
+      if (_star.getOrbit(choice) == null){ 
+        return choice;
+      }
+      counter++;
+    }
+    return -1;  // and how would we handle this? will throw an exception when we use the value as an array index      
+  }
+
+  IntList availableOrbitsForGiantsFor(Star _star, int _maxOrbit){
+    // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
+    IntList result = new IntList();
+    for (int i = 0; i < _maxOrbit; i++){
+      if (_star.orbitIsForbidden(i) || _star.orbitIsInnerZone(i)){ continue; }
+      if (_star.orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, no
+        if (debug >= 1){ println("Orbit " + i + " qualifies"); }
+        result.append(i);
+      }
+    }
+    
+    if (debug >= 1){ println("Found " + result.size() + " available orbits for Gas Giants"); }
+    return result;
+    
+    // TO_DO: one (awkward) special case:
+    //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
+  }
+
+  // probably refactoring opportunities w/ the similar Gas Giant method above - almost identical
+  IntList availableOrbitsForPlanetoidsFor(Star _star, int _maxOrbit){
+    IntList result = new IntList();
+    for (int i = 0; i < _maxOrbit; i++){
+      if (_star.orbitIsNull(i)){                                         // should we also allow them to drop into Empty orbits? by RAW, I think not
+        if (debug >= 1){ println("Orbit " + i + " qualifies"); }         // though they never precisely define "available orbits"
+        result.append(i);
+      }
+    }
+    if (debug >= 1){ println("Found " + result.size() + " available orbits for Planetoids"); }   
+    return result;
+  }
+
 }
