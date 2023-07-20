@@ -13,7 +13,7 @@ class StarBuilder {
     createSatellitesFor(star);     // Star.createSatellites() is recursive on companion stars - need to handle this case
                                    // should there be something in createCompanions()? work this out later
     
-    _parent.mainworld = star.designateMainworld();
+    _parent.mainworld = designateMainworldFor(star);    // do we need assignment? I think the method sets the value directly...
   }
 
   void placeCapturedPlanetsFor(Star _star){
@@ -399,4 +399,82 @@ class StarBuilder {
     return result;
   }
 
+  Habitable designateMainworldFor(Star _star){
+    println("Finding mainworld");
+    // Scouts p. 37: "The main world is the world in the system which has the greatest
+    //  population. If more than one world has the same population, then select the world
+    //  which is in the habitable zone, or failing that, which is closest to the central
+    //  star. The main world need not be a planet; it can be a satellite or an asteroid
+    //  belt, or a small world. It may not be a ring. The main world need not orbit the 
+    //  central star in the system; it may be in orbit around the binary companion,
+    //  or it may orbit a gas giant or other world."
+    
+    ArrayList<Habitable> candidates = _star.getAll(Habitable.class);
+    
+    // in some cases we can have a System with no Habitable orbits - need to insert one
+    // to prevent NullPointerException downstream, and to comply with Traveller assumptions -
+    // all systems can be represented by a UWP, which in terms here means 'has a Habitable'
+    // RAW doesn't address this possibility, though it is possible there
+    // simplest patch seems to be inserting a new Planet at the end of the orbits list
+    if (candidates.size() == 0){
+      println("No Habitables currently in-system - adding a new Planet");
+      
+      int newOrbit = _star.orbits.size();
+      Boolean addingOrbit = true;
+      while (addingOrbit){
+        placeForbiddenOrbitsFor(_star, newOrbit);                   // need to test whether new orbit is valid
+        if (_star.getOrbit(newOrbit) == null){
+          addingOrbit = false;
+        }
+        newOrbit++;  
+      }
+      
+      placePlanetsFor(_star, newOrbit);
+      candidates = _star.getAll(Habitable.class);
+    }
+
+    if (debug == 2){ println("**** Habitables list length = " + candidates.size()); }
+    if (debug == 2){ println("**** Orbits = " + _star.orbits); }
+    
+    int maxPop = -1;
+    Habitable winner = null;
+    for (Habitable h : candidates){
+      if (h.getUWP().pop > maxPop){
+        maxPop = h.getUWP().pop;
+        winner = h;
+      }
+      
+      // TO_DO: lot of casting here, look for redesign to clean this up
+      if (h.getUWP().pop == maxPop){
+        if (winner != null){                                                           // runtime null pointer error, though in practice this should always be assigned by this point
+          if (((Orbit)h).isHabitableZone() || ((Orbit)winner).isHabitableZone()){      // habitable zone wins
+            if (((Orbit)h).isHabitableZone()){ 
+              winner = h;
+            }
+          } else {                                                                     // else closest to primary
+            int direction = ((Orbit)h).getOrbitNumber() - ((Orbit)winner).getOrbitNumber();      // current list ordered low to high
+            if (direction < 0){                                                        // so this may be redundant, but helps if list changes
+              winner = h; 
+            }                                          
+          }
+        }
+      }
+    }
+    
+
+    if (winner != null){                                                               // potential runtime null pointer error here too to guard against
+      winner.setMainworld(true);                                 
+      winner.completeUWP();
+      ((System_ScoutsEx)_star.parent).mainworld = winner;      /// TO_DO: need to rethink return value for this method... this is a hack
+    }
+
+    // need a separate loop as this depends on the value of the mainworld flag    
+    for (Habitable h : candidates){
+      if (!h.isMainworld()){
+        h.completeUWP();
+      }
+    }
+    
+    return winner;
+  }
 }
