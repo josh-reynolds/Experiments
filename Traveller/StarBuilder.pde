@@ -11,9 +11,7 @@ class StarBuilder {
     
     createCompanionsFor(star);     // aren't companions just a special-case satellite? unify this and work with the composite structure
     createSatellitesFor(star);     // Star.createSatellites() is recursive on companion stars - need to handle this case
-                                   // should there be something in createCompanions()? work this out later
-    
-    _parent.mainworld = designateMainworldFor(star);    // do we need assignment? I think the method sets the value directly...
+    designateMainworldFor(star);   // should there be something in createCompanions()? work this out later
   }
 
   // ================================================================
@@ -411,7 +409,7 @@ class StarBuilder {
   // DESIGNATE MAINWORLD
   // ================================================================
 
-  Habitable designateMainworldFor(Star _star){
+  void designateMainworldFor(Star _star){
     println("Finding mainworld");
     // Scouts p. 37: "The main world is the world in the system which has the greatest
     //  population. If more than one world has the same population, then select the world
@@ -486,7 +484,5 @@ class StarBuilder {
         h.completeUWP();
       }
     }
-    
-    return winner;
   }
 }
