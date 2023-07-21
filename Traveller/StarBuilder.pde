@@ -16,72 +16,126 @@ class StarBuilder {
     _parent.mainworld = designateMainworldFor(star);    // do we need assignment? I think the method sets the value directly...
   }
 
-  void placeCapturedPlanetsFor(Star _star){
-    println("Placing Captured Planets for " + _star);
-    // ambiguity here - some of the notes from Empty Orbits (above) also applies - but:
-    //  - by RAW, these are placed in orbit 2-12 +/- deviation
-    //  - same biases as noted under Empty: 0 & 1 protected, bell curve around 7, nothing beyond 12
-    //  - no notes for what to do if orbit is occupied
-    
-    if (roll.one() > 4){
-      int quantity = floor(roll.one()/2);
+  // ================================================================
+  // CREATE COMPANIONS
+  // ================================================================
 
-      for (int i = 0; i < quantity; i++){
-        float capturedOrbit = 0;
-        int effectiveOrbit = 0;                     // chicken & egg w/ orbitalZones, may want to rethink how this passes to Orbit ctors
-        
-        Boolean assessingCandidates = true;
-        while (assessingCandidates){                // potential infinite loop if there are no valid locations...
-          capturedOrbit = generateCapturedOrbit();  // in practice would require an M or B giant star with a companion in orbit 11, extremely rare
-          effectiveOrbit = round(capturedOrbit);
-          if (_star.orbitIsForbidden(effectiveOrbit)){
-            assessingCandidates = true;            
-          } else {
-            assessingCandidates = false;
-          }
-        }
+  void createCompanionsFor(Star _star){
+    if (debug == 2){ println("Creating companions for " + _star); }
+    int compCount = 0;
+    if (_star.isPrimary() || _star.isFar()){
+      compCount = generateCompanionCountFor(_star);
+    }    
+    if (debug >= 1){ println(compCount + " companions"); }
 
-        _star.addOrbit(capturedOrbit, new Planet(_star, effectiveOrbit, _star.orbitalZones[effectiveOrbit]));
-        Planet captured = (Planet)_star.getOrbit(capturedOrbit);
-        captured.setOrbitNumber(capturedOrbit);
+    for (int i = 0; i < compCount; i++){
+      int orbitNum = generateCompanionOrbitFor(_star, i);
+      
+      Star companion = new Star(_star, orbitNum, _star.orbitalZones[orbitNum], _star.parent);
+
+      if (orbitNum == 0 || companion.insideStar()){
+        if (debug >= 1){ println("Companion in CLOSE orbit"); }        
+        _star.closeCompanion = companion;        
       }
-    }        
+
+      _star.addOrbit(companion.getOrbitNumber(), companion);
+    } 
   }
 
-  float generateCapturedOrbit(){
-    int baseline = roll.two();
-    int deviation = roll.two(-7);
-
-    if (deviation == 0){      // RAW doesn't cover this scenario, but we should prevent captured planets in exact orbits
-      if (roll.one() < 4){    // or they will potentially overwrite another entity 
-        deviation = -1; 
+  // MegaTraveller uses the same odds for companion stars, with one adjustment  
+  // TO_DO: MTRM p. 26: "Use DM -1 when returning to this table for a far companion."   
+  int generateCompanionCountFor(Star _star){
+    println("Determining companion count for " + _star);
+    int dieThrow = roll.two();
+    if (dieThrow < 8){ return 0; }
+    if (dieThrow > 7 && dieThrow < 12){ return 1; }
+    if (dieThrow == 12){ 
+      if (_star.isPrimary()){ 
+        return 2; 
       } else {
-        deviation = 1;
+        return 1;
       }
     }
-    
-    if (deviation < 0){
-      baseline -= 1;
-      deviation = 10 + deviation;
-    }
-    
-    return baseline + (float)deviation/10;
+    return 0;
   }
 
-  // three cases:
-  //  - DONE  orbit is inside star (have query method)
-  //  - DONE  orbit is suppressed by nearby companion star
-  //  -         TO_DO (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
-  //  - DONE  orbit is too hot to allow planets
-  void placeForbiddenOrbitsFor(Star _star, int _maxOrbit){
-    println("Determining forbidden orbits for " + _star);
-    for (int i = 0; i <= _maxOrbit; i++){
-      if (_star.orbitIsForbidden(i) && _star.orbitIsNullOrEmpty(i)){
-        _star.addOrbit(i, new Forbidden(_star, i, _star.orbitalZones[i]));
-      }
+  // from tables on Scouts p.46
+  // MegaTraveller follows the same procedure (MTRM p. 26)
+  // Note: to ease handling, I am converting RAW "Close" + "Far" to equivalent orbit numbers
+  int generateCompanionOrbitFor(Star _star, int _iteration){
+    int modifier = 4 * (_iteration);
+    if (_star.isCompanion()){ modifier -= 4; }
+    if (debug >= 1){ println("Generating companion star orbit. Modifier: +" + modifier); }
+    int dieThrow = roll.two(modifier);
+    int result = 0;
+    if (dieThrow < 4  ){ result = 0; }
+    if (dieThrow == 4 ){ result = 1; }
+    if (dieThrow == 5 ){ result = 2; }
+    if (dieThrow == 6 ){ result = 3; }
+    if (dieThrow == 7 ){ result = roll.one(4); }
+    if (dieThrow == 8 ){ result = roll.one(5); }
+    if (dieThrow == 9 ){ result = roll.one(6); }
+    if (dieThrow == 10){ result = roll.one(7); }
+    if (dieThrow == 11){ result = roll.one(8); }
+    if (dieThrow >= 12){ 
+      int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
+      if (distance == 1000                    ){ result = 14; }
+      if (distance == 2000                    ){ result = 15; }
+      if (distance == 3000 || distance == 4000){ result = 16; }
+      if (distance >= 5000                    ){ result = 17; } 
     }
-  }  
-  
+    
+    return result;
+
+    // TO_DO: need to handle two companions landing in same orbit
+  }
+
+  // ================================================================
+  // CREATE SATELLITES
+  // ================================================================
+
+  void createSatellitesFor(Star _star){
+    if (debug == 2){ println("Creating satellites for " + _star); }
+        
+    int orbitCount = calculateMaxOrbitsFor(_star);
+    if (_star.isCompanion()){ orbitCount = constrain(orbitCount, 0, floor(_star.getOrbitNumber()/2)); }
+    
+    placeEmptyOrbitsFor(_star, orbitCount);
+    placeForbiddenOrbitsFor(_star, orbitCount);
+    placeCapturedPlanetsFor(_star);
+    placeGasGiantsFor(_star, orbitCount);
+    placePlanetoidBeltsFor(_star, orbitCount);
+    placePlanetsFor(_star, orbitCount);
+    
+    ArrayList<Star> comps = _star.getCompanions();
+    for (Star c : comps){
+      createSatellitesFor(c);     // TO_DO: with the refactoring, we're not allowing for quaternary companions
+    }                             // probably should rework how each member of the composite is created and 
+                                  // re-order/shuffle these calls
+                                  // see note above regarding companions - should rework to follow composite walk
+                                  // will probably happen naturally as we turn our attention to the rest of Orbit hierarchy
+                                  
+    if (debug >= 1){ 
+      println("Companions for " + this);
+      printArray(_star.getCompanions());
+    } 
+  }
+
+  int calculateMaxOrbitsFor(Star _star){   
+    int modifier = 0;
+    if (_star.size == 2   ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
+    if (_star.size == 3   ){ modifier += 4; }
+    if (_star.type == 'M' ){ modifier -= 4; }
+    if (_star.type == 'K' ){ modifier -= 2; }
+
+    int result = roll.two(modifier); 
+    if (result < 1){ 
+      return 0; 
+    } else {
+      return result;
+    }
+  }
+
   // we have shifted to TreeMap, look for opportunities to simplify/eliminate this one
   void placeEmptyOrbitsFor(Star _star, int _maxOrbit){
     println("Determining empty orbits for " + _star);
@@ -125,88 +179,90 @@ class StarBuilder {
       }
     }
   }
-  
-  int calculateMaxOrbitsFor(Star _star){   
-    int modifier = 0;
-    if (_star.size == 2   ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
-    if (_star.size == 3   ){ modifier += 4; }
-    if (_star.type == 'M' ){ modifier -= 4; }
-    if (_star.type == 'K' ){ modifier -= 2; }
 
-    int result = roll.two(modifier); 
-    if (result < 1){ 
-      return 0; 
-    } else {
-      return result;
+  // replacement for getRandomNullOrbit() using TreeMap structure
+  // flaws with this approach still exist and should be remedied later
+  // TreeMap might give us some tools to simplify
+  // TO_DO: this needs to be more robust
+  int getRandomUnassignedOrbitFor(Star _star, int _maxOrbit){
+    int counter = 0;               // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
+    while(counter < 100){
+      int choice = floor(random(2, _maxOrbit));      // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'  
+      if (_maxOrbit <= 2){ break; }                  // but this fails in the case of very small systems, so need to bail out
+      if (_star.getOrbit(choice) == null){ 
+        return choice;
+      }
+      counter++;
     }
-  }
-  
-  void createSatellitesFor(Star _star){
-    if (debug == 2){ println("Creating satellites for " + _star); }
+    return -1;  // and how would we handle this? will throw an exception when we use the value as an array index      
+  }  
+
+  // three cases:
+  //  - DONE  orbit is inside star (have query method)
+  //  - DONE  orbit is suppressed by nearby companion star
+  //  -         TO_DO (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
+  //  - DONE  orbit is too hot to allow planets
+  void placeForbiddenOrbitsFor(Star _star, int _maxOrbit){
+    println("Determining forbidden orbits for " + _star);
+    for (int i = 0; i <= _maxOrbit; i++){
+      if (_star.orbitIsForbidden(i) && _star.orbitIsNullOrEmpty(i)){
+        _star.addOrbit(i, new Forbidden(_star, i, _star.orbitalZones[i]));
+      }
+    }
+  }    
+
+  void placeCapturedPlanetsFor(Star _star){
+    println("Placing Captured Planets for " + _star);
+    // ambiguity here - some of the notes from Empty Orbits (above) also applies - but:
+    //  - by RAW, these are placed in orbit 2-12 +/- deviation
+    //  - same biases as noted under Empty: 0 & 1 protected, bell curve around 7, nothing beyond 12
+    //  - no notes for what to do if orbit is occupied
+    
+    if (roll.one() > 4){
+      int quantity = floor(roll.one()/2);
+
+      for (int i = 0; i < quantity; i++){
+        float capturedOrbit = 0;
+        int effectiveOrbit = 0;                     // chicken & egg w/ orbitalZones, may want to rethink how this passes to Orbit ctors
         
-    int orbitCount = calculateMaxOrbitsFor(_star);
-    if (_star.isCompanion()){ orbitCount = constrain(orbitCount, 0, floor(_star.getOrbitNumber()/2)); }
-    
-    placeEmptyOrbitsFor(_star, orbitCount);
-    placeForbiddenOrbitsFor(_star, orbitCount);
-    placeCapturedPlanetsFor(_star);
-    placeGasGiantsFor(_star, orbitCount);
-    placePlanetoidBeltsFor(_star, orbitCount);
-    placePlanetsFor(_star, orbitCount);
-    
-    ArrayList<Star> comps = _star.getCompanions();
-    for (Star c : comps){
-      createSatellitesFor(c);     // TO_DO: with the refactoring, we're not allowing for quaternary companions
-    }                             // probably should rework how each member of the composite is created and 
-                                  // re-order/shuffle these calls
-                                  // see note above regarding companions - should rework to follow composite walk
-                                  // will probably happen naturally as we turn our attention to the rest of Orbit hierarchy
-                                  
-    if (debug >= 1){ 
-      println("Companions for " + this);
-      printArray(_star.getCompanions());
-    } 
-  }
-  
-  void createCompanionsFor(Star _star){
-    if (debug == 2){ println("Creating companions for " + _star); }
-    int compCount = 0;
-    if (_star.isPrimary() || _star.isFar()){
-      compCount = generateCompanionCountFor(_star);
-    }    
-    if (debug >= 1){ println(compCount + " companions"); }
+        Boolean assessingCandidates = true;
+        while (assessingCandidates){                // potential infinite loop if there are no valid locations...
+          capturedOrbit = generateCapturedOrbit();  // in practice would require an M or B giant star with a companion in orbit 11, extremely rare
+          effectiveOrbit = round(capturedOrbit);
+          if (_star.orbitIsForbidden(effectiveOrbit)){
+            assessingCandidates = true;            
+          } else {
+            assessingCandidates = false;
+          }
+        }
 
-    for (int i = 0; i < compCount; i++){
-      int orbitNum = generateCompanionOrbitFor(_star, i);
-      
-      Star companion = new Star(_star, orbitNum, _star.orbitalZones[orbitNum], _star.parent);
-
-      if (orbitNum == 0 || companion.insideStar()){
-        if (debug >= 1){ println("Companion in CLOSE orbit"); }        
-        _star.closeCompanion = companion;        
+        _star.addOrbit(capturedOrbit, new Planet(_star, effectiveOrbit, _star.orbitalZones[effectiveOrbit]));
+        Planet captured = (Planet)_star.getOrbit(capturedOrbit);
+        captured.setOrbitNumber(capturedOrbit);
       }
+    }        
+  }  
 
-      _star.addOrbit(companion.getOrbitNumber(), companion);
-    } 
-  }
-  
-  // MegaTraveller uses the same odds for companion stars, with one adjustment  
-  // TO_DO: MTRM p. 26: "Use DM -1 when returning to this table for a far companion."   
-  int generateCompanionCountFor(Star _star){
-    println("Determining companion count for " + _star);
-    int dieThrow = roll.two();
-    if (dieThrow < 8){ return 0; }
-    if (dieThrow > 7 && dieThrow < 12){ return 1; }
-    if (dieThrow == 12){ 
-      if (_star.isPrimary()){ 
-        return 2; 
+  float generateCapturedOrbit(){
+    int baseline = roll.two();
+    int deviation = roll.two(-7);
+
+    if (deviation == 0){      // RAW doesn't cover this scenario, but we should prevent captured planets in exact orbits
+      if (roll.one() < 4){    // or they will potentially overwrite another entity 
+        deviation = -1; 
       } else {
-        return 1;
+        deviation = 1;
       }
     }
-    return 0;
-  }
-  
+    
+    if (deviation < 0){
+      baseline -= 1;
+      deviation = 10 + deviation;
+    }
+    
+    return baseline + (float)deviation/10;
+  }  
+
   void placeGasGiantsFor(Star _star, int _maxOrbit){
     println("Placing Gas Giants for " + _star);
     if (roll.two() <= 9){
@@ -249,7 +305,25 @@ class StarBuilder {
     } else {
       if (debug >= 1){ println("No Gas Giants in-system"); }
     }
-  }
+  }  
+
+  IntList availableOrbitsForGiantsFor(Star _star, int _maxOrbit){
+    // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
+    IntList result = new IntList();
+    for (int i = 0; i < _maxOrbit; i++){
+      if (_star.orbitIsForbidden(i) || _star.orbitIsInnerZone(i)){ continue; }
+      if (_star.orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, no
+        if (debug >= 1){ println("Orbit " + i + " qualifies"); }
+        result.append(i);
+      }
+    }
+    
+    if (debug >= 1){ println("Found " + result.size() + " available orbits for Gas Giants"); }
+    return result;
+    
+    // TO_DO: one (awkward) special case:
+    //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
+  }  
 
   // will be very similar to GasGiants, above - duplication OK for now, but look for refactorings
   void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
@@ -309,82 +383,7 @@ class StarBuilder {
     } else {
       if (debug >= 1){ println("No Planetoid Belts in-system"); }      
     }
-  }
-
-  void placePlanetsFor(Star _star, int _maxOrbit){
-    println("Placing Planets for " + _star);
-    for (int i = 0; i < _maxOrbit; i++){
-      if (_star.orbitIsNull(i)){
-        _star.addOrbit(i, new Planet(_star, i, _star.orbitalZones[i]));
-      }
-    }
-  }
-
-  // from tables on Scouts p.46
-  // MegaTraveller follows the same procedure (MTRM p. 26)
-  // Note: to ease handling, I am converting RAW "Close" + "Far" to equivalent orbit numbers
-  int generateCompanionOrbitFor(Star _star, int _iteration){
-    int modifier = 4 * (_iteration);
-    if (_star.isCompanion()){ modifier -= 4; }
-    if (debug >= 1){ println("Generating companion star orbit. Modifier: +" + modifier); }
-    int dieThrow = roll.two(modifier);
-    int result = 0;
-    if (dieThrow < 4  ){ result = 0; }
-    if (dieThrow == 4 ){ result = 1; }
-    if (dieThrow == 5 ){ result = 2; }
-    if (dieThrow == 6 ){ result = 3; }
-    if (dieThrow == 7 ){ result = roll.one(4); }
-    if (dieThrow == 8 ){ result = roll.one(5); }
-    if (dieThrow == 9 ){ result = roll.one(6); }
-    if (dieThrow == 10){ result = roll.one(7); }
-    if (dieThrow == 11){ result = roll.one(8); }
-    if (dieThrow >= 12){ 
-      int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
-      if (distance == 1000                    ){ result = 14; }
-      if (distance == 2000                    ){ result = 15; }
-      if (distance == 3000 || distance == 4000){ result = 16; }
-      if (distance >= 5000                    ){ result = 17; } 
-    }
-    
-    return result;
-
-    // TO_DO: need to handle two companions landing in same orbit
-  }
-
-  // replacement for getRandomNullOrbit() using TreeMap structure
-  // flaws with this approach still exist and should be remedied later
-  // TreeMap might give us some tools to simplify
-  // TO_DO: this needs to be more robust
-  int getRandomUnassignedOrbitFor(Star _star, int _maxOrbit){
-    int counter = 0;               // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
-    while(counter < 100){
-      int choice = floor(random(2, _maxOrbit));      // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'  
-      if (_maxOrbit <= 2){ break; }                  // but this fails in the case of very small systems, so need to bail out
-      if (_star.getOrbit(choice) == null){ 
-        return choice;
-      }
-      counter++;
-    }
-    return -1;  // and how would we handle this? will throw an exception when we use the value as an array index      
-  }
-
-  IntList availableOrbitsForGiantsFor(Star _star, int _maxOrbit){
-    // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
-    IntList result = new IntList();
-    for (int i = 0; i < _maxOrbit; i++){
-      if (_star.orbitIsForbidden(i) || _star.orbitIsInnerZone(i)){ continue; }
-      if (_star.orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, no
-        if (debug >= 1){ println("Orbit " + i + " qualifies"); }
-        result.append(i);
-      }
-    }
-    
-    if (debug >= 1){ println("Found " + result.size() + " available orbits for Gas Giants"); }
-    return result;
-    
-    // TO_DO: one (awkward) special case:
-    //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
-  }
+  }  
 
   // probably refactoring opportunities w/ the similar Gas Giant method above - almost identical
   IntList availableOrbitsForPlanetoidsFor(Star _star, int _maxOrbit){
@@ -397,7 +396,20 @@ class StarBuilder {
     }
     if (debug >= 1){ println("Found " + result.size() + " available orbits for Planetoids"); }   
     return result;
-  }
+  }  
+
+  void placePlanetsFor(Star _star, int _maxOrbit){
+    println("Placing Planets for " + _star);
+    for (int i = 0; i < _maxOrbit; i++){
+      if (_star.orbitIsNull(i)){
+        _star.addOrbit(i, new Planet(_star, i, _star.orbitalZones[i]));
+      }
+    }
+  }  
+  
+  // ================================================================
+  // DESIGNATE MAINWORLD
+  // ================================================================
 
   Habitable designateMainworldFor(Star _star){
     println("Finding mainworld");
