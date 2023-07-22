@@ -132,6 +132,7 @@
 //  * DONE Subsector density (and menu options for same)
 //  * DONE Density setting should be restricted to appropriate rulesets
 //  * FIX  BUG: if density is adjusted, then ruleset changed, you can adjust for invalid rulesets
+//  * DONE REFACTOR: reorganize and coordinate color listings in code & JSON
 //  * .... REFACTOR: move Orbit composite creation to a Builder class
 //  * .... Add MegaTraveller extended generation ruleset
 //  * .... REFACTOR: case statements in Ruleset
@@ -170,7 +171,6 @@
 //  *      BUG: off-by-one issue in Star.createOrbits in some cases
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
-//  *      REFACTOR: reorganize and coordinate color listings in code & JSON
 //  *      REFACTOR: duplicated code in UWP_ScoutsEx ctors
 //  *      REFACTOR: aid - work up sequence diagram for ctors & build operations
 //  *      REFACTOR: clean up duplication in density setting plumbing
