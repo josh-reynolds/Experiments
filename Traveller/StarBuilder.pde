@@ -57,6 +57,22 @@ class StarBuilder {
     return 0;
   }
 
+  int generateSatelliteCountFor(Habitable _h){
+    int result = roll.one(-3);
+    if (result <= 0 || ((Orbit)_h).isMoon() || _h.getUWP().size <= 0){ result = 0; }
+    return result;
+  }
+
+  int generateSatelliteCountFor(GasGiant _g){
+    int result = 0;
+    if (_g.size.equals("S")){ 
+      result = roll.two(-4);
+    } else if (_g.size.equals("L")){
+      result = roll.two();
+    }
+    return result;
+  }
+
   // from tables on Scouts p.46
   // MegaTraveller follows the same procedure (MTRM p. 26)
   // Note: to ease handling, I am converting RAW "Close" + "Far" to equivalent orbit numbers
@@ -234,7 +250,7 @@ class StarBuilder {
           }
         }
 
-        _star.addOrbit(capturedOrbit, new Planet(_star, effectiveOrbit, _star.orbitalZones[effectiveOrbit]));
+        _star.addOrbit(capturedOrbit, new Planet(_star, effectiveOrbit, _star.orbitalZones[effectiveOrbit], this));
         Planet captured = (Planet)_star.getOrbit(capturedOrbit);
         captured.setOrbitNumber(capturedOrbit);
       }
@@ -304,7 +320,7 @@ class StarBuilder {
       for (int i = 0; i < _star.gasGiantCount; i++){
         availableOrbits.shuffle();
         int index = availableOrbits.remove(0);
-        _star.addOrbit(index, new GasGiant(_star, index, _star.orbitalZones[index]));
+        _star.addOrbit(index, new GasGiant(_star, index, _star.orbitalZones[index], this));
       }
     } else {
       if (debug >= 1){ println("No Gas Giants in-system"); }
@@ -396,7 +412,7 @@ class StarBuilder {
     println("Placing Planets for " + _star);
     for (int i = 0; i < _maxOrbit; i++){
       if (_star.orbitIsNull(i)){
-        _star.addOrbit(i, new Planet(_star, i, _star.orbitalZones[i]));
+        _star.addOrbit(i, new Planet(_star, i, _star.orbitalZones[i], this));
       }
     }
   }  

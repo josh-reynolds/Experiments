@@ -440,7 +440,7 @@ class Forbidden extends Orbit {
 class GasGiant extends Orbit {
   String size;       // potential to split this type code into subclasses, polymorphic logic below
     
-  GasGiant(Orbit _barycenter, int _orbit, String _zone){ 
+  GasGiant(Orbit _barycenter, int _orbit, String _zone, StarBuilder _sb){ 
     super(_barycenter, _orbit, _zone);    
     if (debug == 2){ println("** GasGiant ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     if (roll.one() >= 4){ 
@@ -449,23 +449,13 @@ class GasGiant extends Orbit {
       size = "L";
     }
 
-    int satelliteCount = generateSatelliteCount();
+    int satelliteCount = _sb.generateSatelliteCountFor(this);
     createSatellites(satelliteCount);
   }  
 
   GasGiant(Orbit _barycenter, JSONObject _json){
     super(_barycenter, _json);
     size = _json.getString("Size");
-  }
-
-  int generateSatelliteCount(){
-    int result = 0;
-    if (size.equals("S")){ 
-      result = roll.two(-4);
-    } else if (size.equals("L")){
-      result = roll.two();
-    }
-    return result;
   }
   
   int generateSatelliteSize(){
@@ -508,12 +498,15 @@ class Planet extends Orbit implements Habitable {
   Boolean mainworld;
   ArrayList<String> facilities;
   
-  Planet(Orbit _barycenter, int _orbit, String _zone){ 
+  Planet(Orbit _barycenter, int _orbit, String _zone, StarBuilder _sb){ 
     super(_barycenter, _orbit, _zone);
     if (debug == 2){ println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     uwp = generateUWP();
 
-    int satelliteCount = generateSatelliteCount();
+    int satelliteCount = 0;
+    if (!isMoon()){ 
+      satelliteCount = _sb.generateSatelliteCountFor(this);  // need to handle Moon super call - StarBuilder is null there 
+    }
     createSatellites(satelliteCount);
 
     mainworld = false;
@@ -526,12 +519,6 @@ class Planet extends Orbit implements Habitable {
   }
   
   UWP_ScoutsEx getUWP(){ return uwp; }
-    
-  int generateSatelliteCount(){
-    int result = roll.one(-3);
-    if (result <= 0 || isMoon() || uwp.size <= 0){ result = 0; }
-    return result;
-  }
     
   int generateSatelliteSize(){
     return this.uwp.size - roll.one();
@@ -640,7 +627,7 @@ class Moon extends Planet {
   // need to work through inherited fields and hierarchy for these second-level children
 
   Moon(Orbit _barycenter, int _orbit, String _zone, int _size){
-    super(_barycenter, _orbit, _zone);
+    super(_barycenter, _orbit, _zone, null);
     if (debug == 2){ println("** Moon ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ", " + _size + ")"); }
     
     uwp = generateUWP(_size); // super generates a UWP but doesn't have a size parameter
