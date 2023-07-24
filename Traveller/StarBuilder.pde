@@ -291,7 +291,13 @@ class StarBuilder {
           break;
       }
 
-      IntList availableOrbits = availableOrbitsForGiantsFor(_star, _maxOrbit);
+      // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
+      IntList availableOrbits = availableOrbitsFor(_star, _maxOrbit);
+      pruneInnerZoneFor(_star, availableOrbits);
+      
+      // TO_DO: one (awkward) special case:
+      //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
+      
       _star.gasGiantCount = min(_star.gasGiantCount, availableOrbits.size());
       if (debug >= 1){ println(_star.gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
       
@@ -305,23 +311,14 @@ class StarBuilder {
     }
   }  
 
-  IntList availableOrbitsForGiantsFor(Star _star, int _maxOrbit){
-    // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
-    IntList result = new IntList();
-    for (int i = 0; i < _maxOrbit; i++){
-      if (_star.orbitIsForbidden(i) || _star.orbitIsInnerZone(i)){ continue; }
-      if (_star.orbitIsNull(i)){                       // should we also allow them to drop into Empty orbits? by RAW, no
-        if (debug >= 1){ println("Orbit " + i + " qualifies"); }
-        result.append(i);
+  // very close to Orbit.prune(), refactor!
+  void pruneInnerZoneFor(Star _star, IntList _list){
+    for (int i = _list.size()-1; i >= 0; i--){
+      if (_star.orbitIsInnerZone(_list.get(i))){
+        _list.remove(i);
       }
     }
-    
-    if (debug >= 1){ println("Found " + result.size() + " available orbits for Gas Giants"); }
-    return result;
-    
-    // TO_DO: one (awkward) special case:
-    //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
-  }  
+  }
 
   // will be very similar to GasGiants, above - duplication OK for now, but look for refactorings
   void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
@@ -350,7 +347,7 @@ class StarBuilder {
           break;
       }
     
-      IntList availableOrbits = availableOrbitsForPlanetoidsFor(_star, _maxOrbit);
+      IntList availableOrbits = availableOrbitsFor(_star, _maxOrbit);
       planetoidCount = min(planetoidCount, availableOrbits.size());
       if (debug >= 1){ println(planetoidCount + " Planetoid Belts in-system"); }
     
@@ -381,18 +378,17 @@ class StarBuilder {
     } else {
       if (debug >= 1){ println("No Planetoid Belts in-system"); }      
     }
-  }  
+  }    
 
-  // probably refactoring opportunities w/ the similar Gas Giant method above - almost identical
-  IntList availableOrbitsForPlanetoidsFor(Star _star, int _maxOrbit){
+  IntList availableOrbitsFor(Star _star, int _maxOrbit){
     IntList result = new IntList();
     for (int i = 0; i < _maxOrbit; i++){
-      if (_star.orbitIsNull(i)){                                         // should we also allow them to drop into Empty orbits? by RAW, I think not
-        if (debug >= 1){ println("Orbit " + i + " qualifies"); }         // though they never precisely define "available orbits"
+      if (_star.orbitIsNull(i)){
+        if (debug >= 1){ println("Orbit " + i + " qualifies"); }
         result.append(i);
       }
     }
-    if (debug >= 1){ println("Found " + result.size() + " available orbits for Planetoids"); }   
+    if (debug >= 1){ println("Found " + result.size() + " available orbits"); }   
     return result;
   }  
 
