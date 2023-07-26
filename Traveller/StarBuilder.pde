@@ -135,6 +135,33 @@ class StarBuilder {
     } 
   }
 
+  // Moving over from Orbit - hopefully merges into the one for Stars, above
+  // PREVIOUS COMMENTS
+  // pulled this method up to avoid duplication in GasGiant & Planet
+  //  however, that means we need the moons list and generateSatelliteSize()
+  //  in this class, even though most of the hierarchy does not use... may
+  //  reverse this one but try it out for now
+  // also, similarly named method in Star needs evaluation
+  void createSatellitesFor(Orbit _o, int _satelliteCount){
+    if (debug == 2){ println("**** StarBuilder.createSatellitesFor(" + _o + ", " + _satelliteCount + ") for " + _o.getClass()); }
+    if (_satelliteCount <= 0){
+      if (debug == 2){ println("**** No satellites for " + _o.getClass()); }
+    } else {
+      for (int i = 0; i < _satelliteCount; i++){
+        int satelliteSize = _o.generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
+        if (satelliteSize == 0){
+          if (debug == 2){  println("****** generating Ring for " + _o.getClass()); }
+          int orbitNum = _o.generateSatelliteOrbit(i, true);
+          _o.addOrbit(orbitNum, new Ring(_o, orbitNum, _o.orbitalZone));
+        } else {
+          int orbitNum = _o.generateSatelliteOrbit(i, false);
+          if (debug == 2){ println("****** generating Moon for " + _o.getClass()); }
+          _o.addOrbit(orbitNum, new Moon(_o, orbitNum, _o.orbitalZone, satelliteSize));
+        }
+      }
+    }
+  }
+
   int calculateMaxOrbitsFor(Star _star){   
     int modifier = 0;
     if (_star.size == 2   ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting

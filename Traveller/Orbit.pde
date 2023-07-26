@@ -180,31 +180,6 @@ abstract class Orbit {
   Iterator<Float> orbitList(){
     return orbits.keySet().iterator();
   }
-
-  // pulled this method up to avoid duplication in GasGiant & Planet
-  //  however, that means we need the moons list and generateSatelliteSize()
-  //  in this class, even though most of the hierarchy does not use... may
-  //  reverse this one but try it out for now
-  // also, similarly named method in Star needs evaluation
-  void createSatellites(int _satelliteCount){
-    if (debug == 2){ println("**** Orbit.createSatellites(" + _satelliteCount + ") for " + this.getClass()); }
-    if (_satelliteCount <= 0){
-      if (debug == 2){ println("**** No satellites for " + this.getClass()); }
-    } else {
-      for (int i = 0; i < _satelliteCount; i++){
-        int satelliteSize = generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
-        if (satelliteSize == 0){
-          if (debug == 2){  println("****** generating Ring for " + this.getClass()); }
-          int orbitNum = generateSatelliteOrbit(i, true);
-          addOrbit(orbitNum, new Ring(this, orbitNum, this.orbitalZone));
-        } else {
-          int orbitNum = generateSatelliteOrbit(i, false);
-          if (debug == 2){ println("****** generating Moon for " + this.getClass()); }
-          addOrbit(orbitNum, new Moon(this, orbitNum, this.orbitalZone, satelliteSize));
-        }
-      }
-    }
-  }
   
   // genericizing previous lookup methods (getAllHabitables, getAllGasGiants)
   <T> ArrayList<T> getAll(Class<T> _c){
@@ -450,7 +425,7 @@ class GasGiant extends Orbit {
     }
 
     int satelliteCount = _sb.generateSatelliteCountFor(this);
-    createSatellites(satelliteCount);
+    _sb.createSatellitesFor(this, satelliteCount);
   }  
 
   GasGiant(Orbit _barycenter, JSONObject _json){
@@ -506,8 +481,8 @@ class Planet extends Orbit implements Habitable {
     int satelliteCount = 0;
     if (!isMoon()){ 
       satelliteCount = _sb.generateSatelliteCountFor(this);  // need to handle Moon super call - StarBuilder is null there 
+      _sb.createSatellitesFor(this, satelliteCount);
     }
-    createSatellites(satelliteCount);
 
     mainworld = false;
     facilities = new ArrayList();
