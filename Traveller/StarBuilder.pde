@@ -151,13 +151,67 @@ class StarBuilder {
         int satelliteSize = _o.generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
         if (satelliteSize == 0){
           if (debug == 2){  println("****** generating Ring for " + _o.getClass()); }
-          int orbitNum = _o.generateSatelliteOrbit(i, true);
+          int orbitNum = generateSatelliteOrbitFor(_o, i, true);
           _o.addOrbit(orbitNum, new Ring(_o, orbitNum, _o.orbitalZone));
         } else {
-          int orbitNum = _o.generateSatelliteOrbit(i, false);
           if (debug == 2){ println("****** generating Moon for " + _o.getClass()); }
+          int orbitNum = generateSatelliteOrbitFor(_o, i, false);
           _o.addOrbit(orbitNum, new Moon(_o, orbitNum, _o.orbitalZone, satelliteSize));
         }
+      }
+    }
+  }
+
+  // The original implementation for this method was closely based on the Scouts text
+  // however, that method runs into infinite regression and stack overflow
+  // when there are many moons (most likely case if there are more than three rings)
+  // because retries can never find an available slot.
+  //
+  // This alternate approach has roughly the same spread, if not exactly the same
+  // distribution biases. Rings will take orbits closer in; moons tend to cluster after
+  // that, and extreme orbits only get assigned for Gas Giants (either via the 12+ roll
+  // or because there are many moons and the options closer in are pruned away).
+  int generateSatelliteOrbitFor(Orbit _o, int _counter, Boolean _ring){
+    // data from table on Scouts p. 28 (corresponding text on pp.36-7)  
+    IntList availableOrbits = new IntList();
+    availableOrbits.append( new int[]{1,1,1,2,2,3,3,4,5,6,7,8,9,10,11,12,13,15,20,25,30,35,40,45,50,55,60,65,75,100,125,150,175,200,225,250,275,300,325} );
+    pruneFor(_o, availableOrbits);
+    
+    int low, high;
+    
+    // need to adapt as the list shrinks or we get out of bounds errors
+    // this implementation is safe up to ~30 assignments
+    // which amply covers the Scouts algorithm (LGG can have up to 12 satellites max)
+    if (_ring){
+      low = 0;
+      high = min(availableOrbits.size()-1, low + 3);
+    } else {
+      // the table omits this detail, but the text says "apply a DM for each throw after first equal to the throw number - 1"
+      // slightly ambiguous, but given the semicolon it seems to apply only to this first 'type' throw
+      // it does mean that only the first moon of a Gas Giant can have an extreme orbit
+      int dieThrow = roll.two(-_counter);
+      if (dieThrow < 8){                          // Close orbits
+        low = min(availableOrbits.size()-1, 6);
+        high = min(availableOrbits.size()-1, low + 10);
+      } else {
+        if (dieThrow >= 12 && _o.isGasGiant()){      // Extreme orbits
+          low = availableOrbits.size()-10;
+          high = availableOrbits.size()-1;
+        } else {                                  // Far orbits
+          low = min(availableOrbits.size()-1, 16);
+          high = min(availableOrbits.size()-1, low + 10);
+        }
+      }
+    }                                                 
+  
+    int index = floor(random(low, high));
+    return availableOrbits.get(index);    
+  }
+
+  void pruneFor(Orbit _o, IntList _list){
+    for (int i = _list.size()-1; i >= 0; i--){
+      if (_o.orbitIsTaken(_list.get(i))){
+        _list.remove(i);
       }
     }
   }
