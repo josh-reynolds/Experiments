@@ -204,8 +204,6 @@ abstract class Orbit {
     return orbits.keySet().contains((float)_orbit);
   }
 
-  int generateSatelliteSize(){ return 0; }  // keeping the compiler happy - see note above in createSatellites()
-
   Boolean isOrbitingClassM(){
     if (debug == 2){ println("**** Orbit.isOrbitingClassM() for " + this.getClass()); }
     if (barycenter.isStar()){
@@ -379,16 +377,6 @@ class GasGiant extends Orbit {
     size = _json.getString("Size");
   }
   
-  int generateSatelliteSize(){
-    int result = 0;
-    if (size.equals("S")){
-      result = roll.two(-6); 
-    } else if (size.equals("L")){
-      result = roll.two(-4);          
-    }
-    return result;
-  }
-  
   Boolean isGasGiant(){ return true; }
   
   String toString(){ 
@@ -440,10 +428,6 @@ class Planet extends Orbit implements Habitable {
   }
   
   UWP_ScoutsEx getUWP(){ return uwp; }
-    
-  int generateSatelliteSize(){
-    return this.uwp.size - roll.one();
-  }
   
   UWP_ScoutsEx generateUWP(){
     if (debug == 2){ println("**** Planet.generateUWP() for " + this.getClass()); }

@@ -148,7 +148,7 @@ class StarBuilder {
       if (debug == 2){ println("**** No satellites for " + _o.getClass()); }
     } else {
       for (int i = 0; i < _satelliteCount; i++){
-        int satelliteSize = _o.generateSatelliteSize();     // just like with Planet/Planetoid, should we let UWP sort it out?
+        int satelliteSize = generateSatelliteSizeFor(_o);     // just like with Planet/Planetoid, should we let UWP sort it out?
         if (satelliteSize == 0){
           if (debug == 2){  println("****** generating Ring for " + _o.getClass()); }
           int orbitNum = generateSatelliteOrbitFor(_o, i, true);
@@ -159,6 +159,23 @@ class StarBuilder {
           _o.addOrbit(orbitNum, new Moon(_o, orbitNum, _o.orbitalZone, satelliteSize));
         }
       }
+    }
+  }
+
+  int generateSatelliteSizeFor(Orbit _o){
+    if (_o.isGasGiant()){
+      int result = 0;
+      if (((GasGiant)_o).size.equals("S")){
+        result = roll.two(-6); 
+      } else if (((GasGiant)_o).size.equals("L")){
+        result = roll.two(-4);          
+      }
+      return result;
+    } else if (_o.isPlanet() && !_o.isMoon()){
+      return ((Habitable)_o).getUWP().size - roll.one();
+    } else {
+      println("INVALID Orbit type passed to generateSatelliteSizeFor()");
+      return 0;
     }
   }
 
