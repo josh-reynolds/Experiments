@@ -359,7 +359,7 @@ class Forbidden extends Orbit {
 class GasGiant extends Orbit {
   String size;       // potential to split this type code into subclasses, polymorphic logic below
     
-  GasGiant(Orbit _barycenter, int _orbit, String _zone, StarBuilder _sb){ 
+  GasGiant(Orbit _barycenter, int _orbit, String _zone, OrbitBuilder _sb){ 
     super(_barycenter, _orbit, _zone);    
     if (debug == 2){ println("** GasGiant ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     if (roll.one() >= 4){ 
@@ -407,7 +407,7 @@ class Planet extends Orbit implements Habitable {
   Boolean mainworld;
   ArrayList<String> facilities;
   
-  Planet(Orbit _barycenter, int _orbit, String _zone, StarBuilder _sb){ 
+  Planet(Orbit _barycenter, int _orbit, String _zone, OrbitBuilder _sb){ 
     super(_barycenter, _orbit, _zone);
     if (debug == 2){ println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     uwp = generateUWP();

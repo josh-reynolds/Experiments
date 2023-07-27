@@ -1,7 +1,7 @@
-class StarBuilder {
+class OrbitBuilder {
   Dice roll;  
 
-  StarBuilder(){
+  OrbitBuilder(){
     roll = new Dice();
   }
   
