@@ -133,7 +133,7 @@
 //  * DONE Density setting should be restricted to appropriate rulesets
 //  * FIX  BUG: if density is adjusted, then ruleset changed, you can adjust for invalid rulesets
 //  * DONE REFACTOR: reorganize and coordinate color listings in code & JSON
-//  * .... REFACTOR: move Orbit composite creation to a Builder class
+//  * DONE REFACTOR: move Orbit composite creation to a Builder class
 //  * .... Add MegaTraveller extended generation ruleset
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor

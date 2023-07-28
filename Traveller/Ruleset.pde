@@ -93,4 +93,19 @@ class Ruleset {
         return new System(_json);
     }
   }
+  
+  OrbitBuilder newBuilder(){
+    switch(name) {
+      case "CT77":
+      case "CT81":
+        println("Orbits not supported");
+        return new OrbitBuilder();               // keeping the compiler happy - throw an exception instead?
+      case "Scouts (Extended)":
+        return new OrbitBuilder();
+      case "MegaTraveller (Extended)":
+        return new OrbitBuilder();              // TO_DO: swap as we build up the correct classes
+      default:
+        return new OrbitBuilder();
+    }
+  }
 }

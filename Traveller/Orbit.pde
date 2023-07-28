@@ -359,7 +359,7 @@ class Forbidden extends Orbit {
 class GasGiant extends Orbit {
   String size;       // potential to split this type code into subclasses, polymorphic logic below
     
-  GasGiant(Orbit _barycenter, int _orbit, String _zone, OrbitBuilder _sb){ 
+  GasGiant(Orbit _barycenter, int _orbit, String _zone, OrbitBuilder _ob){ 
     super(_barycenter, _orbit, _zone);    
     if (debug == 2){ println("** GasGiant ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     if (roll.one() >= 4){ 
@@ -368,8 +368,8 @@ class GasGiant extends Orbit {
       size = "L";
     }
 
-    int satelliteCount = _sb.generateSatelliteCountFor(this);
-    _sb.createSatellitesFor(this, satelliteCount);
+    int satelliteCount = _ob.generateSatelliteCountFor(this);
+    _ob.createSatellitesFor(this, satelliteCount);
   }  
 
   GasGiant(Orbit _barycenter, JSONObject _json){
@@ -407,15 +407,15 @@ class Planet extends Orbit implements Habitable {
   Boolean mainworld;
   ArrayList<String> facilities;
   
-  Planet(Orbit _barycenter, int _orbit, String _zone, OrbitBuilder _sb){ 
+  Planet(Orbit _barycenter, int _orbit, String _zone, OrbitBuilder _ob){ 
     super(_barycenter, _orbit, _zone);
     if (debug == 2){ println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
     uwp = generateUWP();
 
     int satelliteCount = 0;
     if (!isMoon()){ 
-      satelliteCount = _sb.generateSatelliteCountFor(this);  // need to handle Moon super call - StarBuilder is null there 
-      _sb.createSatellitesFor(this, satelliteCount);
+      satelliteCount = _ob.generateSatelliteCountFor(this);  // need to handle Moon super call - StarBuilder is null there 
+      _ob.createSatellitesFor(this, satelliteCount);
     }
 
     mainworld = false;

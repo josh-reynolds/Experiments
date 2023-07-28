@@ -130,7 +130,7 @@ class OrbitBuilder {
                                   // will probably happen naturally as we turn our attention to the rest of Orbit hierarchy
                                   
     if (debug >= 1){ 
-      println("Companions for " + this);
+      println("Companions for " + _star);
       printArray(_star.getCompanions());
     } 
   }
