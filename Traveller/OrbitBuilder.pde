@@ -596,3 +596,9 @@ class OrbitBuilder {
     }
   }
 }
+
+class OrbitBuilder_MT extends OrbitBuilder {
+  OrbitBuilder_MT() {
+    super();
+  }
+}

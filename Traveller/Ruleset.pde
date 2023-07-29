@@ -103,7 +103,7 @@ class Ruleset {
       case "Scouts (Extended)":
         return new OrbitBuilder();
       case "MegaTraveller (Extended)":
-        return new OrbitBuilder();              // TO_DO: swap as we build up the correct classes
+        return new OrbitBuilder_MT();
       default:
         return new OrbitBuilder();
     }
