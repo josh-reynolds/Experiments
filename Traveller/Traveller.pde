@@ -38,7 +38,7 @@ void setup(){
   tests = new TestSuite();  
   screen = new Menu();
 
-  ship = new Ship("Weaselfish", null);   // just initial approach, need to rework order of events when creating a ship, and where methods live
+  ship = new Ship("Weaselfish", 2, null);   // just initial approach, need to rework order of events when creating a ship, and where methods live
 }
 
 void draw(){
