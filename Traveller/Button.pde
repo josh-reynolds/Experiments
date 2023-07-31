@@ -74,6 +74,8 @@ class NewSubsector extends ButtonUtilities implements Command {
     writeText();
     writeJSON();
     tests.run();
+    
+    println(ship);
   }
   
   void writeImage(){

@@ -22,6 +22,8 @@ Ruleset ruleset;
 
 SubsectorDensity density;
 
+Ship ship;
+
 TestSuite tests;
 int debug = 0;
 
@@ -35,6 +37,8 @@ void setup(){
   density = new SubsectorDensity();
   tests = new TestSuite();  
   screen = new Menu();
+
+  ship = new Ship("Weaselfish", null);   // just initial approach, need to rework order of events when creating a ship, and where methods live
 }
 
 void draw(){

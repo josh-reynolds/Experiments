@@ -27,6 +27,8 @@ class Subsector{
     
     summary = createSummary();
     calculateRoutes();
+    
+    ship.location = ship.randomStart(this);
   }
   
   Subsector(JSONObject _json){

@@ -134,6 +134,7 @@
 //  * FIX  BUG: if density is adjusted, then ruleset changed, you can adjust for invalid rulesets
 //  * DONE REFACTOR: reorganize and coordinate color listings in code & JSON
 //  * DONE REFACTOR: move Orbit composite creation to a Builder class
+//  * .... 'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  * .... Add MegaTraveller extended generation ruleset
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor
@@ -158,7 +159,7 @@
 //  *      Validating JSON data
 //  *      Alternate text format to facilitate input (CSV?)
 //  *      Mechanism to force saving/overwrite (e.g. if JSON has been manually edited)
-//  *      'Character' location and movement / ships (and UI elements)
+
 //  *      Trade system
 //  *      Sectors and multi-subsector layouts / 'infinite' space
 //  *      Detailed systems/worlds
