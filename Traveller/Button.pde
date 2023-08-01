@@ -76,6 +76,11 @@ class NewSubsector extends ButtonUtilities implements Command {
     tests.run();
     
     println(ship);
+    println("Within jump range:");
+    ArrayList<System> systems = ship.withinRange(subs);
+    for (System s : systems){
+      println("\t" + s);
+    }
   }
   
   void writeImage(){

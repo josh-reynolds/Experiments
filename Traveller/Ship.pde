@@ -27,4 +27,16 @@ class Ship {
    
    return null;
  }
+ 
+ ArrayList<System> withinRange(Subsector _sub){
+   ArrayList<System> systems = new ArrayList();;
+   
+   for (System s : _sub.systems.values()){
+     if (s.coord.distanceTo(location.coord) <= range){
+       systems.add(s);
+     }
+   }
+   
+   return systems;
+ }
 }
