@@ -29,10 +29,11 @@ class Ship {
  }
  
  ArrayList<System> withinRange(Subsector _sub){
-   ArrayList<System> systems = new ArrayList();;
+   ArrayList<System> systems = new ArrayList();
    
    for (System s : _sub.systems.values()){
-     if (s.coord.distanceTo(location.coord) <= range){
+     int distance = s.coord.distanceTo(location.coord);
+     if (distance <= range && distance > 0 && s.occupied){
        systems.add(s);
      }
    }
