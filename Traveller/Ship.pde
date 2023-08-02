@@ -15,17 +15,17 @@ class Ship {
    return name + " : " + location;
  }
  
- System randomStart(Subsector _sub){               // current naive implementation can return EMPTY systems
-   int systemCount = _sub.systems.values().size();
-   int choice = floor(random(0, systemCount));
+ System randomStart(Subsector _sub){
+   ArrayList<System> occupiedSystems = new ArrayList();
    
-   int counter = 0;
    for (System s : _sub.systems.values()){
-     if (counter == choice){ return s; }
-     counter++;
+     if (s.occupied){ occupiedSystems.add(s); }
    }
    
-   return null;
+   int systemCount = occupiedSystems.size();
+   int choice = floor(random(0, systemCount));
+   
+   return occupiedSystems.get(choice);
  }
  
  ArrayList<System> withinRange(Subsector _sub){
