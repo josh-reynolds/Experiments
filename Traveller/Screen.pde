@@ -77,6 +77,7 @@ class Display extends Screen {
     subD.mouseHover(subs);
     subD.show(subs);
     textPanel.show(subs);
+    ship.show();
   }
   
   void mouseClicked(){
