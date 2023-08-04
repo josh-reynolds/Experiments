@@ -382,3 +382,11 @@ class Star extends Orbit {
     return json;
   }
 }
+
+class Star_MT extends Star {
+  Star_MT(System _parent){ super(_parent); }
+  Star_MT(System _parent, JSONObject _json){ super(_parent, _json); }  
+  Star_MT(Orbit _barycenter, int _orbit, String _zone, System _parent){ super(_barycenter, _orbit, _zone, _parent); } 
+  Star_MT(Orbit _barycenter, System _parent, JSONObject _json){ super(_barycenter, _parent, _json); }
+  Star_MT(Boolean _primary, System _parent, String _s){ super(_primary, _parent, _s); }  
+}

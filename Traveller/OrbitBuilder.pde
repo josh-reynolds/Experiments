@@ -6,7 +6,7 @@ class OrbitBuilder {
   }
   
   void newStar(System_ScoutsEx _parent){
-    Star star = new Star(_parent);
+    Star star = ruleset.newStar(_parent);
     _parent.primary = star;
     
     createCompanionsFor(star);     // aren't companions just a special-case satellite? unify this and work with the composite structure
@@ -29,7 +29,7 @@ class OrbitBuilder {
     for (int i = 0; i < compCount; i++){
       int orbitNum = generateCompanionOrbitFor(_star, i);
       
-      Star companion = new Star(_star, orbitNum, _star.orbitalZones[orbitNum], _star.parent);
+      Star companion = ruleset.newStar(_star, orbitNum, _star.orbitalZones[orbitNum], _star.parent);
 
       if (orbitNum == 0 || companion.insideStar()){
         if (debug >= 1){ println("Companion in CLOSE orbit"); }        

@@ -108,4 +108,36 @@ class Ruleset {
         return new OrbitBuilder();
     }
   }
+  
+  // primary stars
+  Star newStar(System _parent){
+    switch(name) {
+      case "CT77":
+      case "CT81":
+        println("Stars not supported");
+        return new Star(_parent);               // keeping the compiler happy - throw an exception instead?
+      case "Scouts (Extended)":
+        return new Star(_parent);
+      case "MegaTraveller (Extended)":
+        return new Star_MT(_parent);
+      default:
+        return new Star(_parent);
+    }
+  }
+  
+  // companion stars
+  Star newStar(Orbit _barycenter, int _orbit, String _zone, System _parent){
+    switch(name) {
+      case "CT77":
+      case "CT81":
+        println("Stars not supported");
+        return new Star(_barycenter, _orbit, _zone, _parent);               // keeping the compiler happy - throw an exception instead?
+      case "Scouts (Extended)":
+        return new Star(_barycenter, _orbit, _zone, _parent);
+      case "MegaTraveller (Extended)":
+        return new Star_MT(_barycenter, _orbit, _zone, _parent);
+      default:
+        return new Star(_barycenter, _orbit, _zone, _parent);
+    }
+  }
 }
