@@ -81,6 +81,7 @@ class NewSubsector extends ButtonUtilities implements Command {
     for (System s : systems){
       println("\t" + s);
     }
+    println();
   }
   
   void writeImage(){

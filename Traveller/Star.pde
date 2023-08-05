@@ -108,7 +108,6 @@ class Star extends Orbit {
     orbitalZones = retrieveOrbitalZones();
   }
   
-  // MegaTraveller uses the same odds for both Primary and Companion stars (MTRM p. 26)
   char generateType(){
     int dieThrow = roll.two();
     if (isPrimary()){
@@ -131,9 +130,6 @@ class Star extends Orbit {
     }
   }
   
-  // MegaTraveller uses the same odds for Primary, but changed the Companion table (MTRM p.26)
-  // The table is now identical to Primary, so I wonder if this was a copy/paste typo?
-  // TO_DO: In any case, will implement RAW
   int generateSize(){
     int dieThrow = roll.two();
     if (isPrimary()){
@@ -383,10 +379,45 @@ class Star extends Orbit {
   }
 }
 
+// subclass for MegaTraveller rules - largely the same as Scouts (implemented in the parent Star class)
 class Star_MT extends Star {
   Star_MT(System _parent){ super(_parent); }
   Star_MT(System _parent, JSONObject _json){ super(_parent, _json); }  
   Star_MT(Orbit _barycenter, int _orbit, String _zone, System _parent){ super(_barycenter, _orbit, _zone, _parent); } 
   Star_MT(Orbit _barycenter, System _parent, JSONObject _json){ super(_barycenter, _parent, _json); }
   Star_MT(Boolean _primary, System _parent, String _s){ super(_primary, _parent, _s); }  
+
+  // MegaTraveller uses the same odds for both Primary and Companion stars (MTRM p. 26) on generateType()
+
+  // MegaTraveller uses the same odds for Primary, but changed the Companion table (MTRM p.26)
+  // The table is now identical to Primary, so I wonder if this was a copy/paste typo? In any case, will implement RAW
+  int generateSize(){
+    int dieThrow = roll.two();
+    sizeRoll = dieThrow;
+    
+    if (!isPrimary()){  
+      sizeRoll = 0;
+      dieThrow += ((System_ScoutsEx)parent).primary.sizeRoll; 
+    }
+
+    if (dieThrow == 2                ){ return 2;  }
+    if (dieThrow == 3                ){ return 3; }
+    if (dieThrow == 4                ){ 
+      if ((type == 'K' && decimal > 4) || type == 'M'){
+        return 5;
+      } else {
+        return 4;
+      }
+    }
+    if (dieThrow > 4 && dieThrow < 11){ return 5;   }
+    if (dieThrow == 11               ){
+      if (type == 'B' || type == 'A' || (type == 'F' && decimal < 5)){
+        return 5;
+      } else {
+        return 6;
+      }
+    }
+    if (dieThrow >= 12               ){ return 7;   }
+    return 9;
+  }
 }
