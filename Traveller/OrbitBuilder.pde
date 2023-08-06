@@ -39,9 +39,7 @@ class OrbitBuilder {
       _star.addOrbit(companion.getOrbitNumber(), companion);
     } 
   }
-
-  // MegaTraveller uses the same odds for companion stars, with one adjustment  
-  // TO_DO: MTRM p. 26: "Use DM -1 when returning to this table for a far companion."   
+   
   int generateCompanionCountFor(Star _star){
     println("Determining companion count for " + _star);
     int dieThrow = roll.two();
@@ -73,8 +71,7 @@ class OrbitBuilder {
     return result;
   }
 
-  // from tables on Scouts p.46
-  // MegaTraveller follows the same procedure (MTRM p. 26)
+  // from tables on Scouts p.46 
   // Note: to ease handling, I am converting RAW "Close" + "Far" to equivalent orbit numbers
   int generateCompanionOrbitFor(Star _star, int _iteration){
     int modifier = 4 * (_iteration);
@@ -601,4 +598,20 @@ class OrbitBuilder_MT extends OrbitBuilder {
   OrbitBuilder_MT() {
     super();
   }
+
+  // MegaTraveller uses the same odds for companion stars, with one adjustment  
+  // TO_DO: MTRM p. 26: "Use DM -1 when returning to this table for a far companion."   
+  int generateCompanionCountFor(Star _star){
+    println("Determining companion count for " + _star);
+    int dieThrow = roll.two();
+ 
+    if (!_star.isPrimary()){ dieThrow--; }
+    
+    if (dieThrow < 8){ return 0; }
+    if (dieThrow > 7 && dieThrow < 12){ return 1; }
+    if (dieThrow == 12){ return 2; }   // with the MT modifier, no longer need to test for isPrimary() here
+    return 0;
+  }
+
+  // MegaTraveller follows the same procedure (MTRM p. 26) for generateCompanionOrbitFor(Star)
 }
