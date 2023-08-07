@@ -250,6 +250,9 @@ class OrbitBuilder {
     println("Determining empty orbits for " + _star);
     
     // Empty orbits per Scouts p.34 (table on p. 29)
+    // MegaTraveller is identical, down to the frequencies commented below (MTRM p.28)
+    // there is a typo where they omit the modifier number on the quantity roll, but assume it is
+    // unchanged from Scouts
     int modifier = 0;
     if (_star.type == 'B' || _star.type == 'A'){ modifier += 1; }
     if (roll.one(modifier) >= 5){
@@ -372,9 +375,10 @@ class OrbitBuilder {
     return baseline + (float)deviation/10;
   }  
 
+  // MegaTraveller follows same procedure (except minor note below) - MTRM p. 28
   void placeGasGiantsFor(Star _star, int _maxOrbit){
     println("Placing Gas Giants for " + _star);
-    if (roll.two() <= 9){
+    if (roll.two() <= 9){  // for MegaTraveller, they changed the die throw to 5+, but it's the same odds (83.3%) so no need to override
       switch(roll.two()){ 
         case 2:
         case 3:
@@ -614,4 +618,13 @@ class OrbitBuilder_MT extends OrbitBuilder {
   }
 
   // MegaTraveller follows the same procedure (MTRM p. 26) for generateCompanionOrbitFor(Star)
+  // MegaTraveller follows the same procedure (MTRM p. 26) for calculateMaxOrbitsFor(Star)
+
+  // MegaTraveller changed the procedure for Planetoids (MTRM p. 28):
+  // - present on 8+, no longer uses GasGiant count as a modifier to these odds
+  // - count odds are identical, but they inverted the mapping of die roll to quantity
+  // - may well be a typo here in missing GasGiant count - the table has an entry for '13' on an unmodified 2D roll
+  void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
+    super.placePlanetoidBeltsFor(_star, _maxOrbit);    // TO_DO: placeholder for now, may need to break up parent method for overriding flexibility
+  }
 }

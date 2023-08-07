@@ -205,6 +205,7 @@ class Star extends Orbit {
   // - table has inconsistencies w.r.t. rows, having to guess at some values for orbit 0 esp.
   // - the system by RAW cannot generate supergiants (Ia/Ib) or O/B stars, so could omit that data
   // - special case for M9 not handled yet - all other decimal values round to 0/5 for all spectral classes except M
+  // The tables in MegaTraveller are identical, no need to update the data files for this ruleset (MTRM p. 27)
   String[] retrieveOrbitalZones(){
     String[] output = new String[21];
     
@@ -420,4 +421,9 @@ class Star_MT extends Star {
     if (dieThrow >= 12               ){ return 7;   }
     return 9;
   }
+
+  // MegaTraveller expresses orbitMaskedByCompanion via a table (MTRM p.26) rather than the calculations
+  // in Scouts, which removes some of the ambiguities in my comments above - the end result is identical
+  // so the logic as originally coded is correct
+
 }
