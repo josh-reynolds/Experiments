@@ -435,12 +435,9 @@ class OrbitBuilder {
     }
   }
 
-  // will be very similar to GasGiants, above - duplication OK for now, but look for refactorings
-  void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
-    println("Placing Planetoid Belts for " + _star);
-    // uses # of Gas Giants as a modifier - rules don't specify, but I assume that means just for
-    // the star which the potential planetoids orbit, not all companions
-    int planetoidCount = 0;                      // not yet needed outside this method (MT and later include this count at System level, but IIRC Scouts does not)        
+  int generatePlanetoidBeltCountFor(Star _star){
+    println("Generating Planetoid Belts count for " + _star);
+    int planetoidCount = 0;        
     if (roll.two(-_star.gasGiantCount) <= 6){
       switch(roll.two(-_star.gasGiantCount)){ 
         case -3:
@@ -461,37 +458,46 @@ class OrbitBuilder {
           planetoidCount = 1;        
           break;
       }
-    
-      IntList availableOrbits = availableOrbitsFor(_star, _maxOrbit);
-      planetoidCount = min(planetoidCount, availableOrbits.size());
-      if (debug >= 1){ println(planetoidCount + " Planetoid Belts in-system"); }
-    
-      // RAW p. 35: "If possible, planetoid belts should be placed in the next orbit inward from gas giants."
-      IntList orbitsInwardFromGiants = new IntList();   // might want to refactor this out, do it inline for now
-      for (int i = 0; i < availableOrbits.size(); i++){
-        int index = availableOrbits.get(i); 
-        if (index == _star.orbits.size()-1){ continue; }
-        if (_star.getOrbit(index) != null && _star.getOrbit(index).isGasGiant()){
-          orbitsInwardFromGiants.append(index);
-          availableOrbits.remove(i);
-        }
-      }
-
-      for (int i = 0; i < planetoidCount; i++){
-        if (orbitsInwardFromGiants.size() > 0){
-          orbitsInwardFromGiants.shuffle();
-          int index = orbitsInwardFromGiants.remove(0);
-          _star.addOrbit(index, new Planetoid(_star, index, _star.orbitalZones[index]));
-          continue;
-        }
-        if (availableOrbits.size() > 0){
-          availableOrbits.shuffle();
-          int index = availableOrbits.remove(0);
-          _star.addOrbit(index, new Planetoid(_star, index, _star.orbitalZones[index]));
-        }
-      }
     } else {
       if (debug >= 1){ println("No Planetoid Belts in-system"); }      
+    }
+    return planetoidCount;
+  }
+
+  // will be very similar to GasGiants, above - duplication OK for now, but look for refactorings
+  void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
+    println("Placing Planetoid Belts for " + _star);
+    // uses # of Gas Giants as a modifier - rules don't specify, but I assume that means just for
+    // the star which the potential planetoids orbit, not all companions
+    int planetoidCount = generatePlanetoidBeltCountFor(_star);  // not yet needed outside this method (MT and later include this count at System level, but IIRC Scouts does not)        
+    
+    IntList availableOrbits = availableOrbitsFor(_star, _maxOrbit);
+    planetoidCount = min(planetoidCount, availableOrbits.size());
+    if (debug >= 1){ println(planetoidCount + " Planetoid Belts in-system"); }
+  
+    // RAW p. 35: "If possible, planetoid belts should be placed in the next orbit inward from gas giants."
+    IntList orbitsInwardFromGiants = new IntList();   // might want to refactor this out, do it inline for now
+    for (int i = 0; i < availableOrbits.size(); i++){
+      int index = availableOrbits.get(i); 
+      if (index == _star.orbits.size()-1){ continue; }
+      if (_star.getOrbit(index) != null && _star.getOrbit(index).isGasGiant()){
+        orbitsInwardFromGiants.append(index);
+        availableOrbits.remove(i);
+      }
+    }
+
+    for (int i = 0; i < planetoidCount; i++){
+      if (orbitsInwardFromGiants.size() > 0){
+        orbitsInwardFromGiants.shuffle();
+        int index = orbitsInwardFromGiants.remove(0);
+        _star.addOrbit(index, new Planetoid(_star, index, _star.orbitalZones[index]));
+        continue;
+      }
+      if (availableOrbits.size() > 0){
+        availableOrbits.shuffle();
+        int index = availableOrbits.remove(0);
+        _star.addOrbit(index, new Planetoid(_star, index, _star.orbitalZones[index]));
+      }
     }
   }    
 
@@ -624,7 +630,40 @@ class OrbitBuilder_MT extends OrbitBuilder {
   // - present on 8+, no longer uses GasGiant count as a modifier to these odds
   // - count odds are identical, but they inverted the mapping of die roll to quantity
   // - may well be a typo here in missing GasGiant count - the table has an entry for '13' on an unmodified 2D roll
-  void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
-    super.placePlanetoidBeltsFor(_star, _maxOrbit);    // TO_DO: placeholder for now, may need to break up parent method for overriding flexibility
+  int generatePlanetoidBeltCountFor(Star _star){
+    println("Generating Planetoid Belts count for " + _star);
+    int planetoidCount = 0;        
+    if (roll.two() >= 8){
+      switch(roll.two()){ 
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+          planetoidCount = 1;
+          break;
+        case 8:
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+          planetoidCount = 2;
+          break;
+        case 13:
+          planetoidCount = 3;    // as noted above, this is in the table, but impossible to reach from a 2D roll
+          break;        
+        default:
+          planetoidCount = 1;        
+          break;
+      }
+    } else {
+      if (debug >= 1){ println("No Planetoid Belts in-system"); }      
+    }
+    return planetoidCount;
   }
-}
+  
+  void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
+    super.placePlanetoidBeltsFor(_star, _maxOrbit);    // TO_DO: started extracting pieces of the parent method, need to complete
+  }
+}  
