@@ -630,11 +630,17 @@ class OrbitBuilder_MT extends OrbitBuilder {
   // - present on 8+, no longer uses GasGiant count as a modifier to these odds
   // - count odds are identical, but they inverted the mapping of die roll to quantity
   // - may well be a typo here in missing GasGiant count - the table has an entry for '13' on an unmodified 2D roll
+  //
+  // checked the errata, and yes, they left out the GasGiant modifier in the original printing (MT errata is infamous)
+  //  and I think even the errata is incomplete, since it only refers to the first roll, not the second:
+  //  "If there are gas giants in the system, apply the number of gas giants as a +DM to the die roll to determine if planetoid belts exist in the system."
+  //
+  // I am going to apply for both cases, so it now matches Scouts, just inverted
   int generatePlanetoidBeltCountFor(Star _star){
     println("Generating Planetoid Belts count for " + _star);
     int planetoidCount = 0;        
-    if (roll.two() >= 8){
-      switch(roll.two()){ 
+    if (roll.two(_star.gasGiantCount) >= 8){
+      switch(roll.two(_star.gasGiantCount)){ 
         case 2:
         case 3:
         case 4:
@@ -650,8 +656,12 @@ class OrbitBuilder_MT extends OrbitBuilder {
         case 12:
           planetoidCount = 2;
           break;
-        case 13:
-          planetoidCount = 3;    // as noted above, this is in the table, but impossible to reach from a 2D roll
+        case 13:                 // with errata change, now possible to reach these values
+        case 14:
+        case 15:
+        case 16:
+        case 17:                 // max 5 Gas Giants, so results possible up to 17
+          planetoidCount = 3;    
           break;        
         default:
           planetoidCount = 1;        
