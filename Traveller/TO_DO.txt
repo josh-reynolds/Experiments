@@ -136,6 +136,7 @@
 //  * DONE REFACTOR: move Orbit composite creation to a Builder class
 //  * .... 'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  * .... Add MegaTraveller extended generation ruleset
+//  * .... Review/incorporate MegaTraveller errata
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)

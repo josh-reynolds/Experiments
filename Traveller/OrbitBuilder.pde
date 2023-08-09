@@ -323,6 +323,10 @@ class OrbitBuilder {
     }
   }    
 
+  Boolean capturedPlanetsArePresentFor(Star _star){
+    return roll.one() > 4;
+  }
+
   void placeCapturedPlanetsFor(Star _star){
     println("Placing Captured Planets for " + _star);
     // ambiguity here - some of the notes from Empty Orbits (above) also applies - but:
@@ -330,7 +334,7 @@ class OrbitBuilder {
     //  - same biases as noted under Empty: 0 & 1 protected, bell curve around 7, nothing beyond 12
     //  - no notes for what to do if orbit is occupied
     
-    if (roll.one() > 4){
+    if (capturedPlanetsArePresentFor(_star)){
       int quantity = floor(roll.one()/2);
 
       for (int i = 0; i < quantity; i++){
@@ -675,5 +679,13 @@ class OrbitBuilder_MT extends OrbitBuilder {
   
   void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
     super.placePlanetoidBeltsFor(_star, _maxOrbit);    // TO_DO: started extracting pieces of the parent method, need to complete
+  }
+  
+  // MegaTraveller Captured Planet procedure is identical to Scouts except for the odds:
+  // they added a modifier for type A/B stars (MTRM p. 28)
+  Boolean capturedPlanetsArePresentFor(Star _star){
+    int modifier = 0;
+    if (_star.type == 'A' || _star.type == 'B'){ modifier += 1; }
+    return roll.one(modifier) > 4;
   }
 }  
