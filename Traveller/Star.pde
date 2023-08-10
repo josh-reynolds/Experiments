@@ -291,6 +291,18 @@ class Star extends Orbit {
     return orbitalZones[_num].equals("I");
   }
 
+  Boolean orbitIsHabitableZone(int _num){
+    return orbitalZones[_num].equals("H");
+  }
+
+  int getHabitableZoneNumber(){
+    for (int i = 0; i < orbits.size(); i++){
+      println("@@@ " + i + " : " + orbits.size());
+      if (orbitIsHabitableZone(i)){ return i; }
+    }
+    return 0;   // in the event there is no habitable zone around this star
+  }
+  
   Boolean orbitIsFar(int _num){
     return _num >= 14;  // Scouts p.46 - does not assign orbit numbers to "Far" (just AU values), but this is equivalent and easier to handle in rest of methods
   }

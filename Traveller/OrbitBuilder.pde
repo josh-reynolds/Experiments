@@ -379,54 +379,60 @@ class OrbitBuilder {
     return baseline + (float)deviation/10;
   }  
 
-  // MegaTraveller follows same procedure (except minor note below) - MTRM p. 28
-  void placeGasGiantsFor(Star _star, int _maxOrbit){
-    println("Placing Gas Giants for " + _star);
-    if (roll.two() <= 9){  // for MegaTraveller, they changed the die throw to 5+, but it's the same odds (83.3%) so no need to override
+  int generateGasGiantCountFor(Star _star){
+    println("Generating Gas Giant count for " + _star);
+    int gasGiantCount = 0;        
+    if (roll.two() <= 9){  // for MegaTraveller, they changed the die throw to 5+, but it's the same odds (83.3%) so no need to override - MTRM p. 28
       switch(roll.two()){ 
         case 2:
         case 3:
-          _star.gasGiantCount = 1;
+          gasGiantCount = 1;
           break;        
         case 4:
         case 5:
-          _star.gasGiantCount = 2;
+          gasGiantCount = 2;
           break;        
         case 6:
         case 7:
-          _star.gasGiantCount = 3;
+          gasGiantCount = 3;
           break;        
         case 8:
         case 9:
         case 10:
-          _star.gasGiantCount = 4;        
+          gasGiantCount = 4;        
           break;        
         case 11:
         case 12:
-          _star.gasGiantCount = 5;        
+          gasGiantCount = 5;        
           break;
         default:
-          _star.gasGiantCount = 1;        
+          gasGiantCount = 1;        
           break;
-      }
-
-      // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
-      IntList availableOrbits = availableOrbitsFor(_star, _maxOrbit);
-      pruneInnerZoneFor(_star, availableOrbits);
-      
-      // TO_DO: one (awkward) special case:
-      //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
-      
-      _star.gasGiantCount = min(_star.gasGiantCount, availableOrbits.size());
-      if (debug >= 1){ println(_star.gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
-      
-      for (int i = 0; i < _star.gasGiantCount; i++){
-        availableOrbits.shuffle();
-        int index = availableOrbits.remove(0);
-        _star.addOrbit(index, new GasGiant(_star, index, _star.orbitalZones[index], this));
-      }
+      } 
     } else {
-      if (debug >= 1){ println("No Gas Giants in-system"); }
+      if (debug >= 1){ println("No Gas Giants in-system"); }      
+    }
+    return gasGiantCount;
+  }
+
+  void placeGasGiantsFor(Star _star, int _maxOrbit){
+    println("Placing Gas Giants for " + _star);
+    _star.gasGiantCount = generateGasGiantCountFor(_star);
+
+    // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
+    IntList availableOrbits = availableOrbitsFor(_star, _maxOrbit);
+    pruneInnerZoneFor(_star, availableOrbits);
+    
+    // TO_DO: one (awkward) special case:
+    //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
+    
+    _star.gasGiantCount = min(_star.gasGiantCount, availableOrbits.size());
+    if (debug >= 1){ println(_star.gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
+    
+    for (int i = 0; i < _star.gasGiantCount; i++){
+      availableOrbits.shuffle();
+      int index = availableOrbits.remove(0);
+      _star.addOrbit(index, new GasGiant(_star, index, _star.orbitalZones[index], this));
     }
   }  
 
@@ -507,7 +513,7 @@ class OrbitBuilder {
 
   IntList availableOrbitsFor(Star _star, int _maxOrbit){
     IntList result = new IntList();
-    for (int i = 0; i < _maxOrbit; i++){
+    for (int i = 0; i <= _maxOrbit; i++){
       if (_star.orbitIsNull(i)){
         if (debug >= 1){ println("Orbit " + i + " qualifies"); }
         result.append(i);
@@ -688,4 +694,29 @@ class OrbitBuilder_MT extends OrbitBuilder {
     if (_star.type == 'A' || _star.type == 'B'){ modifier += 1; }
     return roll.one(modifier) > 4;
   }
+  
+  // MegaTraveller follows a slightly different (though probably equivalent) procedure - MTRM p.28
+  void placeGasGiantsFor(Star _star, int _maxOrbit){
+    println("Placing Gas Giants for " + _star);
+    _star.gasGiantCount = generateGasGiantCountFor(_star);
+
+    println("Habitable Zone at " + _star.getHabitableZoneNumber());  // @@@ TO_DO: debugging, not convinced this is always returning correct results
+
+    // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
+    IntList availableOrbits = availableOrbitsFor(_star, _maxOrbit);
+    pruneInnerZoneFor(_star, availableOrbits);
+    
+    // TO_DO: one (awkward) special case:
+    //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
+    
+    _star.gasGiantCount = min(_star.gasGiantCount, availableOrbits.size());
+    if (debug >= 1){ println(_star.gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
+    
+    for (int i = 0; i < _star.gasGiantCount; i++){
+      availableOrbits.shuffle();
+      int index = availableOrbits.remove(0);
+      _star.addOrbit(index, new GasGiant(_star, index, _star.orbitalZones[index], this));
+    }
+  }
+
 }  
