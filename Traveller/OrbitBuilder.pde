@@ -700,7 +700,16 @@ class OrbitBuilder_MT extends OrbitBuilder {
     println("Placing Gas Giants for " + _star);
     _star.gasGiantCount = generateGasGiantCountFor(_star);
 
-    println("Habitable Zone at " + _star.getHabitableZoneNumber());  // @@@ TO_DO: debugging, not convinced this is always returning correct results
+    int startValue = _star.getHabitableZoneNumber();
+    if (startValue > _maxOrbit){ startValue = 0; } // No habitable zone; inner zone orbits allowed
+    println("Gas Giants starting at orbit " + startValue + " : maxOrbit = " + _maxOrbit);
+    print("Available: ");
+    for (int i = startValue; i <= _maxOrbit; i++){
+      print(i);
+    }
+    println();
+    
+    println(_star.gasGiantCount + " Gas Giants present. Available orbit count = " + (_maxOrbit - startValue + 1));
 
     // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
     IntList availableOrbits = availableOrbitsFor(_star, _maxOrbit);

@@ -295,12 +295,13 @@ class Star extends Orbit {
     return orbitalZones[_num].equals("H");
   }
 
-  int getHabitableZoneNumber(){
-    for (int i = 0; i < orbits.size(); i++){
-      println("@@@ " + i + " : " + orbits.size());
+  int getHabitableZoneNumber(){    
+    if (orbitalZones[0].equals("O")){ return 0; }
+    
+    for (int i = 0; i < orbitalZones.length; i++){
       if (orbitIsHabitableZone(i)){ return i; }
     }
-    return 0;   // in the event there is no habitable zone around this star
+    return 0;   // keeping compiler happy, should be handled by logic above already
   }
   
   Boolean orbitIsFar(int _num){
