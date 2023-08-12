@@ -708,16 +708,34 @@ class OrbitBuilder_MT extends OrbitBuilder {
       print(i);
     }
     println();
-    
-    println(_star.gasGiantCount + " Gas Giants present. Available orbit count = " + (_maxOrbit - startValue + 1));
 
-    // per Scouts p. 34: "The number (of Gas Giants) may not exceed the number of available and non-empty orbits in the habitable and outer zones"
     IntList availableOrbits = availableOrbitsFor(_star, _maxOrbit);
     pruneInnerZoneFor(_star, availableOrbits);
     
-    // TO_DO: one (awkward) special case:
-    //   " (i)f the table calls for a gas giant and there is no orbit available for it, create an orbit in the outer zone for it"
+    //int availableOrbitCount = _maxOrbit - startValue + 1;
+    int availableOrbitCount = availableOrbits.size();
+    println(_star.gasGiantCount + " Gas Giants present. Available orbit count = " + availableOrbitCount);
+
+    // MegaTraveller omits all the special cases described in Scouts (see comments above in super.placeGasGiantsFor())
+
+    // Cases:
+    //  - Gas Giant count <= available orbit count
+    //  - Gas Giant count > available orbit count but <= total orbits
+    //  - Gas Giant count > total orbits
+    // additionally, orbits may have already been filled by Companions, Empty & Forbidden, so simple count isn't sufficient
+    // need to make use of availableOrbitsFor(), which takes this into account
+
+    String c = "";
+    if (_star.gasGiantCount <= availableOrbitCount){ c = "CASE ONE"; }
+    if (_star.gasGiantCount > availableOrbitCount && _star.gasGiantCount <= _maxOrbit + 1){ c = "CASE TWO"; }
+    if (_star.gasGiantCount > _maxOrbit + 1){ c = "CASE THREE"; }
+    if (c.equals("")){ c = "NO CASE SELECTED - GAP?"; }
+    if (availableOrbitCount > _maxOrbit + 1){ c += " INVALID! "; }  // should not be possible
+    println(c);
     
+    println(availableOrbits);
+    println(_star.orbits);
+
     _star.gasGiantCount = min(_star.gasGiantCount, availableOrbits.size());
     if (debug >= 1){ println(_star.gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
     
@@ -727,5 +745,4 @@ class OrbitBuilder_MT extends OrbitBuilder {
       _star.addOrbit(index, new GasGiant(_star, index, _star.orbitalZones[index], this));
     }
   }
-
 }  
