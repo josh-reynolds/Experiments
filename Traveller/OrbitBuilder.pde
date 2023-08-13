@@ -444,6 +444,15 @@ class OrbitBuilder {
       }
     }
   }
+  
+  // very close to pruneInnerZone..., refactor!
+  void keepOnlyInnerZoneFor(Star _star, IntList _list){
+    for (int i = _list.size()-1; i >= 0; i--){
+      if (!_star.orbitIsInnerZone(_list.get(i))){
+        _list.remove(i);
+      }
+    }
+  }
 
   int generatePlanetoidBeltCountFor(Star _star){
     println("Generating Planetoid Belts count for " + _star);
@@ -700,49 +709,63 @@ class OrbitBuilder_MT extends OrbitBuilder {
     println("Placing Gas Giants for " + _star);
     _star.gasGiantCount = generateGasGiantCountFor(_star);
 
-    int startValue = _star.getHabitableZoneNumber();
-    if (startValue > _maxOrbit){ startValue = 0; } // No habitable zone; inner zone orbits allowed
-    println("Gas Giants starting at orbit " + startValue + " : maxOrbit = " + _maxOrbit);
-    print("Available: ");
-    for (int i = startValue; i <= _maxOrbit; i++){
-      print(i);
-    }
-    println();
-
-    IntList availableOrbits = availableOrbitsFor(_star, _maxOrbit);
-    pruneInnerZoneFor(_star, availableOrbits);
+    IntList allOrbits = availableOrbitsFor(_star, _maxOrbit);
+    int allOrbitCount = allOrbits.size();
     
-    //int availableOrbitCount = _maxOrbit - startValue + 1;
-    int availableOrbitCount = availableOrbits.size();
-    println(_star.gasGiantCount + " Gas Giants present. Available orbit count = " + availableOrbitCount);
+    IntList allOrbitsExceptInner = allOrbits.copy();
+    pruneInnerZoneFor(_star, allOrbitsExceptInner);
+    int preferredOrbitCount = allOrbitsExceptInner.size();
 
     // MegaTraveller omits all the special cases described in Scouts (see comments above in super.placeGasGiantsFor())
+    //  other than that, the only real difference is MT allows Gas Giants in the Inner Zone after all other
+    //  orbits have been assigned
+    // The RAW procedure (2d-3 + habitable zone number) leads to a bunch of corner cases that need to be handled
+    //  (like generating a value above the maximum orbit for the star), so we'll just use a simple random assignment
+    //  like the Scouts version above, and adjust to allow Inner Zone assignment
 
-    // Cases:
-    //  - Gas Giant count <= available orbit count
-    //  - Gas Giant count > available orbit count but <= total orbits
-    //  - Gas Giant count > total orbits
-    // additionally, orbits may have already been filled by Companions, Empty & Forbidden, so simple count isn't sufficient
-    // need to make use of availableOrbitsFor(), which takes this into account
-
-    String c = "";
-    if (_star.gasGiantCount <= availableOrbitCount){ c = "CASE ONE"; }
-    if (_star.gasGiantCount > availableOrbitCount && _star.gasGiantCount <= _maxOrbit + 1){ c = "CASE TWO"; }
-    if (_star.gasGiantCount > _maxOrbit + 1){ c = "CASE THREE"; }
-    if (c.equals("")){ c = "NO CASE SELECTED - GAP?"; }
-    if (availableOrbitCount > _maxOrbit + 1){ c += " INVALID! "; }  // should not be possible
-    println(c);
-    
-    println(availableOrbits);
-    println(_star.orbits);
-
-    _star.gasGiantCount = min(_star.gasGiantCount, availableOrbits.size());
-    if (debug >= 1){ println(_star.gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
-    
-    for (int i = 0; i < _star.gasGiantCount; i++){
-      availableOrbits.shuffle();
-      int index = availableOrbits.remove(0);
-      _star.addOrbit(index, new GasGiant(_star, index, _star.orbitalZones[index], this));
+    // CASE ONE - enough available orbits
+    if (_star.gasGiantCount <= preferredOrbitCount){ 
+      // assign randomly
+      for (int i = 0; i < _star.gasGiantCount; i++){
+        allOrbitsExceptInner.shuffle();
+        int index = allOrbitsExceptInner.remove(0);
+        _star.addOrbit(index, new GasGiant(_star, index, _star.orbitalZones[index], this));
+      } 
     }
+    
+    // CASE TWO - not enough available orbits, but sufficient Inner Zone orbits to cover
+    if (_star.gasGiantCount > preferredOrbitCount && _star.gasGiantCount <= allOrbitCount){ 
+      int remainder = _star.gasGiantCount - preferredOrbitCount;
+      
+      // fill available orbits
+      for (int i = 0; i < preferredOrbitCount; i++){
+        int orbitNumber = allOrbitsExceptInner.get(i);
+        _star.addOrbit(orbitNumber, new GasGiant(_star, orbitNumber, _star.orbitalZones[orbitNumber], this));
+      }
+      
+      IntList onlyInnerOrbits = allOrbits.copy();
+      keepOnlyInnerZoneFor(_star, onlyInnerOrbits);
+      
+      // assign remainder randomly to inner zone orbits
+      for (int i = 0; i < remainder; i++){
+        onlyInnerOrbits.shuffle();
+        int index = onlyInnerOrbits.remove(0);
+        _star.addOrbit(index, new GasGiant(_star, index, _star.orbitalZones[index], this));
+      }
+    }
+    
+    // CASE THREE - not enough orbits
+    if (_star.gasGiantCount > allOrbitCount){ 
+      // reduce count to total orbit count
+      _star.gasGiantCount = allOrbitCount;
+      
+      // fill all orbits
+      for (int i = 0; i < allOrbitCount; i++){
+        int orbitNumber = allOrbits.get(i);
+        _star.addOrbit(orbitNumber, new GasGiant(_star, orbitNumber, _star.orbitalZones[orbitNumber], this));
+      }
+    }
+    
+    if (debug >= 1){ println(_star.gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
   }
 }  

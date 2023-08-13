@@ -173,6 +173,7 @@
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
 //  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      BUG: companions of far companions (quaternary systems) are not being handled
+//  *      BUG: console output during system generation is offset (details before summary)
 //  *      REFACTOR: duplicated code in UWP_ScoutsEx ctors
 //  *      REFACTOR: aid - work up sequence diagram for ctors & build operations
 //  *      REFACTOR: clean up duplication in density setting plumbing
