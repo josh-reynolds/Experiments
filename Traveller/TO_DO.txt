@@ -134,6 +134,7 @@
 //  * FIX  BUG: if density is adjusted, then ruleset changed, you can adjust for invalid rulesets
 //  * DONE REFACTOR: reorganize and coordinate color listings in code & JSON
 //  * DONE REFACTOR: move Orbit composite creation to a Builder class
+//  * FIX  BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  * .... 'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  * .... Add MegaTraveller extended generation ruleset
 //  * .... Review/incorporate MegaTraveller errata
@@ -171,7 +172,6 @@
 //  *      BUG: panel can't show more than 44 systems, truncating subsector listing
 //  *      BUG: off-by-one issue in Star.createOrbits in some cases
 //  *      BUG: two Stars (or other Orbit entities) can be assigned the same orbit
-//  *      BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  *      BUG: companions of far companions (quaternary systems) are not being handled
 //  *      BUG: console output during system generation is offset (details before summary)
 //  *      REFACTOR: duplicated code in UWP_ScoutsEx ctors

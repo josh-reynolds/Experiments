@@ -495,11 +495,13 @@ class OrbitBuilder {
     if (debug >= 1){ println(planetoidCount + " Planetoid Belts in-system"); }
   
     // RAW p. 35: "If possible, planetoid belts should be placed in the next orbit inward from gas giants."
-    IntList orbitsInwardFromGiants = new IntList();   // might want to refactor this out, do it inline for now
+    // MegaTraveller follows the same convention (MTRM p. 28)
+    IntList orbitsInwardFromGiants = new IntList();
     for (int i = 0; i < availableOrbits.size(); i++){
-      int index = availableOrbits.get(i); 
-      if (index == _star.orbits.size()-1){ continue; }
-      if (_star.getOrbit(index) != null && _star.getOrbit(index).isGasGiant()){
+      int index = availableOrbits.get(i);
+      int possibleGasGiantLocation = index + 1;
+      
+      if (_star.getOrbit(possibleGasGiantLocation) != null && _star.getOrbit(possibleGasGiantLocation).isGasGiant()){
         orbitsInwardFromGiants.append(index);
         availableOrbits.remove(i);
       }
@@ -692,9 +694,6 @@ class OrbitBuilder_MT extends OrbitBuilder {
     return planetoidCount;
   }
   
-  void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
-    super.placePlanetoidBeltsFor(_star, _maxOrbit);    // TO_DO: started extracting pieces of the parent method, need to complete
-  }
   
   // MegaTraveller Captured Planet procedure is identical to Scouts except for the odds:
   // they added a modifier for type A/B stars (MTRM p. 28)
