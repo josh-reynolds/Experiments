@@ -362,7 +362,7 @@ class GasGiant extends Orbit {
   GasGiant(Orbit _barycenter, int _orbit, String _zone, OrbitBuilder _ob){ 
     super(_barycenter, _orbit, _zone);    
     if (debug == 2){ println("** GasGiant ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
-    if (roll.one() >= 4){ 
+    if (roll.one() >= 4){ // MegaTraveller inverts this, but the odds are the same 50/50 split
       size = "S";
     } else {
       size = "L";

@@ -305,6 +305,7 @@ class UWP_ScoutsEx extends UWP {
     if (planet == null){ return super.generateSize(); }  // hacky approach to deal with automatic call to super ctor
     if (planet.isPlanetoid()){ return 0; }
 
+    // MegaTraveller follows the same modifiers (MTRM p. 28)
     int modifier = 0;
     if (planet.getOrbitNumber() == 0  ){ modifier -= 5; }
     if (planet.getOrbitNumber() == 1  ){ modifier -= 4; }
@@ -321,6 +322,7 @@ class UWP_ScoutsEx extends UWP {
     if (debug == 2){ println("**** UWP_ScoutsEx.generateAtmo() for " + this.getClass()); }
     if (planet == null){ return super.generateAtmo(); }  // see note above in generateSize()
     
+    // MegaTraveller follows the same procedure (MTRM p. 28)
     int modifier = 0;
     if (planet.isInnerZone()){ 
       if (planet.isMoon()){    // Scouts p.33 + p.37 - Moons are _almost_ identical for Atmo determination
@@ -505,4 +507,31 @@ class UWP_ScoutsEx extends UWP {
     }
     return result;
   }
+}
+
+class UWP_MT extends UWP_ScoutsEx {
+  // Scouts reverts to +Size as a modifier
+  int generateHydro(){
+    if (debug == 2){ println("**** UWP_ScoutsEx.generateHydro() for " + this.getClass()); }
+    if (planet == null){ return super.generateHydro(); }  // see note above in generateSize()
+
+    if (planet.isInnerZone()         ){ return 0; }
+    if (size == 0                    ){ return 0; }       // includes size 'S' (numerically zero)
+    if (size == 1 && !planet.isMoon()){ return 0; }       // Scouts p.33 + p.37 - as with atmo, Moons are _almost_ identical
+    
+    int modifier = 0;
+    if (planet.isOuterZone()){
+      if (planet.isMoon()){                               // see note above
+        modifier -= 4;
+      } else {
+        modifier -= 2;
+      }
+    }
+    if (atmo <= 1 || atmo >= 10){ modifier -= 4; }
+     
+    int result = roll.two(size + modifier - 7);
+    result = constrain(result, 0, 10);    
+    
+    return result;    
+  }  
 }

@@ -140,4 +140,18 @@ class Ruleset {
         return new Star(_barycenter, _orbit, _zone, _parent);
     }
   }
+  
+  UWP newUWP(){
+    switch(name) {
+      case "CT77":
+      case "CT81":
+        return new UWP();
+      case "Scouts (Extended)":
+        return new UWP_ScoutsEx();
+      case "MegaTraveller (Extended)":
+        return new UWP_MT();
+      default:
+        return new UWP();      
+    }
+  }
 }
