@@ -201,15 +201,34 @@ class UWP_ScoutsEx extends UWP {
   
   UWP_ScoutsEx(){}
   
-  UWP_ScoutsEx(Orbit _planet){
-    if (debug == 2){ println("** UWP_ScoutsEx ctor(" + _planet.getClass() + ")"); }
+  UWP_ScoutsEx(Orbit _o){
+    if (debug == 2){ println("** UWP_ScoutsEx ctor(" + _o.getClass() + ")"); }
     // need to unravel inheritance problem
     //  super ctor is automatically called before any of this
     //  but with the overloaded methods extending the template, 
     //  we have null pointers to worry about
-    planet = _planet;
+    planet = _o;
     isPlanet = planet.isPlanet();
+    
     size  = generateSize();
+    
+    generateBaseUWPValues();
+  }
+  
+  // Moons have size established before UWP is generated, so need an alternate ctor
+  UWP_ScoutsEx(Orbit _o, int _size){
+    if (debug == 2){ println("** UWP_ScoutsEx Moon ctor(" + _o.getClass() + ", " + _size + ")"); }
+    
+    planet = _o;
+    isPlanet = planet.isPlanet();
+    
+    size = _size;    
+    if (size <= 0){ size = 0; }
+    
+    generateBaseUWPValues();
+  }
+  
+  void generateBaseUWPValues(){
     atmo  = generateAtmo();
     hydro = generateHydro();
     pop   = generatePop();
@@ -218,24 +237,7 @@ class UWP_ScoutsEx extends UWP {
     starport = 'X';
     gov      = 0;
     law      = 0; 
-    tech     = 0; 
-  }
-  
-  UWP_ScoutsEx(Moon _moon, int _size){   // TO_DO: refactor heavy duplication from 'standard' ctor
-    if (debug == 2){ println("** UWP_ScoutsEx Moon ctor(" + _moon.getClass() + ", " + _size + ")"); }
-    planet = _moon;
-    isPlanet = true;   // Moons are subclass of Planet
-    size   = _size;
-    if (size <= 0){ size = 0; }
-    atmo  = generateAtmo();
-    hydro = generateHydro();
-    pop   = generatePop();
-
-    // stubbing out following for the time being
-    starport = 'X';
-    gov      = 0;
-    law      = 0; 
-    tech     = 0;        
+    tech     = 0;    
   }
   
   void completeUWP(Boolean _isMainworld){
