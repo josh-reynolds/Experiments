@@ -51,7 +51,16 @@ class System {
   }
   
   UWP generateUWP(){
-    return new UWP();
+    UWP u = null;
+    
+    try {
+      u = ruleset.newUWP();
+    } catch(InvalidUWPInvocation _e) {
+      println("Invalid call to ruleset.newUWP");
+      exit();
+    }
+    
+    return u;
   }
 
   UWP generateUWP(JSONObject _json){
@@ -161,8 +170,17 @@ class System_CT81 extends System {
     return new TradeClass_CT81(_uwp);   
   }
   
-  UWP generateUWP(){
-    return new UWP_CT81();
+  UWP generateUWP(){    
+    UWP u = null;
+    
+    try {
+      u = ruleset.newUWP();
+    } catch(InvalidUWPInvocation _e) {
+      println("Invalid call to ruleset.newUWP");
+      exit();
+    }
+    
+    return u;
   }
   
   UWP generateUWP(JSONObject _json){

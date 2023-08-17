@@ -512,8 +512,15 @@ class UWP_ScoutsEx extends UWP {
 }
 
 class UWP_MT extends UWP_ScoutsEx {
+  UWP_MT(){}
+  UWP_MT(Orbit _o){ super(_o); }
+  UWP_MT(Orbit _o, int _size){ super(_o, _size); }
+  
   // Scouts reverts to +Size as a modifier
   int generateHydro(){
+    
+    println("Calling UWP_MT.generateHydro()");
+    
     if (debug == 2){ println("**** UWP_ScoutsEx.generateHydro() for " + this.getClass()); }
     if (planet == null){ return super.generateHydro(); }  // see note above in generateSize()
 

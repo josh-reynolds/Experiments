@@ -430,8 +430,17 @@ class Planet extends Orbit implements Habitable {
   UWP_ScoutsEx getUWP(){ return uwp; }
   
   UWP_ScoutsEx generateUWP(){
-    if (debug == 2){ println("**** Planet.generateUWP() for " + this.getClass()); }
-    return new UWP_ScoutsEx(this);    
+    if (debug == 2){ println("**** Planet.generateUWP() for " + this.getClass()); }    
+    UWP_ScoutsEx u = null;
+    
+    try {
+      u = ruleset.newUWP(this);
+    } catch(InvalidUWPInvocation _e) {
+      println("Invalid call to ruleset.newUWP");
+      exit();
+    }
+    
+    return u;
   }
 
   void setMainworld(Boolean _isMainworld){ mainworld = _isMainworld; }
@@ -487,7 +496,17 @@ class Planetoid extends Orbit implements Habitable {
   UWP getUWP(){ return uwp; }
 
   UWP_ScoutsEx generateUWP(){
-    return new UWP_ScoutsEx(this);
+    if (debug == 2){ println("**** Planetoid.generateUWP() for " + this.getClass()); }
+    UWP_ScoutsEx u = null;
+    
+    try {
+      u = ruleset.newUWP(this);
+    } catch(InvalidUWPInvocation _e) {
+      println("Invalid call to ruleset.newUWP");
+      exit();
+    }
+    
+    return u;
   }
 
   void setMainworld(Boolean _isMainworld){ mainworld = _isMainworld; }
@@ -545,7 +564,17 @@ class Moon extends Planet {
   }
   
   UWP_ScoutsEx generateUWP(int _size){
-    return new UWP_ScoutsEx(this, _size);
+    if (debug == 2){ println("**** Moon.generateUWP() for " + this.getClass()); }
+    UWP_ScoutsEx u = null;
+    
+    try {
+      u = ruleset.newUWP(this, _size);
+    } catch(InvalidUWPInvocation _e) {
+      println("Invalid call to ruleset.newUWP");
+      exit();
+    }
+    
+    return u;
   }
   
   Boolean isMoon(){ return true; }

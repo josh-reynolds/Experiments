@@ -141,17 +141,46 @@ class Ruleset {
     }
   }
   
-  UWP newUWP(){
+  // TO_DO: should rework UWP handling and variants - need to invoke proper method in each scenario, and fail otherwise
+  //  don't care for how we're duplicating this structure...
+  UWP newUWP() throws InvalidUWPInvocation {
     switch(name) {
-      case "CT77":
-      case "CT81":
-        return new UWP();
       case "Scouts (Extended)":
-        return new UWP_ScoutsEx();
       case "MegaTraveller (Extended)":
-        return new UWP_MT();
+        throw new InvalidUWPInvocation();
+      case "CT81":
+       return new UWP_CT81();
+      case "CT77":
       default:
         return new UWP();      
     }
   }
+  
+  UWP_ScoutsEx newUWP(Orbit _o) throws InvalidUWPInvocation {
+    switch(name) {
+      case "Scouts (Extended)":
+        return new UWP_ScoutsEx(_o);
+      case "MegaTraveller (Extended)":
+        return new UWP_MT(_o);
+      case "CT77":
+      case "CT81":
+      default:
+        throw new InvalidUWPInvocation();      
+    }
+  }
+  
+  UWP_ScoutsEx newUWP(Orbit _o, int _size) throws InvalidUWPInvocation {
+    switch(name) {
+      case "Scouts (Extended)":
+        return new UWP_ScoutsEx(_o, _size);
+      case "MegaTraveller (Extended)":
+        return new UWP_MT(_o, _size);
+      case "CT77":
+      case "CT81":
+      default:
+        throw new InvalidUWPInvocation();      
+    }
+  }
 }
+
+class InvalidUWPInvocation extends Exception {}
