@@ -336,12 +336,19 @@ class System_ScoutsEx extends System_CT81 {
     println("@@@ System_ScoutsEx.generateUWP()");
     println(this.getClass());
     
-    try {
-      u = ruleset.newUWP(new Star(this));         // this is a hack solution - only used
-    } catch(InvalidUWPInvocation _e) {            // during super ctor and discarded, so we can create a bogus star
-      println("Invalid call to ruleset.newUWP");  // really should clean this design up
-      exit();
-    }
+    //try {
+      //u = ruleset.newUWP(new Star(this));         // this is a hack solution - only used
+      //u = ruleset.newUWP(new Planet(new Star(this), 3, "H", null));         // this is a hack solution - only used
+      u = new UWP_ScoutsEx("X000000-0");
+      
+      
+      
+    //} catch(InvalidUWPInvocation _e) {            // during super ctor and discarded, so we can create a bogus star
+    //  println("Invalid call to ruleset.newUWP");  // really should clean this design up
+    //  exit();
+    //}
+    
+    println("@@ Exiting System_ScoutsEx.generateUWP()");
     
     return u;
   }

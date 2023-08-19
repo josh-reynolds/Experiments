@@ -210,6 +210,8 @@ class UWP_ScoutsEx extends UWP {
     planet = _o;
     isPlanet = planet.isPlanet();
     
+    println("Inside UWP_ScoutsEx ctor");
+    
     size  = generateSize();
     
     generateBaseUWPValues();
@@ -513,7 +515,11 @@ class UWP_ScoutsEx extends UWP {
 
 class UWP_MT extends UWP_ScoutsEx {
   UWP_MT(){}
-  UWP_MT(Orbit _o){ super(_o); }
+  UWP_MT(Orbit _o){ super(_o); 
+
+    println("@@@ exiting UWP_MT ctor(Orbit)");
+
+  }
   UWP_MT(Orbit _o, int _size){ super(_o, _size); }
   
   // Scouts reverts to +Size as a modifier

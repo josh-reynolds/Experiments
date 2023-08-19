@@ -161,6 +161,9 @@ class Ruleset {
   }
   
   UWP_ScoutsEx newUWP(Orbit _o) throws InvalidUWPInvocation {
+    
+    println("@@@ Ruleset.newUWP(Orbit)");
+    
     switch(name) {
       case "Scouts (Extended)":
         return new UWP_ScoutsEx(_o);
@@ -174,6 +177,9 @@ class Ruleset {
   }
   
   UWP_ScoutsEx newUWP(Orbit _o, int _size) throws InvalidUWPInvocation {
+    
+    println("@@@ Ruleset.newUWP(Orbit, int)");
+    
     switch(name) {
       case "Scouts (Extended)":
         return new UWP_ScoutsEx(_o, _size);
