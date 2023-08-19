@@ -144,9 +144,13 @@ class Ruleset {
   // TO_DO: should rework UWP handling and variants - need to invoke proper method in each scenario, and fail otherwise
   //  don't care for how we're duplicating this structure...
   UWP newUWP() throws InvalidUWPInvocation {
+    
+    println("@@@ Ruleset.newUWP()");
+    
     switch(name) {
       case "Scouts (Extended)":
       case "MegaTraveller (Extended)":
+        println("@@@ You are here");
         throw new InvalidUWPInvocation();
       case "CT81":
        return new UWP_CT81();

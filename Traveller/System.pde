@@ -20,6 +20,10 @@ class System {
     
     if (random(1) < _density){  // TO_DO: may want to rethink this living in System - move up a level?
       occupied = true;
+      
+      println("@@@ System ctor");
+      
+      
       uwp = generateUWP();
       navalBase = generateNavalBase();
       scoutBase = generateScoutBase();
@@ -53,13 +57,16 @@ class System {
   UWP generateUWP(){
     UWP u = null;
     
+    println("@@@ System.generateUWP()");
+    
     try {
       u = ruleset.newUWP();
     } catch(InvalidUWPInvocation _e) {
       println("Invalid call to ruleset.newUWP");
-      exit();
-    }
-    
+      exit();     // BUG: two problems here:
+    }             //   1) exit doesn't exit, why not? we continue and get a null pointer exception
+                  //       (ah... docs say draw loop is allowed to finish... this isn't useful in this situation...)
+                  //   2) super constructor calls are going down this path...
     return u;
   }
 
@@ -173,6 +180,8 @@ class System_CT81 extends System {
   UWP generateUWP(){    
     UWP u = null;
     
+    println("@@@ System_CT81.generateUWP()");
+    
     try {
       u = ruleset.newUWP();
     } catch(InvalidUWPInvocation _e) {
@@ -283,6 +292,8 @@ class System_ScoutsEx extends System_CT81 {
       
       countGasGiants();
       
+      println("@@@ System_ScoutsEx ctor");
+      
       uwp = mainworld.getUWP();                 
       navalBase = generateNavalBase();          // need to regenerate with the 'true' mainworld UWP - otherwise identical to CT77 
       scoutBase = generateScoutBase();          
@@ -317,6 +328,22 @@ class System_ScoutsEx extends System_CT81 {
       
       militaryBase = _json.getBoolean("Military Base");
     }
+  }
+
+  UWP generateUWP(){    
+    UWP u = null;
+    
+    println("@@@ System_ScoutsEx.generateUWP()");
+    println(this.getClass());
+    
+    try {
+      u = ruleset.newUWP(new Star(this));         // this is a hack solution - only used
+    } catch(InvalidUWPInvocation _e) {            // during super ctor and discarded, so we can create a bogus star
+      println("Invalid call to ruleset.newUWP");  // really should clean this design up
+      exit();
+    }
+    
+    return u;
   }
 
   void countGasGiants(){
