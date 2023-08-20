@@ -285,7 +285,7 @@ class System_ScoutsEx extends System_CT81 {
     super(_coord, _density);
     
     if (occupied){
-      builder = ruleset.newBuilder();          // TO_DO: do we need to keep the builder around after this point?
+      builder = ruleset.newOrbitBuilder();          // TO_DO: do we need to keep the builder around after this point?
       builder.newStar(this);                   // could just do (new StarBuilder()).newStar(this) instead
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       println("Primary: " + primary);      

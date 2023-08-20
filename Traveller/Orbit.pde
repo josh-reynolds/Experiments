@@ -394,6 +394,7 @@ class GasGiant extends Orbit {
 
 interface Habitable {   // distinct from "Habitable Zone" - this just means "has a UWP"
   abstract UWP getUWP();
+  abstract void setUWP(UWP_ScoutsEx _u);
   abstract UWP_ScoutsEx generateUWP();
   abstract void setMainworld(Boolean _isMainworld);
   abstract Boolean isMainworld();
@@ -428,7 +429,8 @@ class Planet extends Orbit implements Habitable {
   }
   
   UWP_ScoutsEx getUWP(){ return uwp; }
-  
+  void setUWP(UWP_ScoutsEx _u){ uwp = _u; } 
+    
   UWP_ScoutsEx generateUWP(){
     if (debug == 2){ println("**** Planet.generateUWP() for " + this.getClass()); }    
     UWP_ScoutsEx u = null;
@@ -494,6 +496,7 @@ class Planetoid extends Orbit implements Habitable {
   }
 
   UWP getUWP(){ return uwp; }
+  void setUWP(UWP_ScoutsEx _u){ uwp = _u; } 
 
   UWP_ScoutsEx generateUWP(){
     if (debug == 2){ println("**** Planetoid.generateUWP() for " + this.getClass()); }

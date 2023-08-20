@@ -18,6 +18,17 @@ class UWP {
     tech     = generateTech();
   }
   
+  UWP(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    starport = _starport;
+    size     = _size;
+    atmo     = _atmo;
+    hydro    = _hydro;
+    pop      = _pop;
+    gov      = _gov;
+    law      = _law; 
+    tech     = _tech;
+  }
+  
   UWP(JSONObject _json){
     starport = _json.getString("Starport").charAt(0);
     size     = _json.getInt("Size");

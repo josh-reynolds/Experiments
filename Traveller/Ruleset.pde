@@ -94,7 +94,7 @@ class Ruleset {
     }
   }
   
-  OrbitBuilder newBuilder(){
+  OrbitBuilder newOrbitBuilder(){
     switch(name) {
       case "CT77":
       case "CT81":
@@ -107,6 +107,17 @@ class Ruleset {
       default:
         return new OrbitBuilder();
     }
+  }
+  
+  UWPBuilder newUWPBuilder(){
+    switch(name) {
+      case "CT77":
+      case "CT81":
+      case "Scouts (Extended)":
+      case "MegaTraveller (Extended)":
+      default:
+        return new UWPBuilder();
+    }    
   }
   
   // primary stars
@@ -140,7 +151,7 @@ class Ruleset {
         return new Star(_barycenter, _orbit, _zone, _parent);
     }
   }
-  
+    
   // TO_DO: should rework UWP handling and variants - need to invoke proper method in each scenario, and fail otherwise
   //  don't care for how we're duplicating this structure...
   UWP newUWP() throws InvalidUWPInvocation {
