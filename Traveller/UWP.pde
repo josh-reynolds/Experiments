@@ -536,7 +536,7 @@ class UWP_MT extends UWP_ScoutsEx {
   // Scouts reverts to +Size as a modifier
   int generateHydro(){
     
-    println("Calling UWP_MT.generateHydro()");
+    println("@@ Calling UWP_MT.generateHydro()");
     
     if (debug == 2){ println("**** UWP_ScoutsEx.generateHydro() for " + this.getClass()); }
     if (planet == null){ return super.generateHydro(); }  // see note above in generateSize()

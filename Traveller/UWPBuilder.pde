@@ -104,6 +104,4 @@ class UWPBuilder {
     
     return roll.one(modifier);
   }  
-  
-  
 }

@@ -25,7 +25,7 @@ SubsectorDensity density;
 Ship ship;
 
 TestSuite tests;
-int debug = 2;
+int debug = 0;
 
 void setup(){
   // calculated per metrics detailed in SubsectorDisplay, adjust if hexRadius changes

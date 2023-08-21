@@ -154,22 +154,22 @@ class Ruleset {
     
   // TO_DO: should rework UWP handling and variants - need to invoke proper method in each scenario, and fail otherwise
   //  don't care for how we're duplicating this structure...
-  UWP newUWP() throws InvalidUWPInvocation {
+  //UWP newUWP() throws InvalidUWPInvocation {
     
-    println("@@@ Ruleset.newUWP()");
+  //  println("@@@ Ruleset.newUWP()");
     
-    switch(name) {
-      case "Scouts (Extended)":
-      case "MegaTraveller (Extended)":
-        println("@@@ You are here");
-        throw new InvalidUWPInvocation();
-      case "CT81":
-       return new UWP_CT81();
-      case "CT77":
-      default:
-        return new UWP();      
-    }
-  }
+  //  switch(name) {
+  //    case "Scouts (Extended)":
+  //    case "MegaTraveller (Extended)":
+  //      println("@@@ You are here");
+  //      throw new InvalidUWPInvocation();
+  //    case "CT81":
+  //     return new UWP_CT81();
+  //    case "CT77":
+  //    default:
+  //      return new UWP();      
+  //  }
+  //}
   
   UWP_ScoutsEx newUWP(Orbit _o) throws InvalidUWPInvocation {
     

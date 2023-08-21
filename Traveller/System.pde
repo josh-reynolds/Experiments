@@ -20,11 +20,8 @@ class System {
     
     if (random(1) < _density){  // TO_DO: may want to rethink this living in System - move up a level?
       occupied = true;
-      
-      println("@@@ System ctor");
-      
-      
-      uwp = generateUWP();
+      UWPBuilder ub = ruleset.newUWPBuilder();
+      ub.newUWPFor(this);
       navalBase = generateNavalBase();
       scoutBase = generateScoutBase();
       if (roll.two() <= 9){ gasGiant = true; }  // this is in Book 2, p.35
@@ -52,22 +49,6 @@ class System {
   
   TradeClass generateTradeClass(UWP _uwp){
     return new TradeClass(_uwp);
-  }
-  
-  UWP generateUWP(){
-    UWP u = null;
-    
-    println("@@@ System.generateUWP()");
-    
-    try {
-      u = ruleset.newUWP();
-    } catch(InvalidUWPInvocation _e) {
-      println("Invalid call to ruleset.newUWP");
-      exit();     // BUG: two problems here:
-    }             //   1) exit doesn't exit, why not? we continue and get a null pointer exception
-                  //       (ah... docs say draw loop is allowed to finish... this isn't useful in this situation...)
-                  //   2) super constructor calls are going down this path...
-    return u;
   }
 
   UWP generateUWP(JSONObject _json){
@@ -175,21 +156,6 @@ class System_CT81 extends System {
   
   TradeClass generateTradeClass(UWP _uwp){
     return new TradeClass_CT81(_uwp);   
-  }
-  
-  UWP generateUWP(){    
-    UWP u = null;
-    
-    println("@@@ System_CT81.generateUWP()");
-    
-    try {
-      u = ruleset.newUWP();
-    } catch(InvalidUWPInvocation _e) {
-      println("Invalid call to ruleset.newUWP");
-      exit();
-    }
-    
-    return u;
   }
   
   UWP generateUWP(JSONObject _json){

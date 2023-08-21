@@ -136,6 +136,8 @@
 //  * DONE REFACTOR: move Orbit composite creation to a Builder class
 //  * FIX  BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  * DONE REFACTOR: duplicated code in UWP_ScoutsEx ctors
+//  * DONE Introduce UWPBuilder to manage ruleset variation
+//  * .... Migrate UWP generation to the Builder
 //  * .... 'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  * .... Add MegaTraveller extended generation ruleset
 //  * .... Review/incorporate MegaTraveller errata
