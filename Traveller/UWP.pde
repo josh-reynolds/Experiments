@@ -8,14 +8,14 @@ class UWP {
   UWP(){
     roll = new Dice();
     
-    starport = generateStarport();
-    size     = generateSize();
-    atmo     = generateAtmo();
-    hydro    = generateHydro();
-    pop      = generatePop();
-    gov      = generateGov();
-    law      = generateLaw(); 
-    tech     = generateTech();
+    //starport = generateStarport();
+    //size     = generateSize();
+    //atmo     = generateAtmo();
+    //hydro    = generateHydro();
+    //pop      = generatePop();
+    //gov      = generateGov();
+    //law      = generateLaw(); 
+    //tech     = generateTech();
   }
   
   UWP(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){

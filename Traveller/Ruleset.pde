@@ -171,21 +171,21 @@ class Ruleset {
   //  }
   //}
   
-  UWP_ScoutsEx newUWP(Orbit _o) throws InvalidUWPInvocation {
+  //UWP_ScoutsEx newUWP(Orbit _o) throws InvalidUWPInvocation {
     
-    println("@@@ Ruleset.newUWP(Orbit)");
+  //  println("@@@ Ruleset.newUWP(Orbit)");
     
-    switch(name) {
-      case "Scouts (Extended)":
-        return new UWP_ScoutsEx(_o);
-      case "MegaTraveller (Extended)":
-        return new UWP_MT(_o);
-      case "CT77":
-      case "CT81":
-      default:
-        throw new InvalidUWPInvocation();      
-    }
-  }
+  //  switch(name) {
+  //    case "Scouts (Extended)":
+  //      return new UWP_ScoutsEx(_o);
+  //    case "MegaTraveller (Extended)":
+  //      return new UWP_MT(_o);
+  //    case "CT77":
+  //    case "CT81":
+  //    default:
+  //      throw new InvalidUWPInvocation();      
+  //  }
+  //}
   
   UWP_ScoutsEx newUWP(Orbit _o, int _size) throws InvalidUWPInvocation {
     

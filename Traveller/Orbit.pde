@@ -395,7 +395,7 @@ class GasGiant extends Orbit {
 interface Habitable {   // distinct from "Habitable Zone" - this just means "has a UWP"
   abstract UWP getUWP();
   abstract void setUWP(UWP_ScoutsEx _u);
-  abstract UWP_ScoutsEx generateUWP();
+  //abstract UWP_ScoutsEx generateUWP();
   abstract void setMainworld(Boolean _isMainworld);
   abstract Boolean isMainworld();
   abstract void completeUWP();
@@ -411,7 +411,10 @@ class Planet extends Orbit implements Habitable {
   Planet(Orbit _barycenter, int _orbit, String _zone, OrbitBuilder _ob){ 
     super(_barycenter, _orbit, _zone);
     if (debug == 2){ println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
-    uwp = generateUWP();
+    //uwp = generateUWP();
+
+    UWPBuilder ub = ruleset.newUWPBuilder();
+    ub.newUWPFor(this);
 
     int satelliteCount = 0;
     if (!isMoon()){ 
@@ -431,19 +434,19 @@ class Planet extends Orbit implements Habitable {
   UWP_ScoutsEx getUWP(){ return uwp; }
   void setUWP(UWP_ScoutsEx _u){ uwp = _u; } 
     
-  UWP_ScoutsEx generateUWP(){
-    if (debug == 2){ println("**** Planet.generateUWP() for " + this.getClass()); }    
-    UWP_ScoutsEx u = null;
+  //UWP_ScoutsEx generateUWP(){
+  //  if (debug == 2){ println("**** Planet.generateUWP() for " + this.getClass()); }    
+  //  UWP_ScoutsEx u = null;
     
-    try {
-      u = ruleset.newUWP(this);
-    } catch(InvalidUWPInvocation _e) {
-      println("Invalid call to ruleset.newUWP");
-      exit();
-    }
+  //  try {
+  //    u = ruleset.newUWP(this);
+  //  } catch(InvalidUWPInvocation _e) {
+  //    println("Invalid call to ruleset.newUWP");
+  //    exit();
+  //  }
     
-    return u;
-  }
+  //  return u;
+  //}
 
   void setMainworld(Boolean _isMainworld){ mainworld = _isMainworld; }
   Boolean isMainworld(){ return mainworld; }
@@ -485,7 +488,11 @@ class Planetoid extends Orbit implements Habitable {
   
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone); 
-    uwp = generateUWP();
+    //uwp = generateUWP();
+    
+    UWPBuilder ub = ruleset.newUWPBuilder();
+    ub.newUWPFor(this);
+    
     mainworld = false;
     facilities = new ArrayList();
   }
@@ -498,19 +505,19 @@ class Planetoid extends Orbit implements Habitable {
   UWP getUWP(){ return uwp; }
   void setUWP(UWP_ScoutsEx _u){ uwp = _u; } 
 
-  UWP_ScoutsEx generateUWP(){
-    if (debug == 2){ println("**** Planetoid.generateUWP() for " + this.getClass()); }
-    UWP_ScoutsEx u = null;
+  //UWP_ScoutsEx generateUWP(){
+  //  if (debug == 2){ println("**** Planetoid.generateUWP() for " + this.getClass()); }
+  //  UWP_ScoutsEx u = null;
     
-    try {
-      u = ruleset.newUWP(this);
-    } catch(InvalidUWPInvocation _e) {
-      println("Invalid call to ruleset.newUWP");
-      exit();
-    }
+  //  try {
+  //    u = ruleset.newUWP(this);
+  //  } catch(InvalidUWPInvocation _e) {
+  //    println("Invalid call to ruleset.newUWP");
+  //    exit();
+  //  }
     
-    return u;
-  }
+  //  return u;
+  //}
 
   void setMainworld(Boolean _isMainworld){ mainworld = _isMainworld; }
   Boolean isMainworld(){ return mainworld; }
@@ -560,6 +567,10 @@ class Moon extends Planet {
     uwp = generateUWP(_size); // super generates a UWP but doesn't have a size parameter
                               // and doing this via polymorphism seems like more code than
                               // this way
+                              
+    //UWPBuilder ub = ruleset.newUWPBuilder();
+    //ub.newUWPFor(this, _size);
+                              
   }
   
   Moon(Orbit _barycenter, JSONObject _json){
