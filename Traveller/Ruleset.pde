@@ -111,8 +111,9 @@ class Ruleset {
   
   UWPBuilder newUWPBuilder(){
     switch(name) {
-      case "CT77":
       case "CT81":
+        return new UWPBuilder_CT81();
+      case "CT77":
       case "Scouts (Extended)":
       case "MegaTraveller (Extended)":
       default:

@@ -105,3 +105,20 @@ class UWPBuilder {
     return roll.one(modifier);
   }  
 }
+
+class UWPBuilder_CT81 extends UWPBuilder {
+  UWPBuilder_CT81(){ super(); }
+  
+  // size 1 worlds are no longer forced to 0 hydro
+  // discrepancy between text (p. 7) and summary table (p. 12):
+  //  - table is identical to CT77 (other than change above)
+  //  - text adds ATMO instead of SIZE; using that here
+  int generateHydro(int _size, int _atmo){
+    int result    = roll.two(_atmo - 7);
+    if (_atmo <= 1 || _atmo >= 10){ result -= 4; }
+    if (_size == 0 || result < 0){ result = 0; }
+    if (result > 10) { result = 10; }
+    return result;
+  }
+  
+}

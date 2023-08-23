@@ -171,6 +171,9 @@ class UWP {
   }
 }
 
+
+// TO_DO: with the generation method moving to the Builder, no need for a subclass here
+//  will be removed
 class UWP_CT81 extends UWP {
   UWP_CT81(){
     super();
@@ -191,17 +194,17 @@ class UWP_CT81 extends UWP {
     super(_json);
   }
 
-  // size 1 worlds are no longer forced to 0 hydro
-  // discrepancy between text (p. 7) and summary table (p. 12):
-  //  - table is identical to CT77 (other than change above)
-  //  - text adds ATMO instead of SIZE; using that here
-  int generateHydro(){
-    int result    = roll.two(atmo - 7);
-    if (atmo <= 1 || atmo >= 10){ result -= 4; }
-    if (size == 0 || result < 0){ result = 0; }
-    if (result > 10) { result = 10; }
-    return result;
-  }
+  //// size 1 worlds are no longer forced to 0 hydro
+  //// discrepancy between text (p. 7) and summary table (p. 12):
+  ////  - table is identical to CT77 (other than change above)
+  ////  - text adds ATMO instead of SIZE; using that here
+  //int generateHydro(){
+  //  int result    = roll.two(atmo - 7);
+  //  if (atmo <= 1 || atmo >= 10){ result -= 4; }
+  //  if (size == 0 || result < 0){ result = 0; }
+  //  if (result > 10) { result = 10; }
+  //  return result;
+  //}
 }
 
 class UWP_ScoutsEx extends UWP {
