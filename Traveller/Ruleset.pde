@@ -152,42 +152,8 @@ class Ruleset {
         return new Star(_barycenter, _orbit, _zone, _parent);
     }
   }
-    
-  // TO_DO: should rework UWP handling and variants - need to invoke proper method in each scenario, and fail otherwise
-  //  don't care for how we're duplicating this structure...
-  //UWP newUWP() throws InvalidUWPInvocation {
-    
-  //  println("@@@ Ruleset.newUWP()");
-    
-  //  switch(name) {
-  //    case "Scouts (Extended)":
-  //    case "MegaTraveller (Extended)":
-  //      println("@@@ You are here");
-  //      throw new InvalidUWPInvocation();
-  //    case "CT81":
-  //     return new UWP_CT81();
-  //    case "CT77":
-  //    default:
-  //      return new UWP();      
-  //  }
-  //}
-  
-  //UWP_ScoutsEx newUWP(Orbit _o) throws InvalidUWPInvocation {
-    
-  //  println("@@@ Ruleset.newUWP(Orbit)");
-    
-  //  switch(name) {
-  //    case "Scouts (Extended)":
-  //      return new UWP_ScoutsEx(_o);
-  //    case "MegaTraveller (Extended)":
-  //      return new UWP_MT(_o);
-  //    case "CT77":
-  //    case "CT81":
-  //    default:
-  //      throw new InvalidUWPInvocation();      
-  //  }
-  //}
-  
+   
+  // TO_DO: working towards this one - will be removed once the Builder is fully operational
   UWP_ScoutsEx newUWP(Orbit _o, int _size) throws InvalidUWPInvocation {
     
     println("@@@ Ruleset.newUWP(Orbit, int)");
@@ -205,4 +171,5 @@ class Ruleset {
   }
 }
 
+// TO_DO: once all the newUWP() methods above are gone, we won't need this anymore
 class InvalidUWPInvocation extends Exception {}

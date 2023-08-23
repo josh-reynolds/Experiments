@@ -159,7 +159,7 @@ class System_CT81 extends System {
   }
   
   UWP generateUWP(JSONObject _json){
-    return new UWP_CT81(_json);
+    return new UWP(_json);
   }
   
   String generateTravelZone(){

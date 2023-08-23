@@ -1,3 +1,4 @@
+// basic UWP Builder implements the CT77 rules from Book 3
 class UWPBuilder {
   Dice roll;
 
@@ -108,6 +109,15 @@ class UWPBuilder {
 
 class UWPBuilder_CT81 extends UWPBuilder {
   UWPBuilder_CT81(){ super(); }
+ 
+  // starport identical to CT77
+  // size identical to CT77
+  // atmo identical to CT77
+  // hydro slightly different - see override below
+  // pop identical to CT77
+  // gov identical to CT77
+  // law identical to CT77
+  // tech identical to CT77
   
   // size 1 worlds are no longer forced to 0 hydro
   // discrepancy between text (p. 7) and summary table (p. 12):
