@@ -19,8 +19,31 @@ class UWPBuilder {
     _s.uwp = new UWP(starport, size, atmo, hydro, pop, gov, law, tech);
   }
   
+  // slightly unusual - instead of polymorphism, we have parallel sets of 
+  // methods. I expect this to change as the design matures but ought to work for now.
   void newUWPFor(Habitable _h){
-    _h.setUWP(new UWP_ScoutsEx((Orbit)_h));
+    if (debug == 2){ println("** UWPBuilder.newUWPFor(" + _h.getClass() + ")"); }
+    Orbit o = (Orbit)_h;
+    _h.setUWP(new UWP_ScoutsEx(o));   // this line goes away once we translate the ctor into this method
+    
+    //isPlanet = planet.isPlanet();
+    println("isPlanet? : " + (o.isPlanet()));
+
+    //size  = generateSize();
+    int size = generateSizeFor(o);
+    
+    //generateBaseUWPValues();    // TO_DO: need to implement Scouts & MT overrides
+    int atmo = generateAtmo(size);
+    int hydro = generateHydro(size, atmo);
+    int pop = generatePop();
+    
+    // temporary values - will be populated once mainworld is established
+    char starport = 'X';
+    int gov       = 0;
+    int law       = 0;
+    int tech      = 0;
+    
+    println(str(starport) + str(size) + str(atmo) + str(hydro) + str(pop) + str(gov) + str(law) + "-" + str(tech)); 
   }
   
   char generateStarport(){
@@ -51,6 +74,23 @@ class UWPBuilder {
   }
   
   int generateSize(){ return roll.two(-2); }
+    
+  int generateSizeFor(Orbit _o){
+    if (debug == 2){ println("**** UWPBuilder.generateSizeFor(Orbit) for " + this.getClass()); }  
+    if (_o.isPlanetoid()){ return 0; }
+
+    // MegaTraveller follows the same modifiers (MTRM p. 28)
+    int modifier = 0;
+    if (_o.getOrbitNumber() == 0  ){ modifier -= 5; }
+    if (_o.getOrbitNumber() == 1  ){ modifier -= 4; }
+    if (_o.getOrbitNumber() == 2  ){ modifier -= 2; }
+    if (_o.isOrbitingClassM()){ modifier -= 2; }
+    int result = roll.two(modifier - 2);  
+    
+    if (result <= 0){ result = 0; }
+
+    return result;
+  }
   
   int generateAtmo(int _size){
     int result = roll.two(_size - 7);
@@ -130,5 +170,4 @@ class UWPBuilder_CT81 extends UWPBuilder {
     if (result > 10) { result = 10; }
     return result;
   }
-  
 }
