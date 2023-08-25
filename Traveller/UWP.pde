@@ -19,6 +19,8 @@ class UWP {
   }
   
   UWP(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    roll = new Dice();   // temporary scaffolding while we refactor this away
+    
     starport = _starport;
     size     = _size;
     atmo     = _atmo;
@@ -193,6 +195,12 @@ class UWP_ScoutsEx extends UWP {
     size  = generateSize();
     
     generateBaseUWPValues();
+  }
+  
+  UWP_ScoutsEx(Orbit _o, char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    super(_starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
+    planet = _o;
+    isPlanet = planet.isPlanet();
   }
   
   // Moons have size established before UWP is generated, so need an alternate ctor

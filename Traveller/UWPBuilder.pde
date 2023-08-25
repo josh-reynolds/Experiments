@@ -20,22 +20,31 @@ class UWPBuilder {
   }
   
   // slightly unusual - instead of polymorphism, we have parallel sets of 
-  // methods. I expect this to change as the design matures but ought to work for now.
+  // methods. I expect this to change as the design matures but ought to work for now. 
+  
+  // review why we're avoiding polymorphism - not sure the argument holds water
+  //  we ran into inheritance issues through super ctor calls in the UWP class hierarchy
+  //   trying to avoid that here
+  //  but the Builder ctor is very simple, shouldn't have the same problems here
+  //  and this parallel structure is getting ugly already (see comments on generateAtmoFor(Orbit) below)
+  //  going to keep pushing a bit, but pretty sure we shift all this down
+  
+  // the difference between these two legs is the target/parent object:
+  //  - "simple" rulesets attach the UWP to the System
+  //  - more complex rulesets have multiple Orbits per System, each with a UWP
+  // what if the target was a field on this class populated in the ctor?
+  // then we could unify the signatures of the newUWPFor(x) methods and use them polymorphically in clients 
   void newUWPFor(Habitable _h){
     if (debug == 2){ println("** UWPBuilder.newUWPFor(" + _h.getClass() + ")"); }
     Orbit o = (Orbit)_h;
-    _h.setUWP(new UWP_ScoutsEx(o));   // this line goes away once we translate the ctor into this method
     
     //isPlanet = planet.isPlanet();
     println("isPlanet? : " + (o.isPlanet()));
 
-    //size  = generateSize();
     int size = generateSizeFor(o);
-    
-    //generateBaseUWPValues();    // TO_DO: need to implement Scouts & MT overrides
-    int atmo = generateAtmo(size);
-    int hydro = generateHydro(size, atmo);
-    int pop = generatePop();
+    int atmo = generateAtmoFor(o, size);
+    int hydro = generateHydroFor(o, size, atmo);
+    int pop = generatePopFor(o, size, atmo);
     
     // temporary values - will be populated once mainworld is established
     char starport = 'X';
@@ -43,7 +52,8 @@ class UWPBuilder {
     int law       = 0;
     int tech      = 0;
     
-    println(str(starport) + str(size) + str(atmo) + str(hydro) + str(pop) + str(gov) + str(law) + "-" + str(tech)); 
+    println(str(starport) + str(size) + str(atmo) + str(hydro) + str(pop) + str(gov) + str(law) + "-" + str(tech));
+    _h.setUWP(new UWP_ScoutsEx(o, starport, size, atmo, hydro, pop, gov, law, tech));
   }
   
   char generateStarport(){
@@ -98,6 +108,9 @@ class UWPBuilder {
     return result;
   }
   
+  // don't like this - dummy method in the parent to allow overrides
+  int generateAtmoFor(Orbit _o, int _size){ return 0; }
+  
   int generateHydro(int _size, int _atmo){
     int result = roll.two(_size - 7);
     if (_atmo <= 1 || _atmo >= 10){ result -= 4; }
@@ -106,7 +119,13 @@ class UWPBuilder {
     return result;
   }
 
+  // see comments above generateAtmoFor(Orbit)
+  int generateHydroFor(Orbit _o, int _size, int _atmo){ return 0; }
+
   int generatePop(){ return roll.two(-2); }
+
+  // see comments above generateAtmoFor(Orbit)
+  int generatePopFor(Orbit _o, int _size, int _atmo){ return 0; }
   
   int generateGov(int _pop){
     int result = roll.two(_pop - 7);
@@ -170,4 +189,93 @@ class UWPBuilder_CT81 extends UWPBuilder {
     if (result > 10) { result = 10; }
     return result;
   }
+}
+
+class UWPBuilder_ScoutsEx extends UWPBuilder {
+  UWPBuilder_ScoutsEx(){ super(); }
+  
+  int generateAtmoFor(Orbit _o, int _size){   // tricky - with the new parameter, this is no longer an override...
+    println("@@@ UWPBuilder_ScoutsEx.generateAtmoFor()");
+
+    if (debug == 2){ println("**** UWPBuilder_ScoutsEx.generateAtmo() for " + _o.getClass()); }
+    
+    // MegaTraveller follows the same procedure (MTRM p. 28)
+    int modifier = 0;
+    if (_o.isInnerZone()){ 
+      if (_o.isMoon()){    // Scouts p.33 + p.37 - Moons are _almost_ identical for Atmo determination
+        modifier -= 4;
+      } else {
+        modifier -= 2;
+      }
+    }
+    if (_o.isOuterZone()){ modifier -= 4; }
+    
+    int result = roll.two(_size + modifier - 7);
+
+    Boolean farOuter = false;
+    if (_o.isMoon()){
+      farOuter = _o.barycenter.isAtLeastTwoBeyondHabitable();
+    } else {
+      farOuter = _o.isAtLeastTwoBeyondHabitable();
+    }
+    if (farOuter && roll.two() == 12){ result = 10; }
+
+    if (_size == 0 || result < 0){ result = 0; }        // includes size 'S' (numerically zero)
+    if (_size <= 1 && _o.isMoon()){ result = 0; }   // see note above          
+          
+    return result;  
+  }
+  
+  int generateHydroFor(Orbit _o, int _size, int _atmo){
+    println("@@@ UWPBuilder_ScoutsEx.generateHydroFor()");   
+    
+    if (debug == 2){ println("**** UWPBuilder_ScoutsEx.generateHydro() for " + _o.getClass()); }
+
+    if (_o.isInnerZone()          ){ return 0; }
+    if (_size == 0                ){ return 0; }       // includes size 'S' (numerically zero)
+    if (_size == 1 && !_o.isMoon()){ return 0; }       // Scouts p.33 + p.37 - as with atmo, Moons are _almost_ identical
+    
+    int modifier = 0;
+    if (_o.isOuterZone()){
+      if (_o.isMoon()){                               // see note above
+        modifier -= 4;
+      } else {
+        modifier -= 2;
+      }
+    }
+    if (_atmo <= 1 || _atmo >= 10){ modifier -= 4; }
+     
+    int result = roll.two(_size + modifier - 7);
+    result = constrain(result, 0, 10);    
+    
+    return result;  
+  }
+  
+  int generatePopFor(Orbit _o, int _size, int _atmo){
+    println("@@@ UWPBuilder_ScoutsEx.generatePopFor()");
+    
+    if (debug == 2){ println("**** UWP_ScoutsEx.generatePop() for " + this.getClass()); }
+    
+    if (_o.isRing()){ return 0; }
+    
+    int modifier = 0;
+    if (_o.isInnerZone()     ){ modifier -= 5; }
+    if (_o.isOuterZone()     ){
+      if (_o.isMoon()){                               // Scouts p.33 + p.37 - as with atmo, Moons are _almost_ identical
+        modifier -= 4;
+      } else {
+        modifier -= 3;
+      } 
+    }
+    if (!(_atmo == 0 || _atmo == 5 ||
+          _atmo == 6 || _atmo == 8)   ){ modifier -= 2; }
+    if (_o.isMoon() && _atmo == 0){ modifier -= 2; }   // see note above
+    
+    if (_o.isMoon() && _size <= 4){ modifier -= 2; }   // see note above
+     
+    int result = roll.two(modifier - 2);
+    if (result < 0){ result = 0; }
+    
+    return result;
+  } 
 }
