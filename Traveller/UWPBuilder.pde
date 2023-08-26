@@ -38,10 +38,29 @@ class UWPBuilder {
     if (debug == 2){ println("** UWPBuilder.newUWPFor(" + _h.getClass() + ")"); }
     Orbit o = (Orbit)_h;
     
-    //isPlanet = planet.isPlanet();
-    println("isPlanet? : " + (o.isPlanet()));
-
     int size = generateSizeFor(o);
+    int atmo = generateAtmoFor(o, size);
+    int hydro = generateHydroFor(o, size, atmo);
+    int pop = generatePopFor(o, size, atmo);
+    
+    // temporary values - will be populated once mainworld is established
+    char starport = 'X';
+    int gov       = 0;
+    int law       = 0;
+    int tech      = 0;
+    
+    println(str(starport) + str(size) + str(atmo) + str(hydro) + str(pop) + str(gov) + str(law) + "-" + str(tech));
+    _h.setUWP(new UWP_ScoutsEx(o, starport, size, atmo, hydro, pop, gov, law, tech));
+  }
+  
+  // Moons have size established before UWP is generated, so need an alternate ctor
+  // should be opportunities to refactor common code with newUWPFor(Habitable)
+  void newUWPFor(Habitable _h, int _size){
+    if (debug == 2){ println("** UWPBuilder.newUWPFor(" + _h.getClass() + ", " + _size + ")"); }
+    Orbit o = (Orbit)_h;
+    int size = _size;
+    if (size <= 0){ size = 0; }   // preserving from old ctor - need to review if this can actually come in as negative value
+    
     int atmo = generateAtmoFor(o, size);
     int hydro = generateHydroFor(o, size, atmo);
     int pop = generatePopFor(o, size, atmo);
@@ -278,4 +297,37 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     
     return result;
   } 
+}
+
+class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
+  
+  // TO_DO: need to implement generateHydro()
+  
+  // Scouts reverts to +Size as a modifier
+  //int generateHydro(){
+    
+  //  println("@@ Calling UWP_MT.generateHydro()");
+    
+  //  if (debug == 2){ println("**** UWP_ScoutsEx.generateHydro() for " + this.getClass()); }
+  //  if (planet == null){ return super.generateHydro(); }  // see note above in generateSize()
+
+  //  if (planet.isInnerZone()         ){ return 0; }
+  //  if (size == 0                    ){ return 0; }       // includes size 'S' (numerically zero)
+  //  if (size == 1 && !planet.isMoon()){ return 0; }       // Scouts p.33 + p.37 - as with atmo, Moons are _almost_ identical
+    
+  //  int modifier = 0;
+  //  if (planet.isOuterZone()){
+  //    if (planet.isMoon()){                               // see note above
+  //      modifier -= 4;
+  //    } else {
+  //      modifier -= 2;
+  //    }
+  //  }
+  //  if (atmo <= 1 || atmo >= 10){ modifier -= 4; }
+     
+  //  int result = roll.two(size + modifier - 7);
+  //  result = constrain(result, 0, 10);    
+    
+  //  return result;    
+  //}
 }

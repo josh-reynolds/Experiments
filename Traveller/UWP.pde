@@ -4,19 +4,8 @@ class UWP {
   char starport;
   int size, atmo, hydro, pop, gov, law, tech; 
   Dice roll;
-  
-  UWP(){
-    roll = new Dice();
-    
-    //starport = generateStarport();
-    //size     = generateSize();
-    //atmo     = generateAtmo();
-    //hydro    = generateHydro();
-    //pop      = generatePop();
-    //gov      = generateGov();
-    //law      = generateLaw(); 
-    //tech     = generateTech();
-  }
+
+  UWP(){}  // need to define default ctor for subclasses
   
   UWP(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
     roll = new Dice();   // temporary scaffolding while we refactor this away
@@ -68,24 +57,6 @@ class UWP {
         return 'Z';
     }
   }
-  
-  int generateSize(){ return roll.two(-2); }
-  
-  int generateAtmo(){
-    int result = roll.two(size - 7);
-    if (size == 0 || result < 0){ result = 0; }
-    return result;
-  }
-  
-  int generateHydro(){
-    int result = roll.two(size - 7);
-    if (atmo <= 1 || atmo >= 10){ result -= 4; }
-    if (size <= 1 || result < 0){ result = 0; }
-    if (result > 10) { result = 10; }
-    return result;
-  }
-
-  int generatePop(){ return roll.two(-2); }
   
   int generateGov(){
     int result = roll.two(pop - 7);
@@ -179,53 +150,12 @@ class UWP_ScoutsEx extends UWP {
                              // but this causes issues with the system-level UWP when loaded from JSON
                              // adding this flag to persist the relevant information
   
-  UWP_ScoutsEx(){}
-  
-  UWP_ScoutsEx(Orbit _o){
-    if (debug == 2){ println("** UWP_ScoutsEx ctor(" + _o.getClass() + ")"); }
-    // need to unravel inheritance problem
-    //  super ctor is automatically called before any of this
-    //  but with the overloaded methods extending the template, 
-    //  we have null pointers to worry about
-    planet = _o;
-    isPlanet = planet.isPlanet();
-    
-    println("Inside UWP_ScoutsEx ctor");
-    
-    size  = generateSize();
-    
-    generateBaseUWPValues();
-  }
+  UWP_ScoutsEx(){}  // need to define default ctor for subclasses
   
   UWP_ScoutsEx(Orbit _o, char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
     super(_starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
     planet = _o;
     isPlanet = planet.isPlanet();
-  }
-  
-  // Moons have size established before UWP is generated, so need an alternate ctor
-  UWP_ScoutsEx(Orbit _o, int _size){
-    if (debug == 2){ println("** UWP_ScoutsEx Moon ctor(" + _o.getClass() + ", " + _size + ")"); }
-    
-    planet = _o;
-    isPlanet = planet.isPlanet();
-    
-    size = _size;    
-    if (size <= 0){ size = 0; }
-    
-    generateBaseUWPValues();
-  }
-  
-  void generateBaseUWPValues(){
-    atmo  = generateAtmo();
-    hydro = generateHydro();
-    pop   = generatePop();
-
-    // temporary values - will be populated once mainworld is established
-    starport = 'X';
-    gov      = 0;
-    law      = 0; 
-    tech     = 0;    
   }
   
   void completeUWP(Boolean _isMainworld){
@@ -288,107 +218,6 @@ class UWP_ScoutsEx extends UWP {
     gov      = unhex(_uwp.substring(5,6));
     law      = unhex(_uwp.substring(6,7));
     tech     = unModifiedHexChar(_uwp.substring(8,9)); // skip the dash character, and handle Traveller eHex
-  }
-  
-  int generateSize(){
-    if (debug == 2){ println("**** UWP_ScoutsEx.generateSize() for " + this.getClass()); }  
-    if (planet == null){ return super.generateSize(); }  // hacky approach to deal with automatic call to super ctor
-    if (planet.isPlanetoid()){ return 0; }
-
-    // MegaTraveller follows the same modifiers (MTRM p. 28)
-    int modifier = 0;
-    if (planet.getOrbitNumber() == 0  ){ modifier -= 5; }
-    if (planet.getOrbitNumber() == 1  ){ modifier -= 4; }
-    if (planet.getOrbitNumber() == 2  ){ modifier -= 2; }
-    if (planet.isOrbitingClassM()){ modifier -= 2; }
-    int result = roll.two(modifier - 2);  
-    
-    if (result <= 0){ result = 0; }
-
-    return result;
-  }
-  
-  int generateAtmo(){
-    if (debug == 2){ println("**** UWP_ScoutsEx.generateAtmo() for " + this.getClass()); }
-    if (planet == null){ return super.generateAtmo(); }  // see note above in generateSize()
-    
-    // MegaTraveller follows the same procedure (MTRM p. 28)
-    int modifier = 0;
-    if (planet.isInnerZone()){ 
-      if (planet.isMoon()){    // Scouts p.33 + p.37 - Moons are _almost_ identical for Atmo determination
-        modifier -= 4;
-      } else {
-        modifier -= 2;
-      }
-    }
-    if (planet.isOuterZone()){ modifier -= 4; }
-    
-    int result = roll.two(size + modifier - 7);
-
-    Boolean farOuter = false;
-    if (planet.isMoon()){
-      farOuter = planet.barycenter.isAtLeastTwoBeyondHabitable();
-    } else {
-      farOuter = planet.isAtLeastTwoBeyondHabitable();
-    }
-    if (farOuter && roll.two() == 12){ result = 10; }
-
-    if (size == 0 || result < 0){ result = 0; }        // includes size 'S' (numerically zero)
-    if (size <= 1 && planet.isMoon()){ result = 0; }   // see note above          
-          
-    return result;    
-  }
-  
-  // Scouts reverts to +Size as a modifier
-  int generateHydro(){
-    if (debug == 2){ println("**** UWP_ScoutsEx.generateHydro() for " + this.getClass()); }
-    if (planet == null){ return super.generateHydro(); }  // see note above in generateSize()
-
-    if (planet.isInnerZone()         ){ return 0; }
-    if (size == 0                    ){ return 0; }       // includes size 'S' (numerically zero)
-    if (size == 1 && !planet.isMoon()){ return 0; }       // Scouts p.33 + p.37 - as with atmo, Moons are _almost_ identical
-    
-    int modifier = 0;
-    if (planet.isOuterZone()){
-      if (planet.isMoon()){                               // see note above
-        modifier -= 4;
-      } else {
-        modifier -= 2;
-      }
-    }
-    if (atmo <= 1 || atmo >= 10){ modifier -= 4; }
-     
-    int result = roll.two(size + modifier - 7);
-    result = constrain(result, 0, 10);    
-    
-    return result;    
-  }
-  
-  int generatePop(){
-    if (debug == 2){ println("**** UWP_ScoutsEx.generatePop() for " + this.getClass()); }
-    if (planet == null){ return super.generatePop(); }  // see note above in generateSize()
-    
-    if (planet.isRing()){ return 0; }
-    
-    int modifier = 0;
-    if (planet.isInnerZone()     ){ modifier -= 5; }
-    if (planet.isOuterZone()     ){
-      if (planet.isMoon()){                               // Scouts p.33 + p.37 - as with atmo, Moons are _almost_ identical
-        modifier -= 4;
-      } else {
-        modifier -= 3;
-      } 
-    }
-    if (!(atmo == 0 || atmo == 5 ||
-          atmo == 6 || atmo == 8)   ){ modifier -= 2; }
-    if (planet.isMoon() && atmo == 0){ modifier -= 2; }   // see note above
-    
-    if (planet.isMoon() && size <= 4){ modifier -= 2; }   // see note above
-     
-    int result = roll.two(modifier - 2);
-    if (result < 0){ result = 0; }
-    
-    return result;
   }
   
   int generateSubordinateGov(int _mainworldGov){
@@ -497,42 +326,4 @@ class UWP_ScoutsEx extends UWP {
     }
     return result;
   }
-}
-
-class UWP_MT extends UWP_ScoutsEx {
-  UWP_MT(){}
-  UWP_MT(Orbit _o){ super(_o); 
-
-    println("@@@ exiting UWP_MT ctor(Orbit)");
-
-  }
-  UWP_MT(Orbit _o, int _size){ super(_o, _size); }
-  
-  // Scouts reverts to +Size as a modifier
-  int generateHydro(){
-    
-    println("@@ Calling UWP_MT.generateHydro()");
-    
-    if (debug == 2){ println("**** UWP_ScoutsEx.generateHydro() for " + this.getClass()); }
-    if (planet == null){ return super.generateHydro(); }  // see note above in generateSize()
-
-    if (planet.isInnerZone()         ){ return 0; }
-    if (size == 0                    ){ return 0; }       // includes size 'S' (numerically zero)
-    if (size == 1 && !planet.isMoon()){ return 0; }       // Scouts p.33 + p.37 - as with atmo, Moons are _almost_ identical
-    
-    int modifier = 0;
-    if (planet.isOuterZone()){
-      if (planet.isMoon()){                               // see note above
-        modifier -= 4;
-      } else {
-        modifier -= 2;
-      }
-    }
-    if (atmo <= 1 || atmo >= 10){ modifier -= 4; }
-     
-    int result = roll.two(size + modifier - 7);
-    result = constrain(result, 0, 10);    
-    
-    return result;    
-  }  
 }

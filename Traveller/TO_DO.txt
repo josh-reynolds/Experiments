@@ -138,6 +138,7 @@
 //  * DONE REFACTOR: duplicated code in UWP_ScoutsEx ctors
 //  * DONE Introduce UWPBuilder to manage ruleset variation
 //  * .... Migrate UWP generation to the Builder
+//  * .... Unravel inheritance issues in UWP hierarchy
 //  * .... 'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  * .... Add MegaTraveller extended generation ruleset
 //  * .... Review/incorporate MegaTraveller errata
@@ -151,7 +152,6 @@
 //  *      Add MongTrav generation ruleset
 //  *      Add T20 generation ruleset
 //  *      Add GURPS Traveller First In generation ruleset
-//  *      Unravel inheritance issues in UWP hierarchy
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Assess including companions of companions in getCompanions() result
 //  *      Assess adding "two beyond habitable" code to orbital zone data file
