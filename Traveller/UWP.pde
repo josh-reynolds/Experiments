@@ -145,7 +145,7 @@ class UWP {
 }
 
 class UWP_ScoutsEx extends UWP {
-  Orbit planet;              //
+  Orbit planet;              // once refactoring is complete, not sure this back-reference will be needed - just the following flag
   Boolean isPlanet = false;  // planet field is also used to format size value for small worlds (size S)
                              // but this causes issues with the system-level UWP when loaded from JSON
                              // adding this flag to persist the relevant information

@@ -75,6 +75,48 @@ class UWPBuilder {
     _h.setUWP(new UWP_ScoutsEx(o, starport, size, atmo, hydro, pop, gov, law, tech));
   }
   
+  // see comments above - this probably gets pushed down into the "for Orbits" leg of this hierarchy
+  void completeUWP(Boolean _isMainworld, UWP _uwp){
+    println("In UWPBuilder.completeUWP()");
+    _uwp.law = _uwp.law + 1;   // testing plumbing, will be removed...
+    
+    // from UWP_ScoutsEx.completeUWP(): 
+    //if (_isMainworld){                // for mainworld, gov/law/starport/tech identical to CT77
+    //  gov      = generateGov();
+    //  law      = generateLaw();
+    //  starport = generateStarport();
+    //  tech     = generateTech();
+    //} else {
+    //  // need backreference to mainworld for the system - Scouts pp. 33 + 38
+    //  //  * subordinate government = 1D, +2 if mainworld gov 7+, 6 if mainworld gov 6; = 0 if pop = 0
+    //  //  * subordinate law = 1D-3 + mainworld law; = 0 if gov = 0
+    //  //  * 'note subordinate facilities'
+    //  //  * subordinate tech level = mainworld tech - 1; = mainworld tech if research lab / military facility
+    //  //  * spaceport type from table, modified by local pop
+
+    //  System sys;                                // TO_DO: find a better way to plumb this value through, this is kinda ugly
+    //  if (planet.barycenter.isStar()){
+    //    sys = ((Star)planet.barycenter).parent;
+    //  } else {
+    //    sys = ((Star)planet.barycenter.barycenter).parent;
+    //  }
+      
+    //  // problem: mainworld is null at this point, not set until the call chain that calls this one completes
+    //  // (Planet(oid).completeUWP() called from Star.designateMainworld()
+    //  // really need to separate and finish the mainworld first, then loop through remainder
+    //  // (in addition to null reference, the final gov/law/etc. fields on the mainworld are needed in this block
+    //  //   put a hack in place upstream in Star.designateMainworld(), will need reworking
+      
+    //  Habitable main = ((System_ScoutsEx)sys).mainworld;
+    //  UWP mainUWP = main.getUWP();
+      
+    //  gov      = generateSubordinateGov(mainUWP.gov);
+    //  law      = generateSubordinateLaw(mainUWP.law);
+    //  starport = generateSubordinateStarport();           // actually a SPACEport per RAW, but we're sharing a field name w/ mainworlds...
+    //  tech     = generateSubordinateTech(mainUWP.tech);   // will be adjusted later after facilities are generated
+    //}
+  }
+  
   char generateStarport(){
     int dieThrow = roll.two();
     
