@@ -342,34 +342,34 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
 }
 
 class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
-  
-  // TO_DO: need to implement generateHydro()
-  
-  // Scouts reverts to +Size as a modifier
-  //int generateHydro(){
+  int generateHydroFor(Orbit _o, int _size, int _atmo){
+    println("@@@ UWPBuilder_MT.generateHydroFor()");   
     
-  //  println("@@ Calling UWP_MT.generateHydro()");
-    
-  //  if (debug == 2){ println("**** UWP_ScoutsEx.generateHydro() for " + this.getClass()); }
-  //  if (planet == null){ return super.generateHydro(); }  // see note above in generateSize()
+    if (debug == 2){ println("**** UWPBuilder_MT.generateHydro() for " + _o.getClass()); }
 
-  //  if (planet.isInnerZone()         ){ return 0; }
-  //  if (size == 0                    ){ return 0; }       // includes size 'S' (numerically zero)
-  //  if (size == 1 && !planet.isMoon()){ return 0; }       // Scouts p.33 + p.37 - as with atmo, Moons are _almost_ identical
+    if (_o.isInnerZone()){ return 0; }    
+    if (_size == 0      ){ return 0; }  // includes size 'S' (numerically zero)
+                                        // changed from Scouts - size 1 planets not longer have 0 hydrographics automatically
     
-  //  int modifier = 0;
-  //  if (planet.isOuterZone()){
-  //    if (planet.isMoon()){                               // see note above
-  //      modifier -= 4;
-  //    } else {
-  //      modifier -= 2;
-  //    }
-  //  }
-  //  if (atmo <= 1 || atmo >= 10){ modifier -= 4; }
+    int modifier = 0;
+    if (_o.isOuterZone()){
+      if (_o.isMoon()){
+        modifier -= 4;
+      } else {
+        modifier -= 2;
+      }
+    }
+    if (_atmo <= 1 || _atmo >= 10){    // Changed from Scouts - modifier is -2 for Planets, -4 for Moons (MTRM p.28,29) 
+      if (_o.isMoon()){
+        modifier -= 4;
+      } else {
+        modifier -= 2;
+      } 
+    }
      
-  //  int result = roll.two(size + modifier - 7);
-  //  result = constrain(result, 0, 10);    
+    int result = roll.two(_size + modifier - 7);
+    result = constrain(result, 0, 10);    
     
-  //  return result;    
-  //}
+    return result;    
+  }
 }

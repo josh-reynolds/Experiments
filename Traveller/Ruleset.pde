@@ -114,8 +114,9 @@ class Ruleset {
       case "CT81":
         return new UWPBuilder_CT81();
       case "Scouts (Extended)":
-      case "MegaTraveller (Extended)":
         return new UWPBuilder_ScoutsEx();
+      case "MegaTraveller (Extended)":
+        return new UWPBuilder_MT();
       case "CT77":
       default:
         return new UWPBuilder();
