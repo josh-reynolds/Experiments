@@ -342,6 +342,8 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
 }
 
 class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
+  // Atmo procedure is identical to Scouts (MTRM p. 28)
+  
   int generateHydroFor(Orbit _o, int _size, int _atmo){
     println("@@@ UWPBuilder_MT.generateHydroFor()");   
     
@@ -372,4 +374,34 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
     
     return result;    
   }
+  
+  // MT removes the atmospheric modifiers for population on Planets, and modifies those for Moons (MTRM p. 28, 29)
+  int generatePopFor(Orbit _o, int _size, int _atmo){
+    println("@@@ UWPBuilder_MT.generatePopFor()");
+    
+    if (debug == 2){ println("**** UWP_MT.generatePop() for " + this.getClass()); }
+    
+    if (_o.isRing()){ return 0; }
+    
+    int modifier = 0;
+    if (_o.isInnerZone()     ){ modifier -= 5; }
+    if (_o.isOuterZone()     ){
+      if (_o.isMoon()){                               // MTRM p.29
+        modifier -= 4;
+      } else {
+        modifier -= 3;
+      } 
+    }
+    if (_o.isMoon() && _size <= 4){ modifier -= 2; }
+    if (_o.isMoon() && 
+        !(_atmo == 5 || _atmo == 6 || _atmo == 8)){ modifier -= 2; } // under Scouts, this applied to Planets - in MT, it is just Moons (MTRM p. 29)
+
+     
+    int result = roll.two(modifier - 2);
+    if (result < 0){ result = 0; }
+    
+    return result;
+  } 
+  
+  
 }
