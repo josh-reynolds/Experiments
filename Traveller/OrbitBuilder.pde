@@ -55,12 +55,14 @@ class OrbitBuilder {
     return 0;
   }
 
+  // MegaTraveller follows the same procedure (MTRM p. 28)
   int generateSatelliteCountFor(Habitable _h){
     int result = roll.one(-3);
     if (result <= 0 || ((Orbit)_h).isMoon() || _h.getUWP().size <= 0){ result = 0; }
     return result;
   }
 
+  // MegaTraveller follows the same procedure (MTRM p. 28)
   int generateSatelliteCountFor(GasGiant _g){
     int result = 0;
     if (_g.size.equals("S")){ 
@@ -159,6 +161,7 @@ class OrbitBuilder {
     }
   }
 
+  // MegaTraveller follows the same procedure (almost, see note below) - MTRM p.28
   int generateSatelliteSizeFor(Orbit _o){
     if (_o.isGasGiant()){
       int result = 0;
@@ -169,12 +172,15 @@ class OrbitBuilder {
       }
       return result;
     } else if (_o.isPlanet() && !_o.isMoon()){
-      return ((Habitable)_o).getUWP().size - roll.one();
+      return ((Habitable)_o).getUWP().size - roll.one();    // TO_DO: review MT errata and Scouts: MTRM p. 28 says 1D-Size
     } else {
       println("INVALID Orbit type passed to generateSatelliteSizeFor()");
       return 0;
     }
   }
+
+  // TO_DO: review/compare Scouts against MegaTraveller - per notes below, I didn't exactly implement the Scouts procedure
+  //  on a quick skim, MT appears to be the same and we shouldn't need to override
 
   // The original implementation for this method was closely based on the Scouts text
   // however, that method runs into infinite regression and stack overflow

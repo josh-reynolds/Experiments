@@ -78,15 +78,14 @@ class UWPBuilder {
   // see comments above - this probably gets pushed down into the "for Orbits" leg of this hierarchy
   void completeUWP(Boolean _isMainworld, UWP _uwp){
     println("In UWPBuilder.completeUWP()");
-    _uwp.law = _uwp.law + 1;   // testing plumbing, will be removed...
     
     // from UWP_ScoutsEx.completeUWP(): 
-    //if (_isMainworld){                // for mainworld, gov/law/starport/tech identical to CT77
-    //  gov      = generateGov();
-    //  law      = generateLaw();
-    //  starport = generateStarport();
-    //  tech     = generateTech();
-    //} else {
+    if (_isMainworld){                // for mainworld, gov/law/starport/tech identical to CT77
+      _uwp.gov      = generateGov(_uwp.pop);
+      _uwp.law      = generateLaw(_uwp.gov);
+      _uwp.starport = generateStarport();
+      _uwp.tech     = generateTech(_uwp.starport, _uwp.size, _uwp.atmo, _uwp.hydro, _uwp.pop, _uwp.gov);
+    } else {
     //  // need backreference to mainworld for the system - Scouts pp. 33 + 38
     //  //  * subordinate government = 1D, +2 if mainworld gov 7+, 6 if mainworld gov 6; = 0 if pop = 0
     //  //  * subordinate law = 1D-3 + mainworld law; = 0 if gov = 0
@@ -114,9 +113,12 @@ class UWPBuilder {
     //  law      = generateSubordinateLaw(mainUWP.law);
     //  starport = generateSubordinateStarport();           // actually a SPACEport per RAW, but we're sharing a field name w/ mainworlds...
     //  tech     = generateSubordinateTech(mainUWP.tech);   // will be adjusted later after facilities are generated
-    //}
+    }
   }
   
+  // TO_DO: MegaTraveller introduces subsector travel classifications that modify this procedure (MTRM p.24)
+  //  the distribution listed below is 'Standard'
+  //  could probably handle this via several static arrays, also need to plumb into subsector properties
   char generateStarport(){
     int dieThrow = roll.two();
     
@@ -200,6 +202,7 @@ class UWPBuilder {
     return result;
   }
   
+  // MegaTraveller uses the same procedure
   int generateTech(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov){
     int modifier = 0;
     
