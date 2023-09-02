@@ -145,6 +145,7 @@
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)
+//  *      Add subsector travel classifications from MegaTraveller
 //  *      Add New Era generation ruleset
 //  *      Add T4 generation ruleset
 //  *      Add T4 Pocket Empires ruleset

@@ -76,11 +76,11 @@ class UWPBuilder {
   }
   
   // see comments above - this probably gets pushed down into the "for Orbits" leg of this hierarchy
-  void completeUWP(Boolean _isMainworld, UWP _uwp){
+  void completeUWPFor(Habitable _h, UWP _uwp){
     println("In UWPBuilder.completeUWP()");
     
     // from UWP_ScoutsEx.completeUWP(): 
-    if (_isMainworld){                // for mainworld, gov/law/starport/tech identical to CT77
+    if (_h.isMainworld()){                // for mainworld, gov/law/starport/tech identical to CT77
       _uwp.gov      = generateGov(_uwp.pop);
       _uwp.law      = generateLaw(_uwp.gov);
       _uwp.starport = generateStarport();

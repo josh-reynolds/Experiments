@@ -441,7 +441,7 @@ class Planet extends Orbit implements Habitable {
     println("@@@ BEFORE : " + uwp);
     
     UWPBuilder ub = ruleset.newUWPBuilder();
-    ub.completeUWP(mainworld, uwp);
+    ub.completeUWPFor(this, uwp);
     
     println("@@@ AFTER : " + uwp);
   }
@@ -504,7 +504,7 @@ class Planetoid extends Orbit implements Habitable {
     println("@@@ BEFORE : " + uwp);
     
     UWPBuilder ub = ruleset.newUWPBuilder();
-    ub.completeUWP(mainworld, uwp);
+    ub.completeUWPFor(this, uwp);
     
     println("@@@ AFTER : " + uwp);
   }
