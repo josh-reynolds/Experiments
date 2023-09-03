@@ -1,9 +1,11 @@
 // basic UWP Builder implements the CT77 rules from Book 3
 class UWPBuilder {
   Dice roll;
-
-  UWPBuilder(){
+  Object target;    // using Object because we currently have no common parent class
+  
+  UWPBuilder(Object _target){
     roll = new Dice();
+    target = _target;    // should test for valid classes, see note above
   }
   
   void newUWPFor(System _s){
@@ -231,7 +233,7 @@ class UWPBuilder {
 }
 
 class UWPBuilder_CT81 extends UWPBuilder {
-  UWPBuilder_CT81(){ super(); }
+  UWPBuilder_CT81(Object _target){ super(_target); }
  
   // starport identical to CT77
   // size identical to CT77
@@ -256,7 +258,7 @@ class UWPBuilder_CT81 extends UWPBuilder {
 }
 
 class UWPBuilder_ScoutsEx extends UWPBuilder {
-  UWPBuilder_ScoutsEx(){ super(); }
+  UWPBuilder_ScoutsEx(Object _target){ super(_target); }
   
   int generateAtmoFor(Orbit _o, int _size){   // tricky - with the new parameter, this is no longer an override...
     println("@@@ UWPBuilder_ScoutsEx.generateAtmoFor()");
@@ -345,6 +347,8 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
 }
 
 class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
+  UWPBuilder_MT(Object _target){ super(_target); }
+
   // Atmo procedure is identical to Scouts (MTRM p. 28)
   
   int generateHydroFor(Orbit _o, int _size, int _atmo){

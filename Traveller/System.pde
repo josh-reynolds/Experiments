@@ -20,7 +20,7 @@ class System {
     
     if (random(1) < _density){  // TO_DO: may want to rethink this living in System - move up a level?
       occupied = true;
-      UWPBuilder ub = ruleset.newUWPBuilder();
+      UWPBuilder ub = ruleset.newUWPBuilder(this);
       ub.newUWPFor(this);
       navalBase = generateNavalBase();
       scoutBase = generateScoutBase();

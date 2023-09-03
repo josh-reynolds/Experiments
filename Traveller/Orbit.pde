@@ -411,7 +411,7 @@ class Planet extends Orbit implements Habitable {
     super(_barycenter, _orbit, _zone);
     if (debug == 2){ println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
 
-    UWPBuilder ub = ruleset.newUWPBuilder();
+    UWPBuilder ub = ruleset.newUWPBuilder(this);
     ub.newUWPFor(this);
 
     int satelliteCount = 0;
@@ -440,7 +440,7 @@ class Planet extends Orbit implements Habitable {
     
     println("@@@ BEFORE : " + uwp);
     
-    UWPBuilder ub = ruleset.newUWPBuilder();
+    UWPBuilder ub = ruleset.newUWPBuilder(this);
     ub.completeUWPFor(this, uwp);
     
     println("@@@ AFTER : " + uwp);
@@ -480,7 +480,7 @@ class Planetoid extends Orbit implements Habitable {
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone); 
     
-    UWPBuilder ub = ruleset.newUWPBuilder();
+    UWPBuilder ub = ruleset.newUWPBuilder(this);
     ub.newUWPFor(this);
     
     mainworld = false;
@@ -503,7 +503,7 @@ class Planetoid extends Orbit implements Habitable {
     
     println("@@@ BEFORE : " + uwp);
     
-    UWPBuilder ub = ruleset.newUWPBuilder();
+    UWPBuilder ub = ruleset.newUWPBuilder(this);
     ub.completeUWPFor(this, uwp);
     
     println("@@@ AFTER : " + uwp);
@@ -547,7 +547,7 @@ class Moon extends Planet {
     super(_barycenter, _orbit, _zone, null);
     if (debug == 2){ println("** Moon ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ", " + _size + ")"); }                             
                               
-    UWPBuilder ub = ruleset.newUWPBuilder();
+    UWPBuilder ub = ruleset.newUWPBuilder(this);
     ub.newUWPFor(this, _size);
   }
   
