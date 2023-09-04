@@ -9,6 +9,8 @@ class UWPBuilder {
   }
   
   void newUWPFor(System _s){
+    System s = (System)target;     // do we need to worry about cast exception?
+    
     char starport = generateStarport();
     int size      = generateSize(); 
     int atmo      = generateAtmo(size);
@@ -18,64 +20,11 @@ class UWPBuilder {
     int law       = generateLaw(gov);
     int tech      = generateTech(starport, size, atmo, hydro, pop, gov); 
 
-    _s.uwp = new UWP(starport, size, atmo, hydro, pop, gov, law, tech);
+    s.uwp = new UWP(starport, size, atmo, hydro, pop, gov, law, tech);
   }
   
-  // slightly unusual - instead of polymorphism, we have parallel sets of 
-  // methods. I expect this to change as the design matures but ought to work for now. 
-  
-  // review why we're avoiding polymorphism - not sure the argument holds water
-  //  we ran into inheritance issues through super ctor calls in the UWP class hierarchy
-  //   trying to avoid that here
-  //  but the Builder ctor is very simple, shouldn't have the same problems here
-  //  and this parallel structure is getting ugly already (see comments on generateAtmoFor(Orbit) below)
-  //  going to keep pushing a bit, but pretty sure we shift all this down
-  
-  // the difference between these two legs is the target/parent object:
-  //  - "simple" rulesets attach the UWP to the System
-  //  - more complex rulesets have multiple Orbits per System, each with a UWP
-  // what if the target was a field on this class populated in the ctor?
-  // then we could unify the signatures of the newUWPFor(x) methods and use them polymorphically in clients 
-  void newUWPFor(Habitable _h){
-    if (debug == 2){ println("** UWPBuilder.newUWPFor(" + _h.getClass() + ")"); }
-    Orbit o = (Orbit)_h;
-    
-    int size = generateSizeFor(o);
-    int atmo = generateAtmoFor(o, size);
-    int hydro = generateHydroFor(o, size, atmo);
-    int pop = generatePopFor(o, size, atmo);
-    
-    // temporary values - will be populated once mainworld is established
-    char starport = 'X';
-    int gov       = 0;
-    int law       = 0;
-    int tech      = 0;
-    
-    println(str(starport) + str(size) + str(atmo) + str(hydro) + str(pop) + str(gov) + str(law) + "-" + str(tech));
-    _h.setUWP(new UWP_ScoutsEx(o, starport, size, atmo, hydro, pop, gov, law, tech));
-  }
-  
-  // Moons have size established before UWP is generated, so need an alternate ctor
-  // should be opportunities to refactor common code with newUWPFor(Habitable)
-  void newUWPFor(Habitable _h, int _size){
-    if (debug == 2){ println("** UWPBuilder.newUWPFor(" + _h.getClass() + ", " + _size + ")"); }
-    Orbit o = (Orbit)_h;
-    int size = _size;
-    if (size <= 0){ size = 0; }   // preserving from old ctor - need to review if this can actually come in as negative value
-    
-    int atmo = generateAtmoFor(o, size);
-    int hydro = generateHydroFor(o, size, atmo);
-    int pop = generatePopFor(o, size, atmo);
-    
-    // temporary values - will be populated once mainworld is established
-    char starport = 'X';
-    int gov       = 0;
-    int law       = 0;
-    int tech      = 0;
-    
-    println(str(starport) + str(size) + str(atmo) + str(hydro) + str(pop) + str(gov) + str(law) + "-" + str(tech));
-    _h.setUWP(new UWP_ScoutsEx(o, starport, size, atmo, hydro, pop, gov, law, tech));
-  }
+  void newUWPFor(){}  // temporary to allow override - will go away once we unify the signatures of all newUWPFor() variants
+  void newUWPFor(int _size){}  // this variant will need some thought? keep the super stub in place?
   
   // see comments above - this probably gets pushed down into the "for Orbits" leg of this hierarchy
   void completeUWPFor(Habitable _h, UWP _uwp){
@@ -259,6 +208,59 @@ class UWPBuilder_CT81 extends UWPBuilder {
 
 class UWPBuilder_ScoutsEx extends UWPBuilder {
   UWPBuilder_ScoutsEx(Object _target){ super(_target); }
+
+  // review why we're avoiding polymorphism - not sure the argument holds water
+  //  we ran into inheritance issues through super ctor calls in the UWP class hierarchy
+  //   trying to avoid that here
+  //  but the Builder ctor is very simple, shouldn't have the same problems here
+  //  and this parallel structure is getting ugly already (see comments on generateAtmoFor(Orbit) below)
+  //  going to keep pushing a bit, but pretty sure we shift all this down
+  
+  // the difference between these two legs is the target/parent object:
+  //  - "simple" rulesets attach the UWP to the System
+  //  - more complex rulesets have multiple Orbits per System, each with a UWP
+  // what if the target was a field on this class populated in the ctor?
+  // then we could unify the signatures of the newUWPFor(x) methods and use them polymorphically in clients 
+  void newUWPFor(){
+    if (debug == 2){ println("** UWPBuilder.newUWPFor(" + target.getClass() + ")"); }
+    Orbit o = (Orbit)target;
+    
+    int size = generateSizeFor(o);
+    int atmo = generateAtmoFor(o, size);
+    int hydro = generateHydroFor(o, size, atmo);
+    int pop = generatePopFor(o, size, atmo);
+    
+    // temporary values - will be populated once mainworld is established
+    char starport = 'X';
+    int gov       = 0;
+    int law       = 0;
+    int tech      = 0;
+    
+    println(str(starport) + str(size) + str(atmo) + str(hydro) + str(pop) + str(gov) + str(law) + "-" + str(tech));
+    ((Habitable)o).setUWP(new UWP_ScoutsEx(o, starport, size, atmo, hydro, pop, gov, law, tech));
+  }
+  
+  // Moons have size established before UWP is generated, so need an alternate ctor
+  // should be opportunities to refactor common code with newUWPFor(Habitable)
+  void newUWPFor(int _size){
+    if (debug == 2){ println("** UWPBuilder.newUWPFor(" + target.getClass() + ", " + _size + ")"); }
+    Orbit o = (Orbit)target;
+    int size = _size;
+    if (size <= 0){ size = 0; }   // preserving from old ctor - need to review if this can actually come in as negative value
+    
+    int atmo = generateAtmoFor(o, size);
+    int hydro = generateHydroFor(o, size, atmo);
+    int pop = generatePopFor(o, size, atmo);
+    
+    // temporary values - will be populated once mainworld is established
+    char starport = 'X';
+    int gov       = 0;
+    int law       = 0;
+    int tech      = 0;
+    
+    println(str(starport) + str(size) + str(atmo) + str(hydro) + str(pop) + str(gov) + str(law) + "-" + str(tech));
+    ((Habitable)o).setUWP(new UWP_ScoutsEx(o, starport, size, atmo, hydro, pop, gov, law, tech));
+  }
   
   int generateAtmoFor(Orbit _o, int _size){   // tricky - with the new parameter, this is no longer an override...
     println("@@@ UWPBuilder_ScoutsEx.generateAtmoFor()");

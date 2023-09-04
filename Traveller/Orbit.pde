@@ -412,7 +412,7 @@ class Planet extends Orbit implements Habitable {
     if (debug == 2){ println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
 
     UWPBuilder ub = ruleset.newUWPBuilder(this);
-    ub.newUWPFor(this);
+    ub.newUWPFor();
 
     int satelliteCount = 0;
     if (!isMoon()){ 
@@ -481,7 +481,7 @@ class Planetoid extends Orbit implements Habitable {
     super(_barycenter, _orbit, _zone); 
     
     UWPBuilder ub = ruleset.newUWPBuilder(this);
-    ub.newUWPFor(this);
+    ub.newUWPFor();
     
     mainworld = false;
     facilities = new ArrayList();
@@ -548,7 +548,7 @@ class Moon extends Planet {
     if (debug == 2){ println("** Moon ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ", " + _size + ")"); }                             
                               
     UWPBuilder ub = ruleset.newUWPBuilder(this);
-    ub.newUWPFor(this, _size);
+    ub.newUWPFor(_size);
   }
   
   Moon(Orbit _barycenter, JSONObject _json){
