@@ -109,17 +109,17 @@ class Ruleset {
     }
   }
   
-  UWPBuilder newUWPBuilder(Object _o){     // target can be either a System or a Habitable
-    switch(name) {                         // no common parent yet, so using Object
-      case "CT81":                         // should either insert an interface
-        return new UWPBuilder_CT81(_o);      // or test downcast from Object
+  UWPBuilder newUWPBuilder(){ 
+    switch(name) {            
+      case "CT81":            
+        return new UWPBuilder_CT81();
       case "Scouts (Extended)":
-        return new UWPBuilder_ScoutsEx(_o);
+        return new UWPBuilder_ScoutsEx();
       case "MegaTraveller (Extended)":
-        return new UWPBuilder_MT(_o);
+        return new UWPBuilder_MT();
       case "CT77":
       default:
-        return new UWPBuilder(_o);
+        return new UWPBuilder();
     }    
   }
   

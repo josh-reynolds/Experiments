@@ -20,7 +20,7 @@ class System {
     
     if (random(1) < _density){  // TO_DO: may want to rethink this living in System - move up a level?
       occupied = true;
-      UWPBuilder ub = ruleset.newUWPBuilder(this);
+      UWPBuilder ub = ruleset.newUWPBuilder();
       ub.newUWPFor(this);
       navalBase = generateNavalBase();
       scoutBase = generateScoutBase();
@@ -249,6 +249,8 @@ class System_ScoutsEx extends System_CT81 {
   
   System_ScoutsEx(Coordinate _coord, float _density){
     super(_coord, _density);
+    println("occupied = " + occupied);
+    println("In System_ScoutsEx ctor after super() call");
     
     if (occupied){
       builder = ruleset.newOrbitBuilder();          // TO_DO: do we need to keep the builder around after this point?

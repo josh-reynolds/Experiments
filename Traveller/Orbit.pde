@@ -411,12 +411,12 @@ class Planet extends Orbit implements Habitable {
     super(_barycenter, _orbit, _zone);
     if (debug == 2){ println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
 
-    UWPBuilder ub = ruleset.newUWPBuilder(this);
-    ub.newUWPFor();
+    UWPBuilder_ScoutsEx ub = (UWPBuilder_ScoutsEx)ruleset.newUWPBuilder();
+    ub.newUWPFor(this);
 
     int satelliteCount = 0;
     if (!isMoon()){ 
-      satelliteCount = _ob.generateSatelliteCountFor(this);  // need to handle Moon super call - StarBuilder is null there 
+      satelliteCount = _ob.generateSatelliteCountFor(this);  // need to handle Moon super call - OrbitBuilder is null there 
       _ob.createSatellitesFor(this, satelliteCount);
     }
 
@@ -440,7 +440,7 @@ class Planet extends Orbit implements Habitable {
     
     println("@@@ BEFORE : " + uwp);
     
-    UWPBuilder ub = ruleset.newUWPBuilder(this);
+    UWPBuilder_ScoutsEx ub = (UWPBuilder_ScoutsEx)ruleset.newUWPBuilder();
     ub.completeUWPFor(this, uwp);
     
     println("@@@ AFTER : " + uwp);
@@ -480,8 +480,8 @@ class Planetoid extends Orbit implements Habitable {
   Planetoid(Orbit _barycenter, int _orbit, String _zone){ 
     super(_barycenter, _orbit, _zone); 
     
-    UWPBuilder ub = ruleset.newUWPBuilder(this);
-    ub.newUWPFor();
+    UWPBuilder_ScoutsEx ub = (UWPBuilder_ScoutsEx)ruleset.newUWPBuilder();
+    ub.newUWPFor(this);
     
     mainworld = false;
     facilities = new ArrayList();
@@ -503,7 +503,7 @@ class Planetoid extends Orbit implements Habitable {
     
     println("@@@ BEFORE : " + uwp);
     
-    UWPBuilder ub = ruleset.newUWPBuilder(this);
+    UWPBuilder_ScoutsEx ub = (UWPBuilder_ScoutsEx)ruleset.newUWPBuilder();
     ub.completeUWPFor(this, uwp);
     
     println("@@@ AFTER : " + uwp);
@@ -547,8 +547,8 @@ class Moon extends Planet {
     super(_barycenter, _orbit, _zone, null);
     if (debug == 2){ println("** Moon ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ", " + _size + ")"); }                             
                               
-    UWPBuilder ub = ruleset.newUWPBuilder(this);
-    ub.newUWPFor(_size);
+    UWPBuilder_ScoutsEx ub = (UWPBuilder_ScoutsEx)ruleset.newUWPBuilder();
+    ub.newUWPFor(this, _size);
   }
   
   Moon(Orbit _barycenter, JSONObject _json){
