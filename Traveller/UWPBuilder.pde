@@ -19,47 +19,6 @@ class UWPBuilder {
     _s.uwp = new UWP(starport, size, atmo, hydro, pop, gov, law, tech);
   }
   
-  // see comments above - this probably gets pushed down into the "for Orbits" leg of this hierarchy
-  //void completeUWPFor(Habitable _h, UWP _uwp){
-  //  println("In UWPBuilder.completeUWP()");
-    
-  //  // from UWP_ScoutsEx.completeUWP(): 
-  //  if (_h.isMainworld()){                // for mainworld, gov/law/starport/tech identical to CT77
-  //    _uwp.gov      = generateGov(_uwp.pop);
-  //    _uwp.law      = generateLaw(_uwp.gov);
-  //    _uwp.starport = generateStarport();
-  //    _uwp.tech     = generateTech(_uwp.starport, _uwp.size, _uwp.atmo, _uwp.hydro, _uwp.pop, _uwp.gov);
-  //  } else {
-  //  //  // need backreference to mainworld for the system - Scouts pp. 33 + 38
-  //  //  //  * subordinate government = 1D, +2 if mainworld gov 7+, 6 if mainworld gov 6; = 0 if pop = 0
-  //  //  //  * subordinate law = 1D-3 + mainworld law; = 0 if gov = 0
-  //  //  //  * 'note subordinate facilities'
-  //  //  //  * subordinate tech level = mainworld tech - 1; = mainworld tech if research lab / military facility
-  //  //  //  * spaceport type from table, modified by local pop
-
-  //  //  System sys;                                // TO_DO: find a better way to plumb this value through, this is kinda ugly
-  //  //  if (planet.barycenter.isStar()){
-  //  //    sys = ((Star)planet.barycenter).parent;
-  //  //  } else {
-  //  //    sys = ((Star)planet.barycenter.barycenter).parent;
-  //  //  }
-      
-  //  //  // problem: mainworld is null at this point, not set until the call chain that calls this one completes
-  //  //  // (Planet(oid).completeUWP() called from Star.designateMainworld()
-  //  //  // really need to separate and finish the mainworld first, then loop through remainder
-  //  //  // (in addition to null reference, the final gov/law/etc. fields on the mainworld are needed in this block
-  //  //  //   put a hack in place upstream in Star.designateMainworld(), will need reworking
-      
-  //  //  Habitable main = ((System_ScoutsEx)sys).mainworld;
-  //  //  UWP mainUWP = main.getUWP();
-      
-  //  //  gov      = generateSubordinateGov(mainUWP.gov);
-  //  //  law      = generateSubordinateLaw(mainUWP.law);
-  //  //  starport = generateSubordinateStarport();           // actually a SPACEport per RAW, but we're sharing a field name w/ mainworlds...
-  //  //  tech     = generateSubordinateTech(mainUWP.tech);   // will be adjusted later after facilities are generated
-  //  }
-  //}
-  
   // TO_DO: MegaTraveller introduces subsector travel classifications that modify this procedure (MTRM p.24)
   //  the distribution listed below is 'Standard'
   //  could probably handle this via several static arrays, also need to plumb into subsector properties
@@ -91,32 +50,12 @@ class UWPBuilder {
   }
   
   int generateSize(){ return roll.two(-2); }
-    
-  int generateSizeFor(Orbit _o){
-    if (debug == 2){ println("**** UWPBuilder.generateSizeFor(Orbit) for " + this.getClass()); }  
-    if (_o.isPlanetoid()){ return 0; }
-
-    // MegaTraveller follows the same modifiers (MTRM p. 28)
-    int modifier = 0;
-    if (_o.getOrbitNumber() == 0  ){ modifier -= 5; }
-    if (_o.getOrbitNumber() == 1  ){ modifier -= 4; }
-    if (_o.getOrbitNumber() == 2  ){ modifier -= 2; }
-    if (_o.isOrbitingClassM()){ modifier -= 2; }
-    int result = roll.two(modifier - 2);  
-    
-    if (result <= 0){ result = 0; }
-
-    return result;
-  }
   
   int generateAtmo(int _size){
     int result = roll.two(_size - 7);
     if (_size == 0 || result < 0){ result = 0; }
     return result;
   }
-  
-  // don't like this - dummy method in the parent to allow overrides
-  int generateAtmoFor(Orbit _o, int _size){ return 0; }
   
   int generateHydro(int _size, int _atmo){
     int result = roll.two(_size - 7);
@@ -126,13 +65,7 @@ class UWPBuilder {
     return result;
   }
 
-  // see comments above generateAtmoFor(Orbit)
-  int generateHydroFor(Orbit _o, int _size, int _atmo){ return 0; }
-
   int generatePop(){ return roll.two(-2); }
-
-  // see comments above generateAtmoFor(Orbit)
-  int generatePopFor(Orbit _o, int _size, int _atmo){ return 0; }
   
   int generateGov(int _pop){
     int result = roll.two(_pop - 7);
@@ -200,42 +133,20 @@ class UWPBuilder_CT81 extends UWPBuilder {
 
 class UWPBuilder_ScoutsEx extends UWPBuilder {
   UWPBuilder_ScoutsEx(){ super(); }
-
-  // review why we're avoiding polymorphism - not sure the argument holds water
-  //  we ran into inheritance issues through super ctor calls in the UWP class hierarchy
-  //   trying to avoid that here
-  //  but the Builder ctor is very simple, shouldn't have the same problems here
-  //  and this parallel structure is getting ugly already (see comments on generateAtmoFor(Orbit) below)
-  //  going to keep pushing a bit, but pretty sure we shift all this down
   
-  // the difference between these two legs is the target/parent object:
-  //  - "simple" rulesets attach the UWP to the System
-  //  - more complex rulesets have multiple Orbits per System, each with a UWP
-  // what if the target was a field on this class populated in the ctor?
-  // then we could unify the signatures of the newUWPFor(x) methods and use them polymorphically in clients 
-  void newUWPFor(Orbit _o){
-    if (debug == 2){ println("** UWPBuilder.newUWPFor(" + _o.getClass() + ")"); }
-    
-    int size = generateSizeFor(_o);
-    int atmo = generateAtmoFor(_o, size);
-    int hydro = generateHydroFor(_o, size, atmo);
-    int pop = generatePopFor(_o, size, atmo);
-    
-    // temporary values - will be populated once mainworld is established
-    char starport = 'X';
-    int gov       = 0;
-    int law       = 0;
-    int tech      = 0;
-    
-    println(str(starport) + str(size) + str(atmo) + str(hydro) + str(pop) + str(gov) + str(law) + "-" + str(tech));
-    ((Habitable)_o).setUWP(new UWP_ScoutsEx(_o, starport, size, atmo, hydro, pop, gov, law, tech));
-  }
-  
-  // Moons have size established before UWP is generated, so need an alternate ctor
-  // should be opportunities to refactor common code with newUWPFor(Habitable)
-  void newUWPFor(Orbit _o, int _size){
+  // Slightly unusual calling convention to avoid duplicate methods:
+  //   most Habitable Orbits do not have a size before requesting a UWP, so _size is null
+  //   but Moons already have size established and call this method with an int value
+  //   (and using Integer instead of int to allow null values)
+  void newUWPFor(Orbit _o, Integer _size){
     if (debug == 2){ println("** UWPBuilder.newUWPFor(" + _o.getClass() + ", " + _size + ")"); }
-    int size = _size;
+    
+    int size;
+    if (_size == null){
+      size = generateSizeFor(_o);
+    } else {
+      size = _size;
+    }
     if (size <= 0){ size = 0; }   // preserving from old ctor - need to review if this can actually come in as negative value
     
     int atmo = generateAtmoFor(_o, size);
@@ -252,7 +163,6 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     ((Habitable)_o).setUWP(new UWP_ScoutsEx(_o, starport, size, atmo, hydro, pop, gov, law, tech));
   }
   
-  // see comments above - this probably gets pushed down into the "for Orbits" leg of this hierarchy
   void completeUWPFor(Habitable _h, UWP _uwp){
     println("In UWPBuilder.completeUWP()");
     
@@ -293,7 +203,24 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     }
   }
   
-  int generateAtmoFor(Orbit _o, int _size){   // tricky - with the new parameter, this is no longer an override...
+  int generateSizeFor(Orbit _o){
+    if (debug == 2){ println("**** UWPBuilder.generateSizeFor(Orbit) for " + this.getClass()); }  
+    if (_o.isPlanetoid()){ return 0; }
+
+    // MegaTraveller follows the same modifiers (MTRM p. 28)
+    int modifier = 0;
+    if (_o.getOrbitNumber() == 0  ){ modifier -= 5; }
+    if (_o.getOrbitNumber() == 1  ){ modifier -= 4; }
+    if (_o.getOrbitNumber() == 2  ){ modifier -= 2; }
+    if (_o.isOrbitingClassM()){ modifier -= 2; }
+    int result = roll.two(modifier - 2);  
+    
+    if (result <= 0){ result = 0; }
+
+    return result;
+  }
+  
+  int generateAtmoFor(Orbit _o, int _size){
     println("@@@ UWPBuilder_ScoutsEx.generateAtmoFor()");
 
     if (debug == 2){ println("**** UWPBuilder_ScoutsEx.generateAtmo() for " + _o.getClass()); }
