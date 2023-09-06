@@ -137,8 +137,8 @@
 //  * FIX  BUG: planetoid placement bias towards GG-adjacency doesn't seem to work
 //  * DONE REFACTOR: duplicated code in UWP_ScoutsEx ctors
 //  * DONE Introduce UWPBuilder to manage ruleset variation
-//  * .... Migrate UWP generation to the Builder
-//  * .... Unravel inheritance issues in UWP hierarchy
+//  * DONE Migrate UWP generation to the Builder
+//  * DONE Unravel inheritance issues in UWP hierarchy
 //  * .... 'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  * .... Add MegaTraveller extended generation ruleset
 //  * .... Review/incorporate MegaTraveller errata

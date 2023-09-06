@@ -163,10 +163,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     ((Habitable)_o).setUWP(new UWP_ScoutsEx(_o, starport, size, atmo, hydro, pop, gov, law, tech));
   }
   
-  void completeUWPFor(Habitable _h, UWP _uwp){
-    println("In UWPBuilder.completeUWP()");
-    
-    // from UWP_ScoutsEx.completeUWP(): 
+  void completeUWPFor(Habitable _h, UWP _uwp){ 
     if (_h.isMainworld()){                // for mainworld, gov/law/starport/tech identical to CT77
       _uwp.gov      = generateGov(_uwp.pop);
       _uwp.law      = generateLaw(_uwp.gov);
@@ -180,26 +177,27 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     //  //  * subordinate tech level = mainworld tech - 1; = mainworld tech if research lab / military facility
     //  //  * spaceport type from table, modified by local pop
 
-    //  System sys;                                // TO_DO: find a better way to plumb this value through, this is kinda ugly
-    //  if (planet.barycenter.isStar()){
-    //    sys = ((Star)planet.barycenter).parent;
-    //  } else {
-    //    sys = ((Star)planet.barycenter.barycenter).parent;
-    //  }
+      System sys;                                // TO_DO: find a better way to plumb this value through, this is kinda ugly
+      Orbit o = (Orbit)_h;
+      if (o.barycenter.isStar()){
+        sys = ((Star)o.barycenter).parent;
+      } else {
+        sys = ((Star)o.barycenter.barycenter).parent;
+      }
       
-    //  // problem: mainworld is null at this point, not set until the call chain that calls this one completes
-    //  // (Planet(oid).completeUWP() called from Star.designateMainworld()
-    //  // really need to separate and finish the mainworld first, then loop through remainder
-    //  // (in addition to null reference, the final gov/law/etc. fields on the mainworld are needed in this block
-    //  //   put a hack in place upstream in Star.designateMainworld(), will need reworking
+      // problem: mainworld is null at this point, not set until the call chain that calls this one completes
+      // (Planet(oid).completeUWP() called from Star.designateMainworld()
+      // really need to separate and finish the mainworld first, then loop through remainder
+      // (in addition to null reference, the final gov/law/etc. fields on the mainworld are needed in this block
+      //   put a hack in place upstream in Star.designateMainworld(), will need reworking
       
-    //  Habitable main = ((System_ScoutsEx)sys).mainworld;
-    //  UWP mainUWP = main.getUWP();
+      Habitable main = ((System_ScoutsEx)sys).mainworld;
+      UWP mainUWP = main.getUWP();
       
-    //  gov      = generateSubordinateGov(mainUWP.gov);
-    //  law      = generateSubordinateLaw(mainUWP.law);
-    //  starport = generateSubordinateStarport();           // actually a SPACEport per RAW, but we're sharing a field name w/ mainworlds...
-    //  tech     = generateSubordinateTech(mainUWP.tech);   // will be adjusted later after facilities are generated
+      _uwp.gov      = generateSubordinateGov(mainUWP.gov, _uwp.pop);
+      _uwp.law      = generateSubordinateLaw(mainUWP.law, _uwp.gov);
+      _uwp.starport = generateSubordinateStarport(_uwp.pop);     // actually a SPACEport per RAW, but we're sharing a field name w/ mainworlds...
+      _uwp.tech     = generateSubordinateTech(mainUWP.tech);     // will be adjusted later after facilities are generated
     }
   }
   
@@ -221,8 +219,6 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
   }
   
   int generateAtmoFor(Orbit _o, int _size){
-    println("@@@ UWPBuilder_ScoutsEx.generateAtmoFor()");
-
     if (debug == 2){ println("**** UWPBuilder_ScoutsEx.generateAtmo() for " + _o.getClass()); }
     
     // MegaTraveller follows the same procedure (MTRM p. 28)
@@ -253,8 +249,6 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
   }
   
   int generateHydroFor(Orbit _o, int _size, int _atmo){
-    println("@@@ UWPBuilder_ScoutsEx.generateHydroFor()");   
-    
     if (debug == 2){ println("**** UWPBuilder_ScoutsEx.generateHydro() for " + _o.getClass()); }
 
     if (_o.isInnerZone()          ){ return 0; }
@@ -277,9 +271,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     return result;  
   }
   
-  int generatePopFor(Orbit _o, int _size, int _atmo){
-    println("@@@ UWPBuilder_ScoutsEx.generatePopFor()");
-    
+  int generatePopFor(Orbit _o, int _size, int _atmo){    
     if (debug == 2){ println("**** UWP_ScoutsEx.generatePop() for " + this.getClass()); }
     
     if (_o.isRing()){ return 0; }
@@ -303,7 +295,65 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     if (result < 0){ result = 0; }
     
     return result;
-  } 
+  }
+  
+  int generateSubordinateGov(int _mainworldGov, int _pop){
+    //  * subordinate government = 1D, +2 if mainworld gov 7+, 6 if mainworld gov 6; = 0 if pop = 0
+    
+    if (_pop == 0         ){ return 0; }
+    if (_mainworldGov == 6){ return 6; }
+    
+    int dieThrow = roll.one();
+    if (_mainworldGov >= 7){ dieThrow += 2; }
+    
+    if (dieThrow < 5){
+      return dieThrow - 1;
+    } else {
+      return 6;
+    }
+  }
+  
+  int generateSubordinateLaw(int _mainworldLaw, int _gov){
+    //  * subordinate law = 1D-3 + mainworld law; = 0 if gov = 0
+    if (_gov == 0          ){ return 0; }
+    return roll.one(_mainworldLaw - 3);
+  }
+  
+  char generateSubordinateStarport(int _pop){
+    int modifier = 0;
+    if (_pop >= 6){ modifier += 2; }
+    if (_pop == 1){ modifier -= 2; }
+    if (_pop == 0){ modifier -= 3; }    // text on p. 39 only has the previous two; this one is w/ the table on p. 29
+    int dieThrow = roll.one(modifier);
+    
+    switch(dieThrow){
+      case -2:
+      case -1:
+      case 0:      
+      case 1:
+      case 2:
+        return 'Y';
+      case 3:
+        return 'H';
+      case 4:
+      case 5:
+        return 'G';
+      case 6:
+      case 7:
+      case 8:
+        return 'F';
+      default:
+        println("Invalid result in generateSubordinateStarport()");
+        return 'Z';
+    }    
+  }
+  
+  int generateSubordinateTech(int _mainworldTech){
+    //  * subordinate tech level = mainworld tech - 1; = mainworld tech if research lab / military facility
+    // this value is adjusted once subordinate facilities have been created
+    
+    return _mainworldTech - 1;
+  }
 }
 
 class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
@@ -311,9 +361,7 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
 
   // Atmo procedure is identical to Scouts (MTRM p. 28)
   
-  int generateHydroFor(Orbit _o, int _size, int _atmo){
-    println("@@@ UWPBuilder_MT.generateHydroFor()");   
-    
+  int generateHydroFor(Orbit _o, int _size, int _atmo){  
     if (debug == 2){ println("**** UWPBuilder_MT.generateHydro() for " + _o.getClass()); }
 
     if (_o.isInnerZone()){ return 0; }    
@@ -344,8 +392,6 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
   
   // MT removes the atmospheric modifiers for population on Planets, and modifies those for Moons (MTRM p. 28, 29)
   int generatePopFor(Orbit _o, int _size, int _atmo){
-    println("@@@ UWPBuilder_MT.generatePopFor()");
-    
     if (debug == 2){ println("**** UWP_MT.generatePop() for " + this.getClass()); }
     
     if (_o.isRing()){ return 0; }
