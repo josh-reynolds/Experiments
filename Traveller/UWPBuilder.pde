@@ -313,6 +313,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     }
   }
   
+  // MegaTraveller follows the same procedure (MTRM p. 29)
   int generateSubordinateLaw(int _mainworldLaw, int _gov){
     //  * subordinate law = 1D-3 + mainworld law; = 0 if gov = 0
     if (_gov == 0          ){ return 0; }
@@ -416,5 +417,20 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
     return result;
   } 
   
-  
+  // MT changes the procedure slightly from Scouts (MTRM p. 29)
+  int generateSubordinateGov(int _mainworldGov, int _pop){
+    if (_pop == 0         ){ return 0; }
+    
+    int modifier = 0;
+    if (_mainworldGov == 6){ modifier += _pop; }
+    if (_mainworldGov >= 7){ modifier -= 1; }
+    
+    int dieThrow = roll.one(modifier);
+    
+    if (dieThrow < 5){
+      return dieThrow - 1;
+    } else {
+      return 6;
+    }
+  }
 }
