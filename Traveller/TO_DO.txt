@@ -139,8 +139,8 @@
 //  * DONE Introduce UWPBuilder to manage ruleset variation
 //  * DONE Migrate UWP generation to the Builder
 //  * DONE Unravel inheritance issues in UWP hierarchy
+//  * DONE Add MegaTraveller extended generation ruleset
 //  * .... 'Character' location and movement / ships (and UI elements) (many parts to this...)
-//  * .... Add MegaTraveller extended generation ruleset
 //  * .... Review/incorporate MegaTraveller errata
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor

@@ -320,6 +320,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     return roll.one(_mainworldLaw - 3);
   }
   
+  // MegaTraveller follows the same procedure (MTRM p. 29)
   char generateSubordinateStarport(int _pop){
     int modifier = 0;
     if (_pop >= 6){ modifier += 2; }
