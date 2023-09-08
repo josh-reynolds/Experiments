@@ -72,7 +72,7 @@ class Ruleset {
       case "Scouts (Extended)":
         return new System_ScoutsEx(_coord, _density);
       case "MegaTraveller (Extended)":
-        return new System_ScoutsEx(_coord, _density);   // TO_DO: swap as we build up the correct classes
+        return new System_MT(_coord, _density);
       default:
         return new System(_coord, _density);
     }

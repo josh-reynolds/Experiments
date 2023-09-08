@@ -298,29 +298,6 @@ class System_ScoutsEx extends System_CT81 {
     }
   }
 
-  UWP generateUWP(){    
-    UWP u = null;
-    
-    println("@@@ System_ScoutsEx.generateUWP()");
-    println(this.getClass());
-    
-    //try {
-      //u = ruleset.newUWP(new Star(this));         // this is a hack solution - only used
-      //u = ruleset.newUWP(new Planet(new Star(this), 3, "H", null));         // this is a hack solution - only used
-      u = new UWP_ScoutsEx("X000000-0");
-      
-      
-      
-    //} catch(InvalidUWPInvocation _e) {            // during super ctor and discarded, so we can create a bogus star
-    //  println("Invalid call to ruleset.newUWP");  // really should clean this design up
-    //  exit();
-    //}
-    
-    println("@@ Exiting System_ScoutsEx.generateUWP()");
-    
-    return u;
-  }
-
   void countGasGiants(){
     ArrayList gasGiants = primary.getAll(GasGiant.class);
     
@@ -463,5 +440,80 @@ class System_ScoutsEx extends System_CT81 {
       json.setFloat("Mainworld",((Orbit)mainworld).orbitNumber);
     }
     return json;
+  }
+}
+
+class System_MT extends System_ScoutsEx {
+ System_MT(Coordinate _coord, float _density){ super(_coord, _density); }
+ 
+ // MegaTraveller changes the procedure for subordinate facilities slightly (MTRM p. 29)
+ //  TO_DO: opportunity here to extract code duplicated from super and only override the differences
+ void generateFacilities(){
+    if (navalBase){ mainworld.addFacility("Naval Base"); }                            // *****
+    if (scoutBase){ mainworld.addFacility("Scout Base"); }                            // *****
+    
+    for (Habitable h : primary.getAll(Habitable.class)){
+      if (h.isMainworld()){ continue; }
+      
+      // MTRM p. 29 - Naval/Scout bases only depend on sub pop now, no random count
+      if (navalBase && h.getUWP().pop > 2){                                         // ***** 
+        h.addFacility("Naval Facility");
+        if (h.getUWP().tech < mainworld.getUWP().tech){
+          h.getUWP().tech = mainworld.getUWP().tech;
+        }
+      }
+      if (scoutBase && h.getUWP().pop > 1){ h.addFacility("Scout Facility"); }             // *****
+      
+      // MTRM p. 29 - Farming identical to Scouts (REFACTOR)                             // *****
+      if (((Orbit)h).isHabitableZone() && 
+          h.getUWP().atmo  > 3 &&
+          h.getUWP().atmo  < 10 &&
+          h.getUWP().hydro > 3 &&
+          h.getUWP().hydro < 9 &&
+          h.getUWP().pop   > 1){
+            h.addFacility("Farming");
+      }
+      
+      // MTRM p. 29 - Mining identical to Scouts (REFACTOR)                            // *****
+      if (this.trade.industrial &&
+          h.getUWP().pop   > 1){
+            h.addFacility("Mining");
+      }
+      
+      // MTRM p. 29 - Colony identical to Scouts (REFACTOR)                            // *****
+      if (h.getUWP().gov == 6 &&
+          h.getUWP().pop > 4){
+            h.addFacility("Colony");
+      }
+      
+      // MTRM p. 29 - Research Lab identical to Scouts (REFACTOR)                            // *****
+      if (mainworld.getUWP().tech > 8 && mainworld.getUWP().pop > 0){
+        int modifier = 0;
+        if (mainworld.getUWP().tech > 9){ modifier += 2; }
+        int dieThrow = roll.two(modifier);
+        if (dieThrow > 10){
+          h.addFacility("Research Lab");
+          if (h.getUWP().tech < mainworld.getUWP().tech){
+            h.getUWP().tech = mainworld.getUWP().tech;
+          }
+        }
+      }
+      
+      // MTRM p. 29 - Military Base only for pop 8+ mainworlds now
+      //  TO_DO: check errata, this one looks off
+      if (!this.trade.poor && h.getUWP().pop > 7){
+        int modifier = 0;
+        if (mainworld.getUWP().pop > 7){ modifier += 1; }
+        if (mainworld.getUWP().atmo == h.getUWP().atmo){ modifier += 2; }   // typo here - the value is missing; assume same as Scouts (+2)
+        int dieThrow = roll.two(modifier);
+        if (dieThrow > 12){
+          h.addFacility("Military Base");
+          militaryBase = true;
+          if (h.getUWP().tech < mainworld.getUWP().tech){
+            h.getUWP().tech = mainworld.getUWP().tech;
+          }
+        }        
+      }
+    }  
   }
 }
