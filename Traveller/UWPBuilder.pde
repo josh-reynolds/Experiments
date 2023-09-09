@@ -67,6 +67,10 @@ class UWPBuilder {
 
   int generatePop(){ return roll.two(-2); }
   
+  // CT77/CT81/Scouts only list Government types up to D (13),
+  // though the die range could generate up to 15
+  // MegaTraveller later introduces Government types E & F (14 + 15)
+  // should we cap this value here?
   int generateGov(int _pop){
     int result = roll.two(_pop - 7);
     if (result < 0){ result = 0; }
@@ -79,13 +83,15 @@ class UWPBuilder {
     return result;
   }
   
-  // MegaTraveller uses the same procedure
   int generateTech(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov){
     int modifier = 0;
     
     if (_starport == 'A'){ modifier += 6; }
     if (_starport == 'B'){ modifier += 4; }
     if (_starport == 'C'){ modifier += 2; }
+    // MegaTraveller errata p. 21 mentions a missing modifier for 'Starport F', but those
+    //  are not possible for mainworlds, which are the only planets this method applies to
+    //  - omitting this change
     if (_starport == 'X'){ modifier -= 4; }
     
     if (_size <= 1){              modifier += 2; }
@@ -101,7 +107,7 @@ class UWPBuilder {
     if (_pop == 10){             modifier += 4; }
     
     if (_gov == 0 || _gov == 5){ modifier += 1; }
-    if (_gov == 13){             modifier -= 2; }
+    if (_gov >= 13){             modifier -= 2; }   // MegaTraveller errata p. 21 extends to Governments E & F (14 + 15)
     
     return roll.one(modifier);
   }  
@@ -385,7 +391,7 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
       } 
     }
      
-    int result = roll.two(_size + modifier - 7);
+    int result = roll.two(_atmo + modifier - 7);     // MTRM errata p. 22 - modifier should be atmo, not size, like CT81
     result = constrain(result, 0, 10);    
     
     return result;    
@@ -416,6 +422,38 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
     
     return result;
   } 
+
+  // MegaTraveller RAW matches CT77/CT81/Scouts, but the errata introduces some changes
+  // TO_DO: look for refactoring opportunities here
+  int generateTech(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov){
+    int modifier = 0;
+    
+    if (_starport == 'A'){ modifier += 6; }
+    if (_starport == 'B'){ modifier += 4; }
+    if (_starport == 'C'){ modifier += 2; }
+    // MegaTraveller errata p. 21 mentions a missing modifier for 'Starport F', but those
+    //  are not possible for mainworlds, which are the only planets this method applies to
+    //  - omitting this change
+    if (_starport == 'X'){ modifier -= 4; }
+    
+    if (_size <= 1){              modifier += 2; }
+    if (_size > 1 && _size <= 4){ modifier += 1; }
+    
+    if (_atmo <= 3 || _atmo >= 10){ modifier += 1; }
+    
+    if (_hydro == 9){  modifier += 1; }
+    if (_hydro == 10){ modifier += 2; }
+    
+    if (_pop >= 1 && _pop <= 5){ modifier += 1; }
+    if (_pop == 9){              modifier += 2; }
+    if (_pop == 10){             modifier += 4; }
+    
+    if (_gov == 0 || _gov == 5){ modifier += 1; }
+    if (_gov == 13){             modifier -= 2; }
+    if (_gov >= 14){             modifier -= 1; }   // MegaTraveller errata p. 21 extends to Governments E & F (14 + 15)
+    
+    return roll.one(modifier);
+  }    
   
   // MT changes the procedure slightly from Scouts (MTRM p. 29)
   int generateSubordinateGov(int _mainworldGov, int _pop){

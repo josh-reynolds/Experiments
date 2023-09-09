@@ -141,11 +141,13 @@
 //  * DONE Unravel inheritance issues in UWP hierarchy
 //  * DONE Add MegaTraveller extended generation ruleset
 //  * .... 'Character' location and movement / ships (and UI elements) (many parts to this...)
+//  * .... MegaTraveller trade classifications
 //  * .... Review/incorporate MegaTraveller errata
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)
 //  *      Add subsector travel classifications from MegaTraveller
+//  *      Add MegaTraveller prose system descriptions
 //  *      Add New Era generation ruleset
 //  *      Add T4 generation ruleset
 //  *      Add T4 Pocket Empires ruleset
