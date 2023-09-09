@@ -153,6 +153,7 @@
 //  *      Add MongTrav generation ruleset
 //  *      Add T20 generation ruleset
 //  *      Add GURPS Traveller First In generation ruleset
+//  *      Add Hard Times and TNE Collapse Effects
 //  *      Review Star.size handling - getter/setter? polymorphism?
 //  *      Assess including companions of companions in getCompanions() result
 //  *      Assess adding "two beyond habitable" code to orbital zone data file

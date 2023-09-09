@@ -249,19 +249,13 @@ class System_ScoutsEx extends System_CT81 {
   
   System_ScoutsEx(Coordinate _coord, float _density){
     super(_coord, _density);
-    println("occupied = " + occupied);
-    println("In System_ScoutsEx ctor after super() call");
     
     if (occupied){
       builder = ruleset.newOrbitBuilder();          // TO_DO: do we need to keep the builder around after this point?
       builder.newStar(this);                   // could just do (new StarBuilder()).newStar(this) instead
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
-      println("Primary: " + primary);      
       
-      countGasGiants();
-      
-      println("@@@ System_ScoutsEx ctor");
-      
+      countGasGiants();     
       uwp = mainworld.getUWP();                 
       navalBase = generateNavalBase();          // need to regenerate with the 'true' mainworld UWP - otherwise identical to CT77 
       scoutBase = generateScoutBase();          
@@ -279,6 +273,7 @@ class System_ScoutsEx extends System_CT81 {
         }
       }
       println("MAINWORLD: " + mainworld);
+      println("--------------\n");
     }
   }
 

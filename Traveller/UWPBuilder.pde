@@ -159,7 +159,6 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     int law       = 0;
     int tech      = 0;
     
-    println(str(starport) + str(size) + str(atmo) + str(hydro) + str(pop) + str(gov) + str(law) + "-" + str(tech));
     ((Habitable)_o).setUWP(new UWP_ScoutsEx(_o, starport, size, atmo, hydro, pop, gov, law, tech));
   }
   
