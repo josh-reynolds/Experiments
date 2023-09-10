@@ -441,6 +441,10 @@ class System_ScoutsEx extends System_CT81 {
 class System_MT extends System_ScoutsEx {
  System_MT(Coordinate _coord, float _density){ super(_coord, _density); }
  
+ TradeClass generateTradeClass(UWP _uwp){
+    return new TradeClass_MT(_uwp);   
+  }
+ 
  // MegaTraveller changes the procedure for subordinate facilities slightly (MTRM p. 29)
  //  TO_DO: opportunity here to extract code duplicated from super and only override the differences
  void generateFacilities(){
