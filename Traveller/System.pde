@@ -1,4 +1,4 @@
-// this is derived from CT77 Book 3
+// CT77 Book 3 pp. 1-12 
 class System {
   Polygon hex;
   Coordinate coord;
@@ -20,7 +20,7 @@ class System {
     
     if (random(1) < _density){  // TO_DO: may want to rethink this living in System - move up a level?
       occupied = true;
-      UWPBuilder ub = ruleset.newUWPBuilder();
+      UWPBuilder ub = ruleset.newUWPBuilder(); 
       ub.newUWPFor(this);
       navalBase = generateNavalBase();
       scoutBase = generateScoutBase();

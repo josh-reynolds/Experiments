@@ -160,8 +160,9 @@ class Ruleset {
       case "CT77":
         return new TradeClass(_uwp);
       case "CT81":
-      case "Scouts (Extended)":
         return new TradeClass_CT81(_uwp);
+      case "Scouts (Extended)":
+        return new TradeClass_ScoutsEx(_uwp);
       case "MegaTraveller (Extended)":
         return new TradeClass_MT(_uwp);
       default:

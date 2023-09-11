@@ -1,4 +1,4 @@
-// this is derived from CT77 Book 2
+// CT77 Book 2 p. 43
 class TradeClass {
   Boolean agricultural = false;
   Boolean nonagricultural = false;
@@ -41,7 +41,7 @@ class TradeClass {
   }
 }
 
-// Scouts follows the same procedure as CT81
+// CT81 Book 3 p. 16
 class TradeClass_CT81 extends TradeClass {
   Boolean water = false;
   Boolean desert = false;
@@ -73,9 +73,26 @@ class TradeClass_CT81 extends TradeClass {
   }
 }
 
+// Scouts p. 32
+class TradeClass_ScoutsEx extends TradeClass_CT81 {
+  TradeClass_ScoutsEx(UWP _uwp){
+    super(_uwp);
+    
+    //UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;      // hitting cast exception, need to rework this
+                                                  // the problem is the System level UWP, which is useless/invalid for Scouts-type generation
+                                                  // we may need to overhaul the System ctors to unsnarl
+    
+    desert = false;                             // need to refactor so we can override - simple hack for now
+    asteroid = false;
+    
+    if (_uwp.hydro == 0 && _uwp.atmo >= 2) { desert = true; }
+    //if (uwp.size == 0 && !uwp.isPlanet)  { asteroid = true; }
+  }
+}
+
 // MTRM p. 25
 //  table also includes Vargr & Aslan details, not implementing yet
-class TradeClass_MT extends TradeClass_CT81 {
+class TradeClass_MT extends TradeClass_ScoutsEx {
   Boolean barren = false;
   Boolean fluid = false;
   Boolean highpop = false;

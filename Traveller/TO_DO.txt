@@ -147,7 +147,7 @@
 //  * .... REFACTOR: case statements in Ruleset
 //  * .... Move away from string parsing approach in Star JSON ctor
 //  * .... Flesh out tests (this will take a while...)
-//  *      Review trade classifications across implemented rulesets
+//  * .... Review trade classifications across implemented rulesets
 //  *      Test & fix JSON loading for MegaTraveller ruleset
 //  *      Add subsector travel classifications from MegaTraveller
 //  *      Non-human worlds and trade classifications (from MT)?
