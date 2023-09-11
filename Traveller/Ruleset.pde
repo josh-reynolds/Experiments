@@ -154,4 +154,18 @@ class Ruleset {
         return new Star(_barycenter, _orbit, _zone, _parent);
     }
   }
+  
+  TradeClass newTradeClass(UWP _uwp){
+    switch(name) {
+      case "CT77":
+        return new TradeClass(_uwp);
+      case "CT81":
+      case "Scouts (Extended)":
+        return new TradeClass_CT81(_uwp);
+      case "MegaTraveller (Extended)":
+        return new TradeClass_MT(_uwp);
+      default:
+        return new TradeClass(_uwp);
+    }
+  }
 }
