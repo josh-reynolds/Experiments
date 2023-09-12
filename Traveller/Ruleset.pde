@@ -63,18 +63,18 @@ class Ruleset {
     }
   }
   
-  System newSystem(Coordinate _coord, Float _density){
+  System newSystem(Coordinate _coord, Boolean _occupied){
     switch(name) {
       case "CT77":
-        return new System(_coord, _density);
+        return new System(_coord, _occupied);
       case "CT81":
-        return new System_CT81(_coord, _density);
+        return new System_CT81(_coord, _occupied);
       case "Scouts (Extended)":
-        return new System_ScoutsEx(_coord, _density);
+        return new System_ScoutsEx(_coord, _occupied);
       case "MegaTraveller (Extended)":
-        return new System_MT(_coord, _density);
+        return new System_MT(_coord, _occupied);
       default:
-        return new System(_coord, _density);
+        return new System(_coord, _occupied);
     }
   }
   

@@ -141,6 +141,7 @@
 //  * DONE Unravel inheritance issues in UWP hierarchy
 //  * DONE Add MegaTraveller extended generation ruleset
 //  * DONE Plumb TradeClass through Ruleset
+//  * DONE Shift occupied/density determination up from System to Subsector
 //  * .... 'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  * .... MegaTraveller trade classifications
 //  * .... Review/incorporate MegaTraveller errata
