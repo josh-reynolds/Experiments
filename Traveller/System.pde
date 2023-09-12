@@ -12,6 +12,23 @@ class System {
   ArrayList<Route> routes;
   Dice roll;
     
+  System(Coordinate _coord, Boolean _occupied){
+    coord = _coord;
+    hex = new Polygon(coord.getScreenX(), coord.getScreenY(), hexRadius);
+    roll = new Dice();
+    occupied = _occupied;
+    
+    if (occupied){
+      UWPBuilder ub = ruleset.newUWPBuilder(); 
+      ub.newUWPFor(this);
+      navalBase = generateNavalBase();
+      scoutBase = generateScoutBase();
+      if (roll.two() <= 9){ gasGiant = true; }  // this is in Book 2, p.35
+      trade = generateTradeClass(uwp);
+      name = lines[floor(random(lines.length))];
+      routes = new ArrayList<Route>();
+    }
+  }
     
   System(Coordinate _coord, float _density){
     coord = _coord;
@@ -131,6 +148,21 @@ class System {
 class System_CT81 extends System {
   String travelZone = "Green";
   
+  System_CT81(Coordinate _coord, Boolean _occupied){
+    super(_coord, _occupied);
+    
+    // system occurrence identical to CT77
+    // naval base identical to CT77
+    // scout base identical to CT77
+    // gas giant identical to CT77
+    
+    // routes are referee fiat in CT81 - keeping the system from CT77 
+    
+    if (occupied){ 
+      travelZone = generateTravelZone();
+    }
+  }
+  
   System_CT81(Coordinate _coord, float _density){
     super(_coord, _density);
     
@@ -242,6 +274,36 @@ class System_ScoutsEx extends System_CT81 {
   int gasGiantCount;
   Boolean militaryBase = false;
   OrbitBuilder builder;
+
+  System_ScoutsEx(Coordinate _coord, Boolean _occupied){
+    super(_coord, _occupied);
+    
+    if (occupied){
+      builder = ruleset.newOrbitBuilder();          // TO_DO: do we need to keep the builder around after this point?
+      builder.newStar(this);                   // could just do (new StarBuilder()).newStar(this) instead
+      println("\n--------------\nSystem: " + name + " (" + coord + ")");
+      
+      countGasGiants();     
+      uwp = mainworld.getUWP();                 
+      navalBase = generateNavalBase();          // need to regenerate with the 'true' mainworld UWP - otherwise identical to CT77 
+      scoutBase = generateScoutBase();          
+      trade = generateTradeClass(uwp);
+      travelZone = generateTravelZone();      
+      generateFacilities();
+                                                
+      println("PRIMARY : " + primary);
+      println(primary.orbits);
+      ArrayList<Star> comps = primary.getCompanions();
+      if (comps.size() > 0){
+        for (Star c : comps){
+          println("COMPANION : " + c);
+          println(c.orbits);
+        }
+      }
+      println("MAINWORLD: " + mainworld);
+      println("--------------\n");
+    }
+  }
   
   System_ScoutsEx(Coordinate _coord, float _density){
     super(_coord, _density);
@@ -435,7 +497,8 @@ class System_ScoutsEx extends System_CT81 {
 }
 
 class System_MT extends System_ScoutsEx {
- System_MT(Coordinate _coord, float _density){ super(_coord, _density); }
+  System_MT(Coordinate _coord, Boolean _occupied){ super(_coord, _occupied); } 
+  System_MT(Coordinate _coord, float _density){ super(_coord, _density); }
  
  // MegaTraveller changes the procedure for subordinate facilities slightly (MTRM p. 29)
  //  TO_DO: opportunity here to extract code duplicated from super and only override the differences
