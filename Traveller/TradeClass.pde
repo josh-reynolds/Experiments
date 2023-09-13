@@ -78,15 +78,13 @@ class TradeClass_ScoutsEx extends TradeClass_CT81 {
   TradeClass_ScoutsEx(UWP _uwp){
     super(_uwp);
     
-    //UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;      // hitting cast exception, need to rework this
-                                                  // the problem is the System level UWP, which is useless/invalid for Scouts-type generation
-                                                  // we may need to overhaul the System ctors to unsnarl
+    UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
     
     desert = false;                             // need to refactor so we can override - simple hack for now
     asteroid = false;
     
     if (_uwp.hydro == 0 && _uwp.atmo >= 2) { desert = true; }
-    //if (uwp.size == 0 && !uwp.isPlanet)  { asteroid = true; }
+    if (uwp.size == 0 && !uwp.isPlanet)    { asteroid = true; }
   }
 }
 
