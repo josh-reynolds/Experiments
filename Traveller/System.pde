@@ -11,11 +11,15 @@ class System {
   String name = "";
   ArrayList<Route> routes;
   Dice roll;
-    
-  System(Coordinate _coord, Boolean _occupied){
+  
+  System(Coordinate _coord){
     coord = _coord;
     hex = new Polygon(coord.getScreenX(), coord.getScreenY(), hexRadius);
     roll = new Dice();
+  }
+    
+  System(Coordinate _coord, Boolean _occupied){
+    this(_coord);
     occupied = _occupied;
     
     if (occupied){
@@ -31,8 +35,7 @@ class System {
   }
   
   System(JSONObject _json){
-    coord    = new Coordinate(_json.getJSONObject("Coordinate"));  // might pass this in instead...
-    hex = new Polygon(coord.getScreenX(), coord.getScreenY(), hexRadius);
+    this(new Coordinate(_json.getJSONObject("Coordinate")));
     occupied = _json.getBoolean("Occupied");
     
     if (occupied){
@@ -129,6 +132,10 @@ class System {
 
 class System_CT81 extends System {
   String travelZone = "Green";
+  
+  System_CT81(Coordinate _coord){
+    super(_coord);
+  }
   
   System_CT81(Coordinate _coord, Boolean _occupied){
     super(_coord, _occupied);
@@ -243,9 +250,14 @@ class System_ScoutsEx extends System_CT81 {
   OrbitBuilder builder;
 
   System_ScoutsEx(Coordinate _coord, Boolean _occupied){
-    super(_coord, _occupied);
+    //super(_coord, _occupied);
+    super(_coord);
+    occupied = _occupied;
     
     if (occupied){
+      name = lines[floor(random(lines.length))];
+      routes = new ArrayList<Route>();
+      
       builder = ruleset.newOrbitBuilder();          // TO_DO: do we need to keep the builder around after this point?
       builder.newStar(this);                   // could just do (new StarBuilder()).newStar(this) instead
       println("\n--------------\nSystem: " + name + " (" + coord + ")");

@@ -970,3 +970,123 @@ into a more generalized Orbit procedure (with appropriate steps by type, of
 course). The builder should take advantage of the Composite, and walk its way
 through. This merger will probably help clean up the Far companion issue noted 
 above.
+
+9/13/23
+
+The Builder pattern has proven useful. As hinted above, StarBuilder was
+renamed to OrbitBuilder to reflect its true scope. I also applied the pattern
+to UWP to unsnarl some of the problems in its inheritance chain. Since the 
+last updates I also completed the core MegaTraveller ruleset, and added a 
+'player character' ship class with rudimentary UI and console output. And 
+I have a side project experimenting with visualization of a Scouts 'with
+orbits' System that may fold in as a UI panel in the main app.
+
+Besides Builder, a couple other learnings:
+
+* I've probably been hitting the gnarlier issues because of violation of
+constructor best practice. They are doing too much, and things go sideways
+especially when invoking super. This is exactly why Builder is so helpful here.
+Discussion below for the latest; this might bear some overall review and 
+redesign across the entire application.
+
+* It's apparent that there are two families of ruleset: 'simple Systems,'
+and 'Systems with Orbits.' The first family starts with CT77, and the 
+second with Scouts. Possibly more to discover later (like GURPS, maybe?),
+but I suspect most of the remaining variants will follow one of these two
+models in broad strokes. Crossing lines between these families during 
+inheritance has been the source of a lot of the issues discussed above.
+
+So, continuing from that - latest class needing some attention is System 
+itself. Not yet pulling out the Builder pattern, but if need be that might
+be the way to resolve the problems. But first we'll start by untangling
+the constructors.
+
+I was adding a TradeClass variant for MegaTraveller (and along the way noticed
+Scouts also needs some specialization). Because of size 'S' planets (added
+in Scouts), the Asteroid classification needs to know whether it is applying
+to a Planet or a Planetoid. The 'isPlanet' flag lives on UWP_ScoutsEx, so
+this needed a downcast. Problem is, during the super constructor call, we're
+handling a plain UWP and the cast fails.
+
+But that super call itself is the issue. For Scouts, it calls up the constructor
+inheritance chain, and creates a dummy UWP and other values that are later
+overwritten. This is because under the Scouts family, until you create all
+Orbits and designate a mainworld, you don't know what values the System as a 
+whole has.
+
+I arrived at this by applying somethign like the Template Method pattern. The
+super constructor outlines a series of steps, specified in methods. Child 
+classes then override the methods to specialize. But when the child radically
+alters the template, we need to do something else.
+
+So... we should break up these constructors. Provide a simple path for creating
+the 'internal super' with only common pieces applicable to ALL subclasses (and/or
+valid as null). Then have either extension constructors or another approach
+to apply the templates.
+
+Analyzing the current classes we have:
+
+System----------------------------------------
+  UWPBuilder ub = ruleset.newUWPBuilder(); 
+  ub.newUWPFor(this);
+  navalBase = generateNavalBase();
+  scoutBase = generateScoutBase();
+  if (roll.two() <= 9){ gasGiant = true; }
+  trade = generateTradeClass(uwp);
+  name = lines[floor(random(lines.length))];
+  routes = new ArrayList<Route>();
+
+System_CT81 extends System--------------------
+  travelZone = generateTravelZone();
+
+System_ScoutsEx extends System_CT81-----------
+  builder = ruleset.newOrbitBuilder();
+  builder.newStar(this);
+  countGasGiants();     
+  uwp = mainworld.getUWP();         
+  navalBase = generateNavalBase();
+  scoutBase = generateScoutBase();      
+  trade = generateTradeClass(uwp);
+  travelZone = generateTravelZone();  
+  generateFacilities();
+
+System_MT extends System_ScoutsEx-------------
+  (just calls super)
+
+System fields across rulesets look like:
+
+[77][81][SC][MT]
+----------------
+[OK][OK][--][--] System-level UWP
+[OK][OK][RE][RE] Naval Base
+[OK][OK][RE][RE] Scout Base
+[OK][OK][RE][RE] Gas Giants
+[OK][OK][RE][RE] Trade Class
+[OK][OK][??][??] Name
+[OK][OK][??][??] Routes
+[--][OK][RE][RE] Travel Zone
+[--][--][OK][OK] Orbits
+[--][--][OK][OK] Mainworld UWP
+[--][--][OK][OK] Facilities
+
+-- : does not apply
+OK : OK implementation via class constructor or super
+RE : dummy implemenation in super; regenerated after
+?? : only implemented in super
+
+Initial simple approach is to add a 'default constructor' for System that
+just takes a coordinate, and use this in super calls. System itself can
+use 'this', then continue with the specialized pieces (invoked if 
+occupied==true).
+
+Did this, and now we're missing out on Name and Routes since we only got 
+this from super. Need to duplicate that downward. Refactor any duplication
+later once we get this working.
+
+(One other note: to prepare for these changes, I already moved the occupied
+calculation up to subsector. Previously we passed density in, and did the 
+check in the System ctor. This class doesn't need to know anything about
+that concept, so it more appropriately belongs in Subsector - and moving 
+it simplifies this constructor cleanup effort.)
+
+
