@@ -403,8 +403,11 @@ class Star_MT extends Star {
 
   // MegaTraveller uses the same odds for both Primary and Companion stars (MTRM p. 26) on generateType()
 
+  // TO_DO: errata changes frequency for Type G Primary stars - need to override (errata p. 22)
+
   // MegaTraveller uses the same odds for Primary, but changed the Companion table (MTRM p.26)
   // The table is now identical to Primary, so I wonder if this was a copy/paste typo? In any case, will implement RAW
+  // TO_DO: errata p. 22 lists changes to this method 
   int generateSize(){
     int dieThrow = roll.two();
     sizeRoll = dieThrow;

@@ -46,8 +46,8 @@ class OrbitBuilder {
     if (dieThrow < 8){ return 0; }
     if (dieThrow > 7 && dieThrow < 12){ return 1; }
     if (dieThrow == 12){ 
-      if (_star.isPrimary()){ 
-        return 2; 
+      if (_star.isPrimary()){    // technically not the same as the RAW -1 modifier for far companions
+        return 2;                // because it doesn't alter the probabilities of the lower results - fix?
       } else {
         return 1;
       }
@@ -662,7 +662,10 @@ class OrbitBuilder_MT extends OrbitBuilder {
   //  and I think even the errata is incomplete, since it only refers to the first roll, not the second:
   //  "If there are gas giants in the system, apply the number of gas giants as a +DM to the die roll to determine if planetoid belts exist in the system."
   //
-  // I am going to apply for both cases, so it now matches Scouts, just inverted
+  // also the detailed errata note is for the table on p. 25 (Step 16),
+  // though technically this method is for Step 23 on p. 28
+  //
+  // implementing the full errata here, but also retaining the Gas Giant modifier on the second roll
   int generatePlanetoidBeltCountFor(Star _star){
     println("Generating Planetoid Belts count for " + _star);
     int planetoidCount = 0;        
@@ -673,16 +676,16 @@ class OrbitBuilder_MT extends OrbitBuilder {
         case 4:
         case 5:
         case 6:
-        case 7:
           planetoidCount = 1;
           break;
+        case 7:                  // changed in errata (p. 22)
         case 8:
         case 9:
         case 10:
         case 11:
-        case 12:
           planetoidCount = 2;
           break;
+        case 12:                 // changed in errata (p. 22)
         case 13:                 // with errata change, now possible to reach these values
         case 14:
         case 15:
