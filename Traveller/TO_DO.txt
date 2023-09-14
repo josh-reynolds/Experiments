@@ -142,13 +142,13 @@
 //  * DONE Add MegaTraveller extended generation ruleset
 //  * DONE Plumb TradeClass through Ruleset
 //  * DONE Shift occupied/density determination up from System to Subsector
-//  * .... 'Character' location and movement / ships (and UI elements) (many parts to this...)
-//  * .... MegaTraveller trade classifications
+//  * DONE Review trade classifications across implemented rulesets
+//  * DONE MegaTraveller trade classifications
 //  * .... Review/incorporate MegaTraveller errata
-//  * .... REFACTOR: case statements in Ruleset
-//  * .... Move away from string parsing approach in Star JSON ctor
-//  * .... Flesh out tests (this will take a while...)
-//  * .... Review trade classifications across implemented rulesets
+//  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
+//  *      REFACTOR: case statements in Ruleset
+//  *      Move away from string parsing approach in Star JSON ctor
+//  *      Flesh out tests (this will take a while...)
 //  *      Test & fix JSON loading for MegaTraveller ruleset
 //  *      Add subsector travel classifications from MegaTraveller
 //  *      Non-human worlds and trade classifications (from MT)?
@@ -158,6 +158,7 @@
 //  *      Add T4 Pocket Empires ruleset
 //  *      Add T5 generation ruleset
 //  *      Add MongTrav generation ruleset
+//  *      Add MongTrav Deep Space Exploration ruleset
 //  *      Add T20 generation ruleset
 //  *      Add GURPS Traveller First In generation ruleset
 //  *      Add Hard Times and TNE Collapse Effects

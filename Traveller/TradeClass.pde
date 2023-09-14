@@ -18,16 +18,19 @@ class TradeClass {
         
     if ((_uwp.atmo <= 2 || _uwp.atmo == 4 || _uwp.atmo == 7 || _uwp.atmo == 9) &&
         _uwp.pop >= 9){ industrial = true; }
-        
-    if (_uwp.pop <= 6){ nonindustrial = true; }
+    
+    nonindustrial = isNonindustrial(_uwp);
 
     if (_uwp.gov >= 4 && _uwp.gov <= 9 &&
         (_uwp.atmo == 6 || _uwp.atmo == 8) &&
         _uwp.pop >= 6 && _uwp.pop <= 8){ rich = true; }        
         
-    if (_uwp.atmo >= 2 && _uwp.atmo <= 5 &&
-        _uwp.hydro <= 3){ poor = true; }
+    poor = isPoor(_uwp);
   }
+  
+  // to allow overrides - eventually all of these probably should be turned into methods
+  Boolean isNonindustrial(UWP _uwp){ return _uwp.pop <= 6; }
+  Boolean isPoor(UWP _uwp){ return (_uwp.atmo >= 2 && _uwp.atmo <= 5 && _uwp.hydro <= 3); }   
   
   String toString(){
     String output = "";
@@ -49,12 +52,12 @@ class TradeClass_CT81 extends TradeClass {
   Boolean asteroid = false;
   Boolean icecapped = false;
   
-  TradeClass_CT81(UWP _uwp){   // UWP fields should be uniform across hierarchy - no need to be specific
-    super(_uwp);                    // and this causes issues for other UWP variants
+  TradeClass_CT81(UWP _uwp){
+    super(_uwp);
     
     // agricultural/nonagricultural/industrial/nonindustrial/rich/poor identical to CT77
     
-    desert = isDesert(_uwp);       // to allow overrides - eventually all of these probably should be turned into methods
+    desert = isDesert(_uwp);       
     asteroid = isAsteroid(_uwp);  
     
     if (_uwp.hydro == 10    ){ water = true; }
@@ -81,7 +84,10 @@ class TradeClass_CT81 extends TradeClass {
 class TradeClass_ScoutsEx extends TradeClass_CT81 {
   TradeClass_ScoutsEx(UWP _uwp){ super(_uwp); }
 
-  Boolean isDesert(UWP _uwp){ return (_uwp.hydro == 0 && _uwp.atmo >= 2); }
+  // agricultural/nonagricultural/industrial/nonindustrial/rich/poor identical to CT77
+  // water/vacuum/icecapped identical to CT81
+
+Boolean isDesert(UWP _uwp){ return (_uwp.hydro == 0 && _uwp.atmo >= 2); }
   
   Boolean isAsteroid(UWP _uwp){ 
     UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
@@ -100,17 +106,19 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
   TradeClass_MT(UWP _uwp){
     super(_uwp);
     
-    // agricultural/ice-capped/non-agricultural/non-industrial/poor/rich/vacuum/water identical to CT81
+    // agricultural/ice-capped/non-agricultural/poor/rich/vacuum/water identical to CT81
     // desert identical to Scouts
 
-    // Changed from previous:    
-    // Industrial      - atmo 2-4,7,9 / pop 9+              (changes atmo range, typo? check errata)
+    // for industrial, RAW states atmo 2-4,7,9 / pop 9+ and the errata doesn't call it out
+    // but this still looks incorrect
+    // since CT77 this has been atmo 0-2,4,7,9 (vacuum or tainted)
+    // this looks like a typo to me, so leaving it same as previous rules
     
     // Added in MegaTraveller:
     if (_uwp.pop == 0 && _uwp.gov == 0 && _uwp.law == 0){ barren = true; }
-    if (_uwp.size >= 10 && _uwp.atmo >= 1){ fluid = true; }
+    if (_uwp.atmo >= 10 && _uwp.atmo <= 12 && _uwp.hydro >= 1){ fluid = true; }   // MegaTraveller errata p. 21: RAW is size A+ && atmo 1+. Corrected to atmo A-C && hydro 1+
     if (_uwp.pop >= 9){ highpop = true; }
-    if (_uwp.pop <= 3){ lowpop = true; }        
+    if (_uwp.pop >= 1 && _uwp.pop <= 3){ lowpop = true; }                         // MegaTraveller errata p. 25: RAW is pop 3-. Corrected to pop 1-3 (i.e. not Barren worlds)
   }
 
   // MegaTraveller adds atmo 0 & hydro 0 to conditions - this is redundant, since
@@ -123,6 +131,10 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
             uwp.hydro == 0 &&
             !uwp.isPlanet); 
   }
+
+  // MegaTraveller errata p. 21 - Barren worlds (pop 0) are not counted as non-industrial or poor
+  Boolean isNonindustrial(UWP _uwp){ return (_uwp.pop >= 1 && _uwp.pop <= 6); }
+  Boolean isPoor(UWP _uwp){ return (_uwp.atmo >= 2 && _uwp.atmo <= 5 && _uwp.hydro <= 3 && _uwp.pop >= 1); }
 
   // TO_DO: Asteroid is automatically Va, doesn't need to have that one
   String toString(){
