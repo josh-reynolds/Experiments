@@ -54,13 +54,17 @@ class TradeClass_CT81 extends TradeClass {
     
     // agricultural/nonagricultural/industrial/nonindustrial/rich/poor identical to CT77
     
-    if (_uwp.hydro == 10){ water = true; }
-    if (_uwp.hydro == 0) { desert = true; }
-    if (_uwp.atmo == 0)  { vacuum = true; }
-    if (_uwp.size == 0)  { asteroid = true; }
+    desert = isDesert(_uwp);       // to allow overrides - eventually all of these probably should be turned into methods
+    asteroid = isAsteroid(_uwp);  
+    
+    if (_uwp.hydro == 10    ){ water = true; }
+    if (_uwp.atmo == 0      ){ vacuum = true; }
     if (_uwp.atmo <= 1 &&
-        _uwp.hydro >= 1) { icecapped = true; }
+        _uwp.hydro >= 1     ){ icecapped = true; }
   }
+  
+  Boolean isDesert(UWP _uwp  ){ return _uwp.hydro == 0; }
+  Boolean isAsteroid(UWP _uwp){ return _uwp.size == 0; }
   
   String toString(){
     String output = super.toString();
@@ -75,16 +79,13 @@ class TradeClass_CT81 extends TradeClass {
 
 // Scouts p. 32
 class TradeClass_ScoutsEx extends TradeClass_CT81 {
-  TradeClass_ScoutsEx(UWP _uwp){
-    super(_uwp);
-    
+  TradeClass_ScoutsEx(UWP _uwp){ super(_uwp); }
+
+  Boolean isDesert(UWP _uwp){ return (_uwp.hydro == 0 && _uwp.atmo >= 2); }
+  
+  Boolean isAsteroid(UWP _uwp){ 
     UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
-    
-    desert = false;                             // need to refactor so we can override - simple hack for now
-    asteroid = false;
-    
-    if (_uwp.hydro == 0 && _uwp.atmo >= 2) { desert = true; }
-    if (uwp.size == 0 && !uwp.isPlanet)    { asteroid = true; }
+    return (uwp.size == 0 && !uwp.isPlanet); 
   }
 }
 
