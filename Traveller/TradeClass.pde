@@ -101,11 +101,9 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
     super(_uwp);
     
     // agricultural/ice-capped/non-agricultural/non-industrial/poor/rich/vacuum/water identical to CT81
+    // desert identical to Scouts
 
-    // Changed from previous:
-    // Asteroid        - size 0 / atmo 0 / hydro 0          (adds atmo + hydro, review)
-    //  (automatically Va, doesn't need to have that one)
-    // Desert          - atmo 2+ / hydro 0                  (adds atmo, review)    
+    // Changed from previous:    
     // Industrial      - atmo 2-4,7,9 / pop 9+              (changes atmo range, typo? check errata)
     
     // Added in MegaTraveller:
@@ -115,6 +113,18 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
     if (_uwp.pop <= 3){ lowpop = true; }        
   }
 
+  // MegaTraveller adds atmo 0 & hydro 0 to conditions - this is redundant, since
+  // under these rules, a size 0 world is automatically atmo 0 / hydro 0
+  // Also, they don't explicitly call out the Planet condition from Scouts but the same logic applies, so keeping it
+  Boolean isAsteroid(UWP _uwp){ 
+    UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
+    return (uwp.size == 0 &&  
+            uwp.atmo == 0 &&
+            uwp.hydro == 0 &&
+            !uwp.isPlanet); 
+  }
+
+  // TO_DO: Asteroid is automatically Va, doesn't need to have that one
   String toString(){
     String output = super.toString();
     if (barren)       { output += "Ba "; }
