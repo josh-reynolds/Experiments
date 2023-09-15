@@ -157,7 +157,9 @@
 //  *      Add subsector travel classifications from MegaTraveller
 //  *      Non-human worlds and trade classifications (from MT)?
 //  *      Add MegaTraveller prose system descriptions
+//  *      Add World Builder's Handbook ruleset (MT)
 //  *      Add New Era generation ruleset
+//  *      Add World Tamer's Handbook ruleset (TNE)
 //  *      Add T4 generation ruleset
 //  *      Add T4 Pocket Empires ruleset
 //  *      Add T5 generation ruleset

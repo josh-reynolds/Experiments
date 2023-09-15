@@ -401,41 +401,90 @@ class Star_MT extends Star {
   Star_MT(Orbit _barycenter, System _parent, JSONObject _json){ super(_barycenter, _parent, _json); }
   Star_MT(Boolean _primary, System _parent, String _s){ super(_primary, _parent, _s); }  
 
-  // MegaTraveller uses the same odds for both Primary and Companion stars (MTRM p. 26) on generateType()
+  // TO_DO: mostly duplicated from super, refactor
+  void createStar(){
+    type = generateType();  
+    decimal = floor(random(10));      // TO_DO: confusing comment in errata (p. 22):
+                                      //   "Star types M4V through M9V cannot have habitable worlds: subtract 6 from the decimal classification
+                                      //    for primary stars."
+                                      // Not clear what this is trying to accomplish? Are they forcing every system to have a habitable-capable
+                                      //   primary star? Per the zones table, they could still have outer zone planets.
+                                      // Not going to take this one up.
+    size = generateSize();           
+    if (size == 7){ decimal = 0; }
+    if ((type == 'A' || type == 'F' || type == 'G') &&
+        (size == 2 || size == 3)){ size = 5; }    // errata p. 22:
+                                                  //  "Star types A, F and G are extremely rare with star sizes II and III: change 
+                                                  //   star size to V."
+    
+    orbitalZones = retrieveOrbitalZones();
+  }
 
-  // TO_DO: errata changes frequency for Type G Primary stars - need to override (errata p. 22)
+  // TO_DO: mostly duplicated from super, refactor
+  char generateType(){
+    int dieThrow = roll.two();
+    if (isPrimary()){
+      typeRoll = dieThrow;
+      if (dieThrow == 2                  ){ return 'A'; }
+      if (dieThrow > 2 && dieThrow < 8   ){ return 'M'; }
+      if (dieThrow == 8                  ){ return 'K'; }
+      if (dieThrow == 9 || dieThrow == 10){ return 'G'; }    // change from RAW acccording to errata p. 22
+      if (dieThrow > 10                  ){ return 'F'; }
+      return 'X';
+    } else {
+      typeRoll = 0;
+      dieThrow += ((System_ScoutsEx)parent).primary.typeRoll;
+      if (dieThrow == 2                 ){ return 'A'; } // because minimum modifier from primary is +2, results
+      if (dieThrow == 3 || dieThrow == 4){ return 'F'; } // of 2,3 are not possible
+      if (dieThrow == 5 || dieThrow == 6){ return 'G'; }
+      if (dieThrow == 7 || dieThrow == 8){ return 'K'; }
+      if (dieThrow > 8                  ){ return 'M'; }
+      return 'X';
+    }
+  }
 
-  // MegaTraveller uses the same odds for Primary, but changed the Companion table (MTRM p.26)
-  // The table is now identical to Primary, so I wonder if this was a copy/paste typo? In any case, will implement RAW
-  // TO_DO: errata p. 22 lists changes to this method 
+  // MegaTraveller RAW uses the same odds for Primary, but changed the Companion table (MTRM p.26)
+  // However errata p. 22 lists changes to this method that bring it more inline with super 
+  // Implementing override for now, then compare and eliminate duplication
   int generateSize(){
     int dieThrow = roll.two();
-    sizeRoll = dieThrow;
     
-    if (!isPrimary()){  
+    if (isPrimary()){
+      sizeRoll = dieThrow;
+      if (dieThrow == 2                ){ return 2;  }
+      if (dieThrow == 3                ){ return 3; }
+      if (dieThrow == 4                ){ 
+        if ((type == 'K' && decimal > 4) || type == 'M'){
+          return 5;
+        } else {
+          return 4;
+        }
+      }  
+      if (dieThrow > 4                 ){ return 5;   }  // change from RAW according to errata p. 22
+      return 9;
+    } else {
       sizeRoll = 0;
       dieThrow += ((System_ScoutsEx)parent).primary.sizeRoll; 
-    }
-
-    if (dieThrow == 2                ){ return 2;  }
-    if (dieThrow == 3                ){ return 3; }
-    if (dieThrow == 4                ){ 
-      if ((type == 'K' && decimal > 4) || type == 'M'){
-        return 5;
-      } else {
-        return 4;
+      if (dieThrow == 2                ){ return 2;  } // because minimum modifier from primary is +2, results
+      if (dieThrow == 3                ){ return 3; }  // of 2,3 are not possible
+      if (dieThrow == 4                ){ 
+        if ((type == 'K' && decimal > 4) || type == 'M'){
+          return 5;
+        } else {
+          return 4;
+        }
+      }  
+      if (dieThrow > 4 && dieThrow < 12){ return 5;   }  // change from RAW according to errata p. 22
+      if (dieThrow > 11                ){ 
+        int primarySize = ((System_ScoutsEx)parent).primary.size;
+        if (primarySize == 2 || primarySize == 3 || primarySize == 4){   // change from RAW according to errata p. 22
+          return 7;
+        } else {
+          return 5;
+        }
       }
+      return 9;
     }
-    if (dieThrow > 4 && dieThrow < 11){ return 5;   }
-    if (dieThrow == 11               ){
-      if (type == 'B' || type == 'A' || (type == 'F' && decimal < 5)){
-        return 5;
-      } else {
-        return 6;
-      }
-    }
-    if (dieThrow >= 12               ){ return 7;   }
-    return 9;
   }
 
   // MegaTraveller expresses orbitMaskedByCompanion via a table (MTRM p.26) rather than the calculations
