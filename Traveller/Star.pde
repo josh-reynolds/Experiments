@@ -206,6 +206,11 @@ class Star extends Orbit {
   // - the system by RAW cannot generate supergiants (Ia/Ib) or O/B stars, so could omit that data
   // - special case for M9 not handled yet - all other decimal values round to 0/5 for all spectral classes except M
   // The tables in MegaTraveller are identical, no need to update the data files for this ruleset (MTRM p. 27)
+  // TO_DO: MT errata p. 22 calls out some changes to the tables:
+  //   Ib omitted as noted above, no need to change
+  //   BxIII/BxIV/BxV: "remove entries from all three tables for star types B0 and B5."
+  //   "existing errata has removed Star Size VI... this table can be removed."
+  // Since we're currently sharing a single data file with Scouts, need to consider how (and whether) to implement
   String[] retrieveOrbitalZones(){
     String[] output = new String[21];
     

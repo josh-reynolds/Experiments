@@ -37,21 +37,19 @@ class OrbitBuilder {
       }
 
       _star.addOrbit(companion.getOrbitNumber(), companion);
-    } 
+    }
   }
    
   int generateCompanionCountFor(Star _star){
     println("Determining companion count for " + _star);
-    int dieThrow = roll.two();
-    if (dieThrow < 8){ return 0; }
+
+    int modifier = 0;
+    if (!_star.isPrimary()){ modifier = -1; }
+    int dieThrow = roll.two(modifier);
+    
+    if (dieThrow < 8                 ){ return 0; }
     if (dieThrow > 7 && dieThrow < 12){ return 1; }
-    if (dieThrow == 12){ 
-      if (_star.isPrimary()){    // technically not the same as the RAW -1 modifier for far companions
-        return 2;                // because it doesn't alter the probabilities of the lower results - fix?
-      } else {
-        return 1;
-      }
-    }
+    if (dieThrow == 12               ){ return 2; }
     return 0;
   }
 
@@ -236,6 +234,9 @@ class OrbitBuilder {
     }
   }
 
+  // TO_DO: MegaTraveller errata p.22 clarifies this is the highest orbit number, not the count of total orbits
+  //  since this is 0-based, we should review for off-by-one issues - some earlier struggles/bugs may
+  //  have been symptoms, and the bandaids put it place inconsistent
   int calculateMaxOrbitsFor(Star _star){   
     int modifier = 0;
     if (_star.size == 2   ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
@@ -632,25 +633,42 @@ class OrbitBuilder {
 }
 
 class OrbitBuilder_MT extends OrbitBuilder {
-  OrbitBuilder_MT() {
-    super();
-  }
+  OrbitBuilder_MT() { super(); }
 
-  // MegaTraveller uses the same odds for companion stars, with one adjustment  
-  // TO_DO: MTRM p. 26: "Use DM -1 when returning to this table for a far companion."   
-  int generateCompanionCountFor(Star _star){
-    println("Determining companion count for " + _star);
-    int dieThrow = roll.two();
- 
-    if (!_star.isPrimary()){ dieThrow--; }
-    
-    if (dieThrow < 8){ return 0; }
-    if (dieThrow > 7 && dieThrow < 12){ return 1; }
-    if (dieThrow == 12){ return 2; }   // with the MT modifier, no longer need to test for isPrimary() here
-    return 0;
-  }
+  // MegaTraveller follows the same procedure (MTRM p. 26) for generateCompanionCountFor(Star)
 
-  // MegaTraveller follows the same procedure (MTRM p. 26) for generateCompanionOrbitFor(Star)
+  // TO_DO: errata p. 22: "If two or more stars in the same system are size D, change them all to size V."
+  //      need to think about where to apply this. dummy method in the super template?
+  //      and also, when we change a star's size, the orbit zones need to be reloaded at a minimum. Anything else?
+  //      (overkill since I would think changing a star's size is very rare during these procedures - but!
+  //       we could provide a mutator method on Star that makes sure orbit zones are updated...)
+  //      look for other occurrences of this
+
+  // MegaTraveller RAW follows the same procedure (MTRM p. 26) for generateCompanionOrbitFor(Star)
+  // However the errata changes the "Far" entry
+  // TO_DO: heavy duplication with super here - refactor (extract just the "Far" bits and override that?)
+  int generateCompanionOrbitFor(Star _star, int _iteration){
+    int modifier = 4 * (_iteration);
+    if (_star.isCompanion()){ modifier -= 4; }
+    if (debug >= 1){ println("Generating companion star orbit. Modifier: +" + modifier); }
+    int dieThrow = roll.two(modifier);
+    int result = 0;
+    if (dieThrow < 4  ){ result = 0; }
+    if (dieThrow == 4 ){ result = 1; }
+    if (dieThrow == 5 ){ result = 2; }
+    if (dieThrow == 6 ){ result = 3; }
+    if (dieThrow == 7 ){ result = roll.one(4);  }
+    if (dieThrow == 8 ){ result = roll.one(5);  }
+    if (dieThrow == 9 ){ result = roll.one(6);  }
+    if (dieThrow == 10){ result = roll.one(7);  }
+    if (dieThrow == 11){ result = roll.one(8);  }
+    if (dieThrow >= 12){ result = roll.one(13); } // roughly equivalent to my previous version, but range is now 14-19 (previously 14-17)
+                                                  // orbital zones data goes up to 20, so we should be OK            
+    return result;
+
+    // TO_DO: need to handle two companions landing in same orbit
+  }
+  
   // MegaTraveller follows the same procedure (MTRM p. 26) for calculateMaxOrbitsFor(Star)
 
   // MegaTraveller changed the procedure for Planetoids (MTRM p. 28):

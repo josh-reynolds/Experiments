@@ -119,6 +119,7 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
     if (_uwp.atmo >= 10 && _uwp.atmo <= 12 && _uwp.hydro >= 1){ fluid = true; }   // MegaTraveller errata p. 21: RAW is size A+ && atmo 1+. Corrected to atmo A-C && hydro 1+
     if (_uwp.pop >= 9){ highpop = true; }
     if (_uwp.pop >= 1 && _uwp.pop <= 3){ lowpop = true; }                         // MegaTraveller errata p. 25: RAW is pop 3-. Corrected to pop 1-3 (i.e. not Barren worlds)
+    if (asteroid){ vacuum = false; }  // MTRM p.25 Step 12 notes: "However, an Asteroid Belt (As) is automatically a Vacuum World, and need not have the Va code." 
   }
 
   // MegaTraveller adds atmo 0 & hydro 0 to conditions - this is redundant, since
@@ -126,6 +127,7 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
   // Also, they don't explicitly call out the Planet condition from Scouts but the same logic applies, so keeping it
   Boolean isAsteroid(UWP _uwp){ 
     UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
+
     return (uwp.size == 0 &&  
             uwp.atmo == 0 &&
             uwp.hydro == 0 &&
@@ -135,8 +137,7 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
   // MegaTraveller errata p. 21 - Barren worlds (pop 0) are not counted as non-industrial or poor
   Boolean isNonindustrial(UWP _uwp){ return (_uwp.pop >= 1 && _uwp.pop <= 6); }
   Boolean isPoor(UWP _uwp){ return (_uwp.atmo >= 2 && _uwp.atmo <= 5 && _uwp.hydro <= 3 && _uwp.pop >= 1); }
-
-  // TO_DO: Asteroid is automatically Va, doesn't need to have that one
+ 
   String toString(){
     String output = super.toString();
     if (barren)       { output += "Ba "; }
