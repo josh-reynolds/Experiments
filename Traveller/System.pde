@@ -502,13 +502,14 @@ class System_MT extends System_ScoutsEx {
       }
       
       // MTRM p. 29 - Military Base only for pop 8+ mainworlds now
-      //  TO_DO: check errata, this one looks off
+      //  on reread, I think they mean mainworld characteristics restrict the whole system,
+      //  not that this just applies to the mainworld itself, so this works
       if (!this.trade.poor && h.getUWP().pop > 7){
         int modifier = 0;
-        if (mainworld.getUWP().pop > 7){ modifier += 1; }
-        if (mainworld.getUWP().atmo == h.getUWP().atmo){ modifier += 2; }   // typo here - the value is missing; assume same as Scouts (+2)
+        if (mainworld.getUWP().pop > 7){ modifier += 1; }                   // always applies because of the earlier condition
+        if (mainworld.getUWP().atmo == h.getUWP().atmo){ modifier += 2; }   // typo here - the value is missing; assume same as Scouts (+2) (confirmed errata p. 22)
         int dieThrow = roll.two(modifier);
-        if (dieThrow > 12){
+        if (dieThrow >= 12){
           h.addFacility("Military Base");
           militaryBase = true;
           if (h.getUWP().tech < mainworld.getUWP().tech){

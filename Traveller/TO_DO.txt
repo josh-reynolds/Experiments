@@ -144,7 +144,7 @@
 //  * DONE Shift occupied/density determination up from System to Subsector
 //  * DONE Review trade classifications across implemented rulesets
 //  * DONE MegaTraveller trade classifications
-//  * .... Review/incorporate MegaTraveller errata
+//  * DONE Review/incorporate MegaTraveller errata
 //  *      Add population multiplier from MegaTraveller
 //  *      Expose system-wide planetoid belt count
 //  *      Expose system-wide gas giant count

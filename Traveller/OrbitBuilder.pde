@@ -170,7 +170,7 @@ class OrbitBuilder {
       }
       return result;
     } else if (_o.isPlanet() && !_o.isMoon()){
-      return ((Habitable)_o).getUWP().size - roll.one();    // TO_DO: review MT errata and Scouts: MTRM p. 28 says 1D-Size
+      return ((Habitable)_o).getUWP().size - roll.one();    // MTRM p. 28 is in error (1D-Size); errata p. 22 shows the correct formula, consistent w/ Scouts
     } else {
       println("INVALID Orbit type passed to generateSatelliteSizeFor()");
       return 0;
@@ -556,6 +556,9 @@ class OrbitBuilder {
   // DESIGNATE MAINWORLD
   // ================================================================
 
+  // TO_DO: MT errata states: maximum population is Mainworld population -1
+  //   we can't impose this until we know the mainworld, so this method (or later)
+  //   is where the adjustment needs to go
   void designateMainworldFor(Star _star){
     println("Finding mainworld");
     // Scouts p. 37: "The main world is the world in the system which has the greatest
