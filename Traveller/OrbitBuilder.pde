@@ -259,7 +259,7 @@ class OrbitBuilder {
     // Empty orbits per Scouts p.34 (table on p. 29)
     // MegaTraveller is identical, down to the frequencies commented below (MTRM p.28)
     // there is a typo where they omit the modifier number on the quantity roll, but assume it is
-    // unchanged from Scouts
+    // unchanged from Scouts (confirmed in errata: p. 22)
     int modifier = 0;
     if (_star.type == 'B' || _star.type == 'A'){ modifier += 1; }
     if (roll.one(modifier) >= 5){
@@ -330,9 +330,11 @@ class OrbitBuilder {
     }
   }    
 
-  Boolean capturedPlanetsArePresentFor(Star _star){
+  Boolean capturedPlanetsArePresentFor(Star _star){   // parameter unused here, but needed in the MT override
     return roll.one() > 4;
   }
+
+  int capturedPlanetQuantity(){ return floor(roll.one()/2); }
 
   void placeCapturedPlanetsFor(Star _star){
     println("Placing Captured Planets for " + _star);
@@ -342,7 +344,7 @@ class OrbitBuilder {
     //  - no notes for what to do if orbit is occupied
     
     if (capturedPlanetsArePresentFor(_star)){
-      int quantity = floor(roll.one()/2);
+      int quantity = capturedPlanetQuantity();
 
       for (int i = 0; i < quantity; i++){
         float capturedOrbit = 0;
@@ -728,6 +730,15 @@ class OrbitBuilder_MT extends OrbitBuilder {
     int modifier = 0;
     if (_star.type == 'A' || _star.type == 'B'){ modifier += 1; }
     return roll.one(modifier) > 4;
+  }
+  
+  // errata also changes the quantity calculation
+  int capturedPlanetQuantity(){ 
+    int dieThrow = roll.one();
+    int result = 1;
+    if (dieThrow == 4 || dieThrow == 5){ result = 2; }
+    if (dieThrow == 6){ result = 3; }
+    return result;
   }
   
   // MegaTraveller follows a slightly different (though probably equivalent) procedure - MTRM p.28
