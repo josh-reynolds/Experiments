@@ -88,17 +88,19 @@ class OrbitBuilder {
     if (dieThrow == 9 ){ result = roll.one(6); }
     if (dieThrow == 10){ result = roll.one(7); }
     if (dieThrow == 11){ result = roll.one(8); }
-    if (dieThrow >= 12){ 
-      int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
-      if (distance == 1000                    ){ result = 14; }
-      if (distance == 2000                    ){ result = 15; }
-      if (distance == 3000 || distance == 4000){ result = 16; }
-      if (distance >= 5000                    ){ result = 17; } 
-    }
+    if (dieThrow >= 12){ result = farOrbits(); }
     
     return result;
 
     // TO_DO: need to handle two companions landing in same orbit
+  }
+
+  int farOrbits(){      
+    int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
+    if (distance == 2000                    ){ return 15; }
+    if (distance == 3000 || distance == 4000){ return 16; }
+    if (distance >= 5000                    ){ return 17; }
+    return 14;                                                  // covers distance 1000 and compiler complaints
   }
 
   // ================================================================
@@ -650,29 +652,9 @@ class OrbitBuilder_MT extends OrbitBuilder {
   //      look for other occurrences of this
 
   // MegaTraveller RAW follows the same procedure (MTRM p. 26) for generateCompanionOrbitFor(Star)
-  // However the errata changes the "Far" entry
-  // TO_DO: heavy duplication with super here - refactor (extract just the "Far" bits and override that?)
-  int generateCompanionOrbitFor(Star _star, int _iteration){
-    int modifier = 4 * (_iteration);
-    if (_star.isCompanion()){ modifier -= 4; }
-    if (debug >= 1){ println("Generating companion star orbit. Modifier: +" + modifier); }
-    int dieThrow = roll.two(modifier);
-    int result = 0;
-    if (dieThrow < 4  ){ result = 0; }
-    if (dieThrow == 4 ){ result = 1; }
-    if (dieThrow == 5 ){ result = 2; }
-    if (dieThrow == 6 ){ result = 3; }
-    if (dieThrow == 7 ){ result = roll.one(4);  }
-    if (dieThrow == 8 ){ result = roll.one(5);  }
-    if (dieThrow == 9 ){ result = roll.one(6);  }
-    if (dieThrow == 10){ result = roll.one(7);  }
-    if (dieThrow == 11){ result = roll.one(8);  }
-    if (dieThrow >= 12){ result = roll.one(13); } // roughly equivalent to my previous version, but range is now 14-19 (previously 14-17)
-                                                  // orbital zones data goes up to 20, so we should be OK            
-    return result;
-
-    // TO_DO: need to handle two companions landing in same orbit
-  }
+  // However the errata changes the "Far" entry - roughly equivalent to my previous version, 
+  // but range is now 14-19 (previously 14-17). orbital zones data goes up to 20, so we should be OK
+  int farOrbits(){ return roll.one(13); }
   
   // MegaTraveller follows the same procedure (MTRM p. 26) for calculateMaxOrbitsFor(Star)
 
