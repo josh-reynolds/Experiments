@@ -145,7 +145,7 @@
 //  * DONE Review trade classifications across implemented rulesets
 //  * DONE MegaTraveller trade classifications
 //  * DONE Review/incorporate MegaTraveller errata
-//  * .... Add subsector travel classifications from MegaTraveller
+//  * DONE Add subsector travel classifications from MegaTraveller
 //  *      Add population multiplier from MegaTraveller
 //  *      Expose system-wide planetoid belt count
 //  *      Expose system-wide gas giant count

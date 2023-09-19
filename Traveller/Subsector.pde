@@ -157,6 +157,7 @@ class Subsector{
     json.setString("Summary", summary);
     json.setString("Ruleset", ruleset.name);
     json.setString("Density", density.labels[density.current]);
+    json.setString("Traffic", traffic.labels[traffic.current]);
     json.setJSONArray("Systems", systemList);
     json.setJSONArray("Routes", routeList);
     

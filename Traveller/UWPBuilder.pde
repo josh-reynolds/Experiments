@@ -19,35 +19,7 @@ class UWPBuilder {
     _s.uwp = new UWP(starport, size, atmo, hydro, pop, gov, law, tech);
   }
   
-  // TO_DO: MegaTraveller introduces subsector travel classifications that modify this procedure (MTRM p.24)
-  //  the distribution listed below is 'Standard'
-  //  could probably handle this via several static arrays, also need to plumb into subsector properties
-  char generateStarport(){
-    int dieThrow = roll.two();
-    
-    switch(dieThrow){
-      case 2:
-      case 3:
-      case 4:
-        return 'A';
-      case 5:
-      case 6:
-        return 'B';
-      case 7:
-      case 8:
-        return 'C';
-      case 9:
-        return 'D';
-      case 10:
-      case 11:
-        return 'E';
-      case 12:
-        return 'X';
-      default:
-        println("Invalid result in generateStarport()");
-        return 'Z';
-    }
-  }
+  char generateStarport(){ return traffic.getStarport(roll.two()); } 
   
   int generateSize(){ return roll.two(-2); }
   
