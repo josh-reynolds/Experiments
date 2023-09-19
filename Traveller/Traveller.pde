@@ -21,6 +21,7 @@ Screen screen;
 Ruleset ruleset;
 
 SubsectorDensity density;
+SubsectorTraffic traffic;
 
 Ship ship;
 
@@ -35,6 +36,7 @@ void setup(){
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
   ruleset = new Ruleset();
   density = new SubsectorDensity();
+  traffic = new SubsectorTraffic();
   tests = new TestSuite();  
   screen = new Menu();
 

@@ -7,12 +7,13 @@ class Menu extends Screen {
   Button[] buttons;
   
   Menu(){
-    buttons = new Button[5];
+    buttons = new Button[6];
     buttons[0] = new Button("New", 32, border, border * 4, new NewSubsector());
     buttons[1] = new Button("Load", 32, border, border * 6, new Load());
     buttons[2] = new Button("Colors", 32, border, border * 8, new ChangeColors());
     buttons[3] = new Button("Rules", 32, border, border * 10, new ChangeRules());
     buttons[4] = new Button("Density", 32, border, border * 12, new ChangeDensity());
+    buttons[5] = new Button("Traffic", 32, border, border * 14, new ChangeTraffic());
   }
   
   void drawScreen(){
@@ -34,6 +35,10 @@ class Menu extends Screen {
     text(subtitle, width - subtitleWidth - border, titleSize + border);
     
     fill(scheme.menuDescriptions);
+
+    String trafficDescription = "Traffic: " + traffic.labels[traffic.current];
+    float trafficDescriptionWidth = textWidth(trafficDescription);
+    text(trafficDescription, width - trafficDescriptionWidth - border, height - (2 * titleSize) - border);
     
     String densityDescription = "Density: " + density.labels[density.current];
     float densityDescriptionWidth = textWidth(densityDescription);

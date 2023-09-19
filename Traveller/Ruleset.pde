@@ -62,6 +62,19 @@ class Ruleset {
         return false;
     }
   }
+
+  Boolean supportsTraffic(){
+    switch(name) {
+      case "CT77":
+      case "CT81":
+      case "Scouts (Extended)":
+        return false;
+      case "MegaTraveller (Extended)":
+        return true;
+      default:
+        return false;
+    }
+  }
   
   System newSystem(Coordinate _coord, Boolean _occupied){
     switch(name) {

@@ -145,6 +145,7 @@
 //  * DONE Review trade classifications across implemented rulesets
 //  * DONE MegaTraveller trade classifications
 //  * DONE Review/incorporate MegaTraveller errata
+//  * .... Add subsector travel classifications from MegaTraveller
 //  *      Add population multiplier from MegaTraveller
 //  *      Expose system-wide planetoid belt count
 //  *      Expose system-wide gas giant count
@@ -154,7 +155,6 @@
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Flesh out tests (this will take a while...)
 //  *      Test & fix JSON loading for MegaTraveller ruleset
-//  *      Add subsector travel classifications from MegaTraveller
 //  *      Non-human worlds and trade classifications (from MT)?
 //  *      Add MegaTraveller prose system descriptions
 //  *      Add World Builder's Handbook ruleset (MT)

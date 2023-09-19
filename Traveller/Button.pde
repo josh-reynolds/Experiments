@@ -206,6 +206,9 @@ class ChangeRules implements Command {
     if (!ruleset.supportsDensity()){
       density = new SubsectorDensity();
     }
+    if (!ruleset.supportsTraffic()){
+      traffic = new SubsectorTraffic();
+    }
   }
 }
 
@@ -225,6 +228,24 @@ class ChangeDensity implements Command {
     }
   }
 }
+
+class ChangeTraffic implements Command {
+  Button b;
+  
+  ChangeTraffic(){}
+  
+  void register(Button _b){ b = _b; }
+  
+  void run(){
+    println(b.label);
+    if (ruleset.supportsTraffic()){
+      traffic.next();
+    } else {
+      println("This ruleset doesn't support system traffic. Defaulting to Standard.");
+    }
+  }
+}
+
 
 // kind of a grab-bag for now - further refactoring can tease this apart
 // this allows Command classes access to formerly-public methods pushed
