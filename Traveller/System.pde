@@ -247,10 +247,8 @@ class System_ScoutsEx extends System_CT81 {
   Habitable mainworld;
   int gasGiantCount;
   Boolean militaryBase = false;
-  OrbitBuilder builder;
 
   System_ScoutsEx(Coordinate _coord, Boolean _occupied){
-    //super(_coord, _occupied);
     super(_coord);
     occupied = _occupied;
     
@@ -258,8 +256,7 @@ class System_ScoutsEx extends System_CT81 {
       name = lines[floor(random(lines.length))];
       routes = new ArrayList<Route>();
       
-      builder = ruleset.newOrbitBuilder();          // TO_DO: do we need to keep the builder around after this point?
-      builder.newStar(this);                   // could just do (new StarBuilder()).newStar(this) instead
+      ruleset.newOrbitBuilder().newStar(this);
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       
       countGasGiants();     
@@ -311,6 +308,64 @@ class System_ScoutsEx extends System_CT81 {
       gasGiantCount = 0;
     }
   }
+
+  void assessFarming(Habitable _h){
+    if (((Orbit)_h).isHabitableZone() && 
+        _h.getUWP().atmo  > 3 &&
+        _h.getUWP().atmo  < 10 &&
+        _h.getUWP().hydro > 3 &&
+        _h.getUWP().hydro < 9 &&
+        _h.getUWP().pop   > 1){
+          _h.addFacility("Farming");
+    }
+  }
+  
+  void assessMining(Habitable _h){
+    if (this.trade.industrial &&
+        _h.getUWP().pop   > 1){
+          _h.addFacility("Mining");
+    }
+  }
+  
+  void assessColony(Habitable _h){
+    if (_h.getUWP().gov == 6 &&
+        _h.getUWP().pop > 4){
+          _h.addFacility("Colony");
+    }
+  }
+  
+  void assessResearchLab(Habitable _h){
+    if (mainworld.getUWP().tech > 8 && mainworld.getUWP().pop > 0){
+      int modifier = 0;
+      if (mainworld.getUWP().tech > 9){ modifier += 2; }
+      int dieThrow = roll.two(modifier);
+      if (dieThrow > 10){
+        _h.addFacility("Research Lab");
+        adjustTechLevel(_h);
+      }
+    }
+  }
+  
+  void assessMilitaryBase(Habitable _h){
+    if (!this.trade.poor && _h.getUWP().pop > 0){
+      int modifier = 0;
+      if (mainworld.getUWP().pop > 7){ modifier += 1; }
+      if (mainworld.getUWP().atmo == _h.getUWP().atmo){ modifier += 2; }
+      int dieThrow = roll.two(modifier);
+      if (dieThrow > 11){
+        _h.addFacility("Military Base");
+        militaryBase = true;
+        adjustTechLevel(_h);
+      }        
+    }
+  }
+  
+  void adjustTechLevel(Habitable _h){
+    // for Research Lab + Military Base only
+    if (_h.getUWP().tech < mainworld.getUWP().tech){
+      _h.getUWP().tech = mainworld.getUWP().tech;
+    }    
+  }
   
   void generateFacilities(){
     int additionalNavalBases = 0;
@@ -341,56 +396,52 @@ class System_ScoutsEx extends System_CT81 {
         additionalScoutBases--;
       }
       
-      // Scouts p. 38 - other subordinate facilities
-      // Farming
-      if (((Orbit)h).isHabitableZone() && 
-          h.getUWP().atmo  > 3 &&
-          h.getUWP().atmo  < 10 &&
-          h.getUWP().hydro > 3 &&
-          h.getUWP().hydro < 9 &&
-          h.getUWP().pop   > 1){
-            h.addFacility("Farming");
-      }
+      // Scouts p. 38 - other subordinate facilities     
+      assessFarming(h);
+      assessMining(h);
+      assessColony(h);
+      assessResearchLab(h);
+      assessMilitaryBase(h);
       
       // Mining
-      if (this.trade.industrial &&
-          h.getUWP().pop   > 1){
-            h.addFacility("Mining");
-      }
+      //if (this.trade.industrial &&
+      //    h.getUWP().pop   > 1){
+      //      h.addFacility("Mining");
+      //}
       
       // Colony
-      if (h.getUWP().gov == 6 &&
-          h.getUWP().pop > 4){
-            h.addFacility("Colony");
-      }
+      //if (h.getUWP().gov == 6 &&
+      //    h.getUWP().pop > 4){
+      //      h.addFacility("Colony");
+      //}
       
       // Research Lab
-      if (mainworld.getUWP().tech > 8 && mainworld.getUWP().pop > 0){
-        int modifier = 0;
-        if (mainworld.getUWP().tech > 9){ modifier += 2; }
-        int dieThrow = roll.two(modifier);
-        if (dieThrow > 10){
-          h.addFacility("Research Lab");
-          if (h.getUWP().tech < mainworld.getUWP().tech){
-            h.getUWP().tech = mainworld.getUWP().tech;
-          }
-        }
-      }
+      //if (mainworld.getUWP().tech > 8 && mainworld.getUWP().pop > 0){
+      //  int modifier = 0;
+      //  if (mainworld.getUWP().tech > 9){ modifier += 2; }
+      //  int dieThrow = roll.two(modifier);
+      //  if (dieThrow > 10){
+      //    h.addFacility("Research Lab");
+      //    if (h.getUWP().tech < mainworld.getUWP().tech){
+      //      h.getUWP().tech = mainworld.getUWP().tech;
+      //    }
+      //  }
+      //}
       
       // Military Base
-      if (!this.trade.poor && h.getUWP().pop > 0){
-        int modifier = 0;
-        if (mainworld.getUWP().pop > 7){ modifier += 1; }
-        if (mainworld.getUWP().atmo == h.getUWP().atmo){ modifier += 2; }
-        int dieThrow = roll.two(modifier);
-        if (dieThrow > 11){
-          h.addFacility("Military Base");
-          militaryBase = true;
-          if (h.getUWP().tech < mainworld.getUWP().tech){
-            h.getUWP().tech = mainworld.getUWP().tech;
-          }
-        }        
-      }
+      //if (!this.trade.poor && h.getUWP().pop > 0){
+      //  int modifier = 0;
+      //  if (mainworld.getUWP().pop > 7){ modifier += 1; }
+      //  if (mainworld.getUWP().atmo == h.getUWP().atmo){ modifier += 2; }
+      //  int dieThrow = roll.two(modifier);
+      //  if (dieThrow > 11){
+      //    h.addFacility("Military Base");
+      //    militaryBase = true;
+      //    if (h.getUWP().tech < mainworld.getUWP().tech){
+      //      h.getUWP().tech = mainworld.getUWP().tech;
+      //    }
+      //  }        
+      //}
     }
   }
   
@@ -466,41 +517,14 @@ class System_MT extends System_ScoutsEx {
       }
       if (scoutBase && h.getUWP().pop > 1){ h.addFacility("Scout Facility"); }
       
-      // MTRM p. 29 - Farming identical to Scouts (REFACTOR)                  
-      if (((Orbit)h).isHabitableZone() && 
-          h.getUWP().atmo  > 3 &&
-          h.getUWP().atmo  < 10 &&
-          h.getUWP().hydro > 3 &&
-          h.getUWP().hydro < 9 &&
-          h.getUWP().pop   > 1){
-            h.addFacility("Farming");
-      }
+      // MTRM p. 29 - Farming/Mining/Colony/Research Lab identical to Scouts      
+      assessFarming(h);
+      assessMining(h);
+      assessColony(h);
+      assessResearchLab(h);
+      //assessMilitaryBase(h);    // need to override this one
       
-      // MTRM p. 29 - Mining identical to Scouts (REFACTOR)           
-      if (this.trade.industrial &&
-          h.getUWP().pop   > 1){
-            h.addFacility("Mining");
-      }
-      
-      // MTRM p. 29 - Colony identical to Scouts (REFACTOR)           
-      if (h.getUWP().gov == 6 &&
-          h.getUWP().pop > 4){
-            h.addFacility("Colony");
-      }
-      
-      // MTRM p. 29 - Research Lab identical to Scouts (REFACTOR)     
-      if (mainworld.getUWP().tech > 8 && mainworld.getUWP().pop > 0){
-        int modifier = 0;
-        if (mainworld.getUWP().tech > 9){ modifier += 2; }
-        int dieThrow = roll.two(modifier);
-        if (dieThrow > 10){
-          h.addFacility("Research Lab");
-          if (h.getUWP().tech < mainworld.getUWP().tech){
-            h.getUWP().tech = mainworld.getUWP().tech;
-          }
-        }
-      }
-      
+                        
       // MTRM p. 29 - Military Base only for pop 8+ mainworlds now
       //  on reread, I think they mean mainworld characteristics restrict the whole system,
       //  not that this just applies to the mainworld itself, so this works
