@@ -367,6 +367,22 @@ class System_ScoutsEx extends System_CT81 {
     }    
   }
   
+  int assessNavalBases(Habitable _h, int _additionalNavalBases){    
+    if (navalBase && _additionalNavalBases > 0 && _h.getUWP().pop > 2){
+      _h.addFacility("Naval Facility");
+      _additionalNavalBases--;
+    }
+    return _additionalNavalBases;
+  }
+  
+  int assessScoutBases(Habitable _h, int _additionalScoutBases){
+    if (scoutBase && _additionalScoutBases > 0 && _h.getUWP().pop > 1){
+      _h.addFacility("Scout Facility");
+      _additionalScoutBases--;
+    }
+    return _additionalScoutBases;
+  }
+  
   void generateFacilities(){
     int additionalNavalBases = 0;
     if (navalBase){
@@ -386,62 +402,15 @@ class System_ScoutsEx extends System_CT81 {
       if (h.isMainworld()){ continue; }
       
       // Scouts p. 37 - base facilities at other planets in the system
-      if (navalBase && additionalNavalBases > 0 && h.getUWP().pop > 2){
-        h.addFacility("Naval Facility");
-        additionalNavalBases--;
-      }
-
-      if (scoutBase && additionalScoutBases > 0 && h.getUWP().pop > 1){
-        h.addFacility("Scout Facility");
-        additionalScoutBases--;
-      }
+      additionalNavalBases = assessNavalBases(h, additionalNavalBases);
+      additionalScoutBases = assessScoutBases(h, additionalScoutBases);
       
       // Scouts p. 38 - other subordinate facilities     
       assessFarming(h);
       assessMining(h);
       assessColony(h);
       assessResearchLab(h);
-      assessMilitaryBase(h);
-      
-      // Mining
-      //if (this.trade.industrial &&
-      //    h.getUWP().pop   > 1){
-      //      h.addFacility("Mining");
-      //}
-      
-      // Colony
-      //if (h.getUWP().gov == 6 &&
-      //    h.getUWP().pop > 4){
-      //      h.addFacility("Colony");
-      //}
-      
-      // Research Lab
-      //if (mainworld.getUWP().tech > 8 && mainworld.getUWP().pop > 0){
-      //  int modifier = 0;
-      //  if (mainworld.getUWP().tech > 9){ modifier += 2; }
-      //  int dieThrow = roll.two(modifier);
-      //  if (dieThrow > 10){
-      //    h.addFacility("Research Lab");
-      //    if (h.getUWP().tech < mainworld.getUWP().tech){
-      //      h.getUWP().tech = mainworld.getUWP().tech;
-      //    }
-      //  }
-      //}
-      
-      // Military Base
-      //if (!this.trade.poor && h.getUWP().pop > 0){
-      //  int modifier = 0;
-      //  if (mainworld.getUWP().pop > 7){ modifier += 1; }
-      //  if (mainworld.getUWP().atmo == h.getUWP().atmo){ modifier += 2; }
-      //  int dieThrow = roll.two(modifier);
-      //  if (dieThrow > 11){
-      //    h.addFacility("Military Base");
-      //    militaryBase = true;
-      //    if (h.getUWP().tech < mainworld.getUWP().tech){
-      //      h.getUWP().tech = mainworld.getUWP().tech;
-      //    }
-      //  }        
-      //}
+      assessMilitaryBase(h);      
     }
   }
   
@@ -522,25 +491,24 @@ class System_MT extends System_ScoutsEx {
       assessMining(h);
       assessColony(h);
       assessResearchLab(h);
-      //assessMilitaryBase(h);    // need to override this one
       
-                        
-      // MTRM p. 29 - Military Base only for pop 8+ mainworlds now
-      //  on reread, I think they mean mainworld characteristics restrict the whole system,
-      //  not that this just applies to the mainworld itself, so this works
-      if (!this.trade.poor && h.getUWP().pop > 7){
-        int modifier = 0;
-        if (mainworld.getUWP().pop > 7){ modifier += 1; }                   // always applies because of the earlier condition
-        if (mainworld.getUWP().atmo == h.getUWP().atmo){ modifier += 2; }   // typo here - the value is missing; assume same as Scouts (+2) (confirmed errata p. 22)
-        int dieThrow = roll.two(modifier);
-        if (dieThrow >= 12){
-          h.addFacility("Military Base");
-          militaryBase = true;
-          if (h.getUWP().tech < mainworld.getUWP().tech){
-            h.getUWP().tech = mainworld.getUWP().tech;
-          }
-        }        
-      }
+      // MTRM p. 29 - Military Base changed from scouts, method overriden
+      assessMilitaryBase(h); 
     }  
+  }
+  
+  // MTRM p. 29 - Military Base only for pop 8+ mainworlds now, no longer requirement for population on subordinate world
+  void assessMilitaryBase(Habitable _h){
+    if (!this.trade.poor && mainworld.getUWP().pop > 7){
+      int modifier = 0;
+      if (mainworld.getUWP().pop > 7){ modifier += 1; }                  // always applies because of the earlier condition
+      if (mainworld.getUWP().atmo == _h.getUWP().atmo){ modifier += 2; } // typo here - the value is missing; assume same as Scouts (+2) (confirmed errata p. 22)
+      int dieThrow = roll.two(modifier);
+      if (dieThrow > 11){
+        _h.addFacility("Military Base");
+        militaryBase = true;
+        adjustTechLevel(_h);
+      }        
+    }
   }
 }
