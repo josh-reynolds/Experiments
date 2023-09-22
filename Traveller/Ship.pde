@@ -43,8 +43,8 @@ class Ship {
  
  void show(){           // very rudimentary for now
    strokeWeight(2);
-   stroke(0,0,255);     // TO_DO: get into ColorScheme
-   fill(0,0,255,75);    // this one too...
+   stroke(scheme.shipBorder);
+   fill(scheme.shipFill);
    ellipse(location.hex.x, location.hex.y, hexRadius, hexRadius); 
  }
 }

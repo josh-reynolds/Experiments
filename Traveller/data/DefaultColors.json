@@ -89,5 +89,17 @@
     "Blue": 125,
     "Alpha": 255,
     "Green": 125
+  },
+  "Ship Border": {
+    "Red": 0,
+    "Blue": 255,
+    "Alpha": 255,
+    "Green": 0
+  },
+  "Ship Fill": {
+    "Red": 0,
+    "Blue": 255,
+    "Alpha": 75,
+    "Green": 0
   }
 }

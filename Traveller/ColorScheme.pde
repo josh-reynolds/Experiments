@@ -19,9 +19,12 @@ class ColorScheme {
   color pageBackground;
   color systemList;
   
+  color shipBorder;
+  color shipFill;
+  
   ColorScheme(String _name, color _cellB, color _cellOut, color _worldN, color _water, color _hexE, color _list, color _pageB, 
               color _routes, color _button, color _menuB, color _menuTitle, color _menuText, color _amberZone, color _redZone,
-              color _menuDescrip){
+              color _menuDescrip, color _shipBorder, color _shipFill){
     name             = _name;
 
     menuBackground   = _menuB;
@@ -41,6 +44,9 @@ class ColorScheme {
     
     pageBackground   = _pageB;
     systemList       = _list;
+    
+    shipBorder       = _shipBorder;
+    shipFill         = _shipFill;
   }
   
   ColorScheme(JSONObject _json){
@@ -63,6 +69,9 @@ class ColorScheme {
 
     pageBackground   = colorFromJSON(_json.getJSONObject("Page Background"));
     systemList       = colorFromJSON(_json.getJSONObject("System List"));
+    
+    shipBorder       = colorFromJSON(_json.getJSONObject("Ship Border"));
+    shipFill         = colorFromJSON(_json.getJSONObject("Ship Fill"));
   }
   
   JSONObject asJSON(){
@@ -86,6 +95,9 @@ class ColorScheme {
 
     json.setJSONObject("Page Background", colorToJSON(scheme.pageBackground));
     json.setJSONObject("System List", colorToJSON(scheme.systemList));
+
+    json.setJSONObject("Ship Border", colorToJSON(scheme.shipBorder));
+    json.setJSONObject("Ship Fill", colorToJSON(scheme.shipFill));
 
     return json;
   }
