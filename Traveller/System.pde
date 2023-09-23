@@ -466,7 +466,14 @@ class System_ScoutsEx extends System_CT81 {
 }
 
 class System_MT extends System_ScoutsEx {
-  System_MT(Coordinate _coord, Boolean _occupied){ super(_coord, _occupied); } 
+  int populationMultiplier;
+  
+  System_MT(Coordinate _coord, Boolean _occupied){ 
+    super(_coord, _occupied);
+    populationMultiplier = floor(random(1,10));    // MTRM p. 25 - though note that RAW generates values from 0-9
+                                                   // since this is a multiplier, a 0 value would remove all population
+                                                   // adjusting this to a 1-9 range
+  } 
  
  // MegaTraveller changes the procedure for subordinate facilities slightly (MTRM p. 29)
  //  TO_DO: opportunity here to extract code duplicated from super and only override the differences

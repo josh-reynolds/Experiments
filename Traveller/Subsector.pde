@@ -72,7 +72,7 @@ class Subsector{
     int maxTech = 0;
     String maxTechString = "";
     for (System s : systems.values()){
-      if (s.occupied){ 
+      if (s.occupied){                             // TO_DO: will need to adjust this for MegaTraveller with the population multiplier 
         worldCount++;
         totalPop += pow(10, s.uwp.pop);
 
