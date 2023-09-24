@@ -147,9 +147,9 @@
 //  * DONE Review/incorporate MegaTraveller errata
 //  * DONE Add subsector travel classifications from MegaTraveller
 //  * DONE Add population multiplier from MegaTraveller
+//  * DONE Expose system-wide gas giant count
+//  * DONE Expose system-wide planetoid belt count
 //  *      Include population multiplier in subsector summary totals
-//  *      Expose system-wide planetoid belt count
-//  *      Expose system-wide gas giant count
 //  *      Generate MegaTraveller system summary line
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      REFACTOR: case statements in Ruleset
