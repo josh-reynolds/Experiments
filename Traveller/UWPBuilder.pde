@@ -89,7 +89,7 @@ class UWPBuilder {
   
   int techGovModifier(int _gov){
     if (_gov == 0 || _gov == 5){ return 1; }
-    if (_gov >= 13            ){ return 2; }
+    if (_gov >= 13            ){ return -2; }
     return 0;
   }
   
@@ -415,37 +415,16 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
     return result;
   } 
 
-  // MegaTraveller RAW matches CT77/CT81/Scouts, but the errata introduces some changes
-  // TO_DO: look for refactoring opportunities here
-  int generateTech(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov){
-    int modifier = 0;
-    
-    if (_starport == 'A'){ modifier += 6; }
-    if (_starport == 'B'){ modifier += 4; }
-    if (_starport == 'C'){ modifier += 2; }
-    // MegaTraveller errata p. 21 mentions a missing modifier for 'Starport F', but those
-    //  are not possible for mainworlds, which are the only planets this method applies to
-    //  - omitting this change
-    if (_starport == 'X'){ modifier -= 4; }
-    
-    if (_size <= 1){              modifier += 2; }
-    if (_size > 1 && _size <= 4){ modifier += 1; }
-    
-    if (_atmo <= 3 || _atmo >= 10){ modifier += 1; }
-    
-    if (_hydro == 9){  modifier += 1; }
-    if (_hydro == 10){ modifier += 2; }
-    
-    if (_pop >= 1 && _pop <= 5){ modifier += 1; }
-    if (_pop == 9){              modifier += 2; }
-    if (_pop == 10){             modifier += 4; }
-    
-    if (_gov == 0 || _gov == 5){ modifier += 1; }
-    if (_gov == 13){             modifier -= 2; }
-    if (_gov >= 14){             modifier -= 1; }   // MegaTraveller errata p. 21 extends to Governments E & F (14 + 15)
-    
-    return roll.one(modifier);
-  }    
+  // MegaTraveller RAW matches CT77/CT81/Scouts for Tech Level generation, but the errata introduces some changes
+  // MegaTraveller errata p. 21 mentions a missing modifier for 'Starport F', but those are not possible
+  //  for mainworlds, which are the only planets this method applies to  - omitting this change
+  // MegaTraveller errata p. 21 extends to Governments E & F (14 + 15)
+  int techGovModifier(int _gov){
+    if (_gov == 0 || _gov == 5){ return 1; }
+    if (_gov == 13            ){ return -2; }
+    if (_gov >= 14            ){ return -1; }
+    return 0;
+  }   
   
   // MT changes the procedure slightly from Scouts (MTRM p. 29)
   int generateSubordinateGov(int _mainworldGov, int _pop){
