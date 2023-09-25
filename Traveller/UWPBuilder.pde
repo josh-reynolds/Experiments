@@ -55,32 +55,52 @@ class UWPBuilder {
     return result;
   }
   
+  int techStarportModifier(char _starport){
+    if (_starport == 'A'){ return 6; }
+    if (_starport == 'B'){ return 4; }
+    if (_starport == 'C'){ return 2; }
+    if (_starport == 'X'){ return -4; }
+    return 0;
+  }
+  
+  int techSizeModifier(int _size){
+    if (_size <= 1             ){ return 2; }
+    if (_size > 1 && _size <= 4){ return 1; }
+    return 0;
+  }
+  
+  int techAtmoModifier(int _atmo){
+    if (_atmo <= 3 || _atmo >= 10){ return 1; }
+    return 0;
+  }
+  
+  int techHydroModifier(int _hydro){
+    if (_hydro == 9 ){ return 1; }
+    if (_hydro == 10){ return 2; }
+    return 0;
+  }
+  
+  int techPopModifier(int _pop){
+    if (_pop >= 1 && _pop <= 5){ return 1; }
+    if (_pop == 9             ){ return 2; }
+    if (_pop == 10            ){ return 4; }
+    return 0;
+  }
+  
+  int techGovModifier(int _gov){
+    if (_gov == 0 || _gov == 5){ return 1; }
+    if (_gov >= 13            ){ return 2; }
+    return 0;
+  }
+  
   int generateTech(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov){
     int modifier = 0;
-    
-    if (_starport == 'A'){ modifier += 6; }
-    if (_starport == 'B'){ modifier += 4; }
-    if (_starport == 'C'){ modifier += 2; }
-    // MegaTraveller errata p. 21 mentions a missing modifier for 'Starport F', but those
-    //  are not possible for mainworlds, which are the only planets this method applies to
-    //  - omitting this change
-    if (_starport == 'X'){ modifier -= 4; }
-    
-    if (_size <= 1){              modifier += 2; }
-    if (_size > 1 && _size <= 4){ modifier += 1; }
-    
-    if (_atmo <= 3 || _atmo >= 10){ modifier += 1; }
-    
-    if (_hydro == 9){  modifier += 1; }
-    if (_hydro == 10){ modifier += 2; }
-    
-    if (_pop >= 1 && _pop <= 5){ modifier += 1; }
-    if (_pop == 9){              modifier += 2; }
-    if (_pop == 10){             modifier += 4; }
-    
-    if (_gov == 0 || _gov == 5){ modifier += 1; }
-    if (_gov >= 13){             modifier -= 2; }   // MegaTraveller errata p. 21 extends to Governments E & F (14 + 15)
-    
+    modifier += techStarportModifier(_starport);    
+    modifier += techSizeModifier(_size);
+    modifier += techAtmoModifier(_atmo);
+    modifier += techHydroModifier(_hydro);
+    modifier += techPopModifier(_pop);
+    modifier += techGovModifier(_gov);
     return roll.one(modifier);
   }  
 }
