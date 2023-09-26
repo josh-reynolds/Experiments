@@ -82,7 +82,17 @@ class System {
     return false;
   }
   
-  String toString(){
+  String paddedSystemName(){
+    String outputName = name;
+    if (name.length() >= 15){ outputName = name.substring(0,15); }
+    int paddingLength = (16 - outputName.length());
+    for (int i = 1; i <= paddingLength; i++){
+      outputName += " ";
+    }
+    return outputName;
+  }
+  
+  String systemFeatures(){
     String nb = " ";
     if (navalBase){ nb = "N"; }
     
@@ -92,17 +102,22 @@ class System {
     String gg = " ";
     if (gasGiant){ gg = "G"; }
     
-    String outputName = name;
-    if (name.length() >= 15){ outputName = name.substring(0,15); }
-    int paddingLength = (16 - outputName.length());
-    for (int i = 1; i <= paddingLength; i++){
-      outputName += " ";
-    }
-    
+    return nb + sb + gg;
+  }
+  
+  String occupiedSystemString(){
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + " " + trade.toString();
+  }
+  
+  String emptySystemString(){
+    return "EMPTY : " + coord.toString();
+  }
+  
+  String toString(){    
     if (occupied){
-      return outputName + coord.toString() + " : " + uwp.toString() + " " + nb + sb + gg + " " + trade.toString();
+      return occupiedSystemString();
     } else {
-      return "EMPTY : " + coord.toString();
+      return emptySystemString();
     }
   }
   
@@ -204,20 +219,14 @@ class System_CT81 extends System {
     return "Green";
   }
 
-  String toString(){
-    String description = super.toString();
-    String firstHalf = description.substring(0, 36);
-    String secondHalf = description.substring(36, description.length());
-    
-    String zone = "   ";
-    if (travelZone.equals("Red")){ zone = " R "; }
-    if (travelZone.equals("Amber")){ zone = " A "; }
-    
-    if (occupied){
-      return firstHalf + zone + secondHalf;
-    } else {
-      return "EMPTY : " + coord.toString();
-    }
+  String travelZoneString(){ 
+    if (travelZone.equals("Red")){ return " R "; }
+    if (travelZone.equals("Amber")){ return " A "; }
+    return "   ";
+  }
+
+  String occupiedSystemString(){
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString();
   }
 
   JSONObject asJSON(){
@@ -540,10 +549,20 @@ class System_MT extends System_ScoutsEx {
     // desired order
     
     // for MegaTraveller we will have (MTRM p. 16):
-    //   name  coord  UWP  bases  trade  travel popmult planetoid gasgiant allegiance
+    //   name  coord  UWP  bases  trade  travel-popmult-planetoid-gasgiant allegiance
+    // (the Spinward Marches data in Imperial Encyclopedia (MTIE pp. 94-7) is slightly different)
+    //   coord UWP base trade/remarks zone-popmult-planetoid-gasgiant-allegiance stars
+    // in this scheme, base is a single-letter code that packs together multiple combinations
+    //  'remarks' are additional non-trade codes, like Imperial Research Stations
     //
     // note that errata states that planetoid & gasgiant were reversed in RAW - review
     // also, I'm not yet touching allegiance so we'll leave that alone
+    
+    // SYSTEM          : name coord UWP bases gg trade
+    // SYSTEM_CT81     : name coord UWP bases gg travel trade 
+    // SYSTEM_ScoutsEx : name coord UWP bases gg travel trade stars
+    // SYSTEM_MT       : name coord UWP bases trade travel-popmult-planetoid-gasgiant allegiance
+    // SYSTEM_MT (alt) : coord UWP bases trade travel-popmult-planetoid-gasgiant-allegiance
     
     //if (occupied){
     //  description += primary.getSpectralType() + " ";
