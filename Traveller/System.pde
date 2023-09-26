@@ -423,26 +423,35 @@ class System_ScoutsEx extends System_CT81 {
     }
   }
   
-  String toString(){
-    String description = super.toString();
-    if (occupied){
-      description += primary.getSpectralType() + " ";
-      if (primary.closeCompanion != null){ description += primary.closeCompanion.getSpectralType() + " "; }
-      
-      ArrayList<Star> comps = primary.getCompanions();
-      for (Star s : comps){
-        description += s.getSpectralType() + " ";
-      }
-      
-      String firstHalf = description.substring(0, 35);
-      String secondHalf = description.substring(35, description.length());
-
-      String mb = " ";
-      if (militaryBase){ mb = "M"; } // from Scouts p. 38: "Often, a military base can be noted with the symbol M in the base column of the statistics for the system"
-
-      description = firstHalf + mb + secondHalf;
+  String starString(){
+    String description = primary.getSpectralType() + " ";
+    if (primary.closeCompanion != null){ description += primary.closeCompanion.getSpectralType() + " "; }
+    
+    ArrayList<Star> comps = primary.getCompanions();
+    for (Star s : comps){
+      description += s.getSpectralType() + " ";
     }
     return description;
+  }
+
+  String systemFeatures(){
+    String nb = " ";
+    if (navalBase){ nb = "N"; }
+    
+    String sb = " ";
+    if (scoutBase){ sb = "S"; }
+
+    String mb = " ";
+    if (militaryBase){ mb = "M"; } // from Scouts p. 38: "Often, a military base can be noted with the symbol M in the base column of the statistics for the system"    
+    
+    String gg = " ";
+    if (gasGiant){ gg = "G"; }
+    
+    return nb + sb + mb + gg;
+  }  
+  
+  String occupiedSystemString(){
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + " " + trade.toString() + starString();
   }
   
   String list(){
