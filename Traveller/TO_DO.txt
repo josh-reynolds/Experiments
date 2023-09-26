@@ -149,8 +149,8 @@
 //  * DONE Add population multiplier from MegaTraveller
 //  * DONE Expose system-wide gas giant count
 //  * DONE Expose system-wide planetoid belt count
+//  * .... Generate MegaTraveller system summary line
 //  *      Include population multiplier in subsector summary totals
-//  *      Generate MegaTraveller system summary line
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      REFACTOR: case statements in Ruleset
 //  *      Move away from string parsing approach in Star JSON ctor

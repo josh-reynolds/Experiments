@@ -490,7 +490,6 @@ class System_MT extends System_ScoutsEx {
   }
  
  // MegaTraveller changes the procedure for subordinate facilities slightly (MTRM p. 29)
- //  TO_DO: opportunity here to extract code duplicated from super and only override the differences
  void generateFacilities(){
     if (navalBase){ mainworld.addFacility("Naval Base"); }
     if (scoutBase){ mainworld.addFacility("Scout Base"); }
@@ -532,4 +531,38 @@ class System_MT extends System_ScoutsEx {
       }        
     }
   }
+  
+  String toString(){
+    String description = super.toString();
+    
+    // TO_DO: the hardcoded substring calculations are getting unwieldy
+    // should refactor out all the pieces and allow subclasses to assemble in 
+    // desired order
+    
+    // for MegaTraveller we will have (MTRM p. 16):
+    //   name  coord  UWP  bases  trade  travel popmult planetoid gasgiant allegiance
+    //
+    // note that errata states that planetoid & gasgiant were reversed in RAW - review
+    // also, I'm not yet touching allegiance so we'll leave that alone
+    
+    //if (occupied){
+    //  description += primary.getSpectralType() + " ";
+    //  if (primary.closeCompanion != null){ description += primary.closeCompanion.getSpectralType() + " "; }
+      
+    //  ArrayList<Star> comps = primary.getCompanions();
+    //  for (Star s : comps){
+    //    description += s.getSpectralType() + " ";
+    //  }
+      
+    //  String firstHalf = description.substring(0, 35);
+    //  String secondHalf = description.substring(35, description.length());
+
+    //  String mb = " ";
+    //  if (militaryBase){ mb = "M"; } // from Scouts p. 38: "Often, a military base can be noted with the symbol M in the base column of the statistics for the system"
+
+    //  description = firstHalf + mb + secondHalf;
+    //}
+    return description;
+  }
+
 }
