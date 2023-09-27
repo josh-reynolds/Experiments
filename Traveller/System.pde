@@ -451,7 +451,7 @@ class System_ScoutsEx extends System_CT81 {
   }  
   
   String occupiedSystemString(){
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + " " + trade.toString() + starString();
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString() + starString();
   }
   
   String list(){
@@ -549,48 +549,43 @@ class System_MT extends System_ScoutsEx {
       }        
     }
   }
-  
-  String toString(){
-    String description = super.toString();
-    
-    // TO_DO: the hardcoded substring calculations are getting unwieldy
-    // should refactor out all the pieces and allow subclasses to assemble in 
-    // desired order
-    
-    // for MegaTraveller we will have (MTRM p. 16):
-    //   name  coord  UWP  bases  trade  travel-popmult-planetoid-gasgiant allegiance
-    // (the Spinward Marches data in Imperial Encyclopedia (MTIE pp. 94-7) is slightly different)
-    //   coord UWP base trade/remarks zone-popmult-planetoid-gasgiant-allegiance stars
-    // in this scheme, base is a single-letter code that packs together multiple combinations
-    //  'remarks' are additional non-trade codes, like Imperial Research Stations
-    //
-    // note that errata states that planetoid & gasgiant were reversed in RAW - review
-    // also, I'm not yet touching allegiance so we'll leave that alone
-    
-    // SYSTEM          : name coord UWP bases gg trade
-    // SYSTEM_CT81     : name coord UWP bases gg travel trade 
-    // SYSTEM_ScoutsEx : name coord UWP bases gg travel trade stars
-    // SYSTEM_MT       : name coord UWP bases trade travel-popmult-planetoid-gasgiant allegiance
-    // SYSTEM_MT (alt) : coord UWP bases trade travel-popmult-planetoid-gasgiant-allegiance
-    
-    //if (occupied){
-    //  description += primary.getSpectralType() + " ";
-    //  if (primary.closeCompanion != null){ description += primary.closeCompanion.getSpectralType() + " "; }
-      
-    //  ArrayList<Star> comps = primary.getCompanions();
-    //  for (Star s : comps){
-    //    description += s.getSpectralType() + " ";
-    //  }
-      
-    //  String firstHalf = description.substring(0, 35);
-    //  String secondHalf = description.substring(35, description.length());
 
-    //  String mb = " ";
-    //  if (militaryBase){ mb = "M"; } // from Scouts p. 38: "Often, a military base can be noted with the symbol M in the base column of the statistics for the system"
-
-    //  description = firstHalf + mb + secondHalf;
-    //}
-    return description;
+  // for MegaTraveller we will have (MTRM p. 16):
+  //   name coord UWP bases trade travel-popmult-planetoid-gasgiant allegiance
+  // this drops the star data, and adds pop/planetoid/gasgiant counts
+  // I'm not yet touching allegiance so we'll leave that alone
+  // TO_DO: note that errata states that planetoid & gasgiant were reversed in RAW - review
+  String occupiedSystemString(){
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + " " + trade.toString() + systemData();
   }
 
+  // (the Spinward Marches data in Imperial Encyclopedia (MTIE pp. 94-7) is slightly different)
+  //   coord UWP base trade/remarks zone-popmult-planetoid-gasgiant-allegiance stars
+  // in this scheme, base is a single-letter code that packs together multiple combinations
+  //  'remarks' are additional non-trade codes, like Imperial Research Stations
+  //  not pursuing this alternate format for now
+
+  // In MegaTraveller, gas giant count is included in the summary line, no need for a code here
+  String systemFeatures(){
+    String nb = " ";
+    if (navalBase){ nb = "N"; }
+    
+    String sb = " ";
+    if (scoutBase){ sb = "S"; }
+
+    String mb = " ";
+    if (militaryBase){ mb = "M"; }    
+    
+    return nb + sb + mb;
+  }
+  
+  String systemData(){
+    return travelZoneString() + str(populationMultiplier) + str(planetoidCount) + str(gasGiantCount);
+  }
+  
+  String travelZoneString(){ 
+    if (travelZone.equals("Red")){ return "R"; }
+    if (travelZone.equals("Amber")){ return "A"; }
+    return " ";
+  }
 }
