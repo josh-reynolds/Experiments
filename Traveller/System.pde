@@ -580,7 +580,7 @@ class System_MT extends System_ScoutsEx {
   }
   
   String systemData(){
-    return travelZoneString() + str(populationMultiplier) + str(planetoidCount) + str(gasGiantCount);
+    return travelZoneString() + str(populationMultiplier) + hex(planetoidCount,1) + hex(gasGiantCount,1);
   }
   
   String travelZoneString(){ 

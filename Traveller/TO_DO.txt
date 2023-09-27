@@ -150,6 +150,7 @@
 //  * DONE Expose system-wide gas giant count
 //  * DONE Expose system-wide planetoid belt count
 //  * DONE Generate MegaTraveller system summary line
+//  * DONE BUG: MegaTraveller summary line - if planetoid or gas giant count goes above 9, summary data block hard to read (use hex)
 //  *      Include population multiplier in subsector summary totals
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      REFACTOR: case statements in Ruleset
@@ -195,7 +196,6 @@
 //  *      BUG: companions of far companions (quaternary systems) are not being handled
 //  *      BUG: console output during system generation is offset (details before summary)
 //  *      BUG: MegaTraveller summary line - the system data block is not aligned, hard to parse
-//  *      BUG: MegaTraveller summary line - if planetoid or gas giant count goes above 9, summary data block hard to read (use hex)
 //  *      REFACTOR: aid - work up sequence diagram for ctors & build operations
 //  *      REFACTOR: clean up duplication in density setting plumbing
 // ------------------------------------------------
