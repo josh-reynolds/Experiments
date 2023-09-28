@@ -554,9 +554,27 @@ class System_MT extends System_ScoutsEx {
   //   name coord UWP bases trade travel-popmult-planetoid-gasgiant allegiance
   // this drops the star data, and adds pop/planetoid/gasgiant counts
   // I'm not yet touching allegiance so we'll leave that alone
-  // TO_DO: note that errata states that planetoid & gasgiant were reversed in RAW - review
   String occupiedSystemString(){
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + " " + trade.toString() + systemData();
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + " " + paddedTradeString() + systemData();
+  }
+
+  // padding to four codes (two letters + space each) - so 12 characters long
+  //  tested against multiple subsectors, found no instances with more than four trade codes
+  //  method below includes truncation to handle this scenario, might be worth some analysis
+  //  to see if it's even possible to get five+ codes under MT rules
+  // TO_DO: assess whether this should live in TradeClass... implement here for now
+  // TO_DO: heavy duplication from padded system name method above, refactor - common service living where?
+  String paddedTradeString(){
+    String tradeString = trade.toString();
+    if (tradeString.length() > 12){                                // leave truncation in? handles any codes over four, but how will we know? 
+      println("@@@ TRUNCATING tradeString (" + tradeString + ")"); // temporarily flag so we can see how common/severe the issue might be
+      tradeString = tradeString.substring(0,11);                   // my assumption is this is rare
+    }
+    int paddingLength = (12 - tradeString.length());
+    for (int i = 1; i <= paddingLength; i++){
+      tradeString += " ";
+    }
+    return tradeString;
   }
 
   // (the Spinward Marches data in Imperial Encyclopedia (MTIE pp. 94-7) is slightly different)
@@ -578,7 +596,10 @@ class System_MT extends System_ScoutsEx {
     
     return nb + sb + mb;
   }
-  
+
+  // note that errata p. 21 states that planetoid & gasgiant were reversed in RAW (on MTRM p. 16)
+  //  (on review this must refer to an earlier printing - my copy doesn't show this and matches the 
+  //   errata version, implemented below)
   String systemData(){
     return travelZoneString() + str(populationMultiplier) + hex(planetoidCount,1) + hex(gasGiantCount,1);
   }
