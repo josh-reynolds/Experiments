@@ -122,6 +122,34 @@ class Ruleset {
     }
   }
   
+  // should be used for "UWP at system level" rulesets (i.e. CT77 + CT81)
+  UWP newUWP(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    switch(name) {            
+      case "Scouts (Extended)":
+        return new UWP_ScoutsEx();        // throw an exception?
+      case "MegaTraveller (Extended)":
+        return new UWP_MT();              // throw an exception?     
+      case "CT81":     
+      case "CT77":
+      default:
+        return new UWP(_starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
+    }
+  }
+
+  // should be used for "UWP at orbit level" rulesets (i.e. Scouts Extended + MegaTraveller)
+  UWP_ScoutsEx newUWP(Orbit _o, char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    switch(name) {            
+      case "Scouts (Extended)":
+        return new UWP_ScoutsEx(_o, _starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
+      case "MegaTraveller (Extended)":
+        return new UWP_MT(_o, _starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
+      case "CT81":     
+      case "CT77":
+      default:
+        return new UWP_ScoutsEx();        // throw an exception?
+    }                                     // need to be Scouts to satisfy compiler
+  }
+  
   UWPBuilder newUWPBuilder(){ 
     switch(name) {            
       case "CT81":            

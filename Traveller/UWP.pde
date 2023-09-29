@@ -3,13 +3,10 @@
 class UWP {
   char starport;
   int size, atmo, hydro, pop, gov, law, tech; 
-  Dice roll;
 
   UWP(){}  // need to define default ctor for subclasses
   
   UWP(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
-    roll = new Dice();   // temporary scaffolding while we refactor this away
-    
     starport = _starport;
     size     = _size;
     atmo     = _atmo;
@@ -164,6 +161,20 @@ class UWP_ScoutsEx extends UWP {
           println("Invalid input to modifiedHexChar()");
       }
     }
+    return result;
+  }
+}
+
+class UWP_MT extends UWP_ScoutsEx {
+  UWP_MT(){}  // need to define default ctor for subclasses
+  
+  UWP_MT(Orbit _o, char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    super(_o, _starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
+  }
+  
+  // from MTPM p. 13
+  String homeworldDescription(){
+    String result = "";
     return result;
   }
 }

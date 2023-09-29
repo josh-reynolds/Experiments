@@ -16,7 +16,7 @@ class UWPBuilder {
     int law       = generateLaw(gov);
     int tech      = generateTech(starport, size, atmo, hydro, pop, gov); 
 
-    _s.uwp = new UWP(starport, size, atmo, hydro, pop, gov, law, tech);
+    _s.uwp = ruleset.newUWP(starport, size, atmo, hydro, pop, gov, law, tech);
   }
   
   char generateStarport(){ return traffic.getStarport(roll.two()); } 
@@ -157,7 +157,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     int law       = 0;
     int tech      = 0;
     
-    ((Habitable)_o).setUWP(new UWP_ScoutsEx(_o, starport, size, atmo, hydro, pop, gov, law, tech));
+    ((Habitable)_o).setUWP(ruleset.newUWP(_o, starport, size, atmo, hydro, pop, gov, law, tech));
   }
   
   void completeUWPFor(Habitable _h, UWP _uwp){ 
