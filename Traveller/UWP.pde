@@ -173,8 +173,35 @@ class UWP_MT extends UWP_ScoutsEx {
   }
   
   // from MTPM p. 13
+  // some hidden logic in here, the examples on MTPM p. 11 are helpful
   String homeworldDescription(){
     String result = "";
+    
+    // TO_DO: factor this out into smaller methods
+    result += "Starport " + starport + ", ";
+    
+    if (size == 0           ){ result += "Asteroid, "; }
+    if (size > 0 && size < 5){ result += "Small Size, "; } 
+    if (size > 4 && size < 8){ result += "Medium Size, "; }
+    if (size > 7            ){ result += "Large Size, "; }
+    
+    if (atmo < 2              ){ result += "Vacuum World, "; }
+    if (atmo == 2 || atmo == 3){ result += "Thin Atmosphere, "; }
+    if (atmo > 3 && atmo < 7  ){ result += "Standard Atmosphere, "; }
+    if (atmo == 7 || atmo == 8){ result += "Dense Atmosphere, "; }
+    if (atmo > 8              ){ result += "Exotic Atmosphere, "; }
+    
+    // from the examples on p. 11, it looks like Hydro should be 
+    // omitted for Asteroids (or for Vacuum? but what about Ice-Capped Worlds?
+    //  might need to debug their logic, not sure this is consistent
+    if (size != 0){
+      if (hydro < 2               ){ result += "Desert World, "; }
+      if (hydro == 2 || hydro == 3){ result += "Dry World, "; }
+      if (hydro > 3 && hydro < 10 ){ result += "Wet World, "; }
+      if (hydro == 10             ){ result += "Water World, "; }
+    }
+    
+    
     return result;
   }
 }
