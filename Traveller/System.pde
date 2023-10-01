@@ -454,10 +454,13 @@ class System_ScoutsEx extends System_CT81 {
     return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString() + starString();
   }
   
+  String proseDescription(){ return ""; }  // stub to allow override in subclasses
+  
   String list(){
     String result = "";
     if (occupied){
       result += this.toString() + "\n";
+      result += proseDescription();
       result += "Primary: " + primary.toString() + "\n";
       for (Orbit o : primary.getAll(Orbit.class)){
         if (o.orbitNumber == -1){ continue; }
@@ -609,4 +612,6 @@ class System_MT extends System_ScoutsEx {
     if (travelZone.equals("Amber")){ return "A"; }
     return " ";
   }
+  
+  String proseDescription(){ return ((UWP_MT)uwp).homeworldDescription() + "\n"; }
 }

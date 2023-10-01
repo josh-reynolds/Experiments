@@ -152,7 +152,7 @@
 //  * DONE Generate MegaTraveller system summary line
 //  * FIX  BUG: MegaTraveller summary line - if planetoid or gas giant count goes above 9, summary data block hard to read (use hex)
 //  * FIX  BUG: MegaTraveller summary line - the system data block is not aligned, hard to parse
-//  * .... Add MegaTraveller prose system descriptions
+//  * DONE Add MegaTraveller prose system descriptions
 //  *      Include population multiplier in subsector summary totals
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      REFACTOR: case statements in Ruleset

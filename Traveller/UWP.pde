@@ -201,6 +201,24 @@ class UWP_MT extends UWP_ScoutsEx {
       if (hydro == 10             ){ result += "Water World, "; }
     }
     
+    if (pop < 2           ){ result += "Low Pop, "; }
+    if (pop > 1 && pop < 6){ result += "Mod Pop, "; }
+    if (pop > 5           ){ result += "High Pop, "; }
+    
+    if (law == 0           ){ result += "No Law, "; }
+    if (law > 0 && law < 3 ){ result += "Low Law, "; }
+    if (law > 2 && law < 8 ){ result += "Mod Law, "; }
+    if (law > 7 && law < 10){ result += "High Law, "; }
+    if (law > 9            ){ result += "Ext Law, "; }
+    
+    // TO_DO: these TL descriptions from RAW look off, check errata
+    if (tech == 0){ result += "Pre-Industrial"; }
+    if (tech > 0 && tech < 3){ result += "Industrial"; }
+    if (tech > 2 && tech < 5){ result += "Pre-Stellar"; }
+    if (tech > 4 && tech < 7){ result += "Early Stellar"; }
+    if (tech > 6 && tech < 9){ result += "Avg Stellar"; }
+    if (tech > 8            ){ result += "High Stellar"; }
+    // table also includes "Hi Stellar" (sic) for TL 11+ - folding that in with "High Stellar"
     
     return result;
   }
