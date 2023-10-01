@@ -174,6 +174,7 @@ class UWP_MT extends UWP_ScoutsEx {
   
   // from MTPM p. 13
   // some hidden logic in here, the examples on MTPM p. 11 are helpful
+  // errata p. 5 has a corrected table
   String homeworldDescription(){
     String result = "";
     
@@ -185,40 +186,40 @@ class UWP_MT extends UWP_ScoutsEx {
     if (size > 4 && size < 8){ result += "Medium Size, "; }
     if (size > 7            ){ result += "Large Size, "; }
     
-    if (atmo < 2              ){ result += "Vacuum World, "; }
-    if (atmo == 2 || atmo == 3){ result += "Thin Atmosphere, "; }
-    if (atmo > 3 && atmo < 7  ){ result += "Standard Atmosphere, "; }
-    if (atmo == 7 || atmo == 8){ result += "Dense Atmosphere, "; }
-    if (atmo > 8              ){ result += "Exotic Atmosphere, "; }
+    // errata notes that "Asteroids should automatically have vacuum atmospheres"
+    // no need to handle in this method, UWP generation logic should take care of that
+    if (atmo < 4              ){ result += "Vacuum World, "; }
+    if (atmo == 4 || atmo == 5){ result += "Thin Atmosphere, "; }
+    if (atmo == 6 || atmo == 7){ result += "Standard Atmosphere, "; }
+    if (atmo == 8 || atmo == 9){ result += "Dense Atmosphere, "; }
+    if (atmo > 9              ){ result += "Exotic Atmosphere, "; }
     
     // from the examples on p. 11, it looks like Hydro should be 
     // omitted for Asteroids (or for Vacuum? but what about Ice-Capped Worlds?
-    //  might need to debug their logic, not sure this is consistent
+    //  TO_DO: might need to debug their logic, not sure this is consistent
     if (size != 0){
-      if (hydro < 2               ){ result += "Desert World, "; }
-      if (hydro == 2 || hydro == 3){ result += "Dry World, "; }
-      if (hydro > 3 && hydro < 10 ){ result += "Wet World, "; }
+      if (hydro == 0              ){ result += "Desert World, "; }
+      if (hydro == 1 || hydro == 2){ result += "Dry World, "; }
+      if (hydro > 2 && hydro < 10 ){ result += "Wet World, "; }
       if (hydro == 10             ){ result += "Water World, "; }
     }
     
-    if (pop < 2           ){ result += "Low Pop, "; }
-    if (pop > 1 && pop < 6){ result += "Mod Pop, "; }
-    if (pop > 5           ){ result += "High Pop, "; }
+    if (pop < 4           ){ result += "Low Pop, "; }
+    if (pop > 3 && pop < 9){ result += "Mod Pop, "; }
+    if (pop > 8           ){ result += "High Pop, "; }
     
     if (law == 0           ){ result += "No Law, "; }
-    if (law > 0 && law < 3 ){ result += "Low Law, "; }
-    if (law > 2 && law < 8 ){ result += "Mod Law, "; }
+    if (law > 0 && law < 4 ){ result += "Low Law, "; }
+    if (law > 3 && law < 8 ){ result += "Mod Law, "; }
     if (law > 7 && law < 10){ result += "High Law, "; }
     if (law > 9            ){ result += "Ext Law, "; }
     
-    // TO_DO: these TL descriptions from RAW look off, check errata
-    if (tech == 0){ result += "Pre-Industrial"; }
-    if (tech > 0 && tech < 3){ result += "Industrial"; }
-    if (tech > 2 && tech < 5){ result += "Pre-Stellar"; }
-    if (tech > 4 && tech < 7){ result += "Early Stellar"; }
-    if (tech > 6 && tech < 9){ result += "Avg Stellar"; }
-    if (tech > 8            ){ result += "High Stellar"; }
-    // table also includes "Hi Stellar" (sic) for TL 11+ - folding that in with "High Stellar"
+    if (tech < 4                ){ result += "Pre-Industrial"; }
+    if (tech == 4 || tech == 5  ){ result += "Industrial"; }
+    if (tech > 5 && tech < 9    ){ result += "Pre-Stellar"; }
+    if (tech == 9 || tech == 10 ){ result += "Early Stellar"; }
+    if (tech > 10 && tech < 14  ){ result += "Avg Stellar"; }
+    if (tech > 13               ){ result += "High Stellar"; }
     
     return result;
   }
