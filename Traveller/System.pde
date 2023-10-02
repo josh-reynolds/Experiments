@@ -498,6 +498,9 @@ class System_MT extends System_ScoutsEx {
                                                    // adjusting this to a 1-9 range                                                   
   } 
  
+  // initial implementation was including Rings in this count due to class hierarchy (a Ring is-a Planetoid)
+  //  that seems off - haven't found a canonical example to prove it,
+  //  but I am adjusting
   void countPlanetoids(){    
     ArrayList planetoids = primary.getAll(Planetoid.class);
     
@@ -506,8 +509,10 @@ class System_MT extends System_ScoutsEx {
     } else {
       planetoidCount = 0;
     }
-    
-    // TO_DO: current implementation counts Rings as Planetoids, do we want this?
+
+    ArrayList rings = primary.getAll(Ring.class);
+    planetoidCount -= rings.size();
+    if (planetoidCount < 0){ planetoidCount = 0; }
   }
  
  // MegaTraveller changes the procedure for subordinate facilities slightly (MTRM p. 29)

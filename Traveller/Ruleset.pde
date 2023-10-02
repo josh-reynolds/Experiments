@@ -102,7 +102,7 @@ class Ruleset {
         return new System_ScoutsEx(_json);
       case "MegaTraveller (Extended)":
         return new System_ScoutsEx(_json);       // TO_DO: swap as we build up the correct classes
-      default:
+      default:                                   // we haven't implemented fromJSON yet for MT
         return new System(_json);
     }
   }
