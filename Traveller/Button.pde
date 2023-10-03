@@ -279,7 +279,7 @@ class ButtonUtilities {
       JSONObject subsectorData = loadJSONObject(jsonFile);
       return new Subsector(subsectorData);
     } else {
-      return new Subsector();
+      return ruleset.newSubsector();
     }
   }
 }

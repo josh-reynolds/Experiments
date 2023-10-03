@@ -91,6 +91,19 @@ class Ruleset {
     }
   }
   
+  Subsector newSubsector(){
+    switch(name) {
+      case "CT77":
+      case "CT81":
+      case "Scouts (Extended)":
+        return new Subsector();
+      case "MegaTraveller (Extended)":
+        return new Subsector_MT();
+      default:                    
+        return new Subsector();
+    }
+  }
+  
   System newSystem(JSONObject _json){
     // TO_DO: maybe we should detect ruleset from a JSON field... or think about polymorphism here
     switch(name) {

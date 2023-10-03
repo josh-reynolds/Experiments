@@ -61,26 +61,34 @@ class Subsector{
     }
   }
   
+  long mainworldPop(System _s){
+    return (long)pow(10, _s.uwp.pop);
+  }
+  
   String createSummary(){
     String output = name + " contains ";
     
     int worldCount = 0;
+    
     long totalPop = 0;
     ArrayList<String> highestPop = new ArrayList<String>();
-    int maxPop = 0;
+    long maxPop = 0;
+    
     ArrayList<String> highestTech = new ArrayList<String>();
     int maxTech = 0;
     String maxTechString = "";
+    
     for (System s : systems.values()){
-      if (s.occupied){                             // TO_DO: will need to adjust this for MegaTraveller with the population multiplier 
+      if (s.occupied){                             
         worldCount++;
-        totalPop += pow(10, s.uwp.pop);
+        long currentPop = mainworldPop(s);
+        totalPop += currentPop; 
 
-        if (s.uwp.pop == maxPop){
+        if (currentPop == maxPop){
           highestPop.add(s.name);
         }
-        if (s.uwp.pop > maxPop){
-          maxPop = s.uwp.pop;
+        if (currentPop > maxPop){
+          maxPop = currentPop;
           highestPop = new ArrayList<String>();
           highestPop.add(s.name);
         }
@@ -98,8 +106,8 @@ class Subsector{
     }
     
     output += worldCount + " worlds with a population of " + magnitudeFormatNumber(totalPop) + ". "; 
-
-    output += "The highest population is " + hex(maxPop, 1) + " at ";    
+    
+    output += "The highest population is " + magnitudeFormatNumber(maxPop) + " at ";
     output += commaFormatList(highestPop, ';');
     
     output += " the highest tech level is " + maxTechString + ", at ";    
@@ -272,5 +280,14 @@ class Subsector{
         }
       }
     }
+  }
+}
+
+class Subsector_MT extends Subsector {
+  Subsector_MT(){ super(); }
+
+  long mainworldPop(System _s){
+    System_MT s = (System_MT)_s;
+    return s.populationMultiplier * (long)pow(10, _s.uwp.pop);
   }
 }
