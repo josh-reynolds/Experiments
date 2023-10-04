@@ -65,6 +65,10 @@ class Subsector{
     return (long)pow(10, _s.uwp.pop);
   }
   
+  String highestPop(System _s){
+    return hex(_s.uwp.pop,1);
+  }
+  
   String createSummary(){
     String output = name + " contains ";
     
@@ -73,6 +77,7 @@ class Subsector{
     long totalPop = 0;
     ArrayList<String> highestPop = new ArrayList<String>();
     long maxPop = 0;
+    String highestPopString = "";
     
     ArrayList<String> highestTech = new ArrayList<String>();
     int maxTech = 0;
@@ -89,6 +94,7 @@ class Subsector{
         }
         if (currentPop > maxPop){
           maxPop = currentPop;
+          highestPopString = highestPop(s);
           highestPop = new ArrayList<String>();
           highestPop.add(s.name);
         }
@@ -107,7 +113,8 @@ class Subsector{
     
     output += worldCount + " worlds with a population of " + magnitudeFormatNumber(totalPop) + ". "; 
     
-    output += "The highest population is " + magnitudeFormatNumber(maxPop) + " at ";
+    //output += "The highest population is " + magnitudeFormatNumber(maxPop) + " at ";
+    output += "The highest population is " + highestPopString + " at ";
     output += commaFormatList(highestPop, ';');
     
     output += " the highest tech level is " + maxTechString + ", at ";    
@@ -289,5 +296,9 @@ class Subsector_MT extends Subsector {
   long mainworldPop(System _s){
     System_MT s = (System_MT)_s;
     return s.populationMultiplier * (long)pow(10, _s.uwp.pop);
+  }
+  
+  String highestPop(System _s){
+    return magnitudeFormatNumber(mainworldPop(_s));
   }
 }
