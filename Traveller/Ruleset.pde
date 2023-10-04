@@ -224,3 +224,75 @@ class Ruleset {
     }
   }
 }
+
+class Ruleset_CT77 extends Ruleset {
+  String name;
+  //int current = 0;
+  //String[] rules = {"CT77", "CT81", "Scouts (Extended)", "MegaTraveller (Extended)"};
+
+  Ruleset_CT77(){ name = "CT77"; }
+  
+  // used when loading from JSON
+  //Ruleset_CT77(String _rules){
+  //  for (int i = 0; i < rules.length; i++){
+  //    if (rules[i].equals(_rules)){ current = i; }
+  //  }
+  //  name = rules[current];
+  //}
+  
+  //Ruleset next(){
+  //  return new Ruleset_CT81();
+  //}
+  
+  Boolean supportsTravelZones(){ return false; }
+  Boolean supportsStars()      { return false; }
+  Boolean supportsDensity()    { return false; }
+  Boolean supportsTraffic()    { return false; }
+  
+  System newSystem(Coordinate _coord, Boolean _occupied){ 
+    return new System(_coord, _occupied); 
+  }
+  
+  Subsector newSubsector(){ 
+    return new Subsector(); 
+  }
+  
+  System newSystem(JSONObject _json){ 
+    return new System(_json); 
+  }
+  
+  UWPBuilder newUWPBuilder(){ 
+    return new UWPBuilder(); 
+  }
+  
+  TradeClass newTradeClass(UWP _uwp){ 
+    return new TradeClass(_uwp); 
+  }
+  
+  OrbitBuilder newOrbitBuilder(){
+    println("Orbits not supported");
+    return new OrbitBuilder();               // keeping the compiler happy - throw an exception instead?
+  }
+  
+  // should be used for "UWP at system level" rulesets (i.e. CT77 + CT81)
+  UWP newUWP(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    return new UWP(_starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
+  }
+
+  // should be used for "UWP at orbit level" rulesets (i.e. Scouts Extended + MegaTraveller)
+  UWP_ScoutsEx newUWP(Orbit _o, char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    return new UWP_ScoutsEx();        // throw an exception?
+  }
+  
+  // primary stars
+  Star newStar(System _parent){
+    println("Stars not supported");
+    return new Star(_parent);               // keeping the compiler happy - throw an exception instead?
+  }
+  
+  // companion stars
+  Star newStar(Orbit _barycenter, int _orbit, String _zone, System _parent){
+    println("Stars not supported");
+    return new Star(_barycenter, _orbit, _zone, _parent);               // keeping the compiler happy - throw an exception instead?
+  }
+}
