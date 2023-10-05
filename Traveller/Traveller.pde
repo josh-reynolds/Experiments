@@ -34,7 +34,7 @@ void setup(){
   size(928, 646);  
   lines = loadStrings(wordFile);
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
-  ruleset = new Ruleset();
+  ruleset = new Ruleset_CT77();
   density = new SubsectorDensity();
   traffic = new SubsectorTraffic();
   tests = new TestSuite();  
