@@ -38,7 +38,7 @@ class Subsector{
     systems = new LinkedHashMap<Coordinate, System>();
     routes = new ArrayList<Route>();
     
-    ruleset = new Ruleset(_json.getString("Ruleset"));
+    ruleset = ruleset.fromJSON(_json.getString("Ruleset"));
     
     JSONArray systemList = _json.getJSONArray("Systems");
     for (int i = 0; i < systemList.size(); i++){
