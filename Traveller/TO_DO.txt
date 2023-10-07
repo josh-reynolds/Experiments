@@ -155,13 +155,13 @@
 //  * DONE Add MegaTraveller prose system descriptions
 //  * DONE Include population multiplier in subsector summary totals
 //  * DONE REFACTOR: case statements in Ruleset
+//  * .... Add New Era generation ruleset
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Flesh out tests (this will take a while...)
 //  *      Test & fix JSON loading for MegaTraveller ruleset
 //  *      Non-human worlds and trade classifications (from MT)?
 //  *      Add World Builder's Handbook ruleset (MT)
-//  *      Add New Era generation ruleset
 //  *      Add World Tamer's Handbook ruleset (TNE)
 //  *      Add T4 generation ruleset
 //  *      Add T4 Pocket Empires ruleset
