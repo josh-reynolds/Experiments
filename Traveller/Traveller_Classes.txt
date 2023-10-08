@@ -1089,4 +1089,79 @@ check in the System ctor. This class doesn't need to know anything about
 that concept, so it more appropriately belongs in Subsector - and moving 
 it simplifies this constructor cleanup effort.)
 
+---------------------------------------
+10/8/23
+
+Since the last update I:
+
+* Reviewed the extensive MegaTraveller errata and incorporated (almost) all
+changes. A couple I disagree with, and punted on others. Comments and TO_DOs
+in all cases.
+
+* Added SubsectorTraffic class to handle feature introduced in MT. Also wired
+this through the UI, much like SubsectorDensity (follows same model).
+
+* General refactoring and cleanup to facilitate the above.
+
+* Added MT system-level data points: population multiplier + planetoid count. 
+Also wired these through the new MT-style system line, and the subsector
+summary output.
+
+* Added MT prose homeworld descriptions.
+
+* Finally refactored away all the switch statements in Ruleset. It's now
+polymorphic. Motivation was looking ahead to T:NE and dreading updating all
+those cases. Hopefully adding a new ruleset is streamlined now.
+
+In that vein, I took a quick stab at the T:NE ruleset. Base class is indeed
+very simple. Walking through the creational events not so much, though, so
+thinking about how to make this easier too.
+
+(Quick aside: this project is up to 5058 lines, including comments. Use
+powershell: type *.pde | Measure-Object -line)
+
+I think it may be time to diagram all the pieces. 
+
+Also, one small source of confusion is when a given ruleset makes no changes 
+from its predecessor, and thus uses the same class (like how MegaTraveller 
+subclasses Subsector, but CT81 + Scouts use the same class as CT77). 
+
+Considering adding dummy classes that just wrap super to make this more
+transparent and easy to see an entire family/ruleset. And may want to tweak
+the names of some of the base classes, as they're really the initial CT77
+implementation, and usually not a generic entity.
+
+So, for T:NE, here's a quick review of the creation call stack when pressing
+the 'New' button:
+
+Button.run()
+  ruleset.newSubsector()
+    new Subsector_MT()
+      ruleset.newSystem()      
+        new System_MT()
+          super()
+            ruleset.newOrbitBuilder().newStar()
+              ruleset.newStar()
+                new Star_MT()
+                  createStar()
+              createCompanionsFor()
+                generateCompanionCountFor()
+                generateCompanionOrbitFor()
+                ruleset.newStar()
+                  new Star_MT()
+                    createStar()
+              createSatellitesFor()
+                calculateMaxOrbitsFor()
+                placeEmptyOrbitsFor()
+                placeForbiddenOrbitsFor()
+                placeCapturedPlanetsFor()
+                placeGasGiantsFor()
+                placePlanetoidBeltsFor()
+                placePlanetsFor()
+              designateMainworldFor()
+                Habitable.completeUWP()
+
+
+
+
 

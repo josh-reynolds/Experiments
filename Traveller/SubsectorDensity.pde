@@ -4,6 +4,7 @@ class SubsectorDensity {
   
   // data from Scouts p. 25
   // MegaTraveller uses the same values (Referee's Manual pp. 24 + 26)
+  // Traveller: New Era uses the same values (TNE p. 186 + 192)
   float[] values  = { 0.04,   0.16,     0.33,        0.5,        0.66    };
   String[] labels = { "Rift", "Sparse", "Scattered", "Standard", "Dense" }; 
   

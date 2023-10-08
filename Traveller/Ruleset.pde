@@ -16,7 +16,7 @@ abstract class Ruleset {
         return new Ruleset_ScoutsEx();
       case "MegaTraveller (Extended)":
         return new Ruleset_MT();
-      case "Traveller: The New Era":
+      case "Traveller: The New Era (Extended)":
         return new Ruleset_TNE();
       default:
         return new Ruleset_CT77();
@@ -279,7 +279,7 @@ class Ruleset_MT extends Ruleset {
 // TO_DO: initial ruleset skeleton, using MT classes
 //   replace as we add the TNE subclasses
 class Ruleset_TNE extends Ruleset {
-  Ruleset_TNE(){ name = "Traveller: The New Era"; }
+  Ruleset_TNE(){ name = "Traveller: The New Era (Extended)"; }
   
   Ruleset next(){
     return new Ruleset_CT77();
