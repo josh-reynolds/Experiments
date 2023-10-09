@@ -5,7 +5,7 @@ class OrbitBuilder {
     roll = new Dice();
   }
   
-  void newStar(System_ScoutsEx _parent){
+  void newPrimary(System_ScoutsEx _parent){
     Star star = ruleset.newStar(_parent);
     _parent.primary = star;
     
@@ -39,7 +39,8 @@ class OrbitBuilder {
       _star.addOrbit(companion.getOrbitNumber(), companion);
     }
   }
-   
+  
+  // New Era follows same procedure (T:NE p. 192)
   int generateCompanionCountFor(Star _star){
     println("Determining companion count for " + _star);
 
@@ -651,6 +652,7 @@ class OrbitBuilder_MT extends OrbitBuilder {
   //       we could provide a mutator method on Star that makes sure orbit zones are updated...)
   //      look for other occurrences of this
 
+  // T:NE changes this back to the Scouts method (1d6 * 1000 AU)
   // MegaTraveller RAW follows the same procedure (MTRM p. 26) for generateCompanionOrbitFor(Star)
   // However the errata changes the "Far" entry - roughly equivalent to my previous version, 
   // but range is now 14-19 (previously 14-17). orbital zones data goes up to 20, so we should be OK

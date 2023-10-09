@@ -1140,7 +1140,7 @@ Button.run()
       ruleset.newSystem()      
         new System_MT()
           super()
-            ruleset.newOrbitBuilder().newStar()
+            ruleset.newOrbitBuilder().newStar() (changing to newPrimary())
               ruleset.newStar()
                 new Star_MT()
                   createStar()
@@ -1161,7 +1161,33 @@ Button.run()
               designateMainworldFor()
                 Habitable.completeUWP()
 
+10/9/23
 
+Step-by-step mapping of T:NE procedure and corresponding methods.
+
+1) System Presence - Subsector ctor, using values in SubsectorDensity
+    same as MegaTraveller
+2) System Details (no procedure here)
+3) System Nature - OrbitBuilder.generateCompanionCountFor()
+    same as MegaTraveller
+4) Primary Star Type and Size - Star_MT.createStar() -> generateType(), generateSize()
+    Type same as MegaTraveller
+    Size same as MegaTraveller
+5) Decimal Classification - Star_MT.createStar()
+    T:NE slightly changes handling of K* IV stars, here in decimal rather
+     than during generateSize()
+    Also omits the special errata handling in createStar() (which forced
+     A/F/G size II/III stars to V)
+6) Companion Star Type and Size - Star_MT.createStar() -> generateType(), generateSize()
+    T:NE changes the Type distribution for companions, need override
+    same story for Size distribution and creation of D-class stars
+7) Companion Orbit - OrbitBuilder.generateCompanionOrbitFor()
+    same as MegaTraveller
+8) Far Companion? - go to 9 else go to 11
+9) Far Orbit - OrbitBuilder_MT.farOrbits()
+    T:NE reverts to Scouts procedure
+10) Additional Stars - this may have been broken during MT implementation,
+     need to trace through
 
 
 

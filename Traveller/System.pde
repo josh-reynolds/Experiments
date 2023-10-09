@@ -265,7 +265,7 @@ class System_ScoutsEx extends System_CT81 {
       name = lines[floor(random(lines.length))];
       routes = new ArrayList<Route>();
       
-      ruleset.newOrbitBuilder().newStar(this);
+      ruleset.newOrbitBuilder().newPrimary(this);
       println("\n--------------\nSystem: " + name + " (" + coord + ")");
       
       countGasGiants();     

@@ -425,6 +425,8 @@ class Star_MT extends Star {
     orbitalZones = retrieveOrbitalZones();
   }
 
+  // New Era follows the same procedure for Primary (T:NE p. 192)
+  // TO_DO: Companions table changed in T:NE
   // TO_DO: mostly duplicated from super, refactor
   char generateType(){
     int dieThrow = roll.two();
@@ -448,6 +450,8 @@ class Star_MT extends Star {
     }
   }
 
+  // New Era follows the same procedure for Primary (T:NE p. 192) - need to check Companions
+  // TO_DO: Companions table changed in T:NE
   // MegaTraveller RAW uses the same odds for Primary, but changed the Companion table (MTRM p.26)
   // However errata p. 22 lists changes to this method that bring it more inline with super 
   // Implementing override for now, then compare and eliminate duplication
