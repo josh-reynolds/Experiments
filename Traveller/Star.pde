@@ -112,71 +112,87 @@ class Star extends Orbit {
     int dieThrow = roll.two();
     if (isPrimary()){
       typeRoll = dieThrow;
-      if (dieThrow == 2               ){ return 'A'; }
-      if (dieThrow > 2 && dieThrow < 8){ return 'M'; }
-      if (dieThrow == 8               ){ return 'K'; }
-      if (dieThrow == 9               ){ return 'G'; }
-      if (dieThrow > 9                ){ return 'F'; }
-      return 'X';
+      return primaryStarType(dieThrow);
     } else {
       typeRoll = 0;
       dieThrow += ((System_ScoutsEx)parent).primary.typeRoll;
-      if (dieThrow == 2                 ){ return 'A'; }
-      if (dieThrow == 3 || dieThrow == 4){ return 'F'; }
-      if (dieThrow == 5 || dieThrow == 6){ return 'G'; }
-      if (dieThrow == 7 || dieThrow == 8){ return 'K'; }
-      if (dieThrow > 8                  ){ return 'M'; }
-      return 'X';
+      return companionStarType(dieThrow);
     }
+  }
+  
+  char primaryStarType(int _dieThrow){
+    if (_dieThrow == 2                ){ return 'A'; }
+    if (_dieThrow > 2 && _dieThrow < 8){ return 'M'; }
+    if (_dieThrow == 8                ){ return 'K'; }
+    if (_dieThrow == 9                ){ return 'G'; }
+    if (_dieThrow > 9                 ){ return 'F'; }
+    return 'X';    
+  }
+  
+  char companionStarType(int _dieThrow){
+    if (_dieThrow == 2                  ){ return 'A'; }
+    if (_dieThrow == 3 || _dieThrow == 4){ return 'F'; }
+    if (_dieThrow == 5 || _dieThrow == 6){ return 'G'; }
+    if (_dieThrow == 7 || _dieThrow == 8){ return 'K'; }
+    if (_dieThrow > 8                   ){ return 'M'; }
+    return 'X';
   }
   
   int generateSize(){
     int dieThrow = roll.two();
     if (isPrimary()){
       sizeRoll = dieThrow;
-      if (dieThrow == 2                ){ return 2;  }
-      if (dieThrow == 3                ){ return 3; }
-      if (dieThrow == 4                ){ 
-        if ((type == 'K' && decimal > 4) || type == 'M'){
-          return 5;
-        } else {
-          return 4;
-        }
-      }
-      if (dieThrow > 4 && dieThrow < 11){ return 5;   }
-      if (dieThrow == 11               ){
-        if (type == 'B' || type == 'A' || (type == 'F' && decimal < 5)){
-          return 5;
-        } else {
-          return 6;
-        }
-      }
-      if (dieThrow == 12               ){ return 7;   }
-      return 9;
+      return primarySize(dieThrow);
     } else {
       sizeRoll = 0;
       dieThrow += ((System_ScoutsEx)parent).primary.sizeRoll;
-      if (dieThrow == 2                 ){ return 2;  }
-      if (dieThrow == 3                 ){ return 3; }
-      if (dieThrow == 4                 ){ 
-        if ((type == 'K' && decimal > 4) || type == 'M'){
-          return 5;
-        } else {
-          return 4;
-        }  
-      }
-      if (dieThrow == 5 || dieThrow == 6){ return 7;   }
-      if (dieThrow == 7 || dieThrow == 8){ return 5;   }
-      if (dieThrow == 9                 ){ 
-        if (type == 'B' || type == 'A' || (type == 'F' && decimal < 5)){
-          return 5;
-        } else {
-          return 6;
-        }          
-      }
-      if (dieThrow > 9                  ){ return 7;   }
-      return 9;
+      return companionSize(dieThrow);
     }
+  }
+
+  int primarySize(int _dieThrow){
+    if (_dieThrow == 2                ){ return 2;  }
+    if (_dieThrow == 3                ){ return 3; }
+    if (_dieThrow == 4                ){ 
+      if ((type == 'K' && decimal > 4) || type == 'M'){
+        return 5;
+      } else {
+        return 4;
+      }
+    }
+    if (_dieThrow > 4 && _dieThrow < 11){ return 5;   }
+    if (_dieThrow == 11               ){
+      if (type == 'B' || type == 'A' || (type == 'F' && decimal < 5)){
+        return 5;
+      } else {
+        return 6;
+      }
+    }
+    if (_dieThrow == 12               ){ return 7;   }
+    return 9;
+  }
+
+  int companionSize(int _dieThrow){
+    if (_dieThrow == 2                 ){ return 2;  }
+    if (_dieThrow == 3                 ){ return 3; }
+    if (_dieThrow == 4                 ){ 
+      if ((type == 'K' && decimal > 4) || type == 'M'){
+        return 5;
+      } else {
+        return 4;
+      }  
+    }
+    if (_dieThrow == 5 || _dieThrow == 6){ return 7;   }
+    if (_dieThrow == 7 || _dieThrow == 8){ return 5;   }
+    if (_dieThrow == 9                  ){ 
+      if (type == 'B' || type == 'A' || (type == 'F' && decimal < 5)){
+        return 5;
+      } else {
+        return 6;
+      }          
+    }
+    if (_dieThrow > 9                  ){ return 7;   }
+    return 9;
   }
 
   void spectralTypeFromString(String _s){

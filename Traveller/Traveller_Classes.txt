@@ -1189,5 +1189,5 @@ Step-by-step mapping of T:NE procedure and corresponding methods.
 10) Additional Stars - this may have been broken during MT implementation,
      need to trace through
 
-
+Looks like Star Type/Size is a good place to start unpacking things.
 
