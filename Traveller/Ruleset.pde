@@ -326,11 +326,11 @@ class Ruleset_TNE extends Ruleset {
   
   // primary stars
   Star newStar(System _parent){
-    return new Star_MT(_parent);
+    return new Star_TNE(_parent);
   }
   
   // companion stars
   Star newStar(Orbit _barycenter, int _orbit, String _zone, System _parent){
-    return new Star_MT(_barycenter, _orbit, _zone, _parent);
+    return new Star_TNE(_barycenter, _orbit, _zone, _parent);
   }
 }

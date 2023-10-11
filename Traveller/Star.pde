@@ -105,8 +105,12 @@ class Star extends Orbit {
     size = generateSize();
     if (size == 7){ decimal = 0; }
     
+    adjustSpecialCases();
+    
     orbitalZones = retrieveOrbitalZones();
   }
+  
+  void adjustSpecialCases(){}  // no-op stub to allow override in subclass
   
   char generateType(){
     int dieThrow = roll.two();
@@ -130,7 +134,7 @@ class Star extends Orbit {
   }
   
   char companionStarType(int _dieThrow){
-    if (_dieThrow == 2                  ){ return 'A'; }
+    if (_dieThrow == 2                  ){ return 'A'; } // because minimum modifier from primary is +2, results of 2,3 are not possible
     if (_dieThrow == 3 || _dieThrow == 4){ return 'F'; }
     if (_dieThrow == 5 || _dieThrow == 6){ return 'G'; }
     if (_dieThrow == 7 || _dieThrow == 8){ return 'K'; }
@@ -422,98 +426,86 @@ class Star_MT extends Star {
   Star_MT(Orbit _barycenter, System _parent, JSONObject _json){ super(_barycenter, _parent, _json); }
   Star_MT(Boolean _primary, System _parent, String _s){ super(_primary, _parent, _s); }  
 
-  // TO_DO: mostly duplicated from super, refactor
-  void createStar(){
-    type = generateType();  
-    decimal = floor(random(10));      // TO_DO: confusing comment in errata (p. 22):
-                                      //   "Star types M4V through M9V cannot have habitable worlds: subtract 6 from the decimal classification
-                                      //    for primary stars."
-                                      // Not clear what this is trying to accomplish? Are they forcing every system to have a habitable-capable
-                                      //   primary star? Per the zones table, they could still have outer zone planets.
-                                      // Not going to take this one up.
-    size = generateSize();           
-    if (size == 7){ decimal = 0; }
+  // For createStar(), mostly identical to Scouts but needed to add override method adjustSpecialCases()
+  // Also, one confusing comment in errata (p. 22):
+  //   "Star types M4V through M9V cannot have habitable worlds: subtract 6 from the decimal classification
+  //    for primary stars."
+  // Not clear what this is trying to accomplish? Are they forcing every system to have a habitable-capable
+  //   primary star? Per the zones table, they could still have outer zone planets.
+  // Not going to take this one up.  
+  void adjustSpecialCases(){
     if ((type == 'A' || type == 'F' || type == 'G') &&
         (size == 2 || size == 3)){ size = 5; }    // errata p. 22:
                                                   //  "Star types A, F and G are extremely rare with star sizes II and III: change 
                                                   //   star size to V."
-    
-    orbitalZones = retrieveOrbitalZones();
   }
 
-  // New Era follows the same procedure for Primary (T:NE p. 192)
-  // TO_DO: Companions table changed in T:NE
-  // TO_DO: mostly duplicated from super, refactor
-  char generateType(){
-    int dieThrow = roll.two();
-    if (isPrimary()){
-      typeRoll = dieThrow;
-      if (dieThrow == 2                  ){ return 'A'; }
-      if (dieThrow > 2 && dieThrow < 8   ){ return 'M'; }
-      if (dieThrow == 8                  ){ return 'K'; }
-      if (dieThrow == 9 || dieThrow == 10){ return 'G'; }    // change from RAW acccording to errata p. 22
-      if (dieThrow > 10                  ){ return 'F'; }
-      return 'X';
-    } else {
-      typeRoll = 0;
-      dieThrow += ((System_ScoutsEx)parent).primary.typeRoll;
-      if (dieThrow == 2                 ){ return 'A'; } // because minimum modifier from primary is +2, results
-      if (dieThrow == 3 || dieThrow == 4){ return 'F'; } // of 2,3 are not possible
-      if (dieThrow == 5 || dieThrow == 6){ return 'G'; }
-      if (dieThrow == 7 || dieThrow == 8){ return 'K'; }
-      if (dieThrow > 8                  ){ return 'M'; }
-      return 'X';
-    }
+  // MegaTraveller changes Primary type distribution slightly from Scouts
+  char primaryStarType(int _dieThrow){
+    if (_dieThrow == 2                   ){ return 'A'; }
+    if (_dieThrow > 2 && _dieThrow < 8   ){ return 'M'; }
+    if (_dieThrow == 8                   ){ return 'K'; }
+    if (_dieThrow == 9 || _dieThrow == 10){ return 'G'; }    // change from RAW acccording to errata p. 22
+    if (_dieThrow > 10                   ){ return 'F'; }
+    return 'X';    
   }
 
-  // New Era follows the same procedure for Primary (T:NE p. 192) - need to check Companions
-  // TO_DO: Companions table changed in T:NE
+  // MegaTraveller uses same companionStarType distribution as Scouts 
+
   // MegaTraveller RAW uses the same odds for Primary, but changed the Companion table (MTRM p.26)
-  // However errata p. 22 lists changes to this method that bring it more inline with super 
-  // Implementing override for now, then compare and eliminate duplication
-  int generateSize(){
-    int dieThrow = roll.two();
-    
-    if (isPrimary()){
-      sizeRoll = dieThrow;
-      if (dieThrow == 2                ){ return 2;  }
-      if (dieThrow == 3                ){ return 3; }
-      if (dieThrow == 4                ){ 
-        if ((type == 'K' && decimal > 4) || type == 'M'){
-          return 5;
-        } else {
-          return 4;
-        }
-      }  
-      if (dieThrow > 4                 ){ return 5;   }  // change from RAW according to errata p. 22
-      return 9;
-    } else {
-      sizeRoll = 0;
-      dieThrow += ((System_ScoutsEx)parent).primary.sizeRoll; 
-      if (dieThrow == 2                ){ return 2;  } // because minimum modifier from primary is +2, results
-      if (dieThrow == 3                ){ return 3; }  // of 2,3 are not possible
-      if (dieThrow == 4                ){ 
-        if ((type == 'K' && decimal > 4) || type == 'M'){
-          return 5;
-        } else {
-          return 4;
-        }
-      }  
-      if (dieThrow > 4 && dieThrow < 12){ return 5;   }  // change from RAW according to errata p. 22
-      if (dieThrow > 11                ){ 
-        int primarySize = ((System_ScoutsEx)parent).primary.size;
-        if (primarySize == 2 || primarySize == 3 || primarySize == 4){   // change from RAW according to errata p. 22
-          return 7;
-        } else {
-          return 5;
-        }
+  // However errata p. 22 lists changes to this method that bring it more inline with super
+  int primarySize(int _dieThrow){
+    if (_dieThrow == 2                ){ return 2;  }
+    if (_dieThrow == 3                ){ return 3; }
+    if (_dieThrow == 4                ){ 
+      if ((type == 'K' && decimal > 4) || type == 'M'){
+        return 5;
+      } else {
+        return 4;
       }
-      return 9;
+    }  
+    if (_dieThrow > 4                 ){ return 5;   }  // change from RAW according to errata p. 22
+    return 9;
+  }
+
+  int companionSize(int _dieThrow){
+    if (_dieThrow == 2                ){ return 2;  } // because minimum modifier from primary is +2, results
+    if (_dieThrow == 3                ){ return 3; }  // of 2,3 are not possible
+    if (_dieThrow == 4                ){ 
+      if ((type == 'K' && decimal > 4) || type == 'M'){
+        return 5;
+      } else {
+        return 4;
+      }
+    }  
+    if (_dieThrow > 4 && _dieThrow < 12){ return 5;   }  // change from RAW according to errata p. 22
+    if (_dieThrow > 11                ){ 
+      int primarySize = ((System_ScoutsEx)parent).primary.size;
+      if (primarySize == 2 || primarySize == 3 || primarySize == 4){   // change from RAW according to errata p. 22
+        return 7;
+      } else {
+        return 5;
+      }
     }
+    return 9;
   }
 
   // MegaTraveller expresses orbitMaskedByCompanion via a table (MTRM p.26) rather than the calculations
   // in Scouts, which removes some of the ambiguities in my comments above - the end result is identical
   // so the logic as originally coded is correct
+}
 
+class Star_TNE extends Star_MT{
+  Star_TNE(System _parent){ super(_parent); }
+  Star_TNE(System _parent, JSONObject _json){ super(_parent, _json); }  
+  Star_TNE(Orbit _barycenter, int _orbit, String _zone, System _parent){ super(_barycenter, _orbit, _zone, _parent); } 
+  Star_TNE(Orbit _barycenter, System _parent, JSONObject _json){ super(_barycenter, _parent, _json); }
+  Star_TNE(Boolean _primary, System _parent, String _s){ super(_primary, _parent, _s); }    
+
+  // New Era follows the same procedure for Primary Type(T:NE p. 192)
+  // TO_DO: Companions type table changed in T:NE
+
+
+  // New Era follows the same procedure for Primary Size (T:NE p. 192) - need to check Companions
+  // TO_DO: Companions size table changed in T:NE
 }
