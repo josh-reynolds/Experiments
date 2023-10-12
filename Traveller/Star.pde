@@ -15,7 +15,7 @@ class Star extends Orbit {
   int gasGiantCount = 0;    // TO_DO: only used by placeGasGiants/placePlanetoidBelts during construction
   
   // ctor for primary star only
-  Star(System _parent){
+  Star(System _parent){    
     super(null, -1, (String)null);   // TO_DO: making the compiler happy, may need to rethink this - don't like the magic value for the primary
     if (debug == 2){ println("** Star PRIMARY ctor"); }
     primary = true;              //   need to work through values for barycenter on primary & companions, and whether that can make isPrimary obsolete
@@ -104,7 +104,7 @@ class Star extends Orbit {
     decimal = floor(random(10));
     size = generateSize();
     if (size == 7){ decimal = 0; }
-    
+
     adjustSpecialCases();
     
     orbitalZones = retrieveOrbitalZones();
@@ -502,10 +502,39 @@ class Star_TNE extends Star_MT{
   Star_TNE(Orbit _barycenter, System _parent, JSONObject _json){ super(_barycenter, _parent, _json); }
   Star_TNE(Boolean _primary, System _parent, String _s){ super(_primary, _parent, _s); }    
 
-  // New Era follows the same procedure for Primary Type(T:NE p. 192)
-  // TO_DO: Companions type table changed in T:NE
+  // New Era follows the same procedure for Primary Type
+  // but the Companions type table has changed (T:NE p. 192)
+  char companionStarType(int _dieThrow){
+    if (_dieThrow == 4                   ){ return 'A'; }
+    if (_dieThrow == 5 || _dieThrow == 6 ){ return 'F'; }
+    if (_dieThrow == 7 || _dieThrow == 8 ){ return 'G'; }
+    if (_dieThrow == 9 || _dieThrow == 10){ return 'K'; }
+    if (_dieThrow > 10                   ){ return 'M'; }
+    return 'X';
+  }
 
-
-  // New Era follows the same procedure for Primary Size (T:NE p. 192) - need to check Companions
-  // TO_DO: Companions size table changed in T:NE
+  // New Era follows the same procedure for Primary Size
+  //  (though note that the special case for class K stars is handled during decimal classification there,
+  //   but using the MT approach should be equivalent and avoids needing to override this method)
+  // The Companions size table changed in T:NE (T:NE p. 192)
+  int companionSize(int _dieThrow){
+    if (_dieThrow == 4                ){ return 2; }
+    if (_dieThrow == 5                ){ return 3; }
+    if (_dieThrow == 6                ){ 
+      if ((type == 'K' && decimal > 4) || type == 'M'){  // T:NE RAW omits this special case for companions
+        return 5;                                        // but it should still apply - cannot have M*IV or K5+IV stars
+      } else {
+        return 4;
+      }
+    }  
+    if (_dieThrow > 6 && _dieThrow < 14){ return 5; }
+    if (_dieThrow > 13                ){ 
+      if (roll.one() < 4){
+        return 5;
+      } else {
+        return 7;
+      }
+    }
+    return 9;
+  }
 }
