@@ -311,7 +311,7 @@ class Ruleset_TNE extends Ruleset {
   }
   
   OrbitBuilder newOrbitBuilder(){
-    return new OrbitBuilder_MT();
+    return new OrbitBuilder_TNE();
   }
   
   // should be used for "UWP at system level" rulesets (i.e. CT77 + CT81)

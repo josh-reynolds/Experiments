@@ -652,7 +652,7 @@ class OrbitBuilder_MT extends OrbitBuilder {
   //       we could provide a mutator method on Star that makes sure orbit zones are updated...)
   //      look for other occurrences of this
 
-  // T:NE changes this back to the Scouts method (1d6 * 1000 AU)
+  
   // MegaTraveller RAW follows the same procedure (MTRM p. 26) for generateCompanionOrbitFor(Star)
   // However the errata changes the "Far" entry - roughly equivalent to my previous version, 
   // but range is now 14-19 (previously 14-17). orbital zones data goes up to 20, so we should be OK
@@ -792,4 +792,15 @@ class OrbitBuilder_MT extends OrbitBuilder {
     
     if (debug >= 1){ println(_star.gasGiantCount + " Gas Giants in-system"); }  // need to consider at the System level, for Primary + all companions
   }
-}  
+}
+
+class OrbitBuilder_TNE extends OrbitBuilder_MT {
+  // T:NE changes this back to the Scouts method (1d6 * 1000 AU) (T:NE p. 192)
+  int farOrbits(){
+    int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
+    if (distance == 2000                    ){ return 15; }
+    if (distance == 3000 || distance == 4000){ return 16; }
+    if (distance >= 5000                    ){ return 17; }
+    return 14; 
+  }
+}
