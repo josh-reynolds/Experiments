@@ -1191,3 +1191,10 @@ Step-by-step mapping of T:NE procedure and corresponding methods.
 
 Looks like Star Type/Size is a good place to start unpacking things.
 
+10/14/23
+
+Working through T:NE, looks mostly copy-pasted from MegaTraveller, very minor
+changes. Unfortunately they copied from pre-errata MT so it has the same
+omissions and typos. In most cases I am assuming the errata should apply 
+and using the 'fixed' MT methods.
+

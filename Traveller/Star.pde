@@ -226,6 +226,7 @@ class Star extends Orbit {
   // - the system by RAW cannot generate supergiants (Ia/Ib) or O/B stars, so could omit that data
   // - special case for M9 not handled yet - all other decimal values round to 0/5 for all spectral classes except M
   // The tables in MegaTraveller are identical, no need to update the data files for this ruleset (MTRM p. 27)
+  // Same is true for Traveller: New Era (T:NE p. 193)
   // TO_DO: MT errata p. 22 calls out some changes to the tables:
   //   Ib omitted as noted above, no need to change
   //   BxIII/BxIV/BxV: "remove entries from all three tables for star types B0 and B5."
@@ -537,4 +538,6 @@ class Star_TNE extends Star_MT{
     }
     return 9;
   }
+  
+  // T:NE repeats the MegaTraveller table that maps to orbitMaskedByCompanion (T:NE p. 192)
 }

@@ -202,7 +202,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     if (debug == 2){ println("**** UWPBuilder.generateSizeFor(Orbit) for " + this.getClass()); }  
     if (_o.isPlanetoid()){ return 0; }
 
-    // MegaTraveller follows the same modifiers (MTRM p. 28)
+    // MegaTraveller/T:NE follow the same modifiers (MTRM p. 28, T:NE p. 194)
     int modifier = 0;
     if (_o.getOrbitNumber() == 0  ){ modifier -= 5; }
     if (_o.getOrbitNumber() == 1  ){ modifier -= 4; }
@@ -218,7 +218,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
   int generateAtmoFor(Orbit _o, int _size){
     if (debug == 2){ println("**** UWPBuilder_ScoutsEx.generateAtmo() for " + _o.getClass()); }
     
-    // MegaTraveller follows the same procedure (MTRM p. 28)
+    // MegaTraveller/T:NE follow the same procedure (MTRM p. 28, T:NE p. 194)
     int modifier = 0;
     if (_o.isInnerZone()){ 
       if (_o.isMoon()){    // Scouts p.33 + p.37 - Moons are _almost_ identical for Atmo determination
@@ -360,6 +360,8 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
 
   // Atmo procedure is identical to Scouts (MTRM p. 28)
   
+  // T:NE duplicates this procedure, but note it carries RAW, not the errata version
+  //  I'm going to assume the errata should apply and not override for T:NE (p. 194)
   int generateHydroFor(Orbit _o, int _size, int _atmo){  
     if (debug == 2){ println("**** UWPBuilder_MT.generateHydro() for " + _o.getClass()); }
 
@@ -390,6 +392,7 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
   }
   
   // MT removes the atmospheric modifiers for population on Planets, and modifies those for Moons (MTRM p. 28, 29)
+  // T:NE follows the same procedure (T:NE p. 194), adds supplemental note that 'maximum population = Mainworld - 1'
   int generatePopFor(Orbit _o, int _size, int _atmo){
     if (debug == 2){ println("**** UWP_MT.generatePop() for " + this.getClass()); }
     

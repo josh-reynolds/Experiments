@@ -803,4 +803,23 @@ class OrbitBuilder_TNE extends OrbitBuilder_MT {
     if (distance >= 5000                    ){ return 17; }
     return 14; 
   }
+  
+  // T:NE follows the same procedure as MT/Scouts for calculateMaxOrbits() (T:NE p. 192)
+ 
+  // T:NE follows the same procedure as MT/Scouts for generateGasGiantCountFor() (T:NE p. 194) - typo in RAW, though, step is titled '21. Empty Orbits'
+  
+  // T:NE repeats the 'Planetoid Belt Quantity' table from MegaTraveller, but without the errata (T:NE p. 194)
+  // I'm going to assume the errata applies and use the fixed MT version of placePlanetoidBelts()
+
+  // Same story for 'Empty Orbits' - T:NE repeats MegaTraveller RAW, down to the typos - using the base class placeEmptyOrbits() (T:NE p. 194)
+  
+  // Again for 'Captured Planets' - T:NE uses MegaTraveller procedure (T:NE p. 194)
+  
+  // Again for 'Gas Giants' - T:NE uses MegaTraveller procedure (T:NE p. 194)
+  
+  // Again for 'Planetoid Belts' - T:NE uses MegaTraveller procedure (T:NE p. 194)
+  
+  // T:NE omits the 'assign mainworld' step and assumes a mainworld generated via the simple method (the 'Extension' procedure)
+  // this prevents system characteristics from having any influence on the world, so I am going to stick with the designateMainworld()
+  // approach already implemented for Scouts & MegaTraveller
 }
