@@ -516,6 +516,7 @@ class System_MT extends System_ScoutsEx {
   }
  
  // MegaTraveller changes the procedure for subordinate facilities slightly (MTRM p. 29)
+ // New Era follows the same procedure (T:NE p. 195)
  void generateFacilities(){
     if (navalBase){ mainworld.addFacility("Naval Base"); }
     if (scoutBase){ mainworld.addFacility("Scout Base"); }
@@ -544,6 +545,7 @@ class System_MT extends System_ScoutsEx {
   }
   
   // MTRM p. 29 - Military Base only for pop 8+ mainworlds now, no longer requirement for population on subordinate world
+  // New Era is the same (including the errata typo) (T:NE p. 195)
   void assessMilitaryBase(Habitable _h){
     if (!this.trade.poor && mainworld.getUWP().pop > 7){
       int modifier = 0;

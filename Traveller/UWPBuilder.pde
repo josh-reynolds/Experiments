@@ -146,7 +146,8 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
       size = _size;
     }
     if (size <= 0){ size = 0; }   // preserving from old ctor - need to review if this can actually come in as negative value
-    
+                                  // Yes. This is part of satellite generation - size 0 is a Ring, size negative is an 'S' world.
+                                  
     int atmo = generateAtmoFor(_o, size);
     int hydro = generateHydroFor(_o, size, atmo);
     int pop = generatePopFor(_o, size, atmo);
@@ -218,7 +219,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
   int generateAtmoFor(Orbit _o, int _size){
     if (debug == 2){ println("**** UWPBuilder_ScoutsEx.generateAtmo() for " + _o.getClass()); }
     
-    // MegaTraveller/T:NE follow the same procedure (MTRM p. 28, T:NE p. 194)
+    // MegaTraveller/T:NE follow the same procedure (MTRM p. 28, T:NE p. 194,195)
     int modifier = 0;
     if (_o.isInnerZone()){ 
       if (_o.isMoon()){    // Scouts p.33 + p.37 - Moons are _almost_ identical for Atmo determination
@@ -311,6 +312,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
   }
   
   // MegaTraveller follows the same procedure (MTRM p. 29)
+  // New Era follows the same procedure (T:NE p. 195)
   int generateSubordinateLaw(int _mainworldLaw, int _gov){
     //  * subordinate law = 1D-3 + mainworld law; = 0 if gov = 0
     if (_gov == 0          ){ return 0; }
@@ -318,6 +320,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
   }
   
   // MegaTraveller follows the same procedure (MTRM p. 29)
+  // New Era follows the same procedure (T:NE p. 195)
   char generateSubordinateStarport(int _pop){
     int modifier = 0;
     if (_pop >= 6){ modifier += 2; }
@@ -347,6 +350,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
     }    
   }
   
+  // T:NE follows the same procedure (T:NE p. 195)
   int generateSubordinateTech(int _mainworldTech){
     //  * subordinate tech level = mainworld tech - 1; = mainworld tech if research lab / military facility
     // this value is adjusted once subordinate facilities have been created
@@ -361,7 +365,7 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
   // Atmo procedure is identical to Scouts (MTRM p. 28)
   
   // T:NE duplicates this procedure, but note it carries RAW, not the errata version
-  //  I'm going to assume the errata should apply and not override for T:NE (p. 194)
+  //  I'm going to assume the errata should apply and not override for T:NE (p. 194,195)
   int generateHydroFor(Orbit _o, int _size, int _atmo){  
     if (debug == 2){ println("**** UWPBuilder_MT.generateHydro() for " + _o.getClass()); }
 
@@ -430,6 +434,7 @@ class UWPBuilder_MT extends UWPBuilder_ScoutsEx {
   }   
   
   // MT changes the procedure slightly from Scouts (MTRM p. 29)
+  // New Era uses the same procedure (T:NE p. 195)
   int generateSubordinateGov(int _mainworldGov, int _pop){
     if (_pop == 0         ){ return 0; }
     
