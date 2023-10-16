@@ -307,7 +307,7 @@ class Ruleset_TNE extends Ruleset {
   }
   
   TradeClass newTradeClass(UWP _uwp){ 
-    return new TradeClass_MT(_uwp); 
+    return new TradeClass_TNE(_uwp); 
   }
   
   OrbitBuilder newOrbitBuilder(){

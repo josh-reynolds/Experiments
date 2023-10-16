@@ -113,13 +113,29 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
     // but this still looks incorrect
     // since CT77 this has been atmo 0-2,4,7,9 (vacuum or tainted)
     // this looks like a typo to me, so leaving it same as previous rules
+    // same potential typo repeated in T:NE (p. 187)
     
     // Added in MegaTraveller:
-    if (_uwp.pop == 0 && _uwp.gov == 0 && _uwp.law == 0){ barren = true; }
+    if (isBarren(_uwp)){ barren = true; }
     if (_uwp.atmo >= 10 && _uwp.atmo <= 12 && _uwp.hydro >= 1){ fluid = true; }   // MegaTraveller errata p. 21: RAW is size A+ && atmo 1+. Corrected to atmo A-C && hydro 1+
     if (_uwp.pop >= 9){ highpop = true; }
-    if (_uwp.pop >= 1 && _uwp.pop <= 3){ lowpop = true; }                         // MegaTraveller errata p. 25: RAW is pop 3-. Corrected to pop 1-3 (i.e. not Barren worlds)
+    if (isLowPop(_uwp)){ lowpop = true; }                         // MegaTraveller errata p. 25: RAW is pop 3-. Corrected to pop 1-3 (i.e. not Barren worlds)
     if (asteroid){ vacuum = false; }  // MTRM p.25 Step 12 notes: "However, an Asteroid Belt (As) is automatically a Vacuum World, and need not have the Va code." 
+  }
+
+  Boolean isBarren(UWP _uwp){
+    UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
+
+    return (uwp.pop == 0 && 
+            uwp.gov == 0 && 
+            uwp.law == 0);
+  }
+
+  Boolean isLowPop(UWP _uwp){
+    UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
+
+    return (uwp.pop >= 1 && 
+            uwp.pop <= 3);
   }
 
   // MegaTraveller adds atmo 0 & hydro 0 to conditions - this is redundant, since
@@ -146,4 +162,34 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
     if (lowpop)       { output += "Lo "; }
     return output;
   }
+}
+
+class TradeClass_TNE extends TradeClass_MT {
+  TradeClass_TNE(UWP _uwp){ super(_uwp); }
+    
+  // TO_DO: TN:E adds a note: 'For Barren world, population multiplier must be 0. For Non-industrial, population multiplier must be 1+' (T:NE p. 187)
+  //  Slightly tricky, as TradeClass doesn't have any backreference to System, where the population multiplier lives... pass it in?
+  //  This traces back through ctors, Ruleset, and ultimately back to the System ctor
+  Boolean isBarren(UWP _uwp){
+    UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
+
+    return (uwp.pop == 0 && 
+            uwp.gov == 0 && 
+            uwp.law == 0);   
+   }
+   
+   // New Era changes this to pop 4-, but neglects to screen out Barren (pop 0)
+   // given the notes under isBarren above, may want to have a similar rule here, but it's not RAW
+   // going with inferred change based on MT errata, and leaving pop 0 out of it...
+   Boolean isLowPop(UWP _uwp){
+    UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
+
+    return (uwp.pop >= 1 && 
+            uwp.pop <= 4);
+  }
+  
+  // TO:DO: see notes above for isBarren
+  Boolean isNonindustrial(UWP _uwp){ return _uwp.pop <= 6; }
+  
+  // T:NE leaves out the MT errata concerning Poor worlds
 }
