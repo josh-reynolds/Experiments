@@ -50,7 +50,7 @@ class System {
   }
   
   TradeClass generateTradeClass(UWP _uwp){
-    return ruleset.newTradeClass(_uwp);
+    return ruleset.newTradeClass(_uwp, this);
   }
 
   UWP generateUWP(JSONObject _json){

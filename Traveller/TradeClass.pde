@@ -165,31 +165,41 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
 }
 
 class TradeClass_TNE extends TradeClass_MT {
-  TradeClass_TNE(UWP _uwp){ super(_uwp); }
+  System_MT system;
+  TradeClass_TNE(UWP _uwp, System _system){ 
+    super(_uwp);
+    system = (System_MT)_system;
+  }
     
-  // TO_DO: TN:E adds a note: 'For Barren world, population multiplier must be 0. For Non-industrial, population multiplier must be 1+' (T:NE p. 187)
-  //  Slightly tricky, as TradeClass doesn't have any backreference to System, where the population multiplier lives... pass it in?
-  //  This traces back through ctors, Ruleset, and ultimately back to the System ctor
+  // TN:E adds a note: 'For Barren world, population multiplier must be 0. For Non-industrial, population multiplier must be 1+' (T:NE p. 187)
   Boolean isBarren(UWP _uwp){
     UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
 
     return (uwp.pop == 0 && 
             uwp.gov == 0 && 
-            uwp.law == 0);   
+            uwp.law == 0 &&
+            system.populationMultiplier == 0);   
    }
    
-   // New Era changes this to pop 4-, but neglects to screen out Barren (pop 0)
-   // given the notes under isBarren above, may want to have a similar rule here, but it's not RAW
-   // going with inferred change based on MT errata, and leaving pop 0 out of it...
+   // New Era changes this to pop 4-, but neglects to screen out Barren (pop 0) (T:NE p. 187)
+   //  I am adding a clause to check for population multiplier, as with isBarren()/isNonindustrial
+   //  not RAW, but makes sense to me
    Boolean isLowPop(UWP _uwp){
     UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
 
-    return (uwp.pop >= 1 && 
-            uwp.pop <= 4);
+    return ((uwp.pop >= 1 && uwp.pop <= 4) ||
+            (uwp.pop == 0 && system.populationMultiplier > 0));
   }
   
-  // TO:DO: see notes above for isBarren
-  Boolean isNonindustrial(UWP _uwp){ return _uwp.pop <= 6; }
+  // BUG BUG: populationMultiplier isn't set until after TradeClass is generated, causing a null pointer exception
+  //  need to adjust the ordering here...
+  
+  // TN:E adds a note: 'For Barren world, population multiplier must be 0. For Non-industrial, population multiplier must be 1+' (T:NE p. 187)
+  Boolean isNonindustrial(UWP _uwp){ 
+    UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
+    return ((uwp.pop >= 1 && uwp.pop <= 6) ||
+            (uwp.pop == 0 && system.populationMultiplier > 0)); 
+  }
   
   // T:NE leaves out the MT errata concerning Poor worlds
 }

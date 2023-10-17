@@ -39,7 +39,7 @@ abstract class Ruleset {
   abstract UWPBuilder newUWPBuilder();
   abstract Star newStar(System _parent); // primary stars
   abstract Star newStar(Orbit _barycenter, int _orbit, String _zone, System _parent); // companion stars
-  abstract TradeClass newTradeClass(UWP _uwp);
+  abstract TradeClass newTradeClass(UWP _uwp, System _system);
 }
 
 class Ruleset_CT77 extends Ruleset {
@@ -70,7 +70,7 @@ class Ruleset_CT77 extends Ruleset {
     return new UWPBuilder(); 
   }
   
-  TradeClass newTradeClass(UWP _uwp){ 
+  TradeClass newTradeClass(UWP _uwp, System _system){ 
     return new TradeClass(_uwp); 
   }
   
@@ -130,7 +130,7 @@ class Ruleset_CT81 extends Ruleset {
     return new UWPBuilder_CT81(); 
   }
   
-  TradeClass newTradeClass(UWP _uwp){ 
+  TradeClass newTradeClass(UWP _uwp, System _system){ 
     return new TradeClass_CT81(_uwp); 
   }
   
@@ -190,7 +190,7 @@ class Ruleset_ScoutsEx extends Ruleset {
     return new UWPBuilder_ScoutsEx(); 
   }
   
-  TradeClass newTradeClass(UWP _uwp){ 
+  TradeClass newTradeClass(UWP _uwp, System _system){ 
     return new TradeClass_ScoutsEx(_uwp); 
   }
   
@@ -247,7 +247,7 @@ class Ruleset_MT extends Ruleset {
     return new UWPBuilder_MT(); 
   }
   
-  TradeClass newTradeClass(UWP _uwp){ 
+  TradeClass newTradeClass(UWP _uwp, System _system){ 
     return new TradeClass_MT(_uwp); 
   }
   
@@ -306,8 +306,8 @@ class Ruleset_TNE extends Ruleset {
     return new UWPBuilder_MT(); 
   }
   
-  TradeClass newTradeClass(UWP _uwp){ 
-    return new TradeClass_TNE(_uwp); 
+  TradeClass newTradeClass(UWP _uwp, System _system){ 
+    return new TradeClass_TNE(_uwp, _system); 
   }
   
   OrbitBuilder newOrbitBuilder(){

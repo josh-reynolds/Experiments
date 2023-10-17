@@ -156,6 +156,7 @@
 //  * DONE Include population multiplier in subsector summary totals
 //  * DONE REFACTOR: case statements in Ruleset
 //  * .... Add New Era generation ruleset
+//  *      Add Travel Zone Govt-Law matrix (from MT/T:NE)
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Flesh out tests (this will take a while...)
