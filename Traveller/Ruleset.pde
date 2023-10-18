@@ -321,7 +321,7 @@ class Ruleset_TNE extends Ruleset {
 
   // should be used for "UWP at orbit level" rulesets (i.e. Scouts Extended + MegaTraveller)
   UWP_ScoutsEx newUWP(Orbit _o, char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
-    return new UWP_MT(_o, _starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
+    return new UWP_TNE(_o, _starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
   }
   
   // primary stars

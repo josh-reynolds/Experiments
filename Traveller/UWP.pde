@@ -208,6 +208,8 @@ class UWP_MT extends UWP_ScoutsEx {
     if (pop > 3 && pop < 9){ result += "Mod Pop, "; }
     if (pop > 8           ){ result += "High Pop, "; }
     
+    result += govDescription();
+    
     if (law == 0           ){ result += "No Law, "; }
     if (law > 0 && law < 4 ){ result += "Low Law, "; }
     if (law > 3 && law < 8 ){ result += "Mod Law, "; }
@@ -222,5 +224,27 @@ class UWP_MT extends UWP_ScoutsEx {
     if (tech > 13               ){ result += "High Stellar"; }
     
     return result;
+  }
+  
+  String govDescription(){ return ""; }  // not present in MT, but adding for override in T:NE
+}
+
+class UWP_TNE extends UWP_MT {
+  UWP_TNE(){}  // need to define default ctor for subclasses
+  
+  UWP_TNE(Orbit _o, char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    super(_o, _starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
+  }
+  
+  // homeworldDescription additions in T:NE (pp. 17,18)
+  //   Gravity
+  //   Tainted atmospheres
+  //   Incidental population (0-2)
+  //   Gov codes
+  String govDescription(){ 
+    if (gov < 3             ){ return "Low Gov, "; }
+    if (gov > 2 && gov < 10 ){ return "Mod Gov, "; }
+    if (gov > 9 && gov < 13 ){ return "High Gov, "; }
+    return "Ext Gov, ";  // values 13+ 
   }
 }

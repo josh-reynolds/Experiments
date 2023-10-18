@@ -1198,3 +1198,42 @@ changes. Unfortunately they copied from pre-errata MT so it has the same
 omissions and typos. In most cases I am assuming the errata should apply 
 and using the 'fixed' MT methods.
 
+10/18/23
+
+Mostly complete with T:NE, very little change needed from MT as noted above.
+One tricky issue near the end: I'm implementing the small changes needed for
+Trade Classifications. They include population multiplier in the Barren and 
+Non-industrial codes (and by inference, I have also looped Low Pop into this
+scenario). That's the first time a Trade Class needs data from outside UWP.
+
+I had to plumb through a reference to system, as that's where the field lives.
+But one catch: the value isn't set until after the Trade Class methods are
+resolved, so we get a null pointer exception.
+
+This is mostly happening during ctor calls in System. Call path below.
+
+Ruleset_TNE.newSystem()
+  new System_MT(_coord, _occupied)
+    super(_coord, _occupied)            // Scouts_Ex ctor
+      super(_coord)                     // CT81 ctor
+        super(_coord)                   // CT77 ctor
+          coord = _coord
+          hex = new Polygon()
+          roll = new Dice()
+      name = xxx
+      routes = new ArrayList()
+      ruleset.newOrbitBuilder().newPrimary()
+      countGasGiants()
+      mainworld.getUWP()
+      generateNavalBase()
+      generateScoutBase()
+      generateTradeClass()              <==== exception here
+      generateTravelZone()
+      generateFacilities()
+    countPlanetoids()
+    populationMultiplier = xxx          <==== value generated here
+
+
+
+
+
