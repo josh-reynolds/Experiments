@@ -186,13 +186,7 @@ class UWP_MT extends UWP_ScoutsEx {
     if (size > 4 && size < 8){ result += "Medium Size, "; }
     if (size > 7            ){ result += "Large Size, "; }
     
-    // errata notes that "Asteroids should automatically have vacuum atmospheres"
-    // no need to handle in this method, UWP generation logic should take care of that
-    if (atmo < 4              ){ result += "Vacuum World, "; }
-    if (atmo == 4 || atmo == 5){ result += "Thin Atmosphere, "; }
-    if (atmo == 6 || atmo == 7){ result += "Standard Atmosphere, "; }
-    if (atmo == 8 || atmo == 9){ result += "Dense Atmosphere, "; }
-    if (atmo > 9              ){ result += "Exotic Atmosphere, "; }
+    result += atmoDescription();
     
     // from the examples on p. 11, it looks like Hydro should be 
     // omitted for Asteroids (or for Vacuum? but what about Ice-Capped Worlds?
@@ -204,10 +198,7 @@ class UWP_MT extends UWP_ScoutsEx {
       if (hydro == 10             ){ result += "Water World, "; }
     }
     
-    if (pop < 4           ){ result += "Low Pop, "; }
-    if (pop > 3 && pop < 9){ result += "Mod Pop, "; }
-    if (pop > 8           ){ result += "High Pop, "; }
-    
+    result += popDescription();
     result += govDescription();
     
     if (law == 0           ){ result += "No Law, "; }
@@ -226,6 +217,22 @@ class UWP_MT extends UWP_ScoutsEx {
     return result;
   }
   
+  // errata notes that "Asteroids should automatically have vacuum atmospheres"
+  // no need to handle in this method, UWP generation logic should take care of that
+  String atmoDescription(){
+    if (atmo < 4              ){ return "Vacuum World, "; }
+    if (atmo == 4 || atmo == 5){ return "Thin Atmosphere, "; }
+    if (atmo == 6 || atmo == 7){ return "Standard Atmosphere, "; }
+    if (atmo == 8 || atmo == 9){ return "Dense Atmosphere, "; }
+    return "Exotic Atmosphere, "; // values 10+
+  }
+  
+  String popDescription(){
+    if (pop < 4           ){ return "Low Pop, "; }
+    if (pop > 3 && pop < 9){ return "Mod Pop, "; }
+    return "High Pop, "; // values 9+
+  }
+  
   String govDescription(){ return ""; }  // not present in MT, but adding for override in T:NE
 }
 
@@ -236,11 +243,34 @@ class UWP_TNE extends UWP_MT {
     super(_o, _starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
   }
   
-  // homeworldDescription additions in T:NE (pp. 17,18)
-  //   Gravity
-  //   Tainted atmospheres
-  //   Incidental population (0-2)
-  //   Gov codes
+
+  // TO_DO: T:NE includes gravity in homeworld description, need to feed that data back (pp. 17,18)
+
+  // T:NE adds notation for tainted atmospheres (p. 18)
+  String atmoDescription(){
+    if (atmo < 2 || atmo == 3 ){ return "Vacuum World, "; }
+    if (atmo == 2             ){ return "Vacuum (Tainted) World,"; }
+    
+    if (atmo == 4             ){ return "Thin (Tainted) Atmosphere, "; }
+    if (atmo == 5             ){ return "Thin Atmosphere, "; }    
+    
+    if (atmo == 6             ){ return "Standard Atmosphere, "; }
+    if (atmo == 7             ){ return "Standard (Tainted) Atmosphere, "; }    
+    
+    if (atmo == 8             ){ return "Dense Atmosphere, "; }
+    if (atmo == 9             ){ return "Dense (Tainted) Atmosphere, "; }
+        
+    return "Exotic Atmosphere, "; // values 10+
+  }
+
+  // T:NE adds an Incidental population description (p. 18)
+  String popDescription(){
+    if (pop < 3            ){ return "Inc Pop, "; }
+    if (pop > 2 && pop < 6 ){ return "Low Pop, "; }
+    if (pop > 5 && pop < 9 ){ return "Mod Pop, "; }
+    return "High Pop, "; // values 9+
+  }
+  // T:NE includes government in the homeworld description, missing from MT (p. 18)
   String govDescription(){ 
     if (gov < 3             ){ return "Low Gov, "; }
     if (gov > 2 && gov < 10 ){ return "Mod Gov, "; }
