@@ -256,6 +256,7 @@ class System_ScoutsEx extends System_CT81 {
   Habitable mainworld;
   int gasGiantCount;
   Boolean militaryBase = false;
+  int populationMultiplier;
 
   System_ScoutsEx(Coordinate _coord, Boolean _occupied){
     super(_coord);
@@ -270,8 +271,9 @@ class System_ScoutsEx extends System_CT81 {
       
       countGasGiants();     
       uwp = mainworld.getUWP();                 
-      navalBase = generateNavalBase();          // need to regenerate with the 'true' mainworld UWP - otherwise identical to CT77 
+      navalBase = generateNavalBase();          // need to generate with the 'true' mainworld UWP - otherwise identical to CT77 
       scoutBase = generateScoutBase();          
+      populationMultiplier = generatePopulationMultiplier();
       trade = generateTradeClass(uwp);
       travelZone = generateTravelZone();      
       generateFacilities();
@@ -305,6 +307,11 @@ class System_ScoutsEx extends System_CT81 {
       militaryBase = _json.getBoolean("Military Base");
     }
   }
+
+  // this value isn't used in Scouts - it was officially introduced in MegaTraveller
+  //  however it's useful to have here to smoothly mesh with ctor flow
+  //  (motivation is to prevent a null exception in generateTradeClass())
+  int generatePopulationMultiplier(){ return floor(random(1,10)); }
 
   void countGasGiants(){
     ArrayList gasGiants = primary.getAll(GasGiant.class);
@@ -487,13 +494,13 @@ class System_ScoutsEx extends System_CT81 {
 }
 
 class System_MT extends System_ScoutsEx {
-  int populationMultiplier;
+  //int populationMultiplier;
   int planetoidCount;
   
   System_MT(Coordinate _coord, Boolean _occupied){ 
     super(_coord, _occupied);
     if (occupied){ countPlanetoids(); }
-    populationMultiplier = floor(random(1,10));    // MTRM p. 25 - though note that RAW generates values from 0-9
+    //populationMultiplier = floor(random(1,10));    // MTRM p. 25 - though note that RAW generates values from 0-9
                                                    // since this is a multiplier, a 0 value would remove all population
                                                    // adjusting this to a 1-9 range                                                   
   } 

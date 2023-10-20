@@ -168,6 +168,9 @@ class TradeClass_TNE extends TradeClass_MT {
   System_MT system;
   TradeClass_TNE(UWP _uwp, System _system){ 
     super(_uwp);
+    
+    println("@@@ TradeClass_TNE ctor: " + _system);
+    
     system = (System_MT)_system;
   }
     
@@ -197,6 +200,9 @@ class TradeClass_TNE extends TradeClass_MT {
   // TN:E adds a note: 'For Barren world, population multiplier must be 0. For Non-industrial, population multiplier must be 1+' (T:NE p. 187)
   Boolean isNonindustrial(UWP _uwp){ 
     UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
+    
+    println("@@@ " + system);
+    
     return ((uwp.pop >= 1 && uwp.pop <= 6) ||
             (uwp.pop == 0 && system.populationMultiplier > 0)); 
   }

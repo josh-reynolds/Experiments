@@ -1234,6 +1234,42 @@ Ruleset_TNE.newSystem()
     populationMultiplier = xxx          <==== value generated here
 
 
+10/20/23
 
+I moved populationMultiplier up to System_ScoutsEx, though it isn't used
+there. The null pointer location has shifted now, though, need to trace 
+through.
 
+This feels like the mess that needed untangling in UWP & Orbit, so we
+may need to put together a Builder class for System as well. But first
+investigate.
+
+-----------
+Call stack:
+-----------
+...
+System.toString()
+System_MT.occupiedSystemString()
+System_MT.paddedTradeString()
+  String tradeString = trade.toString();  <=== null pointer exception
+
+---------------
+Console output:
+---------------
+New
+Determining companion count for Star_TNE G3V
+Determining empty orbits for Star_TNE G3V
+Determining forbidden orbits for Star_TNE G3V
+Placing Captured Planets for Star_TNE G3V
+Placing Gas Giants for Star_TNE G3V
+Generating Gas Giant count for Star_TNE G3V
+Placing Planetoid Belts for Star_TNE G3V
+Generating Planetoid Belts count for Star_TNE G3V
+Placing Planets for Star_TNE G3V
+Finding mainworld
+
+--------------
+System: Valois (0106)
+@@@ null                                  <=== added this to TradeClass_TNE.isNonindustrial()
+                                               null value is the _system parameter passed in
 
