@@ -49,9 +49,7 @@ class System {
     }
   }
   
-  TradeClass generateTradeClass(UWP _uwp){
-    return ruleset.newTradeClass(_uwp, this);
-  }
+  TradeClass generateTradeClass(UWP _uwp){ return ruleset.newTradeClass(_uwp, this); }
 
   UWP generateUWP(JSONObject _json){
     return new UWP(_json);
@@ -113,7 +111,7 @@ class System {
     return "EMPTY : " + coord.toString();
   }
   
-  String toString(){    
+  String toString(){
     if (occupied){
       return occupiedSystemString();
     } else {
@@ -148,9 +146,7 @@ class System {
 class System_CT81 extends System {
   String travelZone = "Green";
   
-  System_CT81(Coordinate _coord){
-    super(_coord);
-  }
+  System_CT81(Coordinate _coord){ super(_coord); }
   
   System_CT81(Coordinate _coord, Boolean _occupied){
     super(_coord, _occupied);
@@ -294,7 +290,7 @@ class System_ScoutsEx extends System_CT81 {
 
   System_ScoutsEx(JSONObject _json){
     super(_json);
-    
+        
     if (occupied){
       primary = new Star(this, _json.getJSONObject("Primary"));
       countGasGiants();
@@ -311,6 +307,9 @@ class System_ScoutsEx extends System_CT81 {
   // this value isn't used in Scouts - it was officially introduced in MegaTraveller
   //  however it's useful to have here to smoothly mesh with ctor flow
   //  (motivation is to prevent a null exception in generateTradeClass())
+  // MTRM p. 25 - though note that RAW generates values from 0-9
+  //   since this is a multiplier, a 0 value would remove all population
+  //   adjusting this to a 1-9 range
   int generatePopulationMultiplier(){ return floor(random(1,10)); }
 
   void countGasGiants(){
@@ -494,15 +493,12 @@ class System_ScoutsEx extends System_CT81 {
 }
 
 class System_MT extends System_ScoutsEx {
-  //int populationMultiplier;
   int planetoidCount;
   
   System_MT(Coordinate _coord, Boolean _occupied){ 
     super(_coord, _occupied);
-    if (occupied){ countPlanetoids(); }
-    //populationMultiplier = floor(random(1,10));    // MTRM p. 25 - though note that RAW generates values from 0-9
-                                                   // since this is a multiplier, a 0 value would remove all population
-                                                   // adjusting this to a 1-9 range                                                   
+
+    if (occupied){ countPlanetoids(); }  
   } 
  
   // initial implementation was including Rings in this count due to class hierarchy (a Ring is-a Planetoid)

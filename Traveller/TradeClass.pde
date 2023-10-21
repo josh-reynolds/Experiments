@@ -6,8 +6,12 @@ class TradeClass {
   Boolean nonindustrial = false;
   Boolean rich = false;
   Boolean poor = false;
+
+  System system;
   
-  TradeClass(UWP _uwp){
+  TradeClass(UWP _uwp, System _system){
+    system = _system;
+    
     if (_uwp.atmo  >= 4 && _uwp.atmo  <= 9 &&
         _uwp.hydro >= 4 && _uwp.hydro <= 8 &&
         _uwp.pop   >= 5 && _uwp.pop   <= 7){ agricultural = true; }
@@ -52,8 +56,8 @@ class TradeClass_CT81 extends TradeClass {
   Boolean asteroid = false;
   Boolean icecapped = false;
   
-  TradeClass_CT81(UWP _uwp){
-    super(_uwp);
+  TradeClass_CT81(UWP _uwp, System _system){
+    super(_uwp, _system);
     
     // agricultural/nonagricultural/industrial/nonindustrial/rich/poor identical to CT77
     
@@ -82,7 +86,7 @@ class TradeClass_CT81 extends TradeClass {
 
 // Scouts p. 32
 class TradeClass_ScoutsEx extends TradeClass_CT81 {
-  TradeClass_ScoutsEx(UWP _uwp){ super(_uwp); }
+  TradeClass_ScoutsEx(UWP _uwp, System _system){ super(_uwp, _system); }
 
   // agricultural/nonagricultural/industrial/nonindustrial/rich/poor identical to CT77
   // water/vacuum/icecapped identical to CT81
@@ -103,9 +107,9 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
   Boolean highpop = false;
   Boolean lowpop = false;
 
-  TradeClass_MT(UWP _uwp){
-    super(_uwp);
-    
+  TradeClass_MT(UWP _uwp, System _system){
+    super(_uwp, _system);
+
     // agricultural/ice-capped/non-agricultural/poor/rich/vacuum/water identical to CT81
     // desert identical to Scouts
 
@@ -165,14 +169,7 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
 }
 
 class TradeClass_TNE extends TradeClass_MT {
-  System_MT system;
-  TradeClass_TNE(UWP _uwp, System _system){ 
-    super(_uwp);
-    
-    println("@@@ TradeClass_TNE ctor: " + _system);
-    
-    system = (System_MT)_system;
-  }
+  TradeClass_TNE(UWP _uwp, System _system){ super(_uwp, _system); }
     
   // TN:E adds a note: 'For Barren world, population multiplier must be 0. For Non-industrial, population multiplier must be 1+' (T:NE p. 187)
   Boolean isBarren(UWP _uwp){
@@ -181,7 +178,7 @@ class TradeClass_TNE extends TradeClass_MT {
     return (uwp.pop == 0 && 
             uwp.gov == 0 && 
             uwp.law == 0 &&
-            system.populationMultiplier == 0);   
+            ((System_MT)system).populationMultiplier == 0);   
    }
    
    // New Era changes this to pop 4-, but neglects to screen out Barren (pop 0) (T:NE p. 187)
@@ -191,20 +188,15 @@ class TradeClass_TNE extends TradeClass_MT {
     UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
 
     return ((uwp.pop >= 1 && uwp.pop <= 4) ||
-            (uwp.pop == 0 && system.populationMultiplier > 0));
+            (uwp.pop == 0 && ((System_MT)system).populationMultiplier > 0));
   }
-  
-  // BUG BUG: populationMultiplier isn't set until after TradeClass is generated, causing a null pointer exception
-  //  need to adjust the ordering here...
   
   // TN:E adds a note: 'For Barren world, population multiplier must be 0. For Non-industrial, population multiplier must be 1+' (T:NE p. 187)
   Boolean isNonindustrial(UWP _uwp){ 
     UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
     
-    println("@@@ " + system);
-    
     return ((uwp.pop >= 1 && uwp.pop <= 6) ||
-            (uwp.pop == 0 && system.populationMultiplier > 0)); 
+            (uwp.pop == 0 && ((System_MT)system).populationMultiplier > 0)); 
   }
   
   // T:NE leaves out the MT errata concerning Poor worlds

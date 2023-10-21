@@ -71,7 +71,7 @@ class Ruleset_CT77 extends Ruleset {
   }
   
   TradeClass newTradeClass(UWP _uwp, System _system){ 
-    return new TradeClass(_uwp); 
+    return new TradeClass(_uwp, _system); 
   }
   
   OrbitBuilder newOrbitBuilder(){
@@ -131,7 +131,7 @@ class Ruleset_CT81 extends Ruleset {
   }
   
   TradeClass newTradeClass(UWP _uwp, System _system){ 
-    return new TradeClass_CT81(_uwp); 
+    return new TradeClass_CT81(_uwp, _system); 
   }
   
   OrbitBuilder newOrbitBuilder(){
@@ -191,7 +191,7 @@ class Ruleset_ScoutsEx extends Ruleset {
   }
   
   TradeClass newTradeClass(UWP _uwp, System _system){ 
-    return new TradeClass_ScoutsEx(_uwp); 
+    return new TradeClass_ScoutsEx(_uwp, _system); 
   }
   
   OrbitBuilder newOrbitBuilder(){
@@ -248,7 +248,7 @@ class Ruleset_MT extends Ruleset {
   }
   
   TradeClass newTradeClass(UWP _uwp, System _system){ 
-    return new TradeClass_MT(_uwp); 
+    return new TradeClass_MT(_uwp, _system); 
   }
   
   OrbitBuilder newOrbitBuilder(){
@@ -290,11 +290,11 @@ class Ruleset_TNE extends Ruleset {
   Boolean supportsDensity()    { return true; }
   Boolean supportsTraffic()    { return true; }
   
-  System newSystem(Coordinate _coord, Boolean _occupied){ 
+  System newSystem(Coordinate _coord, Boolean _occupied){
     return new System_MT(_coord, _occupied); 
   }
   
-  Subsector newSubsector(){ 
+  Subsector newSubsector(){
     return new Subsector_MT(); 
   }
   
@@ -306,7 +306,7 @@ class Ruleset_TNE extends Ruleset {
     return new UWPBuilder_MT(); 
   }
   
-  TradeClass newTradeClass(UWP _uwp, System _system){ 
+  TradeClass newTradeClass(UWP _uwp, System _system){
     return new TradeClass_TNE(_uwp, _system); 
   }
   

@@ -155,6 +155,7 @@
 //  * DONE Add MegaTraveller prose system descriptions
 //  * DONE Include population multiplier in subsector summary totals
 //  * DONE REFACTOR: case statements in Ruleset
+//  * FIX  BUG: null pointer exception during New Era stemming from popMult in Trade Classifications
 //  * .... Add New Era generation ruleset
 //  *      Add Travel Zone Govt-Law matrix (from MT/T:NE)
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)

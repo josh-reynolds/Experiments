@@ -1273,3 +1273,25 @@ System: Valois (0106)
 @@@ null                                  <=== added this to TradeClass_TNE.isNonindustrial()
                                                null value is the _system parameter passed in
 
+
+10/21/23
+
+Took a bit of debug spew to pin this down, but I think I have it. In TradeClass_TNE,
+we added a field to stash a backreference to the owning System. But this is set
+in the ctor after the super call (necessarily), and we're invoking isNonindustrial
+via the template in the base class ctor. The TradeClass_TNE.system field is still 
+null at this point, leading to the exception.
+
+More constructor shenanigans, though not in the class hierarchy I was expecting.
+Builder here too? Some other ideas:
+
+* move the System backreference all the way up to the base class
+* use a parameter instead of a field
+
+We can try out the first one, seems simple (even though this field is not 
+utilized by most of the hierarchy...). We already have it in the Ruleset parameters,
+just most classes are discarding that one. Might need some downcasting, since 
+we'll be passing this in as the base class System.
+
+This seems to be working OK, committing it.
+

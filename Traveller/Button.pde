@@ -68,6 +68,7 @@ class NewSubsector extends ButtonUtilities implements Command {
     b.highlight = false;
     loading = false;
     subs = createSubsector();
+    
     screen = new Display();
     screen.drawScreen();
     writeImage();
