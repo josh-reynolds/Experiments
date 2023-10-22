@@ -156,8 +156,8 @@
 //  * DONE Include population multiplier in subsector summary totals
 //  * DONE REFACTOR: case statements in Ruleset
 //  * FIX  BUG: null pointer exception during New Era stemming from popMult in Trade Classifications
-//  * .... Add New Era generation ruleset
-//  *      Add Travel Zone Govt-Law matrix (from MT/T:NE)
+//  * DONE Add New Era generation ruleset
+//  * DONE Add Travel Zone Govt-Law matrix (from MT/T:NE)
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Flesh out tests (this will take a while...)

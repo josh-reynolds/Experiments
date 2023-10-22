@@ -192,9 +192,6 @@ class System_CT81 extends System {
     // Haddad (X) - Capella/Solomani Rim - Green Zone
     // Pollux (X) - Gemini/Solomani Rim - Green Zone    
 
-    // MegaTraveller introduces a table that imposes zones for extreme gov/law combinations
-
-    // I'll incorporate those here, though they're not strictly CT81 RAW
     // A couple other thoughts:
     //  - have a small random chance of Amber zone on any (non-Red) system
     //  - no fuel available seems like an Amber condition to me, add that
@@ -500,6 +497,28 @@ class System_MT extends System_ScoutsEx {
 
     if (occupied){ countPlanetoids(); }  
   } 
+
+  // MegaTraveller adds a 'Travel Zone matrix' that supplements referee fiat (MTRM p. 25)
+  // New Era uses the same table (T:NE p. 187)
+  String generateTravelZone(){
+    String result = super.generateTravelZone();
+    
+    if (result.equals("Red")){ return result; }
+    
+    if (uwp.gov == 13 && uwp.law > 19){ return "Red"; }
+    if (uwp.gov == 14 && uwp.law > 18){ return "Red"; }  
+    if (uwp.gov == 15 && uwp.law > 17){ return "Red"; }
+    
+    if (result.equals("Amber")){ return result; }
+    
+    if (uwp.gov == 10 && uwp.law > 19){ return "Amber"; }
+    if (uwp.gov == 11 && uwp.law > 18){ return "Amber"; }
+    if (uwp.gov == 12 && uwp.law > 17){ return "Amber"; }
+    if ((uwp.gov == 13 || uwp.gov == 14) && uwp.law > 16){ return "Amber"; }
+    if (uwp.gov == 15 && uwp.law > 15){ return "Amber"; }
+
+    return "Green";
+  }
  
   // initial implementation was including Rings in this count due to class hierarchy (a Ring is-a Planetoid)
   //  that seems off - haven't found a canonical example to prove it,
