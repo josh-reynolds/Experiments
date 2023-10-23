@@ -158,6 +158,7 @@
 //  * FIX  BUG: null pointer exception during New Era stemming from popMult in Trade Classifications
 //  * DONE Add New Era generation ruleset
 //  * DONE Add Travel Zone Govt-Law matrix (from MT/T:NE)
+//  * .... Add T4 generation ruleset
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Flesh out tests (this will take a while...)
@@ -165,7 +166,6 @@
 //  *      Non-human worlds and trade classifications (from MT)?
 //  *      Add World Builder's Handbook ruleset (MT)
 //  *      Add World Tamer's Handbook ruleset (TNE)
-//  *      Add T4 generation ruleset
 //  *      Add T4 Pocket Empires ruleset
 //  *      Add T5 generation ruleset
 //  *      Add MongTrav generation ruleset
