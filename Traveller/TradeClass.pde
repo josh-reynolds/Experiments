@@ -70,7 +70,7 @@ class TradeClass_CT81 extends TradeClass {
         _uwp.hydro >= 1     ){ icecapped = true; }
   }
   
-  Boolean isDesert(UWP _uwp  ){ return _uwp.hydro == 0; }
+  Boolean isDesert(UWP _uwp  ){ return _uwp.hydro == 0; }  
   Boolean isAsteroid(UWP _uwp){ return _uwp.size == 0; }
   
   String toString(){
@@ -84,6 +84,28 @@ class TradeClass_CT81 extends TradeClass {
   }
 }
 
+// T4 is almost identical to CT81, with minor exceptions (T4 p. 132, 135)
+class TradeClass_T4 extends TradeClass_CT81 {
+  Boolean highpop = false;
+  Boolean barren = false;
+  
+  TradeClass_T4(UWP _uwp, System _system){
+    super(_uwp, _system);
+
+    if (_uwp.pop >= 9 ){ highpop = true; } // text (p. 132) sets this to 10+, but table on p. 135 shows 9+ as in MegaTraveller - using this version
+    if (_uwp.pop == 0 ){ barren = true; }  // only dependent on pop score, not gov/law as in MegaTraveller (T4 p. 132)
+  }
+  
+  Boolean isDesert(UWP _uwp  ){ return (_uwp.hydro == 0 && _uwp.atmo >= 2); } // identical to Scouts version
+  
+  String toString(){
+    String output = super.toString();
+    if (highpop) { output += "Hi "; }
+    if (barren)  { output += "Ba "; }
+    return output;
+  }
+}
+
 // Scouts p. 32
 class TradeClass_ScoutsEx extends TradeClass_CT81 {
   TradeClass_ScoutsEx(UWP _uwp, System _system){ super(_uwp, _system); }
@@ -91,7 +113,7 @@ class TradeClass_ScoutsEx extends TradeClass_CT81 {
   // agricultural/nonagricultural/industrial/nonindustrial/rich/poor identical to CT77
   // water/vacuum/icecapped identical to CT81
 
-Boolean isDesert(UWP _uwp){ return (_uwp.hydro == 0 && _uwp.atmo >= 2); }
+  Boolean isDesert(UWP _uwp){ return (_uwp.hydro == 0 && _uwp.atmo >= 2); }
   
   Boolean isAsteroid(UWP _uwp){ 
     UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;

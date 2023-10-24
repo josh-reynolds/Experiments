@@ -355,15 +355,15 @@ class Ruleset_T4 extends Ruleset {
   }
   
   System newSystem(JSONObject _json){ 
-    return new System_CT81(_json);       // TO_DO: need to implement JSON support for MT ruleset 
+    return new System_CT81(_json);  
   }
   
   UWPBuilder newUWPBuilder(){ 
-    return new UWPBuilder(); 
+    return new UWPBuilder_CT81(); 
   }
   
   TradeClass newTradeClass(UWP _uwp, System _system){
-    return new TradeClass_CT81(_uwp, _system); 
+    return new TradeClass_T4(_uwp, _system); 
   }
   
   OrbitBuilder newOrbitBuilder(){

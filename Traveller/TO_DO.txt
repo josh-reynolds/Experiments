@@ -158,7 +158,7 @@
 //  * FIX  BUG: null pointer exception during New Era stemming from popMult in Trade Classifications
 //  * DONE Add New Era generation ruleset
 //  * DONE Add Travel Zone Govt-Law matrix (from MT/T:NE)
-//  * .... Add T4 generation ruleset
+//  * DONE Add T4 generation ruleset
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Flesh out tests (this will take a while...)

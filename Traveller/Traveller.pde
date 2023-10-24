@@ -1,4 +1,4 @@
-    // Traveller subsector generator
+// Traveller subsector generator
 // ------------------------------------------------
 import java.util.Map;
 import java.util.LinkedHashMap;

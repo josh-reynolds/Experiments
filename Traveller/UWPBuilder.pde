@@ -105,6 +105,7 @@ class UWPBuilder {
   }  
 }
 
+// T4 follows the CT81 procedure, including the version of generateHydro() below (T4 pp. 129-135)
 class UWPBuilder_CT81 extends UWPBuilder {
   UWPBuilder_CT81(){ }
   // starport identical to CT77
