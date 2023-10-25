@@ -159,6 +159,7 @@
 //  * DONE Add New Era generation ruleset
 //  * DONE Add Travel Zone Govt-Law matrix (from MT/T:NE)
 //  * DONE Add T4 generation ruleset
+//  * .... Add T5 generation ruleset
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Flesh out tests (this will take a while...)
@@ -167,7 +168,6 @@
 //  *      Add World Builder's Handbook ruleset (MT)
 //  *      Add World Tamer's Handbook ruleset (TNE)
 //  *      Add T4 Pocket Empires ruleset
-//  *      Add T5 generation ruleset
 //  *      Add MongTrav generation ruleset
 //  *      Add MongTrav Deep Space Exploration ruleset
 //  *      Add T20 generation ruleset

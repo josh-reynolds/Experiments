@@ -333,9 +333,67 @@ class Ruleset_TNE extends Ruleset {
   }
 }
 
-// initial Traveller 4 setup - looks most similar to CT81
+// Traveller 4 - looks most similar to CT81
 class Ruleset_T4 extends Ruleset {
   Ruleset_T4(){ name = "Traveller 4"; }
+  
+  Ruleset next(){
+    return new Ruleset_T5();
+  }
+  
+  Boolean supportsTravelZones(){ return true; }
+  Boolean supportsStars()      { return false; }
+  Boolean supportsDensity()    { return false; }
+  Boolean supportsTraffic()    { return false; }
+  
+  System newSystem(Coordinate _coord, Boolean _occupied){
+    return new System_CT81(_coord, _occupied); 
+  }
+  
+  Subsector newSubsector(){
+    return new Subsector(); 
+  }
+  
+  System newSystem(JSONObject _json){ 
+    return new System_CT81(_json);  
+  }
+  
+  UWPBuilder newUWPBuilder(){ 
+    return new UWPBuilder_CT81(); 
+  }
+  
+  TradeClass newTradeClass(UWP _uwp, System _system){
+    return new TradeClass_T4(_uwp, _system); 
+  }
+  
+  OrbitBuilder newOrbitBuilder(){
+    return new OrbitBuilder();
+  }
+  
+  // should be used for "UWP at system level" rulesets (i.e. CT77 + CT81 + T4)
+  UWP newUWP(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    return new UWP(_starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);   // throw an exception?
+  }
+
+  // should be used for "UWP at orbit level" rulesets (i.e. Scouts Extended + MegaTraveller)
+  UWP_ScoutsEx newUWP(Orbit _o, char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
+    return new UWP_MT(_o, _starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
+  }
+  
+  // primary stars
+  Star newStar(System _parent){
+    return new Star(_parent);
+  }
+  
+  // companion stars
+  Star newStar(Orbit _barycenter, int _orbit, String _zone, System _parent){
+    return new Star(_barycenter, _orbit, _zone, _parent);
+  }
+}
+
+// Traveller 5 framework - need to build up classes, just copying from T4 to get started
+class Ruleset_T5 extends Ruleset {
+  Ruleset_T5(){ name = "Traveller 5"; }
   
   Ruleset next(){
     return new Ruleset_CT77();
