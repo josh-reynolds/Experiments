@@ -401,7 +401,7 @@ class Ruleset_T5 extends Ruleset {
   
   Boolean supportsTravelZones(){ return true; }
   Boolean supportsStars()      { return false; }
-  Boolean supportsDensity()    { return false; }
+  Boolean supportsDensity()    { return true; }
   Boolean supportsTraffic()    { return false; }
   
   System newSystem(Coordinate _coord, Boolean _occupied){

@@ -19,3 +19,14 @@ class SubsectorDensity {
     value = values[current];
   }
 }
+
+// Traveller 5 extends the range of values and modifies others (T5 p. 421)
+class SubsectorDensity_T5 extends SubsectorDensity {
+  float[] values  = { 0.01,             0.03,   0.17,     0.33,        0.5,        0.66,    0.83,      0.91  };
+  String[] labels = { "Extra-Galactic", "Rift", "Sparse", "Scattered", "Standard", "Dense", "Cluster", "Core"};
+  
+  SubsectorDensity_T5(){
+    current = 4;   // "Standard" i.e. 50% chance
+    value = values[current];
+  }
+}
