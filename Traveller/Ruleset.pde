@@ -30,8 +30,9 @@ abstract class Ruleset {
   abstract Boolean supportsDensity();
   abstract Boolean supportsTraffic();
   
-  abstract System newSystem(Coordinate _coord, Boolean _occupied);
   abstract Subsector newSubsector();
+  abstract SubsectorDensity newSubsectorDensity();
+  abstract System newSystem(Coordinate _coord, Boolean _occupied);
   abstract System newSystem(JSONObject _json);
   abstract OrbitBuilder newOrbitBuilder();
   abstract UWP newUWP(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech); // "UWP at system level" rulesets
@@ -60,6 +61,10 @@ class Ruleset_CT77 extends Ruleset {
   
   Subsector newSubsector(){ 
     return new Subsector(); 
+  }
+  
+  SubsectorDensity newSubsectorDensity(){
+    return new SubsectorDensity();
   }
   
   System newSystem(JSONObject _json){ 
@@ -121,6 +126,10 @@ class Ruleset_CT81 extends Ruleset {
   Subsector newSubsector(){ 
     return new Subsector(); 
   }
+
+  SubsectorDensity newSubsectorDensity(){
+    return new SubsectorDensity();
+  }
   
   System newSystem(JSONObject _json){ 
     return new System_CT81(_json); 
@@ -181,6 +190,10 @@ class Ruleset_ScoutsEx extends Ruleset {
   Subsector newSubsector(){ 
     return new Subsector(); 
   }
+
+  SubsectorDensity newSubsectorDensity(){
+    return new SubsectorDensity();
+  }
   
   System newSystem(JSONObject _json){ 
     return new System_ScoutsEx(_json); 
@@ -238,6 +251,10 @@ class Ruleset_MT extends Ruleset {
   Subsector newSubsector(){ 
     return new Subsector_MT(); 
   }
+
+  SubsectorDensity newSubsectorDensity(){
+    return new SubsectorDensity();
+  }  
   
   System newSystem(JSONObject _json){ 
     return new System_ScoutsEx(_json);       // TO_DO: need to implement JSON support for MT ruleset 
@@ -295,6 +312,10 @@ class Ruleset_TNE extends Ruleset {
   Subsector newSubsector(){
     return new Subsector_MT(); 
   }
+
+  SubsectorDensity newSubsectorDensity(){
+    return new SubsectorDensity();
+  }  
   
   System newSystem(JSONObject _json){ 
     return new System_ScoutsEx(_json);       // TO_DO: need to implement JSON support for MT ruleset 
@@ -353,6 +374,10 @@ class Ruleset_T4 extends Ruleset {
   Subsector newSubsector(){
     return new Subsector(); 
   }
+
+  SubsectorDensity newSubsectorDensity(){
+    return new SubsectorDensity();
+  }  
   
   System newSystem(JSONObject _json){ 
     return new System_CT81(_json);  
@@ -411,6 +436,10 @@ class Ruleset_T5 extends Ruleset {
   Subsector newSubsector(){
     return new Subsector(); 
   }
+
+  SubsectorDensity newSubsectorDensity(){
+    return new SubsectorDensity_T5();
+  }  
   
   System newSystem(JSONObject _json){ 
     return new System_CT81(_json);  

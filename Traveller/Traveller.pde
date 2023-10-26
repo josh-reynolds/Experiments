@@ -35,7 +35,7 @@ void setup(){
   lines = loadStrings(wordFile);
   scheme = new ColorScheme(loadJSONObject(".\\data\\DefaultColors.json"));
   ruleset = new Ruleset_CT77();
-  density = new SubsectorDensity();
+  density = ruleset.newSubsectorDensity();
   traffic = new SubsectorTraffic();
   tests = new TestSuite();  
   screen = new Menu();

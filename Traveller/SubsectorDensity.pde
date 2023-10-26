@@ -17,6 +17,11 @@ class SubsectorDensity {
     current++;
     current %= values.length;
     value = values[current];
+    
+    println("@@@ super.next() : " + current + " " + value);
+    printArray(values);
+    printArray(labels);
+    
   }
 }
 
@@ -26,7 +31,21 @@ class SubsectorDensity_T5 extends SubsectorDensity {
   String[] labels = { "Extra-Galactic", "Rift", "Sparse", "Scattered", "Standard", "Dense", "Cluster", "Core"};
   
   SubsectorDensity_T5(){
+    println("@@@ SubsectorDensity_T5 ctor()");
+    printArray(values);
+    printArray(labels);
     current = 4;   // "Standard" i.e. 50% chance
     value = values[current];
   }
+  
+  //void next(){
+  //  current++;
+  //  current %= values.length;
+  //  value = values[current];
+    
+  //  println("@@@ sub.next() : " + current + " " + value);
+  //  printArray(values);
+  //  printArray(labels);
+    
+  //}
 }
