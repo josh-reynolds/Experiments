@@ -31,7 +31,7 @@ abstract class Ruleset {
   abstract Boolean supportsTraffic();
   
   abstract Subsector newSubsector();
-  abstract SubsectorDensity newSubsectorDensity();
+  abstract Density newSubsectorDensity();
   abstract System newSystem(Coordinate _coord, Boolean _occupied);
   abstract System newSystem(JSONObject _json);
   abstract OrbitBuilder newOrbitBuilder();
@@ -63,7 +63,7 @@ class Ruleset_CT77 extends Ruleset {
     return new Subsector(); 
   }
   
-  SubsectorDensity newSubsectorDensity(){
+  Density newSubsectorDensity(){
     return new SubsectorDensity();
   }
   
@@ -127,7 +127,7 @@ class Ruleset_CT81 extends Ruleset {
     return new Subsector(); 
   }
 
-  SubsectorDensity newSubsectorDensity(){
+  Density newSubsectorDensity(){
     return new SubsectorDensity();
   }
   
@@ -191,7 +191,7 @@ class Ruleset_ScoutsEx extends Ruleset {
     return new Subsector(); 
   }
 
-  SubsectorDensity newSubsectorDensity(){
+  Density newSubsectorDensity(){
     return new SubsectorDensity();
   }
   
@@ -252,7 +252,7 @@ class Ruleset_MT extends Ruleset {
     return new Subsector_MT(); 
   }
 
-  SubsectorDensity newSubsectorDensity(){
+  Density newSubsectorDensity(){
     return new SubsectorDensity();
   }  
   
@@ -313,7 +313,7 @@ class Ruleset_TNE extends Ruleset {
     return new Subsector_MT(); 
   }
 
-  SubsectorDensity newSubsectorDensity(){
+  Density newSubsectorDensity(){
     return new SubsectorDensity();
   }  
   
@@ -375,7 +375,7 @@ class Ruleset_T4 extends Ruleset {
     return new Subsector(); 
   }
 
-  SubsectorDensity newSubsectorDensity(){
+  Density newSubsectorDensity(){
     return new SubsectorDensity();
   }  
   
@@ -437,7 +437,7 @@ class Ruleset_T5 extends Ruleset {
     return new Subsector(); 
   }
 
-  SubsectorDensity newSubsectorDensity(){
+  Density newSubsectorDensity(){
     return new SubsectorDensity_T5();
   }  
   

@@ -20,7 +20,7 @@ Screen screen;
 
 Ruleset ruleset;
 
-SubsectorDensity density;
+Density density;
 SubsectorTraffic traffic;
 
 Ship ship;
