@@ -21,7 +21,7 @@ class Subsector{
     for (int j = 1; j <= horzCount; j++){
       for (int i = 1; i <= vertCount; i++){      
         Coordinate coord = new Coordinate(j, i);
-        systems.put(coord, ruleset.newSystem(coord, random(1) < density.value));
+        systems.put(coord, ruleset.newSystem(coord, random(1) < density.getValue()));
       }
     }
     
@@ -171,8 +171,8 @@ class Subsector{
     json.setString("Subsector Name", name);
     json.setString("Summary", summary);
     json.setString("Ruleset", ruleset.name);
-    json.setString("Density", density.labels[density.current]);
-    json.setString("Traffic", traffic.labels[traffic.current]);
+    json.setString("Density", density.getLabel());
+    json.setString("Traffic", traffic.getLabel());
     json.setJSONArray("Systems", systemList);
     json.setJSONArray("Routes", routeList);
     

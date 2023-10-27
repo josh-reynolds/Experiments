@@ -23,6 +23,14 @@ class SubsectorDensity {
     printArray(labels);
     
   }
+  
+  String getLabel(){
+    return labels[current];
+  }
+  
+  float getValue(){
+    return values[current];
+  }
 }
 
 // Traveller 5 extends the range of values and modifies others (T5 p. 421)

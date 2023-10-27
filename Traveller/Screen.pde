@@ -36,11 +36,11 @@ class Menu extends Screen {
     
     fill(scheme.menuDescriptions);
 
-    String trafficDescription = "Traffic: " + traffic.labels[traffic.current];
+    String trafficDescription = "Traffic: " + traffic.getLabel();
     float trafficDescriptionWidth = textWidth(trafficDescription);
     text(trafficDescription, width - trafficDescriptionWidth - border, height - (2 * titleSize) - border);
     
-    String densityDescription = "Density: " + density.labels[density.current];
+    String densityDescription = "Density: " + density.getLabel();
     float densityDescriptionWidth = textWidth(densityDescription);
     text(densityDescription, width - densityDescriptionWidth - border, height - (3 * titleSize/2) - border);
     

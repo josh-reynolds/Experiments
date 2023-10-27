@@ -20,6 +20,10 @@ class SubsectorTraffic {
     current %= labels.length;
   }
   
+  String getLabel(){
+    return labels[current];
+  }  
+  
   char getStarport(int _dieThrow){
     return values[current][_dieThrow - 2];   // die throw range is 2-12, but arrays are 0-10
   }
