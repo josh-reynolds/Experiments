@@ -22,17 +22,17 @@ abstract class Density {
 // Traveller: New Era uses the same values (TNE p. 186 + 192)
 class SubsectorDensity extends Density {  
   SubsectorDensity(){
-    values  = new  float[]{ 0.04,   0.16,     0.33,        0.5,        0.66    };
-    labels  = new String[]{ "Rift", "Sparse", "Scattered", "Standard", "Dense" };
-    current = 3;   // "Standard" i.e. 50% chance
+    values  = new  float[]{ 0.5,        0.66,    0.04,   0.16,     0.33        };
+    labels  = new String[]{ "Standard", "Dense", "Rift", "Sparse", "Scattered" };
+    current = 0;   // "Standard" i.e. 50% chance
   }
 }
 
 // Traveller 5 extends the range of values and modifies others (T5 p. 421)
 class SubsectorDensity_T5 extends Density {
   SubsectorDensity_T5(){
-    values  = new  float[]{ 0.01,             0.03,   0.17,     0.33,        0.5,        0.66,    0.83,      0.91  };
-    labels  = new String[]{ "Extra-Galactic", "Rift", "Sparse", "Scattered", "Standard", "Dense", "Cluster", "Core"};
-    current = 4;   // "Standard" i.e. 50% chance
+    values  = new  float[]{ 0.5,        0.66,    0.83,      0.91,   0.01,             0.03,   0.17,     0.33        };
+    labels  = new String[]{ "Standard", "Dense", "Cluster", "Core", "Extra-Galactic", "Rift", "Sparse", "Scattered" };
+    current = 0;   // "Standard" i.e. 50% chance
   }
 }
