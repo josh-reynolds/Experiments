@@ -15,6 +15,10 @@ abstract class Density {
   float getValue(){
     return values[current];
   }
+  
+  int getMax(){
+    return values.length;
+  }
 }
 
 // data from Scouts p. 25
