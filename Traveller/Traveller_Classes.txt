@@ -1295,3 +1295,49 @@ we'll be passing this in as the base class System.
 
 This seems to be working OK, committing it.
 
+-----------------------------------
+
+10/29/23
+
+TNE is finished, or close enough. Will need to circle back on all of these to
+verify functionality, run a full test pass. I suspect JSON in particular hasn't
+received enough attention.
+
+Starting on Traveller 5 now. Base ruleset is in place, and first change needed
+was to SubsectorDensity. Needed some refactoring to fit in the new subclass,
+and preserve the desired menu button behavior.
+
+Another observation: T5 (as TNE before it) only includes a 'continuation' procedure
+(where the mainworld is generated first), not 'extended.' And it reorganizes the 
+steps to allow it to better progress in discrete stages - subsector, system, 
+mainworld, etc.
+
+So far, I've only been implementing 'extended' for the 'with orbits' rulesets,
+and even imposed this on TNE. Not sure whether to do the same for T5 or to 
+reverse this convention. Logical conclusion would be to add 'continuation' and 
+'basic' variants all the way back to Scouts...
+
+            / Scouts Basic        - MT Basic    - TNE Basic    - T4 - T5
+CT77 - CT81 - Scouts Continuation - MT Extended - TNE Extended -    - T5
+            \ Scouts Extended     - (my MT)     - (my TNE)
+
+The problem with 'continuation' is philosophical and aesthetic. Pragmatically,
+it reduces the burden on the Referee, who had to do this manually. But it
+means that important system details have no influence on the mainworld, and
+badly skews the 'realistic' distribution of characteristics (e.g. far too
+many habitable/garden worlds, even orbiting marginal primary stars).
+
+So, what is the goal with this app? Faithfully replicating RAW rulesets? Or 
+'fixing' the shortcomings of the same? I originally thought the first, though 
+I had an inkling once they are complete I would cobble together an 'ultimate'
+ruleset with my preferred variants.
+
+I'm going to see if I can make T5 fit into the framework I've already
+established (true 'Extended') but I'm considering going back and doing the
+rework at a later point. Let's see if we run into any issues with this approach - 
+TNE/MT were very straightforward to push in this direction, but T5 is a more
+complete overhaul of the Scouts procedure.
+
+
+
+

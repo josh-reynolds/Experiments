@@ -417,6 +417,7 @@ class Ruleset_T4 extends Ruleset {
 }
 
 // Traveller 5 framework - need to build up classes, just copying from T4 to get started
+// shifting to TNE as the basic framework as T5 includes full system/orbit generation
 class Ruleset_T5 extends Ruleset {
   Ruleset_T5(){ name = "Traveller 5"; }
   
@@ -425,16 +426,16 @@ class Ruleset_T5 extends Ruleset {
   }
   
   Boolean supportsTravelZones(){ return true; }
-  Boolean supportsStars()      { return false; }
+  Boolean supportsStars()      { return true; }
   Boolean supportsDensity()    { return true; }
-  Boolean supportsTraffic()    { return false; }
+  Boolean supportsTraffic()    { return false; }    // breaking with precedent, T5 does *not* have variable Starport presence (T5 p. 432)
   
   System newSystem(Coordinate _coord, Boolean _occupied){
-    return new System_CT81(_coord, _occupied); 
+    return new System_MT(_coord, _occupied); 
   }
   
   Subsector newSubsector(){
-    return new Subsector(); 
+    return new Subsector_MT(); 
   }
 
   Density newSubsectorDensity(){
@@ -442,19 +443,19 @@ class Ruleset_T5 extends Ruleset {
   }  
   
   System newSystem(JSONObject _json){ 
-    return new System_CT81(_json);  
+    return new System_ScoutsEx(_json);   // TO_DO: need to implement JSON support in MT and later  
   }
   
   UWPBuilder newUWPBuilder(){ 
-    return new UWPBuilder_CT81(); 
+    return new UWPBuilder_MT(); 
   }
   
   TradeClass newTradeClass(UWP _uwp, System _system){
-    return new TradeClass_T4(_uwp, _system); 
+    return new TradeClass_TNE(_uwp, _system); 
   }
   
   OrbitBuilder newOrbitBuilder(){
-    return new OrbitBuilder();
+    return new OrbitBuilder_TNE();
   }
   
   // should be used for "UWP at system level" rulesets (i.e. CT77 + CT81 + T4)
@@ -464,16 +465,16 @@ class Ruleset_T5 extends Ruleset {
 
   // should be used for "UWP at orbit level" rulesets (i.e. Scouts Extended + MegaTraveller)
   UWP_ScoutsEx newUWP(Orbit _o, char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
-    return new UWP_MT(_o, _starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
+    return new UWP_TNE(_o, _starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);
   }
   
   // primary stars
   Star newStar(System _parent){
-    return new Star(_parent);
+    return new Star_TNE(_parent);
   }
   
   // companion stars
   Star newStar(Orbit _barycenter, int _orbit, String _zone, System _parent){
-    return new Star(_barycenter, _orbit, _zone, _parent);
+    return new Star_TNE(_barycenter, _orbit, _zone, _parent);
   }
 }
