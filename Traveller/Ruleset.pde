@@ -418,6 +418,7 @@ class Ruleset_T4 extends Ruleset {
 
 // Traveller 5 framework - need to build up classes, just copying from T4 to get started
 // shifting to TNE as the basic framework as T5 includes full system/orbit generation
+// change of plans: we're going to pull together a 'continuation' method, so this will start with a basic 'without orbits' System
 class Ruleset_T5 extends Ruleset {
   Ruleset_T5(){ name = "Traveller 5"; }
   
@@ -426,16 +427,16 @@ class Ruleset_T5 extends Ruleset {
   }
   
   Boolean supportsTravelZones(){ return true; }
-  Boolean supportsStars()      { return true; }
+  Boolean supportsStars()      { return false; }    // TO_DO: will re-enable once the continuation method is working
   Boolean supportsDensity()    { return true; }
   Boolean supportsTraffic()    { return false; }    // breaking with precedent, T5 does *not* have variable Starport presence (T5 p. 432)
   
   System newSystem(Coordinate _coord, Boolean _occupied){
-    return new System_MT(_coord, _occupied); 
+    return new System_CT81(_coord, _occupied); 
   }
   
   Subsector newSubsector(){
-    return new Subsector_MT(); 
+    return new Subsector(); 
   }
 
   Density newSubsectorDensity(){
@@ -443,15 +444,15 @@ class Ruleset_T5 extends Ruleset {
   }  
   
   System newSystem(JSONObject _json){ 
-    return new System_ScoutsEx(_json);   // TO_DO: need to implement JSON support in MT and later  
+    return new System_CT81(_json);  
   }
   
   UWPBuilder newUWPBuilder(){ 
-    return new UWPBuilder_MT(); 
+    return new UWPBuilder_CT81(); 
   }
   
   TradeClass newTradeClass(UWP _uwp, System _system){
-    return new TradeClass_TNE(_uwp, _system); 
+    return new TradeClass_CT81(_uwp, _system); 
   }
   
   OrbitBuilder newOrbitBuilder(){

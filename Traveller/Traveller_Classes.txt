@@ -1338,7 +1338,6 @@ rework at a later point. Let's see if we run into any issues with this approach 
 TNE/MT were very straightforward to push in this direction, but T5 is a more
 complete overhaul of the Scouts procedure.
 
-
 10/30/23
 
 T5 procedure:
@@ -1395,3 +1394,48 @@ T5 procedure:
     Other world placement (pp. 429, 437)
 
 
+10/31/23
+
+Rethinking my earlier statement. One important difference between T5 and TNE/MT: 
+orbital data has no input into the UWP, so forcing this into an extended procedure
+is an awkward fit at best. We should figure out how to do this via continuation.
+
+Good news is that starts with 'basic,' so let's do that first.
+
+// ----------------
+// 'without orbits'
+// ----------------
+ruleset.newSubsector()
+  new Subsector()
+    ruleset.newSystem()
+      new System() / System_CT81()
+          new System()  // coord/hex/roll setup
+          ruleset.newUWPBuilder().newUWPFor()
+          generateNavalBase()
+          generateScoutBase()
+          generateTradeClass()
+          generateTravelZone()  // CT81
+
+// ----------------
+// 'with orbits'
+// ----------------
+ruleset.newSubsector()
+  new Subsector_MT()
+    super()
+      ruleset.newSystem()
+        new System_ScoutsEx() / System_MT()
+          new System()  // coord/hex/roll setup
+          newOrbitBuilder().newPrimary()
+          countGasGiants()
+          generateNavalBase()
+          generateScoutBase()
+          generatePopulationMultiplier()
+          generateTradeClass()
+          generateTravelZone()
+          generateFacilities()
+          countPlanetoids()    // MT
+
+
+This might lead to some reorganization of the class hierarchies. Also might
+want to shuffle some code around (esp. in Ruleset) to make adding new versions
+more straightforward/obvious.
