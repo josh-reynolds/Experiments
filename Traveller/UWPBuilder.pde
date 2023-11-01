@@ -130,6 +130,28 @@ class UWPBuilder_CT81 extends UWPBuilder {
   }
 }
 
+// T5 close to the CT81 procedure:
+//  it uses 'flux' (die - die) instead of 2d-7, but the output distribution is the same, so leaving that alone
+//  Starport - identical to CT81/CT77, generated via 'Standard' setting in SubsectorTraffic
+//  Size - allows for 'exploding' results beyond size 10 (reroll as 1D+9 if first roll is a 10)
+//  Atmo - capped at F (15), otherwise identical
+//  Hydro - text on p. 432 states size mod, but table on p. 433 states atmo mod - using latter
+//   also pushes Size 2 and below to Hydro 0
+//  Pop - allows for 'exploding' results beyond size 10 (reroll as 1D+9 if first roll is a 10)
+//  Gov - capped at F (15), and set to 0 if Pop 0
+//  Law - capped at J (18), and set to 0 if Pop 0
+//  Tech - mostly identical to CT81:
+//    Starport mod includes type F Starport which doesn't apply for mainworld
+//    Size mod identical
+//    Atmo mod identical
+//    Hydro mod identical
+//    Pop mod identical
+//    Gov mod identical
+class UWPBuilder_T5 extends UWPBuilder_CT81 {
+  UWPBuilder_T5(){ }
+  
+}
+
 class UWPBuilder_ScoutsEx extends UWPBuilder {
   UWPBuilder_ScoutsEx(){ super(); }
   

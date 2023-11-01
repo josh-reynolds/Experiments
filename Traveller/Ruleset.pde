@@ -448,7 +448,7 @@ class Ruleset_T5 extends Ruleset {
   }
   
   UWPBuilder newUWPBuilder(){ 
-    return new UWPBuilder_CT81(); 
+    return new UWPBuilder_T5(); 
   }
   
   TradeClass newTradeClass(UWP _uwp, System _system){

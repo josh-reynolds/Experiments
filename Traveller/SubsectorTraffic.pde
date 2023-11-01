@@ -5,6 +5,7 @@ class SubsectorTraffic {
   // MTRM p. 24 (Step 3)
   // Traveller: New Era uses the same distribution (TNE p. 186)
   // T4 uses the Standard distribution (as do CT77 + CT81)
+  // T5 also uses the Standard distribution (T5 p. 432)
   String[] labels = { "Backwater", "Standard", "Mature", "Cluster" };
   char[][] values = {{'A','A','B','B','C','C','C','D','E','E','X'},     // backwater
                      {'A','A','A','B','B','C','C','D','E','E','X'},     // standard

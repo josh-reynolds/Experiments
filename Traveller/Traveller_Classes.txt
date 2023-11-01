@@ -1411,6 +1411,16 @@ ruleset.newSubsector()
       new System() / System_CT81()
           new System()  // coord/hex/roll setup
           ruleset.newUWPBuilder().newUWPFor()
+            new UWPBuilder() / UWPBuilder_CT81() / UWPBuilder_T5()
+              generateStarport()
+                traffic.getStarport()
+              generateSize()
+              generateAtmo()
+              generateHydro()
+              generatePop()
+              generateGov()
+              generateLaw()
+              generateTech()
           generateNavalBase()
           generateScoutBase()
           generateTradeClass()
@@ -1435,7 +1445,7 @@ ruleset.newSubsector()
           generateFacilities()
           countPlanetoids()    // MT
 
-
 This might lead to some reorganization of the class hierarchies. Also might
 want to shuffle some code around (esp. in Ruleset) to make adding new versions
 more straightforward/obvious.
+
