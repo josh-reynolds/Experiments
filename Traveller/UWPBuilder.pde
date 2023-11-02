@@ -13,7 +13,7 @@ class UWPBuilder {
     int hydro     = generateHydro(size, atmo);
     int pop       = generatePop();
     int gov       = generateGov(pop);
-    int law       = generateLaw(gov);
+    int law       = generateLaw(gov, pop);
     int tech      = generateTech(starport, size, atmo, hydro, pop, gov); 
 
     _s.uwp = ruleset.newUWP(starport, size, atmo, hydro, pop, gov, law, tech);
@@ -49,7 +49,7 @@ class UWPBuilder {
     return result;
   }
 
-  int generateLaw(int _gov){
+  int generateLaw(int _gov, int _pop){    // pop not used until T5, adding here for the template interface
     int result = roll.two(_gov - 7);
     if (result < 0){ result = 0; }
     return result;
@@ -127,7 +127,7 @@ class UWPBuilder_CT81 extends UWPBuilder {
     if (_size == 0 || result < 0){ result = 0; }
     if (result > 10) { result = 10; }
     return result;
-  }
+  }  
 }
 
 // T5 close to the CT81 procedure:
@@ -149,7 +149,49 @@ class UWPBuilder_CT81 extends UWPBuilder {
 //    Gov mod identical
 class UWPBuilder_T5 extends UWPBuilder_CT81 {
   UWPBuilder_T5(){ }
+
+  int generateSize(){ 
+    int result = roll.two(-2);
+    if (result == 10){ result = roll.one(9); }
+    return result; 
+  }
   
+  int generateAtmo(int _size){
+    int result = roll.two(_size - 7);
+    if (_size == 0 || result < 0){ result = 0; }
+    if (result > 15){ result = 15; }
+    return result;
+  }  
+
+  int generateHydro(int _size, int _atmo){
+    int result    = roll.two(_atmo - 7);
+    if (_atmo <= 1 || _atmo >= 10){ result -= 4; }
+    if (_size < 2 || result < 0){ result = 0; }
+    if (result > 10) { result = 10; }
+    return result;
+  }  
+
+  int generatePop(){ 
+    int result = roll.two(-2);
+    if (result == 10){ result = roll.one(9); }
+    return result;  
+  }
+
+  int generateGov(int _pop){
+    if (_pop == 0){ return 0; }
+    int result = roll.two(_pop - 7);
+    if (result < 0){ result = 0; }
+    if (result > 15){ result = 15; }
+    return result;
+  }
+
+  int generateLaw(int _gov, int _pop){  
+    if (_pop == 0){ return 0; }
+    int result = roll.two(_gov - 7);
+    if (result < 0){ result = 0; }
+    if (result > 18){ result = 18; }
+    return result;
+  }
 }
 
 class UWPBuilder_ScoutsEx extends UWPBuilder {
@@ -187,7 +229,7 @@ class UWPBuilder_ScoutsEx extends UWPBuilder {
   void completeUWPFor(Habitable _h, UWP _uwp){ 
     if (_h.isMainworld()){                // for mainworld, gov/law/starport/tech identical to CT77
       _uwp.gov      = generateGov(_uwp.pop);
-      _uwp.law      = generateLaw(_uwp.gov);
+      _uwp.law      = generateLaw(_uwp.gov, _uwp.pop);
       _uwp.starport = generateStarport();
       _uwp.tech     = generateTech(_uwp.starport, _uwp.size, _uwp.atmo, _uwp.hydro, _uwp.pop, _uwp.gov);
     } else {

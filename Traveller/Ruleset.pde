@@ -452,7 +452,7 @@ class Ruleset_T5 extends Ruleset {
   }
   
   TradeClass newTradeClass(UWP _uwp, System _system){
-    return new TradeClass_CT81(_uwp, _system); 
+    return new TradeClass_T4(_uwp, _system); 
   }
   
   OrbitBuilder newOrbitBuilder(){
