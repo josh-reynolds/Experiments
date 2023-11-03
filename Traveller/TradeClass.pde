@@ -142,26 +142,31 @@ class TradeClass_MT extends TradeClass_ScoutsEx {
     // same potential typo repeated in T:NE (p. 187)
     
     // Added in MegaTraveller:
-    if (isBarren(_uwp)){ barren = true; }
-    if (_uwp.atmo >= 10 && _uwp.atmo <= 12 && _uwp.hydro >= 1){ fluid = true; }   // MegaTraveller errata p. 21: RAW is size A+ && atmo 1+. Corrected to atmo A-C && hydro 1+
+    barren = isBarren(_uwp);
+    fluid = isFluid(_uwp);
+    lowpop = isLowPop(_uwp);                         
+    
     if (_uwp.pop >= 9){ highpop = true; }
-    if (isLowPop(_uwp)){ lowpop = true; }                         // MegaTraveller errata p. 25: RAW is pop 3-. Corrected to pop 1-3 (i.e. not Barren worlds)
     if (asteroid){ vacuum = false; }  // MTRM p.25 Step 12 notes: "However, an Asteroid Belt (As) is automatically a Vacuum World, and need not have the Va code." 
   }
 
   Boolean isBarren(UWP _uwp){
-    UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
-
-    return (uwp.pop == 0 && 
-            uwp.gov == 0 && 
-            uwp.law == 0);
+    return (_uwp.pop == 0 && 
+            _uwp.gov == 0 && 
+            _uwp.law == 0);
   }
 
+  // from MegaTraveller errata p. 25: RAW is pop 3-. Corrected to pop 1-3 (i.e. not Barren worlds)
   Boolean isLowPop(UWP _uwp){
-    UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
+    return (_uwp.pop >= 1 && 
+            _uwp.pop <= 3);
+  }
 
-    return (uwp.pop >= 1 && 
-            uwp.pop <= 3);
+  // from MegaTraveller errata p. 21: RAW is size A+ && atmo 1+. Corrected to atmo A-C && hydro 1+
+  Boolean isFluid(UWP _uwp){
+    return (_uwp.atmo >= 10 && 
+            _uwp.atmo <= 12 && 
+            _uwp.hydro >= 1);
   }
 
   // MegaTraveller adds atmo 0 & hydro 0 to conditions - this is redundant, since
@@ -218,8 +223,94 @@ class TradeClass_TNE extends TradeClass_MT {
     UWP_ScoutsEx uwp = (UWP_ScoutsEx)_uwp;
     
     return ((uwp.pop >= 1 && uwp.pop <= 6) ||
-            (uwp.pop == 0 && ((System_MT)system).populationMultiplier > 0)); 
+            (uwp.pop == 0 && ((System_MT)system).populationMultiplier > 0));
   }
   
   // T:NE leaves out the MT errata concerning Poor worlds
+}
+
+// Trade Classes from T5 p. 434
+class TradeClass_T5 extends TradeClass_T4 {
+  Boolean garden = false;
+  
+  // hellworld
+  // ice-capped
+  // ocean world
+  // vacuum
+  // water world
+  // dieback
+  // barren
+  // low pop
+  // non-industrial
+  // pre-high
+  // high pop
+  // pre-agricultural
+  // agricultural
+  // non-agricultural
+  // pre-industrial
+  // industrial
+  // poor
+  // pre-rich
+  // rich
+  // frozen
+  // hot
+  // cold
+  // locked
+  // tropic
+  // tundra
+  // twilight zone
+  // farming
+  // mining
+  // military rule
+  // prison/exile camp
+  // penal colony
+  // reserve
+  // subsector capital
+  // sector capital
+  // capital
+  // colony
+  // satellite
+  // forbidden
+  // puzzle
+  // dangerous
+  // data repository
+  // ancient site
+  
+  TradeClass_T5(UWP _uwp, System _system){
+    super(_uwp, _system);
+    
+    garden = isGarden(_uwp);
+  }
+
+  // T5 adds atmo/hydro 0, just like MT (p. 434), but not the isPlanet critereon
+  //  as noted above this is redundant since size 0 worlds must have 
+  //  atmo/hydro 0 by these rules (p. 433)
+  Boolean isAsteroid(UWP _uwp){ 
+    return (_uwp.size == 0 &&  
+            _uwp.atmo == 0 &&
+            _uwp.hydro == 0); 
+  }  
+
+  // T5 caps desert at atmo 9
+  Boolean isDesert(UWP _uwp){ 
+    return (_uwp.hydro == 0 && 
+            _uwp.atmo >= 2 &&
+            _uwp.atmo <= 9); 
+  }
+
+  // same definition as MT, but we aren't inheriting from here - refactoring opportunity
+  Boolean isFluid(UWP _uwp){
+    return (_uwp.atmo >= 10 && 
+            _uwp.atmo <= 12 && 
+            _uwp.hydro >= 1);
+  }
+
+  // garden world
+  Boolean isGarden(UWP _uwp){
+    return (_uwp.size  >= 6 && _uwp.size  <= 8 &&
+            (_uwp.atmo == 5 || _uwp.atmo  == 6 || _uwp.atmo == 8) &&
+            _uwp.hydro >= 5 && _uwp.hydro <= 7);
+  }
+  
+  
 }

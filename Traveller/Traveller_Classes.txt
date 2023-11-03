@@ -1449,3 +1449,96 @@ This might lead to some reorganization of the class hierarchies. Also might
 want to shuffle some code around (esp. in Ruleset) to make adding new versions
 more straightforward/obvious.
 
+
+11/3/23
+
+Adding Trade Classifications from T5 - the list on p. 434 is very extensive. 
+This may also be an opportunity to shuffle code around in this hierarchy.
+
+CT77
+  agricultural
+  nonagricultural
+  industrial
+  nonindustrial
+  rich
+  poor
+
+CT81 extends CT77
+  water
+  desert
+  vacuum
+  asteroid
+  icecapped
+
+T4 extends CT81
+  highpop
+  barren
+  desert (override)
+
+T5 extends T4
+  asteroid (override)
+  desert (override)
+  fluid
+  garden world
+
+
+  hellworld
+  ice-capped
+  ocean world
+  vacuum
+  water world
+  dieback
+  barren
+  low pop
+  non-industrial
+  pre-high
+  high pop
+  pre-agricultural
+  agricultural
+  non-agricultural
+  pre-industrial
+  industrial
+  poor
+  pre-rich
+  rich
+  frozen
+  hot
+  cold
+  locked
+  tropic
+  tundra
+  twilight zone
+  farming
+  mining
+  military rule
+  prison/exile camp
+  penal colony
+  reserve
+  subsector capital
+  sector capital
+  capital
+  colony
+  satellite
+  forbidden
+  puzzle
+  dangerous
+  data repository
+  ancient site
+
+Scouts extends CT81
+  desert (override)
+  asteroid (override)
+
+MT extends Scouts
+  barren
+  fluid
+  highpop
+  lowpop
+  asteroid (override)
+  nonindustrial (override)
+  poor (override)
+
+TNE
+  barren (override)
+  lowpop (override)
+  nonindustrial (override)
