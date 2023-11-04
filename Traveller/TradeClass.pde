@@ -63,8 +63,8 @@ class TradeClass_CT81 extends TradeClass {
     
     desert = isDesert(_uwp);       
     asteroid = isAsteroid(_uwp);  
+    water = isWater(_uwp);
     
-    if (_uwp.hydro == 10    ){ water = true; }
     if (_uwp.atmo == 0      ){ vacuum = true; }
     if (_uwp.atmo <= 1 &&
         _uwp.hydro >= 1     ){ icecapped = true; }
@@ -72,6 +72,7 @@ class TradeClass_CT81 extends TradeClass {
   
   Boolean isDesert(UWP _uwp  ){ return _uwp.hydro == 0; }  
   Boolean isAsteroid(UWP _uwp){ return _uwp.size == 0; }
+  Boolean isWater(UWP _uwp   ){ return _uwp.hydro == 10; }
   
   String toString(){
     String output = super.toString();
@@ -92,11 +93,13 @@ class TradeClass_T4 extends TradeClass_CT81 {
   TradeClass_T4(UWP _uwp, System _system){
     super(_uwp, _system);
 
-    if (_uwp.pop >= 9 ){ highpop = true; } // text (p. 132) sets this to 10+, but table on p. 135 shows 9+ as in MegaTraveller - using this version
-    if (_uwp.pop == 0 ){ barren = true; }  // only dependent on pop score, not gov/law as in MegaTraveller (T4 p. 132)
+    barren = isBarren(_uwp);
+
+    if (_uwp.pop >= 9 ){ highpop = true; } // text (p. 132) sets this to 10+, but table on p. 135 shows 9+ as in MegaTraveller - using this version  
   }
   
-  Boolean isDesert(UWP _uwp  ){ return (_uwp.hydro == 0 && _uwp.atmo >= 2); } // identical to Scouts version
+  Boolean isDesert(UWP _uwp ){ return (_uwp.hydro == 0 && _uwp.atmo >= 2); } // identical to Scouts version
+  Boolean isBarren(UWP _uwp ){ return (_uwp.pop == 0); } // only dependent on pop score, not gov/law as in MegaTraveller (T4 p. 132)
   
   String toString(){
     String output = super.toString();
@@ -231,15 +234,13 @@ class TradeClass_TNE extends TradeClass_MT {
 
 // Trade Classes from T5 p. 434
 class TradeClass_T5 extends TradeClass_T4 {
+  Boolean fluid = false;
   Boolean garden = false;
-  
-  // hellworld
-  // ice-capped
-  // ocean world
-  // vacuum
-  // water world
-  // dieback
-  // barren
+  Boolean hellworld = false;
+  Boolean ocean = false;  
+  Boolean dieback = false;
+
+
   // low pop
   // non-industrial
   // pre-high
@@ -280,6 +281,9 @@ class TradeClass_T5 extends TradeClass_T4 {
     super(_uwp, _system);
     
     garden = isGarden(_uwp);
+    hellworld = isHellworld(_uwp);
+    ocean = isOcean(_uwp);
+    dieback = isDieback(_uwp);
   }
 
   // T5 adds atmo/hydro 0, just like MT (p. 434), but not the isPlanet critereon
@@ -305,12 +309,52 @@ class TradeClass_T5 extends TradeClass_T4 {
             _uwp.hydro >= 1);
   }
 
-  // garden world
   Boolean isGarden(UWP _uwp){
     return (_uwp.size  >= 6 && _uwp.size  <= 8 &&
             (_uwp.atmo == 5 || _uwp.atmo  == 6 || _uwp.atmo == 8) &&
             _uwp.hydro >= 5 && _uwp.hydro <= 7);
   }
   
-  
+  Boolean isHellworld(UWP _uwp){
+    return (((_uwp.size >= 3 && _uwp.size <= 5) || (_uwp.size >= 9 && _uwp.size <= 12)) &&
+            (_uwp.atmo == 2 || _uwp.atmo == 4 || _uwp.atmo == 7 || (_uwp.atmo >= 9 && _uwp.atmo <= 12)) &&
+            _uwp.hydro <= 2);
+  }
+
+  Boolean isOcean(UWP _uwp){
+    return (_uwp.size >= 10 && 
+            _uwp.size <= 12 && 
+            _uwp.hydro == 10);
+  }
+
+  Boolean isWater(UWP _uwp){
+    return (_uwp.size >= 5 && 
+            _uwp.size <= 9 && 
+            _uwp.hydro == 10);
+  }
+
+  Boolean isDieback(UWP _uwp){
+    return (_uwp.pop == 0 && 
+            _uwp.gov == 0 && 
+            _uwp.law == 0 && 
+            _uwp.tech > 0); 
+  }
+
+  Boolean isBarren(UWP _uwp){
+    return (_uwp.pop == 0 && 
+            _uwp.gov == 0 && 
+            _uwp.law == 0 && 
+            _uwp.tech == 0 && 
+            (_uwp.starport == 'E' || _uwp.starport == 'X')); 
+  }
+
+  String toString(){
+    String output = super.toString();
+    if (fluid)        { output += "Fl "; }
+    if (garden)       { output += "Ga "; }
+    if (hellworld)    { output += "He "; }
+    if (ocean)        { output += "Oc "; }
+    if (dieback)      { output += "Di "; }
+    return output;
+  }
 }

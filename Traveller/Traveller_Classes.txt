@@ -1480,15 +1480,12 @@ T5 extends T4
   desert (override)
   fluid
   garden world
-
-
   hellworld
-  ice-capped
   ocean world
-  vacuum
-  water world
+  water world (override)
   dieback
-  barren
+  barren (override)
+
   low pop
   non-industrial
   pre-high
