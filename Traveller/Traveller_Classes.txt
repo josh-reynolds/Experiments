@@ -1485,18 +1485,19 @@ T5 extends T4
   water world (override)
   dieback
   barren (override)
-
   low pop
-  non-industrial
-  pre-high
-  high pop
-  pre-agricultural
+  nonindustrial (override)
+  prehigh (override)
+  high pop (override)
+  preagricultural
+
+
   agricultural
-  non-agricultural
-  pre-industrial
+  nonagricultural
+  preindustrial
   industrial
   poor
-  pre-rich
+  prerich
   rich
   frozen
   hot

@@ -93,12 +93,12 @@ class TradeClass_T4 extends TradeClass_CT81 {
   TradeClass_T4(UWP _uwp, System _system){
     super(_uwp, _system);
 
+    highpop = isHighPop(_uwp);
     barren = isBarren(_uwp);
-
-    if (_uwp.pop >= 9 ){ highpop = true; } // text (p. 132) sets this to 10+, but table on p. 135 shows 9+ as in MegaTraveller - using this version  
   }
   
   Boolean isDesert(UWP _uwp ){ return (_uwp.hydro == 0 && _uwp.atmo >= 2); } // identical to Scouts version
+  Boolean isHighPop(UWP _uwp){ return (_uwp.pop >= 9 ); } // text (p. 132) sets this to 10+, but table on p. 135 shows 9+ as in MegaTraveller - using this version  
   Boolean isBarren(UWP _uwp ){ return (_uwp.pop == 0); } // only dependent on pop score, not gov/law as in MegaTraveller (T4 p. 132)
   
   String toString(){
@@ -239,13 +239,12 @@ class TradeClass_T5 extends TradeClass_T4 {
   Boolean hellworld = false;
   Boolean ocean = false;  
   Boolean dieback = false;
+  Boolean lowpop = false;
+  Boolean prehigh = false;
+  Boolean preag = false;
+  
 
 
-  // low pop
-  // non-industrial
-  // pre-high
-  // high pop
-  // pre-agricultural
   // agricultural
   // non-agricultural
   // pre-industrial
@@ -284,6 +283,9 @@ class TradeClass_T5 extends TradeClass_T4 {
     hellworld = isHellworld(_uwp);
     ocean = isOcean(_uwp);
     dieback = isDieback(_uwp);
+    lowpop = isLowPop(_uwp);
+    prehigh = isPreHigh(_uwp);
+    preag = isPreAg(_uwp);
   }
 
   // T5 adds atmo/hydro 0, just like MT (p. 434), but not the isPlanet critereon
@@ -315,12 +317,16 @@ class TradeClass_T5 extends TradeClass_T4 {
             _uwp.hydro >= 5 && _uwp.hydro <= 7);
   }
   
+  // Trade Class table caps this at size 12, but that omits ultra-large sizes (13+) - seems like an error to me
+  //  but coding this as RAW for now...
   Boolean isHellworld(UWP _uwp){
     return (((_uwp.size >= 3 && _uwp.size <= 5) || (_uwp.size >= 9 && _uwp.size <= 12)) &&
             (_uwp.atmo == 2 || _uwp.atmo == 4 || _uwp.atmo == 7 || (_uwp.atmo >= 9 && _uwp.atmo <= 12)) &&
             _uwp.hydro <= 2);
   }
 
+  // Trade Class table caps this at hydro 12, but that omits ultra-large values (13+) - seems like an error to me
+  //  but coding this as RAW for now...
   Boolean isOcean(UWP _uwp){
     return (_uwp.size >= 10 && 
             _uwp.size <= 12 && 
@@ -348,6 +354,33 @@ class TradeClass_T5 extends TradeClass_T4 {
             (_uwp.starport == 'E' || _uwp.starport == 'X')); 
   }
 
+  // same definition as MT, but we aren't inheriting from here - refactoring opportunity
+  Boolean isLowPop(UWP _uwp){
+    return (_uwp.pop >= 1 && 
+            _uwp.pop <= 3);
+  }
+
+  // excludes Barren and LowPop
+  Boolean isNonindustrial(UWP _uwp){ 
+    return (_uwp.pop >= 4 && _uwp.pop <= 6); 
+  }
+  
+  Boolean isPreHigh(UWP _uwp){ 
+    return (_uwp.pop == 8); 
+  }
+  
+  // Trade Class table caps this at 12, but that omits ultra-high pop (13+) - seems like an error to me
+  //  but coding this as RAW for now...
+  Boolean isHighPop(UWP _uwp){
+    return (_uwp.pop >= 9 && _uwp.pop <= 12);
+  }
+  
+  Boolean isPreAg(UWP _uwp){
+    return (_uwp.atmo  >= 4 && _uwp.atmo  <= 9 &&
+            _uwp.hydro >= 4 && _uwp.hydro <= 8 &&
+            (_uwp.pop  == 4 || _uwp.pop   == 8));
+  }
+  
   String toString(){
     String output = super.toString();
     if (fluid)        { output += "Fl "; }
@@ -355,6 +388,9 @@ class TradeClass_T5 extends TradeClass_T4 {
     if (hellworld)    { output += "He "; }
     if (ocean)        { output += "Oc "; }
     if (dieback)      { output += "Di "; }
+    if (lowpop)       { output += "Lo "; }
+    if (prehigh)      { output += "Ph "; }
+    if (preag)        { output += "Pa "; }
     return output;
   }
 }
