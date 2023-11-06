@@ -1490,15 +1490,13 @@ T5 extends T4
   prehigh (override)
   high pop (override)
   preagricultural
-
-
-  agricultural
-  nonagricultural
+  nonagricultural (override)
   preindustrial
-  industrial
+  industrial (override)
   poor
-  prerich
-  rich
+  rich (override)
+
+
   frozen
   hot
   cold

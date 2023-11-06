@@ -16,25 +16,33 @@ class TradeClass {
         _uwp.hydro >= 4 && _uwp.hydro <= 8 &&
         _uwp.pop   >= 5 && _uwp.pop   <= 7){ agricultural = true; }
         
-    if (_uwp.atmo  <= 3 &&
-        _uwp.hydro <= 3 &&
-        _uwp.pop   >= 6){ nonagricultural = true; }
-        
-    if ((_uwp.atmo <= 2 || _uwp.atmo == 4 || _uwp.atmo == 7 || _uwp.atmo == 9) &&
-        _uwp.pop >= 9){ industrial = true; }
-    
+    nonagricultural = isNonagricultural(_uwp);
+    industrial = isIndustrial(_uwp);
     nonindustrial = isNonindustrial(_uwp);
-
-    if (_uwp.gov >= 4 && _uwp.gov <= 9 &&
-        (_uwp.atmo == 6 || _uwp.atmo == 8) &&
-        _uwp.pop >= 6 && _uwp.pop <= 8){ rich = true; }        
-        
+    rich = isRich(_uwp);        
     poor = isPoor(_uwp);
   }
   
   // to allow overrides - eventually all of these probably should be turned into methods
   Boolean isNonindustrial(UWP _uwp){ return _uwp.pop <= 6; }
   Boolean isPoor(UWP _uwp){ return (_uwp.atmo >= 2 && _uwp.atmo <= 5 && _uwp.hydro <= 3); }   
+
+  Boolean isNonagricultural(UWP _uwp){
+    return (_uwp.atmo  <= 3 &&
+            _uwp.hydro <= 3 &&
+            _uwp.pop   >= 6);
+  }
+  
+  Boolean isIndustrial(UWP _uwp){
+    return ((_uwp.atmo <= 2 || _uwp.atmo == 4 || _uwp.atmo == 7 || _uwp.atmo == 9) &&
+            _uwp.pop >= 9);
+  }
+
+  Boolean isRich(UWP _uwp){
+    return (_uwp.gov >= 4 && _uwp.gov <= 9 &&
+           (_uwp.atmo == 6 || _uwp.atmo == 8) &&
+            _uwp.pop >= 6 && _uwp.pop <= 8);
+  }
   
   String toString(){
     String output = "";
@@ -242,16 +250,9 @@ class TradeClass_T5 extends TradeClass_T4 {
   Boolean lowpop = false;
   Boolean prehigh = false;
   Boolean preag = false;
-  
+  Boolean preind = false;
+  Boolean prerich = false;
 
-
-  // agricultural
-  // non-agricultural
-  // pre-industrial
-  // industrial
-  // poor
-  // pre-rich
-  // rich
   // frozen
   // hot
   // cold
@@ -279,6 +280,7 @@ class TradeClass_T5 extends TradeClass_T4 {
   TradeClass_T5(UWP _uwp, System _system){
     super(_uwp, _system);
     
+    fluid = isFluid(_uwp);
     garden = isGarden(_uwp);
     hellworld = isHellworld(_uwp);
     ocean = isOcean(_uwp);
@@ -286,6 +288,8 @@ class TradeClass_T5 extends TradeClass_T4 {
     lowpop = isLowPop(_uwp);
     prehigh = isPreHigh(_uwp);
     preag = isPreAg(_uwp);
+    preind = isPreInd(_uwp);
+    prerich = isPreRich(_uwp);
   }
 
   // T5 adds atmo/hydro 0, just like MT (p. 434), but not the isPlanet critereon
@@ -374,11 +378,42 @@ class TradeClass_T5 extends TradeClass_T4 {
   Boolean isHighPop(UWP _uwp){
     return (_uwp.pop >= 9 && _uwp.pop <= 12);
   }
-  
+
   Boolean isPreAg(UWP _uwp){
     return (_uwp.atmo  >= 4 && _uwp.atmo  <= 9 &&
             _uwp.hydro >= 4 && _uwp.hydro <= 8 &&
             (_uwp.pop  == 4 || _uwp.pop   == 8));
+  }
+
+  // Trade Class table caps this at 12, but that omits ultra-high pop (13+) - seems like an error to me
+  //  but coding this as RAW for now...
+  Boolean isNonagricultural(UWP _uwp){
+    return (_uwp.atmo  <= 3 &&
+            _uwp.hydro <= 3 &&
+            (_uwp.pop  >= 6 && _uwp.pop <= 12));
+  }
+
+  Boolean isPreInd(UWP _uwp){
+    return ((_uwp.atmo <= 2 || _uwp.atmo == 4 || _uwp.atmo == 7 || _uwp.atmo == 9) &&
+            (_uwp.pop  == 7 || _uwp.pop  == 8));
+  }  
+
+  // Trade Class table caps this at 12, but that omits ultra-high pop (13+) - seems like an error to me
+  //  but coding this as RAW for now...
+  Boolean isIndustrial(UWP _uwp){
+    return ((_uwp.atmo <= 2 || _uwp.atmo == 4 || _uwp.atmo == 7 || _uwp.atmo == 9) &&
+            (_uwp.pop >= 9 && _uwp.pop <= 12));
+  }  
+  
+  Boolean isPreRich(UWP _uwp){
+    return ((_uwp.atmo == 6 || _uwp.atmo == 8) &&
+            (_uwp.pop  == 5 || _uwp.pop  == 9));
+  }
+
+  // Gov has been dropped as a critereon for Rich
+  Boolean isRich(UWP _uwp){
+    return ((_uwp.atmo == 6 || _uwp.atmo == 8) &&
+            _uwp.pop >= 6 && _uwp.pop <= 8);
   }
   
   String toString(){
@@ -391,6 +426,8 @@ class TradeClass_T5 extends TradeClass_T4 {
     if (lowpop)       { output += "Lo "; }
     if (prehigh)      { output += "Ph "; }
     if (preag)        { output += "Pa "; }
+    if (preind)       { output += "Pi "; }
+    if (prerich)      { output += "Pr "; }
     return output;
   }
 }
