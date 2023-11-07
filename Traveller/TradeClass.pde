@@ -252,7 +252,17 @@ class TradeClass_T5 extends TradeClass_T4 {
   Boolean preag = false;
   Boolean preind = false;
   Boolean prerich = false;
+  Boolean prison = false;
+  Boolean penal = false;
+  Boolean reserve = false;
+  Boolean colony = false;  
 
+  // TO_DO: requires Travel Zone information
+  // forbidden
+  // puzzle
+  // dangerous
+  
+  // TO_DO: requires orbital information
   // frozen
   // hot
   // cold
@@ -260,20 +270,21 @@ class TradeClass_T5 extends TradeClass_T4 {
   // tropic
   // tundra
   // twilight zone
+  // satellite
+  
+  // TO_DO: Applies to non-mainworld, undecided what to do with these
+  //  should Trade Classifications now apply per-planet?
+  //  or is this a replacement for facilities?
   // farming
   // mining
+  
+  // TO_DO: Referee fiat, undecided what to do with these
+  //  on p. 434 they note: "Cp, Cs, Cx require Starport A."
+  //  on p. 435 they note: "Important worlds are more likely to be Capitals of subsectors and sectors."
   // military rule
-  // prison/exile camp
-  // penal colony
-  // reserve
   // subsector capital
   // sector capital
   // capital
-  // colony
-  // satellite
-  // forbidden
-  // puzzle
-  // dangerous
   // data repository
   // ancient site
   
@@ -290,6 +301,10 @@ class TradeClass_T5 extends TradeClass_T4 {
     preag = isPreAg(_uwp);
     preind = isPreInd(_uwp);
     prerich = isPreRich(_uwp);
+    prison = isPrison(_uwp);
+    penal = isPenal(_uwp);
+    reserve = isReserve(_uwp);
+    colony = isColony(_uwp);
   }
 
   // T5 adds atmo/hydro 0, just like MT (p. 434), but not the isPlanet critereon
@@ -416,6 +431,32 @@ class TradeClass_T5 extends TradeClass_T4 {
             _uwp.pop >= 6 && _uwp.pop <= 8);
   }
   
+  Boolean isPrison(UWP _uwp){
+    return ((_uwp.atmo == 2 || _uwp.atmo == 3 || _uwp.atmo == 10 || _uwp.atmo == 11) &&
+            (_uwp.hydro >= 1 && _uwp.hydro <= 5) &&
+            (_uwp.pop >= 3 && _uwp.pop <= 6) &&
+            (_uwp.law >= 6 && _uwp.law <= 9));
+  }
+
+  Boolean isPenal(UWP _uwp){
+    return (isPrison(_uwp) && _uwp.gov == 6);
+  }  
+
+  Boolean isReserve(UWP _uwp){
+    return ((_uwp.pop >= 1 && _uwp.pop <= 4) &&
+            _uwp.gov == 6 &&
+            (_uwp.law == 4 || _uwp.law == 5));
+  }  
+
+  // TO_DO: From table footnote 1, p. 434:
+  //  "A colony is Owned by another world. Note the owning world with O:nnnn (=hex of owning world). The
+  //   Owner is the Most Important, Highest Population Highest TL world within 6 hexes."
+  Boolean isColony(UWP _uwp){
+    return ((_uwp.pop >= 5 && _uwp.pop <= 10) &&
+            _uwp.gov == 6 &&
+            (_uwp.law >= 0 && _uwp.law <= 3));
+  }   
+  
   String toString(){
     String output = super.toString();
     if (fluid)        { output += "Fl "; }
@@ -428,6 +469,10 @@ class TradeClass_T5 extends TradeClass_T4 {
     if (preag)        { output += "Pa "; }
     if (preind)       { output += "Pi "; }
     if (prerich)      { output += "Pr "; }
+    if (prison)       { output += "Px "; }
+    if (penal)        { output += "Pe "; }
+    if (reserve)      { output += "Re "; }
+    if (colony)       { output += "Cy "; }
     return output;
   }
 }

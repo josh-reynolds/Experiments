@@ -1495,8 +1495,12 @@ T5 extends T4
   industrial (override)
   poor
   rich (override)
+  prison/exile camp
+  penal colony
+  reserve
+  colony
 
-
+  // Requires orbital information - deferring implementation
   frozen
   hot
   cold
@@ -1504,22 +1508,24 @@ T5 extends T4
   tropic
   tundra
   twilight zone
+  satellite
+
+  // Apply to non-mainworld, replacement for facilities? - deferring implementation  
   farming
   mining
+
+  // Referee fiat, unclear how to handle - deferring implementation
   military rule
-  prison/exile camp
-  penal colony
-  reserve
   subsector capital
   sector capital
   capital
-  colony
-  satellite
+  data repository
+  ancient site
+
+  // Requires Travel Zone information - deferring implementation
   forbidden
   puzzle
   dangerous
-  data repository
-  ancient site
 
 Scouts extends CT81
   desert (override)
