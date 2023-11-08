@@ -1544,3 +1544,44 @@ TNE
   barren (override)
   lowpop (override)
   nonindustrial (override)
+
+11/8/23
+
+Basic trade classes are done. The remainder have some special requirements as
+noted above. Also, I see a common limitation across many of the overrides: they
+cap the values at 12 (C), even when the field in question can go higher. In 
+some cases this might make sense, but I have to wonder if this was really just
+a limitation of the table formatting and is an error. Should look for some T5
+errata.
+
+Moving on: next bit is the extensions, starting with importance. These may get
+broken out into a separate class, but doing in a System subclass for the time
+being.
+
+Calculating importance is easy enough, but I am hitting a null pointer exception, 
+need to trace back. Looks like UWP hasn't been created yet. Console output from
+the point of exception:
+
+Rules
+New
+[0] Traveller$System_T5.calculateImportance(Traveller.java:4453)
+[1] Traveller$System_T5.<init>(Traveller.java:4438)
+[2] Traveller$Ruleset_T5.newSystem(Traveller.java:2529)
+[3] Traveller$Subsector.<init>(Traveller.java:3289)
+[4] Traveller$Ruleset_T5.newSubsector(Traveller.java:2533)
+[5] Traveller$ButtonUtilities.createSubsector(Traveller.java:361)
+[6] Traveller$NewSubsector.run(Traveller.java:143)
+[7] Traveller$Button.run(Traveller.java:95)
+[8] Traveller$Menu.mouseClicked(Traveller.java:2642)
+[9] Traveller.mouseClicked(Traveller.java:72)
+[10] processing.core.PApplet.mouseClicked(PApplet.java:2827)
+[11] processing.core.PApplet.handleMouseEvent(PApplet.java:2707)
+[12] processing.core.PApplet.dequeueEvents(PApplet.java:2618)
+[13] processing.core.PApplet.handleDraw(PApplet.java:2429)
+[14] processing.awt.PSurfaceAWT$12.callDraw(PSurfaceAWT.java:1540)
+[15] processing.core.PSurfaceNone$AnimationThread.run(PSurfaceNone.java:316)
+
+D'oh! Classic mistake. Need to guard the call to calculateImportance() behind
+'if (occupied)'. FIXED.
+
+

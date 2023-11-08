@@ -644,3 +644,59 @@ class System_MT extends System_ScoutsEx {
   
   String proseDescription(){ return ((UWP_MT)uwp).homeworldDescription() + "\n"; }
 }
+
+// TO_DO: very likely will shift this over to the Scouts branch once we add orbits, keeping simple for now 
+class System_T5 extends System_CT81 {
+  int importanceExtension;   // extensions have formatting, so will probably break these out into separate classes...
+  
+  System_T5(Coordinate _coord, Boolean _occupied){
+    super(_coord, _occupied);
+    
+    if (occupied){ importanceExtension = calculateImportance(); }
+  }
+
+  System_T5(JSONObject _json){
+    super(_json);
+    
+    // TO_DO: add extensions to JSON
+  }
+  
+  // table from T5 p. 435
+  int calculateImportance(){
+    int result = 0;
+
+    if (uwp.starport == 'A' || uwp.starport == 'B'                       ){ result += 1; }
+    if (uwp.starport == 'D' || uwp.starport == 'E' || uwp.starport == 'X'){ result -= 1; }
+    
+    if (uwp.tech >= 10){ result += 1; }
+    if (uwp.tech <= 8 ){ result -= 1; }
+
+    TradeClass_T5 t = (TradeClass_T5)trade;
+    if (t.agricultural){ result += 1; }
+    if (t.highpop     ){ result += 1; }
+    if (t.industrial  ){ result += 1; }
+    if (t.rich        ){ result += 1; }
+    
+    if (uwp.pop <= 6){ result -= 1; }
+    
+    if (navalBase && scoutBase){ result += 1; }   
+    
+    // TO_DO: Way Station also grants +1, but no procedure for assigning, seems to be fiat
+    //  p. 432 notes: "Possible Depot or Way Station" under Starport A
+    //  p. 436 notes: "about 1 per 50 parsecs along major trade routes"
+    
+    return result;
+    
+  }
+  
+  String importanceString(){
+    String sign = "+";
+    if (importanceExtension < 0){ sign = ""; }   
+    return " {" +sign + importanceExtension + "} ";
+  }
+ 
+  // full format is on T5 p. 431 - deviating from that for now
+  String occupiedSystemString(){
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + trade.toString();
+  }
+}

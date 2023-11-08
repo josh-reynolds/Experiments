@@ -432,7 +432,7 @@ class Ruleset_T5 extends Ruleset {
   Boolean supportsTraffic()    { return false; }    // breaking with precedent, T5 does *not* have variable Starport presence (T5 p. 432)
   
   System newSystem(Coordinate _coord, Boolean _occupied){
-    return new System_CT81(_coord, _occupied); 
+    return new System_T5(_coord, _occupied); 
   }
   
   Subsector newSubsector(){
@@ -444,7 +444,7 @@ class Ruleset_T5 extends Ruleset {
   }  
   
   System newSystem(JSONObject _json){ 
-    return new System_CT81(_json);  
+    return new System_T5(_json);  
   }
   
   UWPBuilder newUWPBuilder(){ 
