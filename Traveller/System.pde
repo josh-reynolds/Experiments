@@ -648,11 +648,21 @@ class System_MT extends System_ScoutsEx {
 // TO_DO: very likely will shift this over to the Scouts branch once we add orbits, keeping simple for now 
 class System_T5 extends System_CT81 {
   int importanceExtension;   // extensions have formatting, so will probably break these out into separate classes...
+  int resources;
+  int labor;
+  int infrastructure;
+  int efficiency;
   
   System_T5(Coordinate _coord, Boolean _occupied){
     super(_coord, _occupied);
     
-    if (occupied){ importanceExtension = calculateImportance(); }
+    if (occupied){ 
+      importanceExtension = calculateImportance();
+      resources = calculateResources();
+      labor = calculateLabor();
+      infrastructure = calculateInfra();
+      efficiency = calculateEfficiency();
+    }
   }
 
   System_T5(JSONObject _json){
@@ -689,14 +699,61 @@ class System_T5 extends System_CT81 {
     
   }
   
+  // TO_DO: requires gasgiant + planetoid counts, not present in this leg of the hierarchy, need to add
+  //  also may be a timing issue - we generate extensions before orbits, need to defer this calculation...
+  int calculateResources(){
+    int result = 0;
+    result += roll.two();
+    if (uwp.tech >= 8){ 
+      //result += gasGiantCount + planetoidCount;  
+    }
+    return result;
+  }
+  
+  int calculateLabor(){ 
+    if (uwp.pop == 0){ 
+      return 0; 
+    } else {
+      return uwp.pop - 1;
+    }
+  }
+  
+  int calculateInfra(){
+    TradeClass_T5 t = (TradeClass_T5)trade;
+    if (t.barren || t.dieback || t.lowpop){ return 0; }
+    
+    int result = 0;
+    if (t.nonindustrial){
+      result += roll.one(importanceExtension);
+    } else {
+      result += roll.two(importanceExtension);
+    }
+    
+    if (result <= 0){
+      return 0;
+    } else {
+      return result;
+    }
+  }
+  
+  int calculateEfficiency(){
+    return roll.one() - roll.one();  
+  }
+  
   String importanceString(){
     String sign = "+";
     if (importanceExtension < 0){ sign = ""; }   
-    return " {" +sign + importanceExtension + "} ";
+    return " {" + sign + importanceExtension + "} ";
+  }
+  
+  String economicString(){
+    String sign = "+";
+    if (efficiency < 0){ sign = ""; }
+    return "(" + hex(resources, 1) + hex(labor, 1) + hex(infrastructure, 1) + sign + efficiency + ") ";
   }
  
   // full format is on T5 p. 431 - deviating from that for now
   String occupiedSystemString(){
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + trade.toString();
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + economicString() + trade.toString();
   }
 }
