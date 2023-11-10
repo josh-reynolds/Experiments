@@ -652,6 +652,10 @@ class System_T5 extends System_CT81 {
   int labor;
   int infrastructure;
   int efficiency;
+  int homogeneity;
+  int acceptance;
+  int strangeness;
+  int symbols;
   
   System_T5(Coordinate _coord, Boolean _occupied){
     super(_coord, _occupied);
@@ -662,6 +666,10 @@ class System_T5 extends System_CT81 {
       labor = calculateLabor();
       infrastructure = calculateInfra();
       efficiency = calculateEfficiency();
+      homogeneity = calculateHomogeneity();
+      acceptance = calculateAcceptance();
+      strangeness = calculateStrangeness();
+      symbols = calculateSymbols();
     }
   }
 
@@ -739,6 +747,30 @@ class System_T5 extends System_CT81 {
   int calculateEfficiency(){
     return roll.one() - roll.one();  
   }
+
+  int calculateHomogeneity(){
+    int result = uwp.pop + roll.one() - roll.one();
+    if (result <= 1){ result = 1; }
+    return result;
+  }
+  
+  int calculateAcceptance(){
+    int result = uwp.pop + importanceExtension;
+    if (result <= 1){ result = 1; }
+    return result;
+  }
+  
+  int calculateStrangeness(){
+    int result = 5 + roll.one() - roll.one();
+    if (result <= 1){ result = 1; }
+    return result; 
+  }
+  
+  int calculateSymbols(){
+    int result = uwp.tech + roll.one() - roll.one();
+    if (result <= 1){ result = 1; }
+    return result; 
+  }  
   
   String importanceString(){
     String sign = "+";
@@ -752,8 +784,14 @@ class System_T5 extends System_CT81 {
     return "(" + hex(resources, 1) + hex(labor, 1) + hex(infrastructure, 1) + sign + efficiency + ") ";
   }
  
+  String cultureString(){
+    return "[" + hex(homogeneity, 1) + hex(acceptance, 1) + hex(strangeness, 1) + hex(symbols, 1) + "] ";
+  }
+ 
   // full format is on T5 p. 431 - deviating from that for now
+  //  also, the extensions are pushing the Trade Classes off-screen, probably need to break this apart
+  //  one format for the subsector summary, and another with all the details for console output, text files, detail screens, etc.
   String occupiedSystemString(){
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + economicString() + trade.toString();
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + economicString() + cultureString() + trade.toString();
   }
 }
