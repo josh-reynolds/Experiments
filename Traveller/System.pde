@@ -647,7 +647,7 @@ class System_MT extends System_ScoutsEx {
 
 // TO_DO: very likely will shift this over to the Scouts branch once we add orbits, keeping simple for now 
 class System_T5 extends System_CT81 {
-  int importanceExtension;   // extensions have formatting, so will probably break these out into separate classes...
+  int importance;   // extensions have formatting, so will probably break these out into separate classes...
   int resources;
   int labor;
   int infrastructure;
@@ -656,12 +656,13 @@ class System_T5 extends System_CT81 {
   int acceptance;
   int strangeness;
   int symbols;
+  String natives;  // not sure how to represent this yet, let's start with a simple string
   
   System_T5(Coordinate _coord, Boolean _occupied){
     super(_coord, _occupied);
     
     if (occupied){ 
-      importanceExtension = calculateImportance();
+      importance = calculateImportance();
       resources = calculateResources();
       labor = calculateLabor();
       infrastructure = calculateInfra();
@@ -670,6 +671,8 @@ class System_T5 extends System_CT81 {
       acceptance = calculateAcceptance();
       strangeness = calculateStrangeness();
       symbols = calculateSymbols();
+      
+      natives = determineNativeLife();
     }
   }
 
@@ -732,9 +735,9 @@ class System_T5 extends System_CT81 {
     
     int result = 0;
     if (t.nonindustrial){
-      result += roll.one(importanceExtension);
+      result += roll.one(importance);
     } else {
-      result += roll.two(importanceExtension);
+      result += roll.two(importance);
     }
     
     if (result <= 0){
@@ -755,7 +758,7 @@ class System_T5 extends System_CT81 {
   }
   
   int calculateAcceptance(){
-    int result = uwp.pop + importanceExtension;
+    int result = uwp.pop + importance;
     if (result <= 1){ result = 1; }
     return result;
   }
@@ -771,11 +774,77 @@ class System_T5 extends System_CT81 {
     if (result <= 1){ result = 1; }
     return result; 
   }  
+
+  // table on T5 p. 436 - clearer version on p. 538
+  // this messy, look for ways to clean up the logic once it's working
+  String determineNativeLife(){
+    String result = "";
+    
+    int popClass = 0; // pop 0 && tech 0
+    if (uwp.pop == 0 && uwp.tech > 0){ popClass = 1; }
+    if (uwp.pop >= 1 && uwp.pop <= 3){ popClass = 2; }
+    if (uwp.pop >= 4 && uwp.pop <= 6){ popClass = 3; }
+    if (uwp.pop >= 7){ popClass = 4; }
+    
+    int atmoClass = 0; // atmo 0,1
+    if ((uwp.atmo >= 2 && uwp.atmo <= 9) || (uwp.atmo >= 13 && uwp.atmo <= 15)){ atmoClass = 1; }
+    if (uwp.atmo >= 10 && uwp.atmo <= 12){ atmoClass = 2; }
+    
+    switch(popClass){
+      case 0:
+        switch(atmoClass){
+          case 0:
+            // no value
+            break;
+          case 1:
+            result = "Extinct Natives";
+            break;
+          case 2:
+            result = "Extinct Exotic Natives";
+        }
+        break;
+      case 1:
+        switch(atmoClass){
+          case 0:
+            result = "Vanished Transplants";
+            break;
+          case 1:
+            result = "Catastrophic Extinct Natives";
+            break;
+          case 2:
+            result = "Catastrophic Extinct Exotic Natives";
+        }
+        break;      
+      case 2:
+        result = "Transients";
+        break;      
+      case 3:
+        result = "Settlers";
+        break;      
+      case 4:
+        switch(atmoClass){
+          case 0:
+            result = "Transplants";
+            break;
+          case 1:
+            result = "Natives";
+            break;
+          case 2:
+            result = "Exotic Natives";
+        }
+        break;
+    }
+    
+    if (uwp.gov == 1){ result = "Corporate"; }
+    if (uwp.gov == 6){ result = "Colonists"; }
+    
+    return result;
+  }
   
   String importanceString(){
     String sign = "+";
-    if (importanceExtension < 0){ sign = ""; }   
-    return " {" + sign + importanceExtension + "} ";
+    if (importance < 0){ sign = ""; }   
+    return " {" + sign + importance + "} ";
   }
   
   String economicString(){
@@ -792,6 +861,7 @@ class System_T5 extends System_CT81 {
   //  also, the extensions are pushing the Trade Classes off-screen, probably need to break this apart
   //  one format for the subsector summary, and another with all the details for console output, text files, detail screens, etc.
   String occupiedSystemString(){
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + economicString() + cultureString() + trade.toString();
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + natives;
+    //return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + economicString() + cultureString() + natives + trade.toString();
   }
 }
