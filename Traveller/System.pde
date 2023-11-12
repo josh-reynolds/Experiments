@@ -861,6 +861,16 @@ class System_T5 extends System_CT81 {
     return "[" + hex(homogeneity, 1) + hex(acceptance, 1) + hex(strangeness, 1) + hex(symbols, 1) + "] ";
   }
  
+  // T5 p. 428,435: "if any value = 0, use 1 (to avoid multiplying by 0)" 
+  int resourceUnits(){
+    int r = max(1, resources);
+    int l = max(1, labor);
+    int i = max(1, infrastructure);
+    int e = efficiency;
+    if (e == 0){ e = 1;}
+    return r * l * i * e;
+  }
+ 
   // full format is on T5 p. 431 - deviating from that for now
   //  also, the extensions are pushing the Trade Classes off-screen, probably need to break this apart
   //  one format for the subsector summary, and another with all the details for console output, text files, detail screens, etc.
@@ -869,6 +879,6 @@ class System_T5 extends System_CT81 {
   }
   
   String extendedString(){
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + economicString() + cultureString() + natives + " " + trade.toString();  
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + economicString() + resourceUnits() + "RU " + cultureString() + natives + " " + trade.toString();  
   }
 }
