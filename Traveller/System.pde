@@ -119,6 +119,10 @@ class System {
     }
   }
   
+  String extendedString(){
+    return this.toString();
+  }
+  
   String listRoutes(){
     String output = "";
     for (Route r : routes){
@@ -861,7 +865,10 @@ class System_T5 extends System_CT81 {
   //  also, the extensions are pushing the Trade Classes off-screen, probably need to break this apart
   //  one format for the subsector summary, and another with all the details for console output, text files, detail screens, etc.
   String occupiedSystemString(){
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + natives;
-    //return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + economicString() + cultureString() + natives + trade.toString();
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString();
+  }
+  
+  String extendedString(){
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + economicString() + cultureString() + natives + " " + trade.toString();  
   }
 }
