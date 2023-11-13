@@ -879,6 +879,6 @@ class System_T5 extends System_CT81 {
   }
   
   String extendedString(){
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + importanceString() + economicString() + resourceUnits() + "RU " + cultureString() + natives + " " + trade.toString();  
+    return this.toString() + "\n\t" + importanceString() + economicString() + resourceUnits() + "RU " + cultureString() + natives;  
   }
 }
