@@ -18,7 +18,7 @@ class OrbitBuilder {
   // CREATE COMPANIONS
   // ================================================================
 
-  void createCompanionsFor(Star _star){
+  private void createCompanionsFor(Star _star){
     if (debug == 2){ println("Creating companions for " + _star); }
     int compCount = 0;
     if (_star.isPrimary() || _star.isFar()){
@@ -41,7 +41,7 @@ class OrbitBuilder {
   }
   
   // New Era follows same procedure (T:NE p. 192)
-  int generateCompanionCountFor(Star _star){
+  private int generateCompanionCountFor(Star _star){
     println("Determining companion count for " + _star);
 
     int modifier = 0;
@@ -76,7 +76,7 @@ class OrbitBuilder {
 
   // from tables on Scouts p.46 
   // Note: to ease handling, I am converting RAW "Close" + "Far" to equivalent orbit numbers
-  int generateCompanionOrbitFor(Star _star, int _iteration){
+  private int generateCompanionOrbitFor(Star _star, int _iteration){
     int modifier = 4 * (_iteration);
     if (_star.isCompanion()){ modifier -= 4; }
     if (debug >= 1){ println("Generating companion star orbit. Modifier: +" + modifier); }
@@ -98,7 +98,7 @@ class OrbitBuilder {
     // TO_DO: need to handle two companions landing in same orbit
   }
 
-  int farOrbits(){      
+  protected int farOrbits(){      
     int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
     if (distance == 2000                    ){ return 15; }
     if (distance == 3000 || distance == 4000){ return 16; }
@@ -110,7 +110,7 @@ class OrbitBuilder {
   // CREATE SATELLITES
   // ================================================================
 
-  void createSatellitesFor(Star _star){
+  private void createSatellitesFor(Star _star){
     if (debug == 2){ println("Creating satellites for " + _star); }
         
     int orbitCount = calculateMaxOrbitsFor(_star);
@@ -166,7 +166,7 @@ class OrbitBuilder {
 
   // MegaTraveller follows the same procedure (almost, see note below) - MTRM p.28
   // New Era is copy-pasted from MT, including the error noted below - using MT errata (T:NE p. 194)
-  int generateSatelliteSizeFor(Orbit _o){
+  private int generateSatelliteSizeFor(Orbit _o){
     if (_o.isGasGiant()){
       int result = 0;
       if (((GasGiant)_o).size.equals("S")){
@@ -196,7 +196,7 @@ class OrbitBuilder {
   // distribution biases. Rings will take orbits closer in; moons tend to cluster after
   // that, and extreme orbits only get assigned for Gas Giants (either via the 12+ roll
   // or because there are many moons and the options closer in are pruned away).
-  int generateSatelliteOrbitFor(Orbit _o, int _counter, Boolean _ring){
+  private int generateSatelliteOrbitFor(Orbit _o, int _counter, Boolean _ring){
     // data from table on Scouts p. 28 (corresponding text on pp.36-7)  
     IntList availableOrbits = new IntList();
     availableOrbits.append( new int[]{1,1,1,2,2,3,3,4,5,6,7,8,9,10,11,12,13,15,20,25,30,35,40,45,50,55,60,65,75,100,125,150,175,200,225,250,275,300,325} );
@@ -233,7 +233,7 @@ class OrbitBuilder {
     return availableOrbits.get(index);    
   }
 
-  void pruneFor(Orbit _o, IntList _list){
+  private void pruneFor(Orbit _o, IntList _list){
     for (int i = _list.size()-1; i >= 0; i--){
       if (_o.orbitIsTaken(_list.get(i))){
         _list.remove(i);
@@ -244,7 +244,7 @@ class OrbitBuilder {
   // TO_DO: MegaTraveller errata p.22 clarifies this is the highest orbit number, not the count of total orbits
   //  since this is 0-based, we should review for off-by-one issues - some earlier struggles/bugs may
   //  have been symptoms, and the bandaids put it place inconsistent
-  int calculateMaxOrbitsFor(Star _star){   
+  private int calculateMaxOrbitsFor(Star _star){   
     int modifier = 0;
     if (_star.size == 2   ){ modifier += 8; }  // rules include Ia/Ib supergiants here, but no means to generate them - omitting
     if (_star.size == 3   ){ modifier += 4; }
@@ -260,7 +260,7 @@ class OrbitBuilder {
   }
 
   // we have shifted to TreeMap, look for opportunities to simplify/eliminate this one
-  void placeEmptyOrbitsFor(Star _star, int _maxOrbit){
+  private void placeEmptyOrbitsFor(Star _star, int _maxOrbit){
     println("Determining empty orbits for " + _star);
     
     // Empty orbits per Scouts p.34 (table on p. 29)
@@ -310,7 +310,7 @@ class OrbitBuilder {
   // flaws with this approach still exist and should be remedied later
   // TreeMap might give us some tools to simplify
   // TO_DO: this needs to be more robust
-  int getRandomUnassignedOrbitFor(Star _star, int _maxOrbit){
+  private int getRandomUnassignedOrbitFor(Star _star, int _maxOrbit){
     int counter = 0;               // probably need to be more thoughtful if there are none available, but using counter to escape infinite loop just in case
     while(counter < 100){
       int choice = floor(random(2, _maxOrbit));      // see notes in placeEmptyOrbits() - 0 & 1 are 'protected'  
@@ -328,7 +328,7 @@ class OrbitBuilder {
   //  - DONE  orbit is suppressed by nearby companion star
   //  -         TO_DO (Far companion case is unclear - in RAW, they don't have an orbit num so are not evaluated in this test)
   //  - DONE  orbit is too hot to allow planets
-  void placeForbiddenOrbitsFor(Star _star, int _maxOrbit){
+  private void placeForbiddenOrbitsFor(Star _star, int _maxOrbit){
     println("Determining forbidden orbits for " + _star);
     for (int i = 0; i <= _maxOrbit; i++){
       if (_star.orbitIsForbidden(i) && _star.orbitIsNullOrEmpty(i)){
@@ -337,13 +337,13 @@ class OrbitBuilder {
     }
   }    
 
-  Boolean capturedPlanetsArePresentFor(Star _star){   // parameter unused here, but needed in the MT override
+  protected Boolean capturedPlanetsArePresentFor(Star _star){   // parameter unused here, but needed in the MT override
     return roll.one() > 4;
   }
 
-  int capturedPlanetQuantity(){ return floor(roll.one()/2); }
+  protected int capturedPlanetQuantity(){ return floor(roll.one()/2); }
 
-  void placeCapturedPlanetsFor(Star _star){
+  private void placeCapturedPlanetsFor(Star _star){
     println("Placing Captured Planets for " + _star);
     // ambiguity here - some of the notes from Empty Orbits (above) also applies - but:
     //  - by RAW, these are placed in orbit 2-12 +/- deviation
@@ -375,7 +375,7 @@ class OrbitBuilder {
     }        
   }  
 
-  float generateCapturedOrbit(){
+  private float generateCapturedOrbit(){
     int baseline = roll.two();
     int deviation = roll.two(-7);
 
@@ -395,7 +395,7 @@ class OrbitBuilder {
     return baseline + (float)deviation/10;
   }  
 
-  int generateGasGiantCountFor(Star _star){
+  protected int generateGasGiantCountFor(Star _star){
     println("Generating Gas Giant count for " + _star);
     int gasGiantCount = 0;        
     if (roll.two() <= 9){  // for MegaTraveller, they changed the die throw to 5+, but it's the same odds (83.3%) so no need to override - MTRM p. 28
@@ -431,7 +431,7 @@ class OrbitBuilder {
     return gasGiantCount;
   }
 
-  void placeGasGiantsFor(Star _star, int _maxOrbit){
+  protected void placeGasGiantsFor(Star _star, int _maxOrbit){
     println("Placing Gas Giants for " + _star);
     _star.gasGiantCount = generateGasGiantCountFor(_star);
 
@@ -453,7 +453,7 @@ class OrbitBuilder {
   }  
 
   // very close to Orbit.prune(), refactor!
-  void pruneInnerZoneFor(Star _star, IntList _list){
+  protected void pruneInnerZoneFor(Star _star, IntList _list){
     for (int i = _list.size()-1; i >= 0; i--){
       if (_star.orbitIsInnerZone(_list.get(i))){
         _list.remove(i);
@@ -462,7 +462,7 @@ class OrbitBuilder {
   }
   
   // very close to pruneInnerZone..., refactor!
-  void keepOnlyInnerZoneFor(Star _star, IntList _list){
+  protected void keepOnlyInnerZoneFor(Star _star, IntList _list){
     for (int i = _list.size()-1; i >= 0; i--){
       if (!_star.orbitIsInnerZone(_list.get(i))){
         _list.remove(i);
@@ -470,7 +470,7 @@ class OrbitBuilder {
     }
   }
 
-  int generatePlanetoidBeltCountFor(Star _star){
+  protected int generatePlanetoidBeltCountFor(Star _star){
     println("Generating Planetoid Belts count for " + _star);
     int planetoidCount = 0;        
     if (roll.two(-_star.gasGiantCount) <= 6){
@@ -500,7 +500,7 @@ class OrbitBuilder {
   }
 
   // will be very similar to GasGiants, above - duplication OK for now, but look for refactorings
-  void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
+  private void placePlanetoidBeltsFor(Star _star, int _maxOrbit){
     println("Placing Planetoid Belts for " + _star);
     // uses # of Gas Giants as a modifier - rules don't specify, but I assume that means just for
     // the star which the potential planetoids orbit, not all companions
@@ -538,7 +538,7 @@ class OrbitBuilder {
     }
   }    
 
-  IntList availableOrbitsFor(Star _star, int _maxOrbit){
+  protected IntList availableOrbitsFor(Star _star, int _maxOrbit){
     IntList result = new IntList();
     for (int i = 0; i <= _maxOrbit; i++){
       if (_star.orbitIsNull(i)){
@@ -550,7 +550,7 @@ class OrbitBuilder {
     return result;
   }  
 
-  void placePlanetsFor(Star _star, int _maxOrbit){
+  private void placePlanetsFor(Star _star, int _maxOrbit){
     println("Placing Planets for " + _star);
     for (int i = 0; i < _maxOrbit; i++){
       if (_star.orbitIsNull(i)){
@@ -566,7 +566,7 @@ class OrbitBuilder {
   // TO_DO: MT errata states: maximum population is Mainworld population -1
   //   we can't impose this until we know the mainworld, so this method (or later)
   //   is where the adjustment needs to go
-  void designateMainworldFor(Star _star){
+  private void designateMainworldFor(Star _star){
     println("Finding mainworld");
     // Scouts p. 37: "The main world is the world in the system which has the greatest
     //  population. If more than one world has the same population, then select the world
@@ -660,7 +660,7 @@ class OrbitBuilder_MT extends OrbitBuilder {
   // MegaTraveller RAW follows the same procedure (MTRM p. 26) for generateCompanionOrbitFor(Star)
   // However the errata changes the "Far" entry - roughly equivalent to my previous version, 
   // but range is now 14-19 (previously 14-17). orbital zones data goes up to 20, so we should be OK
-  int farOrbits(){ return roll.one(13); }
+  protected int farOrbits(){ return roll.one(13); }
   
   // MegaTraveller follows the same procedure (MTRM p. 26) for calculateMaxOrbitsFor(Star)
 
@@ -677,7 +677,7 @@ class OrbitBuilder_MT extends OrbitBuilder {
   // though technically this method is for Step 23 on p. 28
   //
   // implementing the full errata here, but also retaining the Gas Giant modifier on the second roll
-  int generatePlanetoidBeltCountFor(Star _star){
+  protected int generatePlanetoidBeltCountFor(Star _star){
     println("Generating Planetoid Belts count for " + _star);
     int planetoidCount = 0;        
     if (roll.two(_star.gasGiantCount) >= 8){
@@ -717,14 +717,14 @@ class OrbitBuilder_MT extends OrbitBuilder {
   
   // MegaTraveller Captured Planet procedure is identical to Scouts except for the odds:
   // they added a modifier for type A/B stars (MTRM p. 28)
-  Boolean capturedPlanetsArePresentFor(Star _star){
+  protected Boolean capturedPlanetsArePresentFor(Star _star){
     int modifier = 0;
     if (_star.type == 'A' || _star.type == 'B'){ modifier += 1; }
     return roll.one(modifier) > 4;
   }
   
   // errata also changes the quantity calculation
-  int capturedPlanetQuantity(){ 
+  protected int capturedPlanetQuantity(){ 
     int dieThrow = roll.one();
     int result = 1;
     if (dieThrow == 4 || dieThrow == 5){ result = 2; }
@@ -733,7 +733,7 @@ class OrbitBuilder_MT extends OrbitBuilder {
   }
   
   // MegaTraveller follows a slightly different (though probably equivalent) procedure - MTRM p.28
-  void placeGasGiantsFor(Star _star, int _maxOrbit){
+  protected void placeGasGiantsFor(Star _star, int _maxOrbit){
     println("Placing Gas Giants for " + _star);
     _star.gasGiantCount = generateGasGiantCountFor(_star);
 
@@ -800,7 +800,7 @@ class OrbitBuilder_MT extends OrbitBuilder {
 
 class OrbitBuilder_TNE extends OrbitBuilder_MT {
   // T:NE changes this back to the Scouts method (1d6 * 1000 AU) (T:NE p. 192)
-  int farOrbits(){
+  protected int farOrbits(){
     int distance = 1000 * roll.one();                           // distance in AU, converted to orbit number below
     if (distance == 2000                    ){ return 15; }
     if (distance == 3000 || distance == 4000){ return 16; }
