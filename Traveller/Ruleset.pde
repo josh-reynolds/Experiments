@@ -456,10 +456,10 @@ class Ruleset_T5 extends Ruleset {
   }
   
   OrbitBuilder newOrbitBuilder(){
-    return new OrbitBuilder_TNE();
+    return new OrbitBuilder_T5();
   }
   
-  // should be used for "UWP at system level" rulesets (i.e. CT77 + CT81 + T4)
+  // should be used for "UWP at system level" rulesets (i.e. CT77 + CT81 + T4 + T5)
   UWP newUWP(char _starport, int _size, int _atmo, int _hydro, int _pop, int _gov, int _law, int _tech){
     return new UWP(_starport, _size, _atmo, _hydro, _pop, _gov, _law, _tech);   // throw an exception?
   }
