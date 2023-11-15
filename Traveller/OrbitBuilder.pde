@@ -5,7 +5,7 @@ class OrbitBuilder {
     roll = new Dice();
   }
   
-  void newPrimary(System_ScoutsEx _parent){
+  void newPrimary(System _parent){
     Star star = ruleset.newStar(_parent);
     _parent.primary = star;
     
@@ -831,7 +831,9 @@ class OrbitBuilder_TNE extends OrbitBuilder_MT {
 // not sure yet about the proper hierarchy - I've been skipping the 'continuation' methods; arguably if they existed
 // we'd have a parallel leg of this set of classes for those. In the meantime, we'll just extend/override existing classes 
 class OrbitBuilder_T5 extends OrbitBuilder_TNE {
-  void newPrimary(System_ScoutsEx _parent){
+  void newPrimary(System _parent){
+    println("OrbitBuilder_T5.newPrimary()");
+    
     //Star star = ruleset.newStar(_parent);
     //_parent.primary = star;
     

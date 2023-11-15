@@ -11,6 +11,8 @@ class System {
   String name = "";
   ArrayList<Route> routes;
   Dice roll;
+
+  Star primary;  // unused until the Scouts fork - pulling up to enable continuation method
   
   System(Coordinate _coord){
     coord = _coord;
@@ -249,7 +251,7 @@ class System_ScoutsEx extends System_CT81 {
   //  - How to mark mainworld
   //  - Extended/derived characteristics (save for later)
 
-  Star primary;
+  //Star primary;
   Habitable mainworld;
   int gasGiantCount;
   Boolean militaryBase = false;
@@ -677,6 +679,8 @@ class System_T5 extends System_CT81 {
       symbols = calculateSymbols();
       
       natives = determineNativeLife();
+      
+      ruleset.newOrbitBuilder().newPrimary(this);
     }
   }
 

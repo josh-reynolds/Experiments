@@ -1599,3 +1599,17 @@ D'oh! Classic mistake. Need to guard the call to calculateImportance() behind
 'if (occupied)'. FIXED.
 
 
+11/14/23
+
+Comparing flow for continuation vs. extended:
+
+System presence
+Generate mainworld
+Additional system characteristics
+Stars & orbits
+
+System presence
+Stars & orbits
+Designate mainworld
+Additional system characteristics
+
