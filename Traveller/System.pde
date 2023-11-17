@@ -879,7 +879,7 @@ class System_T5 extends System_CT81 {
   //  also, the extensions are pushing the Trade Classes off-screen, probably need to break this apart
   //  one format for the subsector summary, and another with all the details for console output, text files, detail screens, etc.
   String occupiedSystemString(){
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString();
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString() + primary.getSpectralType();
   }
   
   String extendedString(){

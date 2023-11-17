@@ -834,8 +834,32 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
   void newPrimary(System _parent){
     println("OrbitBuilder_T5.newPrimary()");
     
-    //Star star = ruleset.newStar(_parent);
-    //_parent.primary = star;
+    Star star = ruleset.newStar(_parent);
+    _parent.primary = star;
+    
+    println(_parent.primary);
+    
+    //DONE System presence
+    //...  Generate mainworld
+    //DONE   Mainworld UWP
+    //       Mainworld type
+    //DONE   Bases
+    //       HZ variance & climate
+    //       Gas Giant count
+    //       Planetoid belt count
+    //...  Additional system characteristics
+    //...    Trade classifications
+    //DONE   Extensions
+    //DONE   Travel Zones
+    //       Native Life
+    //...  Stars & orbits
+    //       Primary
+    //       Companions & placement
+    //       Total worlds
+    //       Mainworld placement
+    //       Gas Giant placement
+    //       Planetoid placement
+    //       Other world placement
     
     //createCompanionsFor(star);     // aren't companions just a special-case satellite? unify this and work with the composite structure
     //createSatellitesFor(star);     // Star.createSatellites() is recursive on companion stars - need to handle this case

@@ -1613,3 +1613,23 @@ Stars & orbits
 Designate mainworld
 Additional system characteristics
 
+11/16/23
+
+To turn on newPrimary() from OrbitBuilder_T5, I needed to change the argument
+from System_ScoutsEx to System; also had to add a parent field to System. The latter 
+isn't used for the 'without orbits' leg of the System hierarchy, but it
+unifies the interface (and we might need this once we build more 'continuation' 
+procedures). Change went smoothly, I think the parent field was the only reason
+we needed the Scouts subclass here.
+
+In that vein, one other change that might smooth things later: if we introduce
+the 'mainworld' field all the way up the hierarchy. Then UWP is not a property
+of System any longer, but of mainworld. Probably eliminates some duplication and 
+even though by RAW there's no explicit mainworld in the 'without orbits' rulesets,
+it *is* implied. Will give this a go later, perhaps during the rest of the T5
+continuation method.
+
+
+
+
+
