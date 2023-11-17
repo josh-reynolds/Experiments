@@ -851,7 +851,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //...    Trade classifications
     //DONE   Extensions
     //DONE   Travel Zones
-    //       Native Life
+    //DONE   Native Life
     //...  Stars & orbits
     //       Primary
     //       Companions & placement

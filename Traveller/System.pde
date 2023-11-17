@@ -251,7 +251,6 @@ class System_ScoutsEx extends System_CT81 {
   //  - How to mark mainworld
   //  - Extended/derived characteristics (save for later)
 
-  //Star primary;
   Habitable mainworld;
   int gasGiantCount;
   Boolean militaryBase = false;
@@ -871,7 +870,7 @@ class System_T5 extends System_CT81 {
     int l = max(1, labor);
     int i = max(1, infrastructure);
     int e = efficiency;
-    if (e == 0){ e = 1;}
+    if (e == 0){ e = 1; }
     return r * l * i * e;
   }
  

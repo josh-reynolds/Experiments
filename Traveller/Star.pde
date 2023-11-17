@@ -541,3 +541,26 @@ class Star_TNE extends Star_MT{
   
   // T:NE repeats the MegaTraveller table that maps to orbitMaskedByCompanion (T:NE p. 192)
 }
+
+class Star_T5 extends Star_TNE {
+  Star_T5(System _parent){ super(_parent); }
+  Star_T5(System _parent, JSONObject _json){ super(_parent, _json); }  
+  Star_T5(Orbit _barycenter, int _orbit, String _zone, System _parent){ super(_barycenter, _orbit, _zone, _parent); } 
+  Star_T5(Orbit _barycenter, System _parent, JSONObject _json){ super(_barycenter, _parent, _json); }
+  Star_T5(Boolean _primary, System _parent, String _s){ super(_primary, _parent, _s); }    
+
+  // T5 uses flux (d6-d6) instead of 2d6, but the curve is the same and a simple conversion (2d6-7 equivalent to d6-d6)
+  //  it also adjusts the type distribution a bit (not sure I like this one, biased towards G stars instead of M)
+  //  TO_DO: need to save the primary flux value for companion rolls
+  char primaryStarType(int _dieThrow){
+    int flux = _dieThrow - 7;
+    // table on p. 436 includes classes O, B and BD (Brown Dwarf), but not possible to roll that result for primaries - omitting
+    if (flux <= -4                   ){ return 'A'; }
+    if (flux >= -3 && flux <= -2     ){ return 'F'; }  
+    if (flux >= -1 && flux <= 0      ){ return 'G'; }
+    if (flux >= 1 && flux <= 2       ){ return 'K'; }
+    if (flux >= 3                    ){ return 'M'; }
+    return 'X';    
+  }
+
+}

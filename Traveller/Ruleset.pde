@@ -471,11 +471,11 @@ class Ruleset_T5 extends Ruleset {
   
   // primary stars
   Star newStar(System _parent){
-    return new Star_TNE(_parent);
+    return new Star_T5(_parent);
   }
   
   // companion stars
   Star newStar(Orbit _barycenter, int _orbit, String _zone, System _parent){
-    return new Star_TNE(_barycenter, _orbit, _zone, _parent);
+    return new Star_T5(_barycenter, _orbit, _zone, _parent);
   }
 }

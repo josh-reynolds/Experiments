@@ -1629,7 +1629,39 @@ even though by RAW there's no explicit mainworld in the 'without orbits' ruleset
 it *is* implied. Will give this a go later, perhaps during the rest of the T5
 continuation method.
 
+Currently for 'with orbits' we have:
 
+System_ScoutsEx
+  Habitable mainworld
 
+Habitable.setMainworld()
+Habitable.isMainworld()
 
+In 'without orbits' we have a raw UWP attached directly to the System - so would 
+need to move this field up, as well as attach/generate that UWP on the
+corresponding Habitable. This would also cover the 'Satellite/Planet' step
+in the T5 procedure.
 
+11/17/23
+
+Reviewing changes needed for T5 Star generation:
+
+ruleset.newStar()
+  Star_T5 ctor(System)
+    Star_TNE ctor(System)
+      Star_MT ctor(System)
+        Star ctor(System)
+          primary = true
+          parent = System
+          Star.createStar()
+            type = Star.generateType()
+              Star_MT.primaryStarType()
+            decimal = floor(random(10))
+            size = Star.generateSize()
+              Star_MT.primarySize()
+            if (size == 7){ decimal = 0; }
+            Star_MT.adjustSpecialCases()
+            orbitalZones = Star.retrieveOrbitalZones()
+
+Those methods on Star_MT need to be compared with T5 RAW (and also review 
+orbital zone data of course).
