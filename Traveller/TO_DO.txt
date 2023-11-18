@@ -161,6 +161,7 @@
 //  * DONE Add T4 generation ruleset
 //  * FIX  BUG: density resets to 'Standard' when changing rulesets
 //  * .... Add T5 generation ruleset
+//  *      Review/incorporate T5 errata
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      Move away from string parsing approach in Star JSON ctor
 //  *      Flesh out tests (this will take a while...)

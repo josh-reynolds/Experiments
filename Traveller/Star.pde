@@ -563,4 +563,41 @@ class Star_T5 extends Star_TNE {
     return 'X';    
   }
 
+  // T5 has separate size tables per spectral type and also uses a flux die throw (T5 p. 436)
+  // TO_DO: T5 includes (rare) possibility of supergiant stars, think I omitted from orbit tables
+  //   might throw an exception on calling retrieveOrbitalZones()
+  //   T5 itself doesn't use this type of table, but we're hooking into the process outlined in Star.createStar()
+  int primarySize(int _dieThrow){
+    int flux = _dieThrow - 7;
+    int size = 5;   // default to main sequence dwarfs, can leave out of tables below
+    
+    if (type == 'A'){
+      if (flux == -5 || flux == -4){ size = 1; }  // includes both Ia and Ib supergiants
+      if (flux == -3              ){ size = 2; }
+      if (flux == -2              ){ size = 3; }
+      if (flux == -1              ){ size = 4; }
+      if (flux == 5               ){ size = 7; }  // per the table, can't generate A*VI stars
+    }
+    if (type == 'F' || type == 'G' || type == 'K'){
+      if (flux == -5 ){ size = 2; }
+      if (flux == -4 ){ size = 3; }
+      if (flux == -3 ){ 
+        if (type == 'K' && decimal > 4){    // size IV not possible for K5-K9 stars 
+          size = 5; 
+        } else {
+          size = 4;
+        }
+      }
+      if (flux == 4  ){ size = 6; }
+      if (flux == 5  ){ size = 7; }
+    }
+    if (type == 'M'){
+      if (flux <= -3 ){ size = 2; }
+      if (flux == -2 ){ size = 3; } 
+      if (flux == 4  ){ size = 6; } // size IV not possible for M0-M9 stars
+      if (flux == 5  ){ size = 7; }
+    }
+    
+    return size;   
+  }
 }
