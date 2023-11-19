@@ -1665,3 +1665,4 @@ ruleset.newStar()
 
 Those methods on Star_MT need to be compared with T5 RAW (and also review 
 orbital zone data of course).
+

@@ -839,6 +839,8 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     
     println(_parent.primary);
     
+    createCompanionsFor(star);
+    
     //DONE System presence
     //...  Generate mainworld
     //DONE   Mainworld UWP
@@ -853,7 +855,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //DONE   Travel Zones
     //DONE   Native Life
     //...  Stars & orbits
-    //       Primary
+    //DONE   Primary
     //       Companions & placement
     //       Total worlds
     //       Mainworld placement
@@ -866,5 +868,55 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //designateMainworldFor(star);   // should there be something in createCompanions()? work this out later
   }
 
+  // T5 p. 436
+  private void createCompanionsFor(Star _star){
+    
+    // flux for close/near/far stars in the system
+    // flux for companions for each star present (including primary)
+    // place stars in orbits:
+    //   companion   - inside orbit 0
+    //   close 1d-1  - orbits 0-1-2-3-4-5
+    //   near  1d+5  - orbits 6-7-8-9-10-11
+    //   far   1d+11 - orbits 12-13-14-15-16-17
+    // determine type/size of all stars
+    
+    int flux = roll.one() - roll.one();
+    if (flux >= 3){
+      int orbit = roll.one(-1);
+      println("close star in orbit " + orbit);
+    }
+
+    flux = roll.one() - roll.one();
+    if (flux >= 3){
+      int orbit = roll.one(5);
+      println("near star in orbit " + orbit);
+    }
+
+    flux = roll.one() - roll.one();
+    if (flux >= 3){
+      int orbit = roll.one(11);
+      println("far star in orbit " + orbit);
+    }
+    
+    //if (debug == 2){ println("Creating companions for " + _star); }
+    //int compCount = 0;
+    //if (_star.isPrimary() || _star.isFar()){
+    //  compCount = generateCompanionCountFor(_star);
+    //}    
+    //if (debug >= 1){ println(compCount + " companions"); }
+
+    //for (int i = 0; i < compCount; i++){
+    //  int orbitNum = generateCompanionOrbitFor(_star, i);
+      
+    //  Star companion = ruleset.newStar(_star, orbitNum, _star.orbitalZones[orbitNum], _star.parent);
+
+    //  if (orbitNum == 0 || companion.insideStar()){
+    //    if (debug >= 1){ println("Companion in CLOSE orbit"); }        
+    //    _star.closeCompanion = companion;        
+    //  }
+
+    //  _star.addOrbit(companion.getOrbitNumber(), companion);
+    //}
+  }
   
 }
