@@ -880,23 +880,34 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //   far   1d+11 - orbits 12-13-14-15-16-17
     // determine type/size of all stars
     
-    int flux = roll.one() - roll.one();
-    if (flux >= 3){
-      int orbit = roll.one(-1);
-      println("close star in orbit " + orbit);
+    // May come up with a better structure later, but for now, let's do a pair of arrays:
+    // 0 - Primary
+    // 1 - Close
+    // 2 - Near
+    // 3 - Far
+    Boolean[] stars      = {true,  false, false, false};
+    Boolean[] companions = {false, false, false, false};
+    int flux;
+
+    for (int i = 1; i < stars.length; i++){
+      println(i);
+      flux = roll.one() - roll.one();
+      if (flux >= 3){
+        stars[i] = true;
+      }
     }
 
-    flux = roll.one() - roll.one();
-    if (flux >= 3){
-      int orbit = roll.one(5);
-      println("near star in orbit " + orbit);
+    for (int i = 0; i < companions.length; i++){
+      println(i);
+      flux = roll.one() - roll.one();
+      if (flux >= 3 && stars[i]){
+        companions[i] = true;
+      } 
     }
-
-    flux = roll.one() - roll.one();
-    if (flux >= 3){
-      int orbit = roll.one(11);
-      println("far star in orbit " + orbit);
-    }
+    
+    printArray(stars);
+    printArray(companions);
+    
     
     //if (debug == 2){ println("Creating companions for " + _star); }
     //int compCount = 0;
