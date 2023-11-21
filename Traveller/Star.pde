@@ -119,7 +119,7 @@ class Star extends Orbit {
       return primaryStarType(dieThrow);
     } else {
       typeRoll = 0;
-      dieThrow += ((System_ScoutsEx)parent).primary.typeRoll;
+      dieThrow += parent.primary.typeRoll;
       return companionStarType(dieThrow);
     }
   }
@@ -149,7 +149,7 @@ class Star extends Orbit {
       return primarySize(dieThrow);
     } else {
       sizeRoll = 0;
-      dieThrow += ((System_ScoutsEx)parent).primary.sizeRoll;
+      dieThrow += parent.primary.sizeRoll;
       return companionSize(dieThrow);
     }
   }
@@ -481,7 +481,7 @@ class Star_MT extends Star {
     }  
     if (_dieThrow > 4 && _dieThrow < 12){ return 5;   }  // change from RAW according to errata p. 22
     if (_dieThrow > 11                ){ 
-      int primarySize = ((System_ScoutsEx)parent).primary.size;
+      int primarySize = parent.primary.size;
       if (primarySize == 2 || primarySize == 3 || primarySize == 4){   // change from RAW according to errata p. 22
         return 7;
       } else {

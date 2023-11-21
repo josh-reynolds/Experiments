@@ -18,7 +18,7 @@ class OrbitBuilder {
   // CREATE COMPANIONS
   // ================================================================
 
-  private void createCompanionsFor(Star _star){
+  protected void createCompanionsFor(Star _star){
     if (debug == 2){ println("Creating companions for " + _star); }
     int compCount = 0;
     if (_star.isPrimary() || _star.isFar()){
@@ -869,7 +869,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
   }
 
   // T5 p. 436
-  private void createCompanionsFor(Star _star){
+  protected void createCompanionsFor(Star _star){
     
     // flux for close/near/far stars in the system
     // flux for companions for each star present (including primary)
@@ -890,7 +890,6 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     int flux;
 
     for (int i = 1; i < stars.length; i++){
-      println(i);
       flux = roll.one() - roll.one();
       if (flux >= 3){
         stars[i] = true;
@@ -898,7 +897,6 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     }
 
     for (int i = 0; i < companions.length; i++){
-      println(i);
       flux = roll.one() - roll.one();
       if (flux >= 3 && stars[i]){
         companions[i] = true;
@@ -907,6 +905,14 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     
     printArray(stars);
     printArray(companions);
+    
+    for (int i = 1; i < stars.length; i++){
+      if (stars[i]){
+        int orbitNumber = floor(((i - 1) * 6) + random(6));
+        Star companion = ruleset.newStar(_star, orbitNumber, _star.orbitalZones[orbitNumber], _star.parent);
+        _star.addOrbit(companion.getOrbitNumber(), companion);
+      }
+    }
     
     
     //if (debug == 2){ println("Creating companions for " + _star); }

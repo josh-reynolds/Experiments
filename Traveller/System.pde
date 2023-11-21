@@ -878,10 +878,23 @@ class System_T5 extends System_CT81 {
   //  also, the extensions are pushing the Trade Classes off-screen, probably need to break this apart
   //  one format for the subsector summary, and another with all the details for console output, text files, detail screens, etc.
   String occupiedSystemString(){
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString() + primary.getSpectralType();
+    //return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString() + primary.getSpectralType();
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString() + starString();
   }
   
   String extendedString(){
     return this.toString() + "\n\t" + importanceString() + economicString() + resourceUnits() + "RU " + cultureString() + natives;  
+  }
+  
+  // TO_DO: copy-paste evil here - borrowed from the Scouts_Ex leg of this hierarchy - clean this up
+  String starString(){
+    String description = primary.getSpectralType() + " ";
+    if (primary.closeCompanion != null){ description += primary.closeCompanion.getSpectralType() + " "; }
+    
+    ArrayList<Star> comps = primary.getCompanions();
+    for (Star s : comps){
+      description += s.getSpectralType() + " ";
+    }
+    return description;
   }
 }
