@@ -114,12 +114,18 @@ class Star extends Orbit {
   
   char generateType(){
     int dieThrow = roll.two();
+    
+    println("In Star.generateType(): " + dieThrow);
+    
     if (isPrimary()){
       typeRoll = dieThrow;
       return primaryStarType(dieThrow);
     } else {
       typeRoll = 0;
       dieThrow += parent.primary.typeRoll;
+      
+      println("In Star.generateType(): adjusted = " + dieThrow);
+      
       return companionStarType(dieThrow);
     }
   }
@@ -599,5 +605,20 @@ class Star_T5 extends Star_TNE {
     }
     
     return size;   
+  }
+  
+  // same discussion here as under primaryStarType() above
+  //  reviewing/debugging if flux values are correctly propagated
+  //  value is Primary Flux + (1d-1)
+  char companionStarType(int _dieThrow){
+    int flux = _dieThrow + roll.one(-1);
+
+    if (flux <= -4                   ){ return 'A'; }
+    if (flux >= -3 && flux <= -2     ){ return 'F'; }  
+    if (flux >= -1 && flux <= 0      ){ return 'G'; }
+    if (flux >= 1 && flux <= 2       ){ return 'K'; }
+    if (flux >= 3 && flux <= 5       ){ return 'M'; }
+    if (flux >= 6 && flux <= 5       ){ return 'D'; }  // TO_DO: introducing new star type (Brown Dwarf) need to plumb this through
+    return 'X';
   }
 }
