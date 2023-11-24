@@ -611,14 +611,21 @@ class Star_T5 extends Star_TNE {
   //  reviewing/debugging if flux values are correctly propagated
   //  value is Primary Flux + (1d-1)
   char companionStarType(int _dieThrow){
-    int flux = _dieThrow + roll.one(-1);
+    // dieThrow passed in has been modified by primary score already, which is a 2d6 range
+    // we actually need primary roll as flux plus 1d-1
+    // will see about pulling this distinction higher, but for now we can probably just
+    // retrieve the primary value, convert to flux and add the 1d-1
+    
+    int primaryFlux = parent.primary.typeRoll - 7;
+    
+    int flux = primaryFlux + roll.one(-1);
 
     if (flux <= -4                   ){ return 'A'; }
     if (flux >= -3 && flux <= -2     ){ return 'F'; }  
     if (flux >= -1 && flux <= 0      ){ return 'G'; }
     if (flux >= 1 && flux <= 2       ){ return 'K'; }
     if (flux >= 3 && flux <= 5       ){ return 'M'; }
-    if (flux >= 6 && flux <= 5       ){ return 'D'; }  // TO_DO: introducing new star type (Brown Dwarf) need to plumb this through
+    if (flux >= 6                    ){ return 'D'; }  // TO_DO: introducing new star type (Brown Dwarf) need to plumb this through
     return 'X';
   }
 }
