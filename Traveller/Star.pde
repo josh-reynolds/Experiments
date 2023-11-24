@@ -617,7 +617,6 @@ class Star_T5 extends Star_TNE {
     // retrieve the primary value, convert to flux and add the 1d-1
     
     int primaryFlux = parent.primary.typeRoll - 7;
-    
     int flux = primaryFlux + roll.one(-1);
 
     if (flux <= -4                   ){ return 'A'; }
@@ -627,5 +626,44 @@ class Star_T5 extends Star_TNE {
     if (flux >= 3 && flux <= 5       ){ return 'M'; }
     if (flux >= 6                    ){ return 'D'; }  // TO_DO: introducing new star type (Brown Dwarf) need to plumb this through
     return 'X';
+  }
+
+  // same discussion continues here - need to plumb through T5 flux values better, but do this for now
+  // also, much duplication with the corresponding primary method (primarySize) - refactor that too
+  int companionSize(int _dieThrow){
+    int primaryFlux = parent.primary.sizeRoll - 7;
+    int flux = primaryFlux + roll.one(2);     // new range with companion modifiers will be -2 to 13    
+    int size = 5;   // default to main sequence dwarfs, can leave out of tables below
+    
+    if (type == 'A'){
+      if (flux == -3              ){ size = 2; }
+      if (flux == -2              ){ size = 3; }
+      if (flux == -1              ){ size = 4; }
+      if (flux == 5               ){ size = 7; }  // per the table, can't generate A*VI stars
+      // values higher than 5 are size V for type A stars, which is the default value 
+    }
+    if (type == 'F' || type == 'G' || type == 'K'){
+      if (flux == -3 ){ 
+        if (type == 'K' && decimal > 4){    // size IV not possible for K5-K9 stars 
+          size = 5; 
+        } else {
+          size = 4;
+        }
+      }
+      if (flux == 4  ){ size = 6; }
+      if (flux == 5  ){ size = 7; }
+      if (flux >= 6  ){ size = 6; }
+    }
+    if (type == 'M'){
+      if (flux == -3 ){ size = 2; }
+      if (flux == -2 ){ size = 3; } 
+      if (flux == 4  ){ size = 6; } // size IV not possible for M0-M9 stars
+      if (flux == 5  ){ size = 7; }
+      if (flux >= 6  ){ size = 6; }
+    }
+    
+    return size;
+    
+    
   }
 }
