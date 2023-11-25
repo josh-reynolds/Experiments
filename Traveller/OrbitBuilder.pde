@@ -841,6 +841,8 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     
     createCompanionsFor(star);
     
+    int additionalWorlds = roll.two();
+    
     //DONE System presence
     //...  Generate mainworld
     //DONE   Mainworld UWP
@@ -856,7 +858,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //DONE   Native Life
     //...  Stars & orbits
     //DONE   Primary
-    //       Companions & placement
+    //DONE   Companions & placement
     //       Total worlds
     //       Mainworld placement
     //       Gas Giant placement
@@ -913,27 +915,5 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
         _star.addOrbit(companion.getOrbitNumber(), companion);
       }
     }
-    
-    
-    //if (debug == 2){ println("Creating companions for " + _star); }
-    //int compCount = 0;
-    //if (_star.isPrimary() || _star.isFar()){
-    //  compCount = generateCompanionCountFor(_star);
-    //}    
-    //if (debug >= 1){ println(compCount + " companions"); }
-
-    //for (int i = 0; i < compCount; i++){
-    //  int orbitNum = generateCompanionOrbitFor(_star, i);
-      
-    //  Star companion = ruleset.newStar(_star, orbitNum, _star.orbitalZones[orbitNum], _star.parent);
-
-    //  if (orbitNum == 0 || companion.insideStar()){
-    //    if (debug >= 1){ println("Companion in CLOSE orbit"); }        
-    //    _star.closeCompanion = companion;        
-    //  }
-
-    //  _star.addOrbit(companion.getOrbitNumber(), companion);
-    //}
   }
-  
 }

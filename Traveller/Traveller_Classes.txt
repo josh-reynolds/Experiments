@@ -1666,3 +1666,31 @@ ruleset.newStar()
 Those methods on Star_MT need to be compared with T5 RAW (and also review 
 orbital zone data of course).
 
+11/25/23
+
+I've added primary and companion star generation for T5. Some interesting/
+challenging differences in this ruleset. There's a new 'star' classification,
+ (Brown Dwarf) for one. Will need to incorporate properly.
+
+Also, the die throw procedures are all over the place. Trying to refactor 
+into some sort of consistency, but it's messy so far:
+
+Pre-T5: ~~~~~~~~~~~~~~
+generateSize()
+  _dieThrow = roll.two() || roll.two() + parent.primary.sizeRoll
+  primarySize(int _dieThrow) || companionSize(int _dieThrow)
+
+generateType()
+  _dieThrow = roll.two() || roll.two() + parent.primary.typeRoll
+  primaryStarType(int _dieThrow) || companionStarType(int _dieThrow)
+
+in pre-T5, _dieThrow parameter for companions is modified before call
+
+T5: ~~~~~~~~~~~~~~
+T5 primary type : _dieThrow - 7 (or FLUX)
+T5 primary size : _dieThrow - 7 (or FLUX)
+
+T5 companion type : primaryFlux + 1d-1
+T5 companion size : primaryFlux + 1d+2
+
+in T5, _dieThrow parameter currently ignored for companions

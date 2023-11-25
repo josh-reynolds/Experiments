@@ -663,7 +663,5 @@ class Star_T5 extends Star_TNE {
     }
     
     return size;
-    
-    
   }
 }
