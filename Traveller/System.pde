@@ -897,4 +897,24 @@ class System_T5 extends System_CT81 {
     }
     return description;
   }
+
+  // copying in from System_ScoutsEx - will probably be shifting this subclass over to that leg,
+  // then this can go away altogether
+  String list(){
+    String result = "";
+    if (occupied){
+      result += this.toString() + "\n";
+      //result += proseDescription();
+      result += "Primary: " + primary.toString() + "\n";
+      for (Orbit o : primary.getAll(Orbit.class)){
+        if (o.orbitNumber == -1){ continue; }
+        for (int i = 0; i < o.orbitDepth - 1; i++){
+          result += "   ";
+        }
+        result += o.offsetOrbitNumber + " " + o + " " + o.orbitalZone + "\n";
+      }
+    } else {
+    }
+    return result;
+  }
 }
