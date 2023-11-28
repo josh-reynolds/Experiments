@@ -444,7 +444,7 @@ class Ruleset_T5 extends Ruleset {
   }  
   
   System newSystem(JSONObject _json){ 
-    return new System_T5(_json);  
+    return new System_CT81(_json);    /// temporarily downgrading during shift to ScoutsEx forks  
   }
   
   UWPBuilder newUWPBuilder(){ 

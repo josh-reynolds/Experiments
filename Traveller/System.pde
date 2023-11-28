@@ -655,7 +655,7 @@ class System_MT extends System_ScoutsEx {
 }
 
 // TO_DO: very likely will shift this over to the Scouts branch once we add orbits, keeping simple for now 
-class System_T5 extends System_CT81 {
+class System_T5 extends System_MT {
   int importance;   // extensions have formatting, so will probably break these out into separate classes...
   int resources;
   int labor;
@@ -668,9 +668,22 @@ class System_T5 extends System_CT81 {
   String natives;  // not sure how to represent this yet, let's start with a simple string
   
   System_T5(Coordinate _coord, Boolean _occupied){
-    super(_coord, _occupied);
+    super(_coord);
+    occupied = _occupied;
     
-    if (occupied){ 
+    if (occupied){
+      name = lines[floor(random(lines.length))];
+      routes = new ArrayList<Route>();      
+      if (roll.two() <= 9){ gasGiant = true; }
+      
+      UWPBuilder ub = ruleset.newUWPBuilder();       
+      ub.newUWPFor(this);      
+      
+      navalBase = generateNavalBase();      
+      scoutBase = generateScoutBase();
+      trade = generateTradeClass(uwp);
+      travelZone = generateTravelZone();
+       
       importance = calculateImportance();
       resources = calculateResources();
       labor = calculateLabor();
@@ -687,11 +700,11 @@ class System_T5 extends System_CT81 {
     }
   }
 
-  System_T5(JSONObject _json){
-    super(_json);
+  //System_T5(JSONObject _json){
+  //  //super(_json);
     
-    // TO_DO: add extensions to JSON
-  }
+  //  // TO_DO: add extensions to JSON
+  //}
   
   // table from T5 p. 435
   int calculateImportance(){

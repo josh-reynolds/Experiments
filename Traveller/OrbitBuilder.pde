@@ -566,7 +566,7 @@ class OrbitBuilder {
   // TO_DO: MT errata states: maximum population is Mainworld population -1
   //   we can't impose this until we know the mainworld, so this method (or later)
   //   is where the adjustment needs to go
-  private void designateMainworldFor(Star _star){
+  protected void designateMainworldFor(Star _star){
     println("Finding mainworld");
     // Scouts p. 37: "The main world is the world in the system which has the greatest
     //  population. If more than one world has the same population, then select the world
@@ -843,6 +843,8 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     
     int additionalWorlds = roll.two();
     
+    designateMainworldFor(star);
+    
     //DONE System presence
     //...  Generate mainworld
     //DONE   Mainworld UWP
@@ -868,6 +870,30 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //createCompanionsFor(star);     // aren't companions just a special-case satellite? unify this and work with the composite structure
     //createSatellitesFor(star);     // Star.createSatellites() is recursive on companion stars - need to handle this case
     //designateMainworldFor(star);   // should there be something in createCompanions()? work this out later
+  }
+
+  protected void designateMainworldFor(Star _star){
+    // mainworld satellite or planet?
+    // HZ variance & climate
+    // (if satellite) orbit number
+    // (if satellite & GG) place GG in MW orbit
+    // (if satellite & !GG) place BigWorld in MW orbit
+    // (if belt) place as belt, disregard MW orbit value
+
+    // TO_DO: hardcoding orbit value to get this started...
+    int i = 3;
+    Planet p = new Planet(_star, i, _star.orbitalZones[i], this);
+    _star.addOrbit(i, p);
+
+    // TO_DO: the Planet ctor will create a UWP - will probably want to suppress eventually, but for now can replace with the pre-generated UWP
+    // Actually, getting a cast exception in this part of the Planet ctor, need to un-muddle UWPBuilder hierarchy too
+    UWP u = _star.parent.uwp;
+    p.setUWP(ruleset.newUWP(p, u.starport, u.size, u.atmo, u.hydro, u.pop, u.gov, u.law, u.tech));
+    
+    p.setMainworld(true);
+    
+    ((System_ScoutsEx)_star.parent).mainworld = p;
+    
   }
 
   // T5 p. 436
