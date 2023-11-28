@@ -256,6 +256,8 @@ class System_ScoutsEx extends System_CT81 {
   Boolean militaryBase = false;
   int populationMultiplier;
 
+  System_ScoutsEx(Coordinate _coord){ super(_coord); }
+
   System_ScoutsEx(Coordinate _coord, Boolean _occupied){
     super(_coord);
     occupied = _occupied;
@@ -496,6 +498,8 @@ class System_ScoutsEx extends System_CT81 {
 
 class System_MT extends System_ScoutsEx {
   int planetoidCount;
+  
+  System_MT(Coordinate _coord){ super(_coord); }
   
   System_MT(Coordinate _coord, Boolean _occupied){ 
     super(_coord, _occupied);
