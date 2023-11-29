@@ -427,7 +427,7 @@ class Ruleset_T5 extends Ruleset {
   }
   
   Boolean supportsTravelZones(){ return true; }
-  Boolean supportsStars()      { return false; }    // TO_DO: will re-enable once the continuation method is working
+  Boolean supportsStars()      { return true; }
   Boolean supportsDensity()    { return true; }
   Boolean supportsTraffic()    { return false; }    // breaking with precedent, T5 does *not* have variable Starport presence (T5 p. 432)
   

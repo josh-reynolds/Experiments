@@ -89,6 +89,7 @@ class Display extends Screen {
     for (System s : subs.systems.values()){
       if (s.hex.contains(mouseX, mouseY)){
         if (ruleset.supportsStars()){
+          println(s.extendedString());
           println(((System_ScoutsEx)s).list());
         } else {
           println(s.extendedString());
