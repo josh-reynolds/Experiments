@@ -1694,3 +1694,69 @@ T5 companion type : primaryFlux + 1d-1
 T5 companion size : primaryFlux + 1d+2
 
 in T5, _dieThrow parameter currently ignored for companions
+
+11/29/23
+
+Switched focus to wrapping up the T5 continuation procedure - will need to come 
+back to cleanup on the Star hierarchy.
+
+The main procedure is in the various System ctors, and the key distinction is 
+whether UWP is generated first (basic method) or orbits (extension method). The 
+key calls are:
+
+CONTINUATION:
+ruleset.newUWPBuilder().newUWPFor(this)
+ruleset.newOrbitBuilder().newPrimary(this)
+
+EXTENDED:
+ruleset.newOrbitBuilder().newPrimary(this)
+uwp = mainworld.getUWP()
+
+I was able to shift T5 over to the ScoutsEx leg by using the basic 'passthrough' 
+System ctor that only generates the hex support itself with no contents (previously 
+introduced into ScoutsEx to prevent conflict between the fuller ctor flows). Then 
+I'm (temporarily) copying down the previously inherited ctor content from System + 
+System_CT81 into the System_T5 ctor. This approach bypasses all the procedures 
+in System_ScoutsEx ctor and preserves the 'basic' generation I had previously. 
+With this scaffolding in place, can now start adding orbits to the system.
+
+(All the previous is a mess of course, and will get cleaned up - this is a temporary 
+state while under construction. And I'm hoping the resultant refactoring will result 
+in a cleaner design. The existing hierarchy and ctor hijinks are not great.)
+
+So, with that done, I'm trying to add the equivalent for designateMainworld(). In 
+the continuation case, we should create a Planet, attach the known mainworld UWP, 
+and put it into an orbit.
+
+Unfortunately that leads to the next issue needing unsnarling - the Planet ctor 
+relies/invokes UWPBuilder to create a UWP. In the continuation case we're going 
+to discard, so eventually a redesign should suppress this behaviour. But in the 
+short term, the UWPBuilder is cast to UWPBuilder_ScoutsEx so we can access the 
+'with orbits' version of newUWPFor(). This cast fails. The hierarchy of UWPBuilder 
+is:
+
+UWPBuilder              void newUWPFor(System _s)
+  UWPBuilder_CT81
+    UWPBuilder_T5
+  UWPBuilder_ScoutsEx   void newUWPFor(Orbit _o, Integer _size)
+    UWPBuilder_MT
+
+This was another weird one where I had to get creative to get the behaviour working 
+correctly. After reviewing the classes, I think UWPBuilder_T5 can move under 
+UWPBuilder_ScoutsEx. They maintain distinct entry points, and ScoutsEx already 
+has everything from the base class we need. The only potential issues I can see 
+are:
+
+1) losing anything valuable from UWPBuilder_CT81. In this case, there's a single
+    method that is overridden again in T5, so we are good.
+2) undesired overrides in ScoutsEx. Fortunately there are none. ScoutsEx adds 
+    generateXFor() and generateSubordinateX() methods, but no overrides. (Note 
+    that UWPBuilder_MT *does* override techGovModifier() so we don't want to hang
+    under there.
+
+Let's give it a go. And it works!
+
+Longer term, really need to overhaul. It's been workable so far, but these multiple
+parallel hierarchies are brittle, and moreover I've had to do tricks like above to 
+pull it off, so they aren't really clean inheritance. Should probably put more focus
+into interfaces. Analysis time.

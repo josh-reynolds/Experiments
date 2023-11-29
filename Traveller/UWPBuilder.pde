@@ -147,7 +147,7 @@ class UWPBuilder_CT81 extends UWPBuilder {
 //    Hydro mod identical
 //    Pop mod identical
 //    Gov mod identical
-class UWPBuilder_T5 extends UWPBuilder_CT81 {
+class UWPBuilder_T5 extends UWPBuilder_ScoutsEx {
   UWPBuilder_T5(){ }
 
   int generateSize(){ 
