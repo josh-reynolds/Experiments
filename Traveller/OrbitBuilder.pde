@@ -831,6 +831,9 @@ class OrbitBuilder_TNE extends OrbitBuilder_MT {
 // not sure yet about the proper hierarchy - I've been skipping the 'continuation' methods; arguably if they existed
 // we'd have a parallel leg of this set of classes for those. In the meantime, we'll just extend/override existing classes 
 class OrbitBuilder_T5 extends OrbitBuilder_TNE {
+  String mainworldType = "";
+  int HZVariance = 0;
+  
   void newPrimary(System _parent){
     println("OrbitBuilder_T5.newPrimary()");
     
@@ -843,14 +846,18 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     
     int additionalWorlds = roll.two();
     
+    mainworldType = determineMainworldType(_parent.uwp.size);
+    HZVariance = determineHZVariance();
     designateMainworldFor(star);
+    
+    // TO_DO: steps below are spread across this method and the System ctors... review and move around as appropriate
     
     //DONE System presence
     //...  Generate mainworld
     //DONE   Mainworld UWP
-    //       Mainworld type
+    //DONE   Mainworld type
     //DONE   Bases
-    //       HZ variance & climate
+    //...    HZ variance & climate
     //       Gas Giant count
     //       Planetoid belt count
     //...  Additional system characteristics
@@ -861,8 +868,8 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //...  Stars & orbits
     //DONE   Primary
     //DONE   Companions & placement
-    //       Total worlds
-    //       Mainworld placement
+    //DONE   Total worlds
+    //...    Mainworld placement
     //       Gas Giant placement
     //       Planetoid placement
     //       Other world placement
@@ -870,6 +877,32 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //createCompanionsFor(star);     // aren't companions just a special-case satellite? unify this and work with the composite structure
     //createSatellitesFor(star);     // Star.createSatellites() is recursive on companion stars - need to handle this case
     //designateMainworldFor(star);   // should there be something in createCompanions()? work this out later
+  }
+
+  private int determineHZVariance(){
+    int flux = roll.one() - roll.one();
+    int result = 0;
+    
+    if (flux <= -3){ result = -1; }
+    if (flux >= 3 ){ result = 1; }
+    
+    return result;
+  }
+
+  private String determineMainworldType(int _size){
+    int flux = roll.one() - roll.one();
+
+    String result = "Close Satellite";
+    if (flux <= -4){ result = "Far Satellite"; }
+    if (flux >= -2){ result = "Planet"; }
+    
+    // by T5 RAW, Rings don't exist, and neither do Small Worlds (size S/0)
+    // but mainworld type is generated before UWP size, and the system is silent
+    // on what to do if a satellite is generated with size 0
+    // per previous rules, Rings cannot be homeworlds, so we should add size S worlds for such satellites
+    if (_size == 0 && result.equals("Planet")){ result = "Planetoid"; }
+    
+    return result;
   }
 
   protected void designateMainworldFor(Star _star){
@@ -881,7 +914,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     // (if belt) place as belt, disregard MW orbit value
 
     // TO_DO: hardcoding orbit value to get this started...
-    int i = 3;
+    int i = 3 + HZVariance;
     Planet p = new Planet(_star, i, _star.orbitalZones[i], this);
     _star.addOrbit(i, p);
 
