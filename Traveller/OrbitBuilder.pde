@@ -832,7 +832,7 @@ class OrbitBuilder_TNE extends OrbitBuilder_MT {
 // we'd have a parallel leg of this set of classes for those. In the meantime, we'll just extend/override existing classes 
 class OrbitBuilder_T5 extends OrbitBuilder_TNE {
   String mainworldType = "";
-  int HZVariance = 0;
+
   
   void newPrimary(System _parent){
     println("OrbitBuilder_T5.newPrimary()");
@@ -847,7 +847,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     int additionalWorlds = roll.two();
     
     mainworldType = determineMainworldType(_parent.uwp.size);
-    HZVariance = determineHZVariance();
+    ((System_T5)_parent).mainworldHZVariance = determineHZVariance();
     designateMainworldFor(star);
     
     // TO_DO: steps below are spread across this method and the System ctors... review and move around as appropriate
@@ -914,7 +914,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     // (if belt) place as belt, disregard MW orbit value
 
     // TO_DO: hardcoding orbit value to get this started...
-    int i = 3 + HZVariance;
+    int i = 3 + ((System_T5)_star.parent).mainworldHZVariance;
     Planet p = new Planet(_star, i, _star.orbitalZones[i], this);
     _star.addOrbit(i, p);
 

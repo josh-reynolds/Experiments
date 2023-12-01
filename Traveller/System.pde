@@ -666,6 +666,7 @@ class System_T5 extends System_MT {
   int strangeness;
   int symbols;
   String natives;  // not sure how to represent this yet, let's start with a simple string
+  int mainworldHZVariance = 0;
   
   System_T5(Coordinate _coord, Boolean _occupied){
     super(_coord);
