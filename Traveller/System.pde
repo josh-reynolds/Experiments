@@ -682,13 +682,10 @@ class System_T5 extends System_MT {
       
       navalBase = generateNavalBase();      
       scoutBase = generateScoutBase();
-      trade = generateTradeClass(uwp);
       travelZone = generateTravelZone();
        
-      importance = calculateImportance();
       resources = calculateResources();
       labor = calculateLabor();
-      infrastructure = calculateInfra();
       efficiency = calculateEfficiency();
       homogeneity = calculateHomogeneity();
       acceptance = calculateAcceptance();
@@ -698,6 +695,11 @@ class System_T5 extends System_MT {
       natives = determineNativeLife();
       
       ruleset.newOrbitBuilder().newPrimary(this);
+
+      trade = generateTradeClass(uwp);
+      
+      importance = calculateImportance();
+      infrastructure = calculateInfra();
     }
   }
 

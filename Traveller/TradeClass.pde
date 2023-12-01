@@ -256,16 +256,16 @@ class TradeClass_T5 extends TradeClass_T4 {
   Boolean penal = false;
   Boolean reserve = false;
   Boolean colony = false;  
-
+  Boolean hot = false;
+  Boolean cold = false;
+  
   // TO_DO: requires Travel Zone information
   // forbidden
   // puzzle
   // dangerous
   
-  // TO_DO: requires orbital information
+  // TO_DO: started implementing, working through list
   // frozen
-  // hot
-  // cold
   // locked
   // tropic
   // tundra
@@ -305,6 +305,17 @@ class TradeClass_T5 extends TradeClass_T4 {
     penal = isPenal(_uwp);
     reserve = isReserve(_uwp);
     colony = isColony(_uwp);
+    
+    hot = isHot(_system);
+    cold = isCold(_system);
+  }
+
+  Boolean isHot(System _system){
+    return ((System_T5)_system).mainworldHZVariance == -1;
+  }
+  
+  Boolean isCold(System _system){
+    return ((System_T5)_system).mainworldHZVariance == 1;
   }
 
   // T5 adds atmo/hydro 0, just like MT (p. 434), but not the isPlanet critereon
@@ -473,6 +484,8 @@ class TradeClass_T5 extends TradeClass_T4 {
     if (penal)        { output += "Pe "; }
     if (reserve)      { output += "Re "; }
     if (colony)       { output += "Cy "; }
+    if (hot)          { output += "Ho "; }
+    if (cold)         { output += "Co "; }
     return output;
   }
 }
