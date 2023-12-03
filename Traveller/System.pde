@@ -677,6 +677,7 @@ class System_T5 extends System_MT {
       routes = new ArrayList<Route>();      
       
       gasGiantCount = floor(roll.two() / 2) - 2;
+      if (gasGiantCount < 0){ gasGiantCount = 0; }  
       if (gasGiantCount > 0){ gasGiant = true; }
       
       planetoidCount = roll.one() - 3;   // T5 p. 427: "This value does not include the Mainworld if it is an Asteroid Belt."
@@ -748,7 +749,7 @@ class System_T5 extends System_MT {
     int result = 0;
     result += roll.two();
     if (uwp.tech >= 8){ 
-      //result += gasGiantCount + planetoidCount;  
+      result += gasGiantCount + planetoidCount;  
     }
     return result;
   }
