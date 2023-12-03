@@ -858,7 +858,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //DONE   Mainworld type
     //DONE   Bases
     //...    HZ variance & climate
-    //       Gas Giant count
+    //DONE   Gas Giant count
     //       Planetoid belt count
     //...  Additional system characteristics
     //...    Trade classifications

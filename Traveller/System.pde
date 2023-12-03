@@ -675,7 +675,9 @@ class System_T5 extends System_MT {
     if (occupied){
       name = lines[floor(random(lines.length))];
       routes = new ArrayList<Route>();      
-      if (roll.two() <= 9){ gasGiant = true; }
+      
+      gasGiantCount = floor(roll.two() / 2) - 2;
+      if (gasGiantCount > 0){ gasGiant = true; }
       
       UWPBuilder ub = ruleset.newUWPBuilder();       
       ub.newUWPFor(this);      
