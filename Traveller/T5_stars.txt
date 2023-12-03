@@ -1,0 +1,86 @@
+
+
+Better chart on p. 45, not consistent with later data - check errata
+
+From T5				  Previous orbital data
+--------------------------------|--------------------
+A0Ia	            C		. 
+F6Ia	            C		.
+F7Ia	           B		. 
+G1Ia	           B		. 
+G2Ia	            C		. 
+K...	            C		. 
+M9Ia	            C		. 
+
+A0Ib	           B		. 
+A8Ib	           B		. 
+A9Ib	          A		. 
+F...	          A		. 
+G...	          A		. 
+K...	          A		. 
+M3Ib	          A 		. 
+M4Ib	           B		. 
+M9Ib	           B		. 
+
+A0II	         9		. 
+A8II	         9		. 
+A9II	        8		. 
+F...	        8		. 
+G...	        8		. 
+K3II	        8		. 
+K4II	         9		. 
+M3II	         9		. 
+M4II	          A		. 
+M8II	          A		. 
+M9II	           B		. 
+
+A0III	        8		. 
+A8III	        8		. 
+A9III	       7		. 
+F1III	       7		. 
+F2III	      6			. 
+G8III	      6			. 
+G9III	       7		. 
+K8III	       7		. 
+K9III	        8		. 
+M8III	        8
+M9III	         9		. 
+
+A0IV	       7		. 
+A8IV	       7		. 
+A9IV	      6			. 
+F6IV	      6			. 
+F7IV	     5			. 
+G...	     5			. 
+K3IV	     5			. 
+
+A0V	       7		. 
+A8V	       7		. 
+A9V	      6			. 
+F1V	      6			. 
+F2V	     5			. 
+F6V	     5			. 
+F7V	    4			. 
+G1V	    4			. 
+G2V	   3			. 
+G8V	   3			. 
+G9V	  2			. 
+K8V	  2			. 
+K9V	0			. 
+M9V	0			. 
+
+F2VI	   3			. 
+G1VI	   3			. 
+G2VI	  2			. 
+G8VI	  2			. 
+G9VI	 1			. 
+K0VI	 1			. 1
+K3VI	 1			. -
+K4VI	0			. -
+M9VI	0			. -
+
+AD	0			. -
+FD	0			. -
+GD	0			. -
+KD	0			. -
+MD	0			. -

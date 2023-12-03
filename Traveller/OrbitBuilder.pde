@@ -859,7 +859,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //DONE   Bases
     //...    HZ variance & climate
     //DONE   Gas Giant count
-    //       Planetoid belt count
+    //DONE   Planetoid belt count
     //...  Additional system characteristics
     //...    Trade classifications
     //DONE   Extensions
@@ -950,7 +950,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     Boolean[] companions = {false, false, false, false};
     int flux;
 
-    for (int i = 1; i < stars.length; i++){
+    for (int i = 1; i < stars.length; i++){  // primary is always present, so skip index 0
       flux = roll.one() - roll.one();
       if (flux >= 3){
         stars[i] = true;

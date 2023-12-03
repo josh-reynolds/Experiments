@@ -743,8 +743,6 @@ class System_T5 extends System_MT {
     
   }
   
-  // TO_DO: requires gasgiant + planetoid counts, not present in this leg of the hierarchy, need to add
-  //  also may be a timing issue - we generate extensions before orbits, need to defer this calculation...
   int calculateResources(){
     int result = 0;
     result += roll.two();

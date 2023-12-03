@@ -557,7 +557,6 @@ class Star_T5 extends Star_TNE {
 
   // T5 uses flux (d6-d6) instead of 2d6, but the curve is the same and a simple conversion (2d6-7 equivalent to d6-d6)
   //  it also adjusts the type distribution a bit (not sure I like this one, biased towards G stars instead of M)
-  //  TO_DO: need to save the primary flux value for companion rolls
   char primaryStarType(int _dieThrow){
     int flux = _dieThrow - 7;
     // table on p. 436 includes classes O, B and BD (Brown Dwarf), but not possible to roll that result for primaries - omitting
