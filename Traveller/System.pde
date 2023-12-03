@@ -679,6 +679,9 @@ class System_T5 extends System_MT {
       gasGiantCount = floor(roll.two() / 2) - 2;
       if (gasGiantCount > 0){ gasGiant = true; }
       
+      planetoidCount = roll.one() - 3;   // T5 p. 427: "This value does not include the Mainworld if it is an Asteroid Belt."
+      if (planetoidCount < 0){ planetoidCount = 0; }
+      
       UWPBuilder ub = ruleset.newUWPBuilder();       
       ub.newUWPFor(this);      
       
