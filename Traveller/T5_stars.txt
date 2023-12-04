@@ -1,82 +1,124 @@
+12/4/23
 
+Comparing T5 orbital zone data with previous versions (originally in Scouts).
+Charts on pp. 438-442, but there's a better chart on p. 45. The two are not
+consistent - check errata.
 
-Better chart on p. 45, not consistent with later data - check errata
+T5 doesn't list all zones - just Habitable - but others could be inferred.
+
+Also, they allow a habitable zone for all stars including white dwarfs, which 
+breaks with previous convention.
 
 From T5				  Previous orbital data
 --------------------------------|--------------------
-A0Ia	            C		. 
-F6Ia	            C		.
-F7Ia	           B		. 
-G1Ia	           B		. 
-G2Ia	            C		. 
-K...	            C		. 
-M9Ia	            C		. 
+A0Ia	            C		. n/a (don't have supergiant data in csv)
+F6Ia	            C		. n/a
+F7Ia	           B		. n/a
+G1Ia	           B		. n/a
+G2Ia	            C		. n/a
+K...	            C		. n/a
+M9Ia	            C		. n/a
 
-A0Ib	           B		. 
-A8Ib	           B		. 
-A9Ib	          A		. 
-F...	          A		. 
-G...	          A		. 
-K...	          A		. 
-M3Ib	          A 		. 
-M4Ib	           B		. 
-M9Ib	           B		. 
+A0Ib	           B		. n/a
+A8Ib	           B		. n/a
+A9Ib	          A		. n/a
+F...	          A		. n/a
+G...	          A		. n/a
+K...	          A		. n/a
+M3Ib	          A 		. n/a
+M4Ib	           B		. n/a
+M9Ib	           B		. n/a
 
-A0II	         9		. 
-A8II	         9		. 
-A9II	        8		. 
-F...	        8		. 
-G...	        8		. 
-K3II	        8		. 
-K4II	         9		. 
-M3II	         9		. 
-M4II	          A		. 
-M8II	          A		. 
-M9II	           B		. 
+A0II	         9		. 9
+A5II	         9		. 8
+A8II	         9		. 8
+A9II	        8		. 8
+F0II	        8		. 8
+F5II	        8		. 8
+G0II	        8		. 8
+G5II	        8		. 8
+K0II		8		. 9
+K3II	        8		. 9
+K4II	         9		. 9
+K5II	         9		. 9
+M0II	         9		. A
+M3II	         9		. B
+M4II	          A		. B
+M5II	          A		. B
+M8II	          A		. B
+M9II	           B		. B
 
-A0III	        8		. 
-A8III	        8		. 
-A9III	       7		. 
-F1III	       7		. 
-F2III	      6			. 
-G8III	      6			. 
-G9III	       7		. 
-K8III	       7		. 
-K9III	        8		. 
-M8III	        8
-M9III	         9		. 
+A0III	        8		. 8
+A5III	        8		. 7
+A8III	        8		. 6
+A9III	       7		. 6
+F0III	       7		. 6
+F1III	       7		. 6
+F2III	      6			. 6
+F5III	      6			. 6
+G0III	      6			. 6
+G5III	      6			. 7
+G8III	      6			. 7
+G9III	       7		. 7
+K0III	       7		. 7
+K5III	       7		. 8
+K8III	       7		. 8
+K9III	        8		. 8
+M0III	        8		. 8
+M5III	        8		. 9
+M8III	        8		. 9
+M9III	         9		. 9
 
-A0IV	       7		. 
-A8IV	       7		. 
-A9IV	      6			. 
-F6IV	      6			. 
-F7IV	     5			. 
-G...	     5			. 
-K3IV	     5			. 
+A0IV	       7		. 7
+A5IV	       7		. 6
+A8IV	       7		. 6
+A9IV	      6			. 6
+F0IV	      6			. 6
+F5IV	      6			. 5
+F6IV	      6			. 5
+F7IV	     5			. 5
+G0IV	     5			. 5
+G5IV	     5			. 5
+K0IV	     5			. 4
+K3IV	     5			. 4
 
-A0V	       7		. 
-A8V	       7		. 
-A9V	      6			. 
-F1V	      6			. 
-F2V	     5			. 
-F6V	     5			. 
-F7V	    4			. 
-G1V	    4			. 
-G2V	   3			. 
-G8V	   3			. 
-G9V	  2			. 
-K8V	  2			. 
-K9V	0			. 
-M9V	0			. 
+A0V	       7		. 7
+A5V	       7		. 6
+A8V	       7		. 5
+A9V	      6			. 5
+F0V	      6			. 5
+F1V	      6			. 5
+F2V	     5			. 5
+F5V	     5			. 4
+F6V	     5			. 4
+F7V	    4			. 4
+G0V	    4			. 3
+G1V	    4			. 3
+G2V	   3			. 3
+G5V	   3			. 2
+G8V	   3			. 2
+G9V	  2			. 2
+K0V	  2			. 2
+K5V	  2			. 0
+K8V	  2			. 0
+K9V	0			. 0
+M0V	0			. 0
+M9V	0			. -
 
-F2VI	   3			. 
-G1VI	   3			. 
-G2VI	  2			. 
-G8VI	  2			. 
-G9VI	 1			. 
+F2VI	   3			. 3
+F5VI	   3			. 3
+G0VI	   3			. 2
+G1VI	   3			. 2
+G2VI	  2			. 2
+G5VI	  2			. 1
+G8VI	  2			. 1
+G9VI	 1			. 1
 K0VI	 1			. 1
 K3VI	 1			. -
 K4VI	0			. -
+K5VI	0			. -
+M0VI	0			. -
+M5VI	0			. -
 M9VI	0			. -
 
 AD	0			. -

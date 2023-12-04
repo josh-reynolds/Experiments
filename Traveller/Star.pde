@@ -663,4 +663,37 @@ class Star_T5 extends Star_TNE {
     
     return size;
   }
+
+  // T5 takes a different approach to orbital zones that's incompatible with the previous data file
+  //  - it only designates Habitable Zones, no Inner/Outer/Forbidden (though they could be inferred)
+  //  - all stars, including white dwarfs, are given an H zone
+  //  - it doesn't use interpolation at decimal 0 & 5 to list, instead has explicit data points
+  // For compatibility with existing code, probably simplest to translate the T5 data into its own CSV
+  //  file and import into the same orbitalZones array used above
+  // I'll fill in with just H/I/O, no forbidden zones
+  //
+  // TO_DO: other than the csv file name, this method is identical to original - refactor!
+  String[] retrieveOrbitalZones(){
+    String[] output = new String[21];
+    
+    // data from T5 p. 45 (also on pp. 438-442 but the two are not identical - check errata)
+    // the first source is easier to use, so I'm going with that
+    Table table = loadTable("OrbitalZones_T5.csv", "header");  // probably want to load this as a global resource
+    String classForLookup = "";
+    if (size < 7){  // white dwarfs (size 7) have a different naming convention, don't need to worry about decimal value
+      int roundedDecimal  = floor(decimal/5) * 5;
+      classForLookup = str(type) + roundedDecimal + sizeToString();  // duplication from getSpectralType()
+    } else {
+      classForLookup = getSpectralType();
+    }
+          
+    for (TableRow row : table.rows()){
+      if (row.getString("Class").equals(classForLookup)){
+        for (int i = 0; i < output.length; i++){
+          output[i] = row.getString(str(i));
+        }
+      }
+    }
+    return output;
+  }
 }
