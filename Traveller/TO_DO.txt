@@ -162,6 +162,7 @@
 //  * FIX  BUG: density resets to 'Standard' when changing rulesets
 //  * .... Add T5 generation ruleset
 //  *      Incorporate BD stars (Brown Dwarfs) into type scheme (added w/ T5)
+//  *      Incorporata Ia/Ib stars (Supergiants) into type scheme (added w/ T5)
 //  *      Review/incorporate T5 errata
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      Move away from string parsing approach in Star JSON ctor

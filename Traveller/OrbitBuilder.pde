@@ -913,10 +913,15 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     // (if satellite & !GG) place BigWorld in MW orbit
     // (if belt) place as belt, disregard MW orbit value
 
-    // TO_DO: hardcoding orbit value to get this started...
-    int i = 3 + ((System_T5)_star.parent).mainworldHZVariance;
-    Planet p = new Planet(_star, i, _star.orbitalZones[i], this);
-    _star.addOrbit(i, p);
+    
+    int hz = _star.getHabitableZoneNumber();
+
+    
+    int orbit = hz + ((System_T5)_star.parent).mainworldHZVariance;
+    if (orbit < 0){ orbit = 0; }
+    
+    Planet p = new Planet(_star, orbit, _star.orbitalZones[orbit], this);
+    _star.addOrbit(orbit, p);
 
     // TO_DO: the Planet ctor will create a UWP - will probably want to suppress eventually, but for now can replace with the pre-generated UWP
     // Actually, getting a cast exception in this part of the Planet ctor, need to un-muddle UWPBuilder hierarchy too
@@ -963,9 +968,6 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
         companions[i] = true;
       } 
     }
-    
-    printArray(stars);
-    printArray(companions);
     
     for (int i = 1; i < stars.length; i++){
       if (stars[i]){

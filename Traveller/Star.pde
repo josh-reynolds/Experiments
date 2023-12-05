@@ -334,6 +334,17 @@ class Star extends Orbit {
       if (orbitIsHabitableZone(i)){ return i; }
     }
     return 0;   // keeping compiler happy, should be handled by logic above already
+    
+    // does not properly handle stars that have no habitable zone... alternate approach to consider below
+    // use special case result of -1 to indicate no HZ
+    
+    //int result = -1;
+    //for (int i = 0; i < orbitalZones.length; i++){
+    //  if (orbitalZones[i].equals("O")){ break; }
+    //  result = i;
+    //}
+    //return result;
+    
   }
   
   Boolean orbitIsFar(int _num){
@@ -369,8 +380,9 @@ class Star extends Orbit {
   // go with rule of three for now
   String sizeToString(){
     switch(size) {
-      // does not handle supergiants (Ia & Ib) but this system
-      // can't generate them in any case - deal with later if we need to
+      //T5 adds possibility of supergiants, need to incorporate here
+      case 1:
+        return "I";   // supergiants (not differentiating between Ia + Ib yet - TO_DO)
       case 2:
         return "II";  // bright giants
       case 3:
@@ -593,7 +605,13 @@ class Star_T5 extends Star_TNE {
           size = 4;
         }
       }
-      if (flux == 4  ){ size = 6; }
+      if (flux == 4  ){ 
+        if (type == 'F' && decimal < 5){
+          size = 5;                       // size VI not possible for F0-F4 stars
+        } else {
+          size = 6;          
+        } 
+      }
       if (flux == 5  ){ size = 7; }
     }
     if (type == 'M'){
@@ -649,9 +667,14 @@ class Star_T5 extends Star_TNE {
           size = 4;
         }
       }
-      if (flux == 4  ){ size = 6; }
       if (flux == 5  ){ size = 7; }
-      if (flux >= 6  ){ size = 6; }
+      if (flux == 4 || flux >= 6){
+        if (type == 'F' && decimal < 5){
+          size = 5;                       // size VI not possible for F0-F4 stars
+        } else {
+          size = 6;          
+        }
+      }
     }
     if (type == 'M'){
       if (flux == -3 ){ size = 2; }
