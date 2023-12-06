@@ -912,21 +912,31 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     // (if satellite & GG) place GG in MW orbit
     // (if satellite & !GG) place BigWorld in MW orbit
     // (if belt) place as belt, disregard MW orbit value
-
     
     int hz = _star.getHabitableZoneNumber();
-
     
     int orbit = hz + ((System_T5)_star.parent).mainworldHZVariance;
     if (orbit < 0){ orbit = 0; }
+
+    UWP u = _star.parent.uwp;
     
-    Planet p = new Planet(_star, orbit, _star.orbitalZones[orbit], this);
-    _star.addOrbit(orbit, p);
+    Habitable p = null;
+    switch (mainworldType){
+      case "Planetoid":
+        p = new Planetoid(_star, orbit, _star.orbitalZones[orbit]);
+        break;
+      case "Planet":
+      case "Close Satellite":         // TO_DO: for the Satellite case, we first need to create a GasGiant or BigWorld to orbit
+      case "Far Satellite":
+        p = new Planet(_star, orbit, _star.orbitalZones[orbit], this);
+    }
+
+    _star.addOrbit(orbit, (Orbit)p);
 
     // TO_DO: the Planet ctor will create a UWP - will probably want to suppress eventually, but for now can replace with the pre-generated UWP
     // Actually, getting a cast exception in this part of the Planet ctor, need to un-muddle UWPBuilder hierarchy too
-    UWP u = _star.parent.uwp;
-    p.setUWP(ruleset.newUWP(p, u.starport, u.size, u.atmo, u.hydro, u.pop, u.gov, u.law, u.tech));
+
+    p.setUWP(ruleset.newUWP((Orbit)p, u.starport, u.size, u.atmo, u.hydro, u.pop, u.gov, u.law, u.tech));
     
     p.setMainworld(true);
     
