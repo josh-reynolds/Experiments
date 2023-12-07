@@ -258,6 +258,7 @@ class TradeClass_T5 extends TradeClass_T4 {
   Boolean colony = false;  
   Boolean hot = false;
   Boolean cold = false;
+  Boolean twilight = false;
   
   // TO_DO: requires Travel Zone information
   // forbidden
@@ -269,7 +270,6 @@ class TradeClass_T5 extends TradeClass_T4 {
   // locked
   // tropic
   // tundra
-  // twilight zone
   // satellite
   
   // TO_DO: Applies to non-mainworld, undecided what to do with these
@@ -308,6 +308,7 @@ class TradeClass_T5 extends TradeClass_T4 {
     
     hot = isHot(_system);
     cold = isCold(_system);
+    twilight = isTwilight(_system);
   }
 
   Boolean isHot(System _system){
@@ -316,6 +317,10 @@ class TradeClass_T5 extends TradeClass_T4 {
   
   Boolean isCold(System _system){
     return ((System_T5)_system).mainworldHZVariance == 1;
+  }
+
+  Boolean isTwilight(System _system){
+    return (((Orbit)((System_ScoutsEx)_system).mainworld).orbitNumber <= 1);
   }
 
   // T5 adds atmo/hydro 0, just like MT (p. 434), but not the isPlanet critereon
@@ -486,6 +491,7 @@ class TradeClass_T5 extends TradeClass_T4 {
     if (colony)       { output += "Cy "; }
     if (hot)          { output += "Ho "; }
     if (cold)         { output += "Co "; }
+    if (twilight)     { output += "Tz "; }
     return output;
   }
 }
