@@ -259,6 +259,8 @@ class TradeClass_T5 extends TradeClass_T4 {
   Boolean hot = false;
   Boolean cold = false;
   Boolean twilight = false;
+  Boolean tropic = false;
+  Boolean tundra = false;
   
   // TO_DO: requires Travel Zone information
   // forbidden
@@ -266,17 +268,15 @@ class TradeClass_T5 extends TradeClass_T4 {
   // dangerous
   
   // TO_DO: started implementing, working through list
-  // frozen
-  // locked
-  // tropic
-  // tundra
   // satellite
+  // locked
   
   // TO_DO: Applies to non-mainworld, undecided what to do with these
   //  should Trade Classifications now apply per-planet?
   //  or is this a replacement for facilities?
   // farming
   // mining
+  // frozen  - HZ+2 or more, not possible for mainworld
   
   // TO_DO: Referee fiat, undecided what to do with these
   //  on p. 434 they note: "Cp, Cs, Cx require Starport A."
@@ -309,6 +309,8 @@ class TradeClass_T5 extends TradeClass_T4 {
     hot = isHot(_system);
     cold = isCold(_system);
     twilight = isTwilight(_system);
+    tropic = isTropic(_system);
+    tundra = isTundra(_system);
   }
 
   Boolean isHot(System _system){
@@ -321,6 +323,20 @@ class TradeClass_T5 extends TradeClass_T4 {
 
   Boolean isTwilight(System _system){
     return (((Orbit)((System_ScoutsEx)_system).mainworld).orbitNumber <= 1);
+  }
+
+  Boolean isTropic(System _system){
+    return ((_system.uwp.size >= 6 && _system.uwp.size <= 9) &&
+            (_system.uwp.atmo >= 4 && _system.uwp.atmo <= 9) &&
+            (_system.uwp.hydro >= 3 && _system.uwp.hydro <= 7) &&
+            ((System_T5)_system).mainworldHZVariance == -1);
+  }
+  
+  Boolean isTundra(System _system){
+    return ((_system.uwp.size >= 6 && _system.uwp.size <= 9) &&
+            (_system.uwp.atmo >= 4 && _system.uwp.atmo <= 9) &&
+            (_system.uwp.hydro >= 3 && _system.uwp.hydro <= 7) &&
+            ((System_T5)_system).mainworldHZVariance == 1);    
   }
 
   // T5 adds atmo/hydro 0, just like MT (p. 434), but not the isPlanet critereon
@@ -492,6 +508,8 @@ class TradeClass_T5 extends TradeClass_T4 {
     if (hot)          { output += "Ho "; }
     if (cold)         { output += "Co "; }
     if (twilight)     { output += "Tz "; }
+    if (tropic)       { output += "Tr "; }
+    if (tundra)       { output += "Tu "; }
     return output;
   }
 }
