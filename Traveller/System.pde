@@ -903,7 +903,7 @@ class System_T5 extends System_MT {
   //  one format for the subsector summary, and another with all the details for console output, text files, detail screens, etc.
   String occupiedSystemString(){
     //return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString() + primary.getSpectralType();
-    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + trade.toString() + starString();
+    return paddedSystemName() + coord.toString() + " : " + uwp.toString() + " " + systemFeatures() + travelZoneString() + " " + trade.toString() + starString();
   }
   
   String extendedString(){
