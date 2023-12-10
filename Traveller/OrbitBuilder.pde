@@ -953,7 +953,14 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
   }
 
   private int satelliteOrbit(){
-    return 10;                                                            // TO_DO: placeholder value
+    int flux = roll.one() - roll.one();
+    int result = 0;
+    if (mainworldType.equals("Close Satellite")){
+      result = 7 + flux;
+    } else {
+      result = 20 + flux;
+    }
+    return result;
   }
 
   // T5 p. 436
