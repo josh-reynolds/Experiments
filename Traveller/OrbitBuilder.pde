@@ -833,13 +833,9 @@ class OrbitBuilder_TNE extends OrbitBuilder_MT {
 class OrbitBuilder_T5 extends OrbitBuilder_TNE {
   String mainworldType = "";
 
-  void newPrimary(System _parent){
-    println("OrbitBuilder_T5.newPrimary()");
-    
+  void newPrimary(System _parent){    
     Star star = ruleset.newStar(_parent);
     _parent.primary = star;
-    
-    println(_parent.primary);
     
     createCompanionsFor(star);
     
@@ -935,8 +931,9 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
         } else {
           p = new Planet(_star, orbit, _star.orbitalZones[orbit], this);      // TO_DO: need to make this a BigWorld
         }
-        s = new Moon(p, orbit, _star.orbitalZones[orbit], 0);                 // TO_DO: temporarily hard-coding size parameter 
         int satOrbit = satelliteOrbit();
+        s = new Moon(p, satOrbit, _star.orbitalZones[orbit], 0);              // TO_DO: temporarily hard-coding size parameter 
+        
         p.addOrbit(satOrbit, s);
     }
 

@@ -115,17 +115,12 @@ class Star extends Orbit {
   char generateType(){
     int dieThrow = roll.two();
     
-    println("In Star.generateType(): " + dieThrow);
-    
     if (isPrimary()){
       typeRoll = dieThrow;
       return primaryStarType(dieThrow);
     } else {
       typeRoll = 0;
       dieThrow += parent.primary.typeRoll;
-      
-      println("In Star.generateType(): adjusted = " + dieThrow);
-      
       return companionStarType(dieThrow);
     }
   }
