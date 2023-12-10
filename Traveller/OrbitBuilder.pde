@@ -868,7 +868,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //DONE   Primary
     //DONE   Companions & placement
     //DONE   Total worlds
-    //...    Mainworld placement
+    //DONE   Mainworld placement
     //       Gas Giant placement
     //       Planetoid placement
     //       Other world placement
@@ -935,25 +935,28 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
         } else {
           p = new Planet(_star, orbit, _star.orbitalZones[orbit], this);      // TO_DO: need to make this a BigWorld
         }
-        s = new Moon(p, orbit, _star.orbitalZones[orbit], 0);           // TO_DO: temporarily hard-coding size parameter 
-        int satOrbit = 10;                                                    // TO_DO: hardcoding - replace with a method call to generate satellite orbit value
+        s = new Moon(p, orbit, _star.orbitalZones[orbit], 0);                 // TO_DO: temporarily hard-coding size parameter 
+        int satOrbit = satelliteOrbit();
         p.addOrbit(satOrbit, s);
     }
 
     _star.addOrbit(orbit, p);
 
-    // TO_DO: the Planet ctor will create a UWP - will probably want to suppress eventually, but for now can replace with the pre-generated UWP
-    // Actually, getting a cast exception in this part of the Planet ctor, need to un-muddle UWPBuilder hierarchy too
-    if (mainworldType.equals("Close Satellite") || mainworldType.equals("Far Satellite")){    // TO_DO: review with logic above, can probably be collapsed/streamlined
-      ((Habitable)s).setUWP(ruleset.newUWP((Orbit)p, u.starport, u.size, u.atmo, u.hydro, u.pop, u.gov, u.law, u.tech));    
-      ((Habitable)s).setMainworld(true);
-      ((System_ScoutsEx)_star.parent).mainworld = ((Habitable)s);    
+    Habitable h;
+    if (mainworldType.equals("Close Satellite") || mainworldType.equals("Far Satellite")){
+      h = (Habitable)s;       
     } else {
-      ((Habitable)p).setUWP(ruleset.newUWP((Orbit)p, u.starport, u.size, u.atmo, u.hydro, u.pop, u.gov, u.law, u.tech));    
-      ((Habitable)p).setMainworld(true);
-      ((System_ScoutsEx)_star.parent).mainworld = ((Habitable)p);
+      h = (Habitable)p;
     }
     
+    h.setUWP(ruleset.newUWP((Orbit)h, u.starport, u.size, u.atmo, u.hydro, u.pop, u.gov, u.law, u.tech));    
+    h.setMainworld(true);
+    ((System_ScoutsEx)_star.parent).mainworld = h;
+    
+  }
+
+  private int satelliteOrbit(){
+    return 10;                                                            // TO_DO: placeholder value
   }
 
   // T5 p. 436
