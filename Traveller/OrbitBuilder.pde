@@ -833,7 +833,6 @@ class OrbitBuilder_TNE extends OrbitBuilder_MT {
 class OrbitBuilder_T5 extends OrbitBuilder_TNE {
   String mainworldType = "";
 
-  
   void newPrimary(System _parent){
     println("OrbitBuilder_T5.newPrimary()");
     
@@ -853,11 +852,11 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     // TO_DO: steps below are spread across this method and the System ctors... review and move around as appropriate
     
     //DONE System presence
-    //...  Generate mainworld
+    //DONE Generate mainworld
     //DONE   Mainworld UWP
     //DONE   Mainworld type
     //DONE   Bases
-    //...    HZ variance & climate
+    //DONE   HZ variance & climate
     //DONE   Gas Giant count
     //DONE   Planetoid belt count
     //...  Additional system characteristics
@@ -920,27 +919,40 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
 
     UWP u = _star.parent.uwp;
     
-    Habitable p = null;
+    Orbit p = null;
+    Orbit s = null;
     switch (mainworldType){
       case "Planetoid":
         p = new Planetoid(_star, orbit, _star.orbitalZones[orbit]);
         break;
       case "Planet":
+        p = new Planet(_star, orbit, _star.orbitalZones[orbit], this);
+        break;
       case "Close Satellite":         // TO_DO: for the Satellite case, we first need to create a GasGiant or BigWorld to orbit
       case "Far Satellite":
-        p = new Planet(_star, orbit, _star.orbitalZones[orbit], this);
+        if (((System_ScoutsEx)_star.parent).gasGiantCount > 0){
+          p = new GasGiant(_star, orbit, _star.orbitalZones[orbit], this);    // TO_DO: when we add GasGiants later, need to remember this one...
+        } else {
+          p = new Planet(_star, orbit, _star.orbitalZones[orbit], this);      // TO_DO: need to make this a BigWorld
+        }
+        s = new Moon(p, orbit, _star.orbitalZones[orbit], 0);           // TO_DO: temporarily hard-coding size parameter 
+        int satOrbit = 10;                                                    // TO_DO: hardcoding - replace with a method call to generate satellite orbit value
+        p.addOrbit(satOrbit, s);
     }
 
-    _star.addOrbit(orbit, (Orbit)p);
+    _star.addOrbit(orbit, p);
 
     // TO_DO: the Planet ctor will create a UWP - will probably want to suppress eventually, but for now can replace with the pre-generated UWP
     // Actually, getting a cast exception in this part of the Planet ctor, need to un-muddle UWPBuilder hierarchy too
-
-    p.setUWP(ruleset.newUWP((Orbit)p, u.starport, u.size, u.atmo, u.hydro, u.pop, u.gov, u.law, u.tech));
-    
-    p.setMainworld(true);
-    
-    ((System_ScoutsEx)_star.parent).mainworld = p;
+    if (mainworldType.equals("Close Satellite") || mainworldType.equals("Far Satellite")){    // TO_DO: review with logic above, can probably be collapsed/streamlined
+      ((Habitable)s).setUWP(ruleset.newUWP((Orbit)p, u.starport, u.size, u.atmo, u.hydro, u.pop, u.gov, u.law, u.tech));    
+      ((Habitable)s).setMainworld(true);
+      ((System_ScoutsEx)_star.parent).mainworld = ((Habitable)s);    
+    } else {
+      ((Habitable)p).setUWP(ruleset.newUWP((Orbit)p, u.starport, u.size, u.atmo, u.hydro, u.pop, u.gov, u.law, u.tech));    
+      ((Habitable)p).setMainworld(true);
+      ((System_ScoutsEx)_star.parent).mainworld = ((Habitable)p);
+    }
     
   }
 
