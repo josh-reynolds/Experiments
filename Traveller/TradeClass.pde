@@ -261,15 +261,13 @@ class TradeClass_T5 extends TradeClass_T4 {
   Boolean twilight = false;
   Boolean tropic = false;
   Boolean tundra = false;
+  Boolean satellite = false;
+  Boolean locked = false;
   
   // TO_DO: requires Travel Zone information
   // forbidden
   // puzzle
   // dangerous
-  
-  // TO_DO: started implementing, working through list
-  // satellite
-  // locked
   
   // TO_DO: Applies to non-mainworld, undecided what to do with these
   //  should Trade Classifications now apply per-planet?
@@ -311,6 +309,8 @@ class TradeClass_T5 extends TradeClass_T4 {
     twilight = isTwilight(_system);
     tropic = isTropic(_system);
     tundra = isTundra(_system);
+    satellite = isSatellite(_system);
+    locked = isLocked(_system);
   }
 
   Boolean isHot(System _system){
@@ -322,7 +322,7 @@ class TradeClass_T5 extends TradeClass_T4 {
   }
 
   Boolean isTwilight(System _system){
-    return (((Orbit)((System_ScoutsEx)_system).mainworld).orbitNumber <= 1);
+    return (((Orbit)((System_ScoutsEx)_system).mainworld).orbitNumber <= 1);  // TO_DO: possible bug if evaluated against a Satellite... verify
   }
 
   Boolean isTropic(System _system){
@@ -337,6 +337,15 @@ class TradeClass_T5 extends TradeClass_T4 {
             (_system.uwp.atmo >= 4 && _system.uwp.atmo <= 9) &&
             (_system.uwp.hydro >= 3 && _system.uwp.hydro <= 7) &&
             ((System_T5)_system).mainworldHZVariance == 1);    
+  }
+
+  Boolean isSatellite(System _system){
+    return (((Orbit)((System_ScoutsEx)_system).mainworld).isMoon()); 
+  }
+
+  Boolean isLocked(System _system){
+    Orbit o = ((Orbit)((System_ScoutsEx)_system).mainworld); 
+    return (o.isMoon() && o.orbitNumber <= 13 );  // close satellite - TO_DO: would be better to have a query or field than this magic number...
   }
 
   // T5 adds atmo/hydro 0, just like MT (p. 434), but not the isPlanet critereon
@@ -510,6 +519,8 @@ class TradeClass_T5 extends TradeClass_T4 {
     if (twilight)     { output += "Tz "; }
     if (tropic)       { output += "Tr "; }
     if (tundra)       { output += "Tu "; }
+    if (satellite)    { output += "Sa "; }
+    if (locked)       { output += "Lk "; }
     return output;
   }
 }
