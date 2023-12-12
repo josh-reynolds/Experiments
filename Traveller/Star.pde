@@ -565,7 +565,7 @@ class Star_T5 extends Star_TNE {
   // T5 uses flux (d6-d6) instead of 2d6, but the curve is the same and a simple conversion (2d6-7 equivalent to d6-d6)
   //  it also adjusts the type distribution a bit (not sure I like this one, biased towards G stars instead of M)
   char primaryStarType(int _dieThrow){
-    int flux = _dieThrow - 7;
+    int flux = _dieThrow - 7;  // since the incoming value is 2d6, use this instead of Dice.flux()
     // table on p. 436 includes classes O, B and BD (Brown Dwarf), but not possible to roll that result for primaries - omitting
     if (flux <= -4                   ){ return 'A'; }
     if (flux >= -3 && flux <= -2     ){ return 'F'; }  
@@ -580,7 +580,7 @@ class Star_T5 extends Star_TNE {
   //   might throw an exception on calling retrieveOrbitalZones()
   //   T5 itself doesn't use this type of table, but we're hooking into the process outlined in Star.createStar()
   int primarySize(int _dieThrow){
-    int flux = _dieThrow - 7;
+    int flux = _dieThrow - 7;  // since the incoming value is 2d6, use this instead of Dice.flux()
     int size = 5;   // default to main sequence dwarfs, can leave out of tables below
     
     if (type == 'A'){
@@ -628,7 +628,7 @@ class Star_T5 extends Star_TNE {
     // will see about pulling this distinction higher, but for now we can probably just
     // retrieve the primary value, convert to flux and add the 1d-1
     
-    int primaryFlux = parent.primary.typeRoll - 7;
+    int primaryFlux = parent.primary.typeRoll - 7;  // since the incoming value is 2d6, use this instead of Dice.flux()
     int flux = primaryFlux + roll.one(-1);
 
     if (flux <= -4                   ){ return 'A'; }
@@ -643,7 +643,7 @@ class Star_T5 extends Star_TNE {
   // same discussion continues here - need to plumb through T5 flux values better, but do this for now
   // also, much duplication with the corresponding primary method (primarySize) - refactor that too
   int companionSize(int _dieThrow){
-    int primaryFlux = parent.primary.sizeRoll - 7;
+    int primaryFlux = parent.primary.sizeRoll - 7;  // since the incoming value is 2d6, use this instead of Dice.flux()
     int flux = primaryFlux + roll.one(2);     // new range with companion modifiers will be -2 to 13    
     int size = 5;   // default to main sequence dwarfs, can leave out of tables below
     

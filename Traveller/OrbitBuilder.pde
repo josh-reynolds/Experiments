@@ -875,7 +875,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
   }
 
   private int determineHZVariance(){
-    int flux = roll.one() - roll.one();
+    int flux = roll.flux();
     int result = 0;
     
     if (flux <= -3){ result = -1; }
@@ -885,7 +885,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
   }
 
   private String determineMainworldType(int _size){
-    int flux = roll.one() - roll.one();
+    int flux = roll.flux();
 
     String result = "Close Satellite";
     if (flux <= -4){ result = "Far Satellite"; }
@@ -953,7 +953,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
   }
 
   private int satelliteOrbit(){
-    int flux = roll.one() - roll.one();
+    int flux = roll.flux();
     int result = 0;
     if (mainworldType.equals("Close Satellite")){
       result = 7 + flux;
@@ -985,14 +985,14 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     int flux;
 
     for (int i = 1; i < stars.length; i++){  // primary is always present, so skip index 0
-      flux = roll.one() - roll.one();
+      flux = roll.flux();
       if (flux >= 3){
         stars[i] = true;
       }
     }
 
     for (int i = 0; i < companions.length; i++){
-      flux = roll.one() - roll.one();
+      flux = roll.flux();
       if (flux >= 3 && stars[i]){
         companions[i] = true;
       } 
