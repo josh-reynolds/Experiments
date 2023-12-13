@@ -263,11 +263,9 @@ class TradeClass_T5 extends TradeClass_T4 {
   Boolean tundra = false;
   Boolean satellite = false;
   Boolean locked = false;
-  
-  // TO_DO: requires Travel Zone information
-  // forbidden
-  // puzzle
-  // dangerous
+  Boolean forbidden = false;
+  Boolean puzzle = false;
+  Boolean dangerous = false;
   
   // TO_DO: Applies to non-mainworld, undecided what to do with these
   //  should Trade Classifications now apply per-planet?
@@ -311,6 +309,24 @@ class TradeClass_T5 extends TradeClass_T4 {
     tundra = isTundra(_system);
     satellite = isSatellite(_system);
     locked = isLocked(_system);
+    forbidden = isForbidden(_system);
+    puzzle = isPuzzle(_system);
+    dangerous = isDangerous(_system);
+  }
+
+  Boolean isForbidden(System _system){
+    return ((System_CT81)_system).travelZone.equals("Red");
+  }
+
+  Boolean isPuzzle(System _system){
+    return ((System_CT81)_system).travelZone.equals("Amber") && 
+           _system.uwp.pop >= 7 && 
+           _system.uwp.pop <= 12;   // table on p. 434 caps this at 12, doesn't allow for ultra-high pop worlds
+  }
+  
+  Boolean isDangerous(System _system){
+    return ((System_CT81)_system).travelZone.equals("Amber") && 
+           _system.uwp.pop <= 6; 
   }
 
   Boolean isHot(System _system){
@@ -521,6 +537,9 @@ class TradeClass_T5 extends TradeClass_T4 {
     if (tundra)       { output += "Tu "; }
     if (satellite)    { output += "Sa "; }
     if (locked)       { output += "Lk "; }
+    if (forbidden)    { output += "Fo "; }
+    if (puzzle)       { output += "Pz "; }
+    if (dangerous)    { output += "Da "; }
     return output;
   }
 }
