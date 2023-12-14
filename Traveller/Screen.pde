@@ -1,6 +1,7 @@
 abstract class Screen {
   abstract void drawScreen();
   abstract void mouseClicked();
+  abstract void keyPressed();
 }
 
 class Menu extends Screen {
@@ -67,6 +68,8 @@ class Menu extends Screen {
       if (b.highlight){ b.run(); }
     }
   }
+
+  void keyPressed(){}
 }
 
 class Display extends Screen {
@@ -96,5 +99,26 @@ class Display extends Screen {
         }
       }
     }
+  }
+
+  void keyPressed(){
+    screen = new Detail();
+  }
+}
+
+class Detail extends Screen {
+  
+  Detail(){
+  }
+  
+  void drawScreen(){
+    background(255,0,0);
+  }
+  
+  void mouseClicked(){
+  }
+
+  void keyPressed(){
+    screen = new Display();
   }
 }

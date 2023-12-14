@@ -50,3 +50,7 @@ void draw(){
 void mouseClicked(){
   screen.mouseClicked();
 }
+
+void keyPressed(){
+  screen.keyPressed();
+}
