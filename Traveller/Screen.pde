@@ -108,11 +108,20 @@ class Display extends Screen {
 
 class Detail extends Screen {
   
+  // eventually create panels for this content, just playing with ideas for now...
+  
   Detail(){
   }
   
   void drawScreen(){
-    background(255,0,0);
+    background(scheme.menuBackground);
+    
+    fill(scheme.menuText);
+    textSize(14);     
+    textAlign(LEFT, TOP);
+    text(ship.location.toString(), 10, 10);
+    
+    
   }
   
   void mouseClicked(){
