@@ -845,6 +845,36 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     ((System_T5)_parent).mainworldHZVariance = determineHZVariance();
     designateMainworldFor(star);
     
+    // Gas Giants - rotate placement per star
+    // need to account for any placed for satellite Mainworlds
+    // (will pull this out into a separate method)
+    int gg = ((System_ScoutsEx)_parent).gasGiantCount;
+    ArrayList<Star> stars = star.getAll(Star.class); 
+    int gasGiantCountAllStars = floor(gg/stars.size());
+    int gasGiantCountRemainder = gg % stars.size();
+    
+    println(_parent.name);
+    printArray(stars);
+    
+    // add 'all stars' count first
+    for (Star s : stars){
+      for (int i = 0; i < gasGiantCountAllStars; i++){
+        int orbit = 0;                                        // TO_DO: chicken + egg problem - in T5, orbit is influenced by GG size but this is currently set in the ctor
+                                                              // also need to check whether this orbit is available (could be forbidden or taken)
+        GasGiant giant = new GasGiant(s, orbit, s.orbitalZones[orbit], this);
+        s.addOrbit(orbit, giant);
+      }
+    }
+    
+    // then handle the remainder
+    
+    //for (int i = 1; i <= gg; i++){
+    //  println("Gas Giant #" + i);
+    //}
+    
+    //println("GG / Star = " + gasGiantCountAllStars);
+    //println("GG % Stars = " + gasGiantCountRemainder);
+    
     // TO_DO: steps below are spread across this method and the System ctors... review and move around as appropriate
     
     //DONE System presence
@@ -865,13 +895,9 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //DONE   Companions & placement
     //DONE   Total worlds
     //DONE   Mainworld placement
-    //       Gas Giant placement
+    //....   Gas Giant placement
     //       Planetoid placement
     //       Other world placement
-    
-    //createCompanionsFor(star);     // aren't companions just a special-case satellite? unify this and work with the composite structure
-    //createSatellitesFor(star);     // Star.createSatellites() is recursive on companion stars - need to handle this case
-    //designateMainworldFor(star);   // should there be something in createCompanions()? work this out later
   }
 
   private int determineHZVariance(){
