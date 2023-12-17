@@ -859,9 +859,10 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     // add 'all stars' count first
     for (Star s : stars){
       for (int i = 0; i < gasGiantCountAllStars; i++){
+        int ggSize = roll.two();
         int orbit = 0;                                        // TO_DO: chicken + egg problem - in T5, orbit is influenced by GG size but this is currently set in the ctor
                                                               // also need to check whether this orbit is available (could be forbidden or taken)
-        GasGiant giant = new GasGiant(s, orbit, s.orbitalZones[orbit], this);
+        GasGiant giant = new GasGiant(s, orbit, s.orbitalZones[orbit], this, ggSize);
         s.addOrbit(orbit, giant);
       }
     }

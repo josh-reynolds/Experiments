@@ -377,6 +377,19 @@ class GasGiant extends Orbit {
     size = _json.getString("Size");
   }
   
+  // added for T5, where GG size influences orbit - much duplication with previous ctor, refactor
+  GasGiant(Orbit _barycenter, int _orbit, String _zone, OrbitBuilder _ob, int _size){
+    super(_barycenter, _orbit, _zone);
+    if (_size <= 3){ // from T5 p. 437 - 2d6 roll, so odds of SGG are greatly reduced
+      size = "S"; 
+    } else {
+      size = "L";
+    }
+    
+    int satelliteCount = _ob.generateSatelliteCountFor(this);
+    _ob.createSatellitesFor(this, satelliteCount);    
+  }
+  
   Boolean isGasGiant(){ return true; }
   
   String toString(){ 
