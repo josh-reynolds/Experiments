@@ -951,7 +951,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
       case "Planet":
         p = new Planet(_star, orbit, _star.orbitalZones[orbit], this);
         break;
-      case "Close Satellite":         // TO_DO: for the Satellite case, we first need to create a GasGiant or BigWorld to orbit
+      case "Close Satellite":
       case "Far Satellite":
         if (((System_ScoutsEx)_star.parent).gasGiantCount > 0){
           p = new GasGiant(_star, orbit, _star.orbitalZones[orbit], this);    // TO_DO: when we add GasGiants later, need to remember this one...

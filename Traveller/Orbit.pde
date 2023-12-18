@@ -436,6 +436,14 @@ class Planet extends Orbit implements Habitable {
     mainworld = false;
     facilities = new ArrayList();
   }
+
+  Planet(Orbit _barycenter, int _orbit, String _zone, int _size){
+    super(_barycenter, _orbit, _zone);
+    if (debug == 2){ println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ", " + _size + ")"); }                             
+                              
+    UWPBuilder_ScoutsEx ub = (UWPBuilder_ScoutsEx)ruleset.newUWPBuilder();
+    ub.newUWPFor(this, _size);
+  }  
   
   Planet(Orbit _barycenter, JSONObject _json){
     super(_barycenter, _json);
@@ -545,11 +553,11 @@ class Moon extends Planet {
   // need to work through inherited fields and hierarchy for these second-level children
 
   Moon(Orbit _barycenter, int _orbit, String _zone, int _size){
-    super(_barycenter, _orbit, _zone, null);
-    if (debug == 2){ println("** Moon ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ", " + _size + ")"); }                             
+    super(_barycenter, _orbit, _zone, _size);
+    //if (debug == 2){ println("** Moon ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ", " + _size + ")"); }                             
                               
-    UWPBuilder_ScoutsEx ub = (UWPBuilder_ScoutsEx)ruleset.newUWPBuilder();
-    ub.newUWPFor(this, _size);
+    //UWPBuilder_ScoutsEx ub = (UWPBuilder_ScoutsEx)ruleset.newUWPBuilder();
+    //ub.newUWPFor(this, _size);
   }
   
   Moon(Orbit _barycenter, JSONObject _json){
