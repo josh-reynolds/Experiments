@@ -160,9 +160,9 @@
 //  * DONE Add Travel Zone Govt-Law matrix (from MT/T:NE)
 //  * DONE Add T4 generation ruleset
 //  * FIX  BUG: density resets to 'Standard' when changing rulesets
+//  * DONE Incorporate BD stars (Brown Dwarfs) into type scheme (added w/ T5)
 //  * .... Add T5 generation ruleset
 //  * .... Incorporate Ia/Ib stars (Supergiants) into type scheme (added w/ T5)
-//  *      Incorporate BD stars (Brown Dwarfs) into type scheme (added w/ T5)
 //  *      Review/incorporate T5 errata
 //  *      'Character' location and movement / ships (and UI elements) (many parts to this...)
 //  *      Move away from string parsing approach in Star JSON ctor

@@ -216,6 +216,8 @@ class Star extends Orbit {
   String getSpectralType(){
     if (size == 7){
       return sizeToString() + str(type);
+    } else if (type == 'D') {
+      return "BD";
     } else {
       return str(type) + decimal + sizeToString();
     }
@@ -390,7 +392,7 @@ class Star extends Orbit {
         return "VI";  // subdwarfs
       case 7:
         return "D";   // white dwarfs
-      default:
+      default:                        // still need to add brown dwarfs...
         return "X";
     }
   }
@@ -636,7 +638,7 @@ class Star_T5 extends Star_TNE {
     if (flux >= -1 && flux <= 0      ){ return 'G'; }
     if (flux >= 1 && flux <= 2       ){ return 'K'; }
     if (flux >= 3 && flux <= 5       ){ return 'M'; }
-    if (flux >= 6                    ){ return 'D'; }  // TO_DO: introducing new star type (Brown Dwarf) need to plumb this through
+    if (flux >= 6                    ){ return 'D'; }
     return 'X';
   }
 
@@ -698,13 +700,13 @@ class Star_T5 extends Star_TNE {
     // the first source is easier to use, so I'm going with that
     Table table = loadTable("OrbitalZones_T5.csv", "header");  // probably want to load this as a global resource
     String classForLookup = "";
-    if (size < 7){  // white dwarfs (size 7) have a different naming convention, don't need to worry about decimal value
+    if (size < 7 && type != 'D'){  // white dwarfs (size 7) and brown dwarfs (type D) have a different naming convention, don't need to worry about decimal value
       int roundedDecimal  = floor(decimal/5) * 5;
       classForLookup = str(type) + roundedDecimal + sizeToString();  // duplication from getSpectralType()
     } else {
       classForLookup = getSpectralType();
     }
-          
+     
     for (TableRow row : table.rows()){
       if (row.getString("Class").equals(classForLookup)){
         for (int i = 0; i < output.length; i++){
@@ -712,6 +714,7 @@ class Star_T5 extends Star_TNE {
         }
       }
     }
+    
     return output;
   }
 }
