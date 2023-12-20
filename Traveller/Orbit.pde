@@ -436,6 +436,25 @@ class Planet extends Orbit implements Habitable {
     mainworld = false;
     facilities = new ArrayList();
   }
+
+  // TO_DO: heavy duplication with previous ctor - refactor
+  //  also assess whether super call in Moon() should route here...
+  Planet(Orbit _barycenter, int _orbit, String _zone, OrbitBuilder _ob, int _size){ 
+    super(_barycenter, _orbit, _zone);
+    if (debug == 2){ println("** Planet ctor(" + _barycenter.getClass() + ", " + _orbit + ", " + _zone + ")"); }
+
+    UWPBuilder_ScoutsEx ub = (UWPBuilder_ScoutsEx)ruleset.newUWPBuilder();
+    ub.newUWPFor(this, _size);
+
+    int satelliteCount = 0;
+    if (!isMoon()){ 
+      satelliteCount = _ob.generateSatelliteCountFor(this);  // need to handle Moon super call - OrbitBuilder is null there 
+      _ob.createSatellitesFor(this, satelliteCount);
+    }
+
+    mainworld = false;
+    facilities = new ArrayList();
+  }
   
   Planet(Orbit _barycenter, JSONObject _json){
     super(_barycenter, _json);

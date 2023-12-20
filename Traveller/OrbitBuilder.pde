@@ -956,7 +956,8 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
         if (((System_ScoutsEx)_star.parent).gasGiantCount > 0){
           p = new GasGiant(_star, orbit, _star.orbitalZones[orbit], this);    // TO_DO: when we add GasGiants later, need to remember this one...
         } else {
-          p = new Planet(_star, orbit, _star.orbitalZones[orbit], this);      // TO_DO: need to make this a BigWorld
+          int bigSize = roll.two(7);    // T5 p. 429 + 437 say 2d+7 (albeit typo on former), but p. 437 also says Size B+ == BigWorld... inconsistent 
+          p = new Planet(_star, orbit, _star.orbitalZones[orbit], this, bigSize);
         }
         int satOrbit = satelliteOrbit();
         s = new Moon(p, satOrbit, _star.orbitalZones[orbit], 0);              // TO_DO: temporarily hard-coding size parameter 
