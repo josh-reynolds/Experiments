@@ -860,10 +860,13 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     for (Star s : stars){
       for (int i = 0; i < gasGiantCountAllStars; i++){
         int ggSize = roll.two();
-        int orbitVariance = gasGiantOrbit(ggSize);
-        int orbit = s.getHabitableZoneNumber() + orbitVariance;
-        if (orbit < 0){ orbit = 0; }
-                                                              // TO_DO: also need to check whether this orbit is available (could be forbidden or taken)
+        int orbit = 0;
+        
+        while (true){
+          orbit = gasGiantOrbit(ggSize, s.getHabitableZoneNumber());    // T5 p. 437 says adjust to adjacent or nearest available
+          if (!s.orbitIsTaken(orbit)){ break; }                         // here we're just generating a new value entirely
+        }
+
         GasGiant giant = new GasGiant(s, orbit, s.orbitalZones[orbit], this, ggSize);
         s.addOrbit(orbit, giant);
       }
@@ -903,16 +906,19 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //       Other world placement
   }
 
-  private int gasGiantOrbit(int _size){
+  private int gasGiantOrbit(int _size, int _hzone){
     int dieThrow = roll.two();
-    int result = 0;
+    int variance = 0;
     
     if (_size <= 3){ 
-      result = dieThrow - 4;
+      variance = dieThrow - 4;
     } else {
-      result = dieThrow -5;
+      variance = dieThrow -5;
     }
-    
+
+    int result = _hzone + variance;
+    if (result < 0){ result = 0; }    
+
     return result;
   }
 
