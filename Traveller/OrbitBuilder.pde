@@ -860,8 +860,10 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     for (Star s : stars){
       for (int i = 0; i < gasGiantCountAllStars; i++){
         int ggSize = roll.two();
-        int orbit = 0;                                        // TO_DO: chicken + egg problem - in T5, orbit is influenced by GG size but this is currently set in the ctor
-                                                              // also need to check whether this orbit is available (could be forbidden or taken)
+        int orbitVariance = gasGiantOrbit(ggSize);
+        int orbit = s.getHabitableZoneNumber() + orbitVariance;
+        if (orbit < 0){ orbit = 0; }
+                                                              // TO_DO: also need to check whether this orbit is available (could be forbidden or taken)
         GasGiant giant = new GasGiant(s, orbit, s.orbitalZones[orbit], this, ggSize);
         s.addOrbit(orbit, giant);
       }
@@ -899,6 +901,19 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     //....   Gas Giant placement
     //       Planetoid placement
     //       Other world placement
+  }
+
+  private int gasGiantOrbit(int _size){
+    int dieThrow = roll.two();
+    int result = 0;
+    
+    if (_size <= 3){ 
+      result = dieThrow - 4;
+    } else {
+      result = dieThrow -5;
+    }
+    
+    return result;
   }
 
   private int determineHZVariance(){
