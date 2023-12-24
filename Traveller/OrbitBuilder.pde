@@ -849,6 +849,15 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
     // need to account for any placed for satellite Mainworlds
     // (will pull this out into a separate method)
     int gg = ((System_ScoutsEx)_parent).gasGiantCount;
+    
+    println("Gas Giant Count = " + gg);
+    ArrayList<GasGiant> giants = star.getAll(GasGiant.class); 
+    if (giants.size() > 0){ // should be just one if the mainworld is a satellite; more than one is unexpected
+      println("Already placed: ");
+      printArray(giants);
+      gg -= giants.size();    
+    }
+    
     ArrayList<Star> stars = star.getAll(Star.class); 
     int gasGiantCountAllStars = floor(gg/stars.size());
     int gasGiantCountRemainder = gg % stars.size();
@@ -975,7 +984,7 @@ class OrbitBuilder_T5 extends OrbitBuilder_TNE {
       case "Close Satellite":
       case "Far Satellite":
         if (((System_ScoutsEx)_star.parent).gasGiantCount > 0){
-          p = new GasGiant(_star, orbit, _star.orbitalZones[orbit], this);    // TO_DO: when we add GasGiants later, need to remember this one...
+          p = new GasGiant(_star, orbit, _star.orbitalZones[orbit], this);
         } else {
           int bigSize = roll.two(7);    // T5 p. 429 + 437 say 2d+7 (albeit typo on former), but p. 437 also says Size B+ == BigWorld... inconsistent 
           p = new Planet(_star, orbit, _star.orbitalZones[orbit], this, bigSize);
